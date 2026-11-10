@@ -1,0 +1,3744 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SolarUI\n"
+"Report-Msgid-Bugs-To: https://github.com/EmirErtorer/SolarUI.koplugin/issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: _meta.lua main.lua
+msgid "SolarUI"
+msgstr ""
+
+#: _meta.lua
+msgid "A fast, cyberpunk-styled home screen for KOReader with a library browser, collections, reading stats and switchable colour themes."
+msgstr ""
+
+#: solarui/actions.lua
+msgid "TAP AGAIN TO OPEN"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Removed from history"
+msgstr ""
+
+#: solarui/actions.lua solarui/data/libgroups.lua solarui/screens/library.lua
+msgid "Unread"
+msgstr ""
+
+#: solarui/actions.lua solarui/data/libgroups.lua solarui/screens/library.lua
+msgid "Reading"
+msgstr ""
+
+#: solarui/actions.lua solarui/data/libgroups.lua
+msgid "On hold"
+msgstr ""
+
+#: solarui/actions.lua solarui/data/libgroups.lua solarui/screens/library.lua solarui/skin/sort.lua
+msgid "Done"
+msgstr ""
+
+#: solarui/actions.lua solarui/data/banner.lua solarui/data/libgroups.lua
+msgid "Status"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/collections.lua
+msgid "Collections"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/collections.lua
+msgid "New collection"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Added to %s"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/collections.lua
+msgid "Create"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/trash.lua
+msgid "That did not work"
+msgstr ""
+
+#: solarui/actions.lua solarui/menu.lua solarui/screens/trash.lua solarui/screens/updates.lua ...
+msgid "OK"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/collections.lua
+msgid "Rename"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Renamed"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Move to"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Moved to %s"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "New folder"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Folder created"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "folder name"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Delete “%s”?"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "The folder and everything in it go. It waits in the trash for %d day."
+msgid_plural "The folder and everything in it go. It waits in the trash for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "It waits in the trash for %d day."
+msgid_plural "It waits in the trash for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua solarui/screens/collections.lua solarui/screens/trash.lua solarui/skin/semantics.lua ...
+msgid "Delete"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Moved to the trash"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Library home set"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Library opens in %s"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Library opens in the home folder"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/settings.lua
+msgid "Library opens in"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Open library here"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "%d book marked %s"
+msgid_plural "%d books marked %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "Status of %d book"
+msgid_plural "Status of %d books"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "%d book added to %s"
+msgid_plural "%d books added to %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "Add %d book to"
+msgid_plural "Add %d books to"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua solarui/screens/library.lua
+msgid "Move here"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "%d book moved to %s"
+msgid_plural "%d books moved to %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "Delete %d book?"
+msgid_plural "Delete %d books?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua
+msgid "They wait in the trash for %d day."
+msgid_plural "They wait in the trash for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/actions.lua solarui/screens/settings.lua
+msgid "Open"
+msgstr ""
+
+#: solarui/actions.lua solarui/screens/gigs.lua
+msgid "Details"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Edit info"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Title, authors, genres"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Show folder"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Forget"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Remove from history"
+msgstr ""
+
+#: solarui/actions.lua
+msgid "Make library home"
+msgstr ""
+
+#: solarui/app.lua solarui/screens/settings.lua
+msgid "Home"
+msgstr ""
+
+#: solarui/app.lua solarui/screens/libmenu.lua solarui/screens/library.lua
+msgid "Library"
+msgstr ""
+
+#: solarui/app.lua
+msgid "Caches"
+msgstr ""
+
+#: solarui/app.lua solarui/screens/history.lua
+msgid "Log"
+msgstr ""
+
+#: solarui/app.lua solarui/screens/settings.lua
+msgid "System"
+msgstr ""
+
+#: solarui/app.lua
+msgid "Something went wrong; see crash.log"
+msgstr ""
+
+#: solarui/app.lua
+msgid "GIG FINISHED +%s"
+msgstr ""
+
+#: solarui/app.lua
+msgid "GIG PAYOUT +%s"
+msgstr ""
+
+#: solarui/app.lua
+msgid "BOOK FINISHED +%s"
+msgstr ""
+
+#: solarui/app.lua
+msgid "READING PAYOUT +%s"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "SWITCHED OFF // TAP"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "RESTART TO USE"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "GET IT // FREE"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "Installing %s"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s was not installed"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "Try again"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "1/3 // ASKING GITHUB"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "2/3 // DOWNLOADING %s %s (%.1f MB)"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "3/3 // CHECKING AND UNPACKING"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s %s is installed. Restart KOReader to use it."
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s is installed. Restart KOReader to use it."
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "Switch on"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s is installed but switched off in KOReader's plugins. Switch it on?"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s is switched on. Restart KOReader to use it."
+msgstr ""
+
+#: solarui/apps/addons.lua solarui/screens/updates.lua
+msgid "Install"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "Not now"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "Free, from github.com/%s. Needs Wi-Fi."
+msgstr ""
+
+#: solarui/apps/inkaway.lua
+msgid "DRAW // NOTES // INK"
+msgstr ""
+
+#: solarui/apps/inkaway.lua
+msgid "Draw, take notes and write on your books with a finger or a stylus: drawings with layers, notebooks with lined, grid and planner pages, and ink on any book that follows the text. Export a transparent PNG or a PDF."
+msgstr ""
+
+#: solarui/apps/inkaway.lua
+msgid "Open a book first"
+msgstr ""
+
+#: solarui/data/achievements.lua
+msgid "CLEARANCE"
+msgstr ""
+
+#: solarui/data/achievements.lua
+msgid "CLEARANCE_%dH"
+msgstr ""
+
+#: solarui/data/achievements.lua solarui/screens/diagnostics.lua
+msgid "UPTIME"
+msgstr ""
+
+#: solarui/data/achievements.lua
+msgid "UPTIME_%dD"
+msgstr ""
+
+#: solarui/data/achievements.lua solarui/screens/diagnostics.lua
+msgid "ARCHIVE"
+msgstr ""
+
+#: solarui/data/achievements.lua solarui/screens/log/goal.lua
+msgid "ARCHIVE_%d"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "READER // ONLINE"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "DECK ACTIVE"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "SYSTEMS NOMINAL"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "BOOT COMPLETE"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "READY TO JACK IN"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "LINK ESTABLISHED"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Greeting"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Time of day + handle"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Highlight"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "From your books"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Battery // Wi-Fi"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Your own text"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Typed in"
+msgstr ""
+
+#: solarui/data/banner.lua solarui/screens/fonts.lua solarui/targetlist.lua
+msgid "Device"
+msgstr ""
+
+#: solarui/data/banner.lua solarui/profileflow.lua
+msgid "Your handle"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Book"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Highlight's or current"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "Nothing"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "NIGHT SHIFT, %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "GOOD MORNING, %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "GOOD AFTERNOON, %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "GOOD EVENING, %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "CHARGING // %d%%"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "POWER LOW // PLUG IN"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "UPLINK ACTIVE"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "ID // %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "FILE // %s"
+msgstr ""
+
+#: solarui/data/banner.lua
+msgid "CYBERDECK // %s // OPERATOR ACCESS"
+msgstr ""
+
+#: solarui/data/books.lua solarui/screens/colourpick.lua solarui/screens/dossier.lua
+msgid "NEW"
+msgstr ""
+
+#: solarui/data/books.lua solarui/screens/dossier.lua solarui/screens/library.lua solarui/screens/metaedit.lua
+msgid "DONE"
+msgstr ""
+
+#: solarui/data/books.lua
+msgid "HOLD"
+msgstr ""
+
+#: solarui/data/catalogue.lua
+msgid "Frames"
+msgstr ""
+
+#: solarui/data/catalogue.lua
+msgid "Backdrops"
+msgstr ""
+
+#: solarui/data/catalogue.lua
+msgid "Flairs"
+msgstr ""
+
+#: solarui/data/catalogue.lua
+msgid "Jack-ins"
+msgstr ""
+
+#: solarui/data/collections.lua
+msgid "Favorites"
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "There is already something called “%s” there."
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "It could not be moved."
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "That name cannot be used."
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "A folder cannot go inside itself."
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "There is already something called “%s” here."
+msgstr ""
+
+#: solarui/data/files.lua
+msgid "The folder could not be made."
+msgstr ""
+
+#: solarui/data/libgroups.lua
+msgid "Folders"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/screens/library.lua solarui/screens/log/scope.lua
+msgid "All books"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/screens/libmenu.lua
+msgid "Author"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/data/metadata.lua solarui/screens/collections.lua solarui/screens/libmenu.lua
+msgid "Series"
+msgstr ""
+
+#: solarui/data/libgroups.lua
+msgid "Genre"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/screens/libmenu.lua
+msgid "Format"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/screens/libmenu.lua
+msgid "Added"
+msgstr ""
+
+#: solarui/data/libgroups.lua solarui/screens/dossier.lua
+msgid "Unknown author"
+msgstr ""
+
+#: solarui/data/libgroups.lua
+msgid "No series"
+msgstr ""
+
+#: solarui/data/libgroups.lua
+msgid "No genre"
+msgstr ""
+
+#: solarui/data/metadata.lua solarui/screens/libmenu.lua
+msgid "Title"
+msgstr ""
+
+#: solarui/data/metadata.lua
+msgid "Authors"
+msgstr ""
+
+#: solarui/data/metadata.lua
+msgid "Series number"
+msgstr ""
+
+#: solarui/data/metadata.lua
+msgid "Genres"
+msgstr ""
+
+#: solarui/data/metadata.lua solarui/screens/settings.lua
+msgid "Language"
+msgstr ""
+
+#: solarui/data/metric.lua
+msgid "PG"
+msgstr ""
+
+#: solarui/data/metric.lua solarui/skin/numbers.lua
+msgid "MIN"
+msgstr ""
+
+#: solarui/data/metric.lua
+msgid "PAGES READ // LAST 7 DAYS"
+msgstr ""
+
+#: solarui/data/metric.lua
+msgid "MINUTES READ // LAST 7 DAYS"
+msgstr ""
+
+#: solarui/data/metric.lua
+msgid "PAGES READ // 12 WEEKS"
+msgstr ""
+
+#: solarui/data/metric.lua
+msgid "MINUTES READ // 12 WEEKS"
+msgstr ""
+
+#: solarui/data/metric.lua solarui/screens/log/period.lua solarui/skin/bookstatus.lua
+msgid "PAGES READ"
+msgstr ""
+
+#: solarui/data/metric.lua solarui/screens/log/period.lua
+msgid "MINUTES READ"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "SCRIPT KID"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "RUNNER"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "FIXER"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "NETRUNNER"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "LEGEND"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "That file is not a picture KOReader can read"
+msgstr ""
+
+#: solarui/data/profile.lua
+msgid "The photo could not be saved"
+msgstr ""
+
+#: solarui/data/sysinfo.lua
+msgid "INTERNAL"
+msgstr ""
+
+#: solarui/data/sysinfo.lua solarui/ui/launcher.lua
+msgid "LIBRARY"
+msgstr ""
+
+#: solarui/data/trash.lua
+msgid "The trash could not be written to."
+msgstr ""
+
+#: solarui/data/trash.lua
+msgid "It is not in the trash any more."
+msgstr ""
+
+#: solarui/data/trash.lua
+msgid "Its folder is gone. Restore that first."
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "HOLD UP, CHOOM"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "Gigs and eddies are a nova feature. You sure you wanna be zeroing the switch?"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "ZERO IT"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "KEEP IT"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "FLATLINING THE ECONOMY?"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "No more payouts, no more eddies. The street quits paying you to read your backlog. Sure, choom?"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "FLATLINE IT"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "KEEP EARNING"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "LAST CALL, RUNNER"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "Your eddies stay in the vault. But if you ever switch this back on, every look you did not buy goes back to default. Zero it for real?"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "ZERO IT FOR REAL"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "BACK OUT"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "GIGS OFFLINE // EVERY LOOK UNLOCKED"
+msgstr ""
+
+#: solarui/economyflow.lua
+msgid "GIGS ONLINE"
+msgstr ""
+
+#: solarui/format.lua
+msgid "NEVER"
+msgstr ""
+
+#: solarui/format.lua
+msgid "JUST NOW"
+msgstr ""
+
+#: solarui/format.lua
+msgid "%dH AGO"
+msgstr ""
+
+#: solarui/format.lua
+msgid "%dD AGO"
+msgstr ""
+
+#: solarui/format.lua
+msgid "%dW AGO"
+msgstr ""
+
+#: solarui/format.lua
+msgid "%dM"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Classic"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Detailed"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Braille"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Blocks"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Binary"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Hex dump"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Glitch"
+msgstr ""
+
+#: solarui/gfx/ascii.lua
+msgid "Book title"
+msgstr ""
+
+#: solarui/gfx/icons.lua
+msgid "SOLARUI"
+msgstr ""
+
+#: solarui/gfx/icons.lua
+msgid "READER"
+msgstr ""
+
+#: solarui/gfx/icons.lua solarui/screens/diagnostics.lua
+msgid "KOREADER"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/filepick.lua
+msgid "FILES"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "SETTINGS"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "TOOLS"
+msgstr ""
+
+#: solarui/menu.lua solarui/ui/launcher.lua
+msgid "SEARCH"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "MAIN"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "NAVIGATION"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "TYPESET"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "VIEW"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/settings.lua
+msgid "CONTROLS"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "LAUNCHER"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "DECK"
+msgstr ""
+
+#: solarui/menu.lua solarui/ui/launcher.lua
+msgid "INK AWAY"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "EXTRA"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "HOME"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "ZENOS"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "THAT ONE CANNOT BE USED"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Button %d"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/diagnostics.lua solarui/skin/frontlight.lua
+msgid "LUMEN"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/diagnostics.lua solarui/skin/frontlight.lua
+msgid "TINT"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/settings.lua
+msgid "OPERATOR ID"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Wi-Fi on"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Wi-Fi off"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Night mode"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Rotate"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Annotate"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Restart"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Restart KOReader?"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Exit"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Exit KOReader?"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/diagnostics.lua
+msgid "UPLINK"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/diagnostics.lua
+msgid "NO CARRIER"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "PICK // %s"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "KOREADER // %s"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "TAP AN ENTRY TO USE IT. HOLD A SUBMENU TO USE THE MENU ITSELF."
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Nothing to show here yet."
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/launcher.lua solarui/screens/settings.lua
+msgid "PAGE"
+msgstr ""
+
+#: solarui/profileflow.lua solarui/screens/photocrop.lua
+msgid "Photo"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Photo changed"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Choose a picture"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "From any folder on this device"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Remove photo"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Use the generated glyph"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Photo removed"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Your photo"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Shown on your ID card"
+msgstr ""
+
+#: solarui/profileflow.lua solarui/screens/launchedit.lua solarui/screens/libmenu.lua solarui/screens/metaedit.lua ...
+msgid "Save"
+msgstr ""
+
+#: solarui/profileflow.lua solarui/ui/idcard.lua
+msgid "PHOTO"
+msgstr ""
+
+#: solarui/profileflow.lua solarui/ui/idcard.lua
+msgid "HANDLE"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "SAVE"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Save the card where?"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "Saved to %s"
+msgstr ""
+
+#: solarui/profileflow.lua
+msgid "That folder can't be written to"
+msgstr ""
+
+#: solarui/screens/annotations.lua solarui/screens/dossier.lua
+msgid "HIGHLIGHTS"
+msgstr ""
+
+#: solarui/screens/annotations.lua
+msgid "No highlights in this book yet. Select text while reading and choose Highlight."
+msgstr ""
+
+#: solarui/screens/annotations.lua solarui/screens/dossier.lua
+msgid "NOTES"
+msgstr ""
+
+#: solarui/screens/annotations.lua
+msgid "No notes in this book yet. Add a note to a highlight while reading."
+msgstr ""
+
+#: solarui/screens/annotations.lua solarui/screens/dossier.lua
+msgid "BOOKMARKS"
+msgstr ""
+
+#: solarui/screens/annotations.lua
+msgid "No bookmarks in this book yet. Tap the top corner of a page while reading to add one."
+msgstr ""
+
+#: solarui/screens/annotations.lua solarui/screens/library.lua
+msgid "SECTOR"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Delete this collection?"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Collection deleted"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "A collection with that name exists"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Type a name first"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Rename collection"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Collection renamed"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Favorites always stays"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "COLLECTION"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "%d FILE"
+msgid_plural "%d FILES"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/collections.lua
+msgid "PINNED // QUEUE"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Collection created"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "No series found yet. A series appears here once books with a series in their details have been read."
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "CACHE"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "No other collections yet. Make one with + New."
+msgstr ""
+
+#: solarui/screens/collections.lua solarui/screens/library.lua
+msgid "+ New"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "That is not a colour code"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "IN USE"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "IN GREY"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "READS ON THE PAGE"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "TOO FAINT ON THE PAGE"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "HEX"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "Colour code"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "Use"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "HUE"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "CANCEL"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "USE COLOUR"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "Colour"
+msgstr ""
+
+#: solarui/screens/colourpick.lua
+msgid "PICK // HSV"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "NOT REPORTED BY THIS DEVICE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "POWER CELL"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CHARGING"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "FULL"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "DISCHARGING"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "STATE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "DRAIN"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "%.1f%%/H // ~%dH LEFT"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CHARGED"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CYCLES"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "AUX CELL"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CORE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CLOCK"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CORES"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "LOAD"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "MEM"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "PROC"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "%s // %d THR"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "%d FILE // %s"
+msgid_plural "%d FILES // %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/diagnostics.lua
+msgid "STORAGE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "ACTIVE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "SEARCHING"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "NODE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "ADDR"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "WI-FI"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua solarui/ui/controls.lua
+msgid "ON"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua solarui/ui/controls.lua
+msgid "OFF"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "SSH"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "OPEN :%s"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "CLOSED"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "TOUCH"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "PEN"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "KEYS"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "KEYBOARD"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "OPTICS"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "PANEL"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "DEPTH"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "COLOUR"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "MONO"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua solarui/screens/settings.lua
+msgid "MODE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "PORTRAIT"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "LANDSCAPE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "INVERT ON"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "INVERT OFF"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "INPUT"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "DEVICE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "AWAKE"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "SLEEP"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "WAKES"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "SLEPT AT"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "MODULES %d/%d"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "DICTS %d"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "FONTS %d"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "Diagnostics"
+msgstr ""
+
+#: solarui/screens/diagnostics.lua
+msgid "RESCAN"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "All KOReader dialogs"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "The main switch: off, every window is KOReader's own, whatever the kinds below say"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "THE MAIN SWITCH IS OFF"
+msgstr ""
+
+#: solarui/screens/dialogs.lua solarui/screens/settings.lua
+msgid "KOReader dialogs"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "SWITCH EACH KIND"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "READING"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "ON HOLD"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "ADDED %s // OPENED %s"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "DECRYPTED %d%%"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid " // %s LEFT"
+msgstr ""
+
+#: solarui/screens/dossier.lua solarui/screens/library.lua
+msgid "STATUS"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "CACHES · %d"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "+ CACHE"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "SYNOPSIS"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "No description in this book's details."
+msgstr ""
+
+#: solarui/screens/dossier.lua solarui/screens/gigs.lua
+msgid "TAKE GIG"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "OPEN FILE"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "EDIT INFO"
+msgstr ""
+
+#: solarui/screens/dossier.lua solarui/skin/semantics.lua
+msgid "MORE"
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "File dossier"
+msgstr ""
+
+#: solarui/screens/filepick.lua solarui/screens/library.lua solarui/ui/cover.lua
+msgid "FOLDER"
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "SAVE HERE"
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "No folders here."
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "No pictures or folders here."
+msgstr ""
+
+#: solarui/screens/filepick.lua solarui/skin/list.lua
+msgid "Choose a folder"
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "Choose a file"
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "PICK // FOLDER"
+msgstr ""
+
+#: solarui/screens/filepick.lua
+msgid "PICK // FILE"
+msgstr ""
+
+#: solarui/screens/fonts.lua
+msgid "Cyberpunk"
+msgstr ""
+
+#: solarui/screens/fonts.lua
+msgid "No fonts found on this device."
+msgstr ""
+
+#: solarui/screens/fonts.lua
+msgid "FONTS"
+msgstr ""
+
+#: solarui/screens/fonts.lua
+msgid "SETS"
+msgstr ""
+
+#: solarui/screens/fonts.lua solarui/screens/settings.lua
+msgid "Fonts"
+msgstr ""
+
+#: solarui/screens/fonts.lua
+msgid "%d AVAILABLE"
+msgid_plural "%d AVAILABLE"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gigs.lua
+msgid "PAYS %s"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Take the gig"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Open the book"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Roll"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Swap it for another book, %s"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "ROLLED"
+msgstr ""
+
+#: solarui/screens/gigs.lua solarui/screens/shop.lua
+msgid "NEED %s MORE"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "NO OTHER BOOK TO ROLL"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Not wanted"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Take it off the board for good"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "HOW_GIGS_WORK"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Every book you read pays eddies. The gigs on the board pay two to four times more: open one to take it and fix its price. Every 10% you read pays a twentieth of the price, and finishing pays the other half. Longer books and longer waits pay more, up to a month. Hold a gig to roll it for eddies."
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "NEW BOARD IN %d DAY"
+msgid_plural "NEW BOARD IN %d DAYS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gigs.lua
+msgid "TOP_GIG"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "AT LARGE %d DAY"
+msgid_plural "AT LARGE %d DAYS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gigs.lua
+msgid "~%d PAGE"
+msgid_plural "~%d PAGES"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gigs.lua
+msgid "%s PER 10%% // %s ON FINISH"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "NO OPEN GIGS"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Every book in the library has been opened, or is still new. Unread books are picked for the board when it is next drawn."
+msgstr ""
+
+#: solarui/screens/gigs.lua solarui/ui/launcher.lua
+msgid "GIGS"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "NO GIGS TAKEN"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Take an open gig and start reading. It shows up here and pays as you read."
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "%s OF %s PAID"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "BALANCE"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "EARNED"
+msgstr ""
+
+#: solarui/screens/gigs.lua solarui/ui/idcard.lua
+msgid "GIGS DONE"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "NO PAYOUTS YET"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Read a gig to earn eddies. Each payout is listed here."
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "GIG FINISHED"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "BOOK FINISHED"
+msgstr ""
+
+#: solarui/screens/gigs.lua solarui/skin/bookstatus.lua
+msgid "%d%% READ"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "PAYOUTS"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgctxt "gigs tab"
+msgid "Open"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Active"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "Payouts"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "%d LEDGER ENTRY FAILED THE CHECK"
+msgid_plural "%d LEDGER ENTRIES FAILED THE CHECK"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gigs.lua solarui/screens/shop.lua solarui/ui/launcher.lua
+msgid "SHOP"
+msgstr ""
+
+#: solarui/screens/gigs.lua
+msgid "GIGS // BALANCE %s"
+msgstr ""
+
+#: solarui/screens/history.lua
+msgid "Stats"
+msgstr ""
+
+#: solarui/screens/history.lua
+msgid "Streaks"
+msgstr ""
+
+#: solarui/screens/history.lua
+msgid "Calendar"
+msgstr ""
+
+#: solarui/screens/history.lua
+msgid "Goal"
+msgstr ""
+
+#: solarui/screens/history.lua
+msgid "%d FOLDER"
+msgid_plural "%d FOLDERS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/history.lua
+msgid "Telemetry.log"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "INDEX OK ..."
+msgstr ""
+
+#: solarui/screens/home.lua solarui/screens/library.lua
+msgid "%d BOOK"
+msgid_plural "%d BOOKS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/home.lua
+msgid "SCANNING"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "STREAK %d DAY // %d MIN TODAY // GOAL %d"
+msgid_plural "STREAK %d DAYS // %d MIN TODAY // GOAL %d"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/home.lua
+msgid "SYS"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "ACTIVE_FILE"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "NO ACTIVE FILE"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "Open a book from the library and it will wait for you here."
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "OPEN LIBRARY"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "PG %d/%d"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "%d%% DECRYPTED"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "LAST OPEN %s"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "NEVER OPENED"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "RESUME"
+msgstr ""
+
+#: solarui/screens/home.lua solarui/skin/network.lua
+msgid "OPEN"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "RECENT_FILES"
+msgstr ""
+
+#: solarui/screens/home.lua
+msgid "Books you open show up here."
+msgstr ""
+
+#: solarui/screens/iconpick.lua
+msgid "Add your own SVGs to the solarui-icons folder in KOReader's settings folder."
+msgstr ""
+
+#: solarui/screens/iconpick.lua
+msgid "GLYPHS"
+msgstr ""
+
+#: solarui/screens/iconpick.lua solarui/screens/launchedit.lua
+msgid "Icon"
+msgstr ""
+
+#: solarui/screens/iconpick.lua
+msgid "PICK // GLYPH"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "Button"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "Gone"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "Name"
+msgstr ""
+
+#: solarui/screens/launchedit.lua solarui/screens/settings.lua solarui/screens/topbar.lua solarui/skin/network.lua
+msgid "Edit"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "Button name"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "NAME"
+msgstr ""
+
+#: solarui/screens/launchedit.lua solarui/screens/settings.lua
+msgid "Choose"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "Opens"
+msgstr ""
+
+#: solarui/screens/launchedit.lua solarui/screens/settings.lua
+msgid "Pick"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "RESTORE THE ORIGINAL"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "DELETE THIS BUTTON"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "BUILT-IN // REPLACE"
+msgstr ""
+
+#: solarui/screens/launchedit.lua
+msgid "CUSTOM // BUTTON"
+msgstr ""
+
+#: solarui/screens/launcher.lua
+msgid "HIDDEN"
+msgstr ""
+
+#: solarui/screens/launcher.lua
+msgid "+ ADD BUTTON"
+msgstr ""
+
+#: solarui/screens/launcher.lua
+msgid "The launcher is full"
+msgstr ""
+
+#: solarui/screens/launcher.lua solarui/screens/settings.lua
+msgid "Launcher"
+msgstr ""
+
+#: solarui/screens/launcher.lua
+msgid "ADD // MOVE // HIDE // EDIT"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Recent"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Progress"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Pages"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Size"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Reverse order"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Sort"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Group by"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Any"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Collection"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "With notes"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Only books with highlights or notes"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Clear filters"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Filters"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Save this view"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Name this view"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "View saved"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Delete a view"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "View deleted"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Saved views"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Jump to"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "On"
+msgstr ""
+
+#: solarui/screens/libmenu.lua solarui/sleep.lua
+msgid "Off"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "%d saved"
+msgid_plural "%d saved"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/libmenu.lua
+msgid "Jump to letter"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "A to Z in the current order"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Select books"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "Status, collections, move or delete many"
+msgstr ""
+
+#: solarui/screens/libmenu.lua solarui/screens/trash.lua
+msgid "Trash"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "%d waiting"
+msgid_plural "%d waiting"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/libmenu.lua
+msgid "KOReader browser"
+msgstr ""
+
+#: solarui/screens/libmenu.lua
+msgid "The stock file browser"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "All"
+msgstr ""
+
+#: solarui/screens/library.lua solarui/screens/search.lua
+msgid "Search"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "New in %s"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "Folder"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "To keep books together"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "Nothing starts with %s here"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "Pick some books first"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "%d PICKED"
+msgid_plural "%d PICKED"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/library.lua solarui/screens/shards.lua
+msgid "ALL"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "CACHE +"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "MOVE"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "DELETE"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "[X]"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "[ ]"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "PICKED"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "TAP"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "+ Folder"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "No folders here. Make one with + Folder, or move it here."
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "NO MATCHES"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "Nothing here yet. Copy books in, or make a folder with + New."
+msgstr ""
+
+#: solarui/screens/log/calendar.lua
+msgid "WHEN YOU READ // MON-SUN BY HOUR // %s"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua solarui/screens/log/period.lua solarui/screens/log/week.lua solarui/ui/idcard.lua
+msgid "PAGES"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua solarui/screens/log/period.lua solarui/screens/log/week.lua solarui/skin/bookstatus.lua
+msgid "TIME"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua solarui/styles/backgrounds.lua
+msgid "GRID"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua
+msgid "SKYLINE"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua solarui/screens/log/period.lua
+msgid "HEIGHT = PAGES // LIT WINDOWS = TIME READ"
+msgstr ""
+
+#: solarui/screens/log/calendar.lua
+msgid "%s // %d PAGE THIS MONTH"
+msgid_plural "%s // %d PAGES THIS MONTH"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/log/goal.lua
+msgid "FINISHED"
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "%d%% OF THE GOAL"
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "ACHIEVED"
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "NONE YET"
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "YEAR GOAL"
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "NO BOOKS FINISHED THIS YEAR. MARK A BOOK DONE AND IT SHELVES HERE."
+msgstr ""
+
+#: solarui/screens/log/goal.lua
+msgid "SHELF"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "NOTHING BEFORE"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "+%d%% VS BEFORE"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "%d%% VS BEFORE"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "Week"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "Month"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "Year"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "%d DAY READ"
+msgid_plural "%d DAYS READ"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/log/period.lua
+msgid "AVG / DAY"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "OVER THE PERIOD"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "%s = %d MIN"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "BEST %s"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "%s = %d PG"
+msgstr ""
+
+#: solarui/screens/log/period.lua
+msgid "BEST %d PG"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Count the whole library"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Counting the whole library"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Tap to stop counting it"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Add a folder"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Count only the books in chosen folders"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Count this folder"
+msgstr ""
+
+#: solarui/screens/log/scope.lua
+msgid "Statistics scope"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "DAY STREAK"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "BEST %d"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "WEEK STREAK"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua solarui/ui/idcard.lua
+msgid "HOURS"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "%d PAGE"
+msgid_plural "%d PAGES"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/log/streaks.lua
+msgid "RECORDS"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "LONGEST DAY"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "MOST PAGES"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua solarui/ui/idcard.lua
+msgid "DAYS READ"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua solarui/ui/idcard.lua
+msgid "SINCE"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "CLEARANCE LEVEL %02d"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "NEXT %dH // %dH LEFT"
+msgstr ""
+
+#: solarui/screens/log/streaks.lua
+msgid "MAXED"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "last 7 days"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "STREAK"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "day, best %d"
+msgid_plural "days, best %d"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/log/week.lua
+msgid "HEIGHT = PAGES // LIT WINDOWS = TIME"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "SESSION LOG"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "%dM // %d PG"
+msgstr ""
+
+#: solarui/screens/log/week.lua
+msgid "No reading recorded yet. Statistics must be on."
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Saved"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Back to the book's own"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Couldn't save these details"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Type a number"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "separate several with ;"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Already the book's own"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "EDITED"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Tap a detail to change it. Hold it to bring back what the book says. The book file is not changed."
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "RESET ALL"
+msgstr ""
+
+#: solarui/screens/metaedit.lua
+msgid "Edit details"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "PICK // FRAME"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "Nothing to show"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "DRAG THE PICTURE TO MOVE IT"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "ZOOM"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "CENTRE"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "USE THIS PHOTO"
+msgstr ""
+
+#: solarui/screens/photocrop.lua
+msgid "Frame your photo"
+msgstr ""
+
+#: solarui/screens/search.lua
+msgid "Search the library"
+msgstr ""
+
+#: solarui/screens/search.lua
+msgid "title, author or file name"
+msgstr ""
+
+#: solarui/screens/search.lua
+msgid "type to search"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Look"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Covers"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Gigs"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Speed"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "About"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "COLOUR SCHEME"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Light"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Dark"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Accent"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Buttons, badges and the active tab"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Second accent"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The date block and highlights"
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/ui/progress.lua solarui/ui/statusbar.lua
+msgid "Book progress"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "On home and in a book's details; hold the bar on home to change it too"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "STYLE"
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/ui/progress.lua
+msgid "ASCII"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Image"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Characters"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "What ASCII covers are drawn with"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SIZE IN THE LIBRARY"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Stretch covers"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Fill each cover frame, even if the proportions change"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "ASCII SLEEP SCREEN"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "All fonts"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "%d cyberpunk set, or any font installed on this device"
+msgid_plural "%d cyberpunk sets, or any font installed on this device"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/settings.lua
+msgid "Text size"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Makes every text in SolarUI larger or smaller"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Banner text"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Banner"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Change handle"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Banner top line"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Start with SolarUI"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Open SolarUI when KOReader starts and after closing a book"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Jack-in card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "A card with the book shown while it opens"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Menu tab opens on"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SolarUI's tab in KOReader's menu has two pages; this one comes first"
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/screens/shard.lua
+msgid "Data shard"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "A highlight from your books on home, on by default (tall screens only); hold it there for another"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Operator card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Your face, handle and rank in the banner on home; tap the face to open the card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The buttons on home: hide, reorder, replace or add your own that open anything in KOReader"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The folder the Library tab starts in; KOReader's home folder stays the top of the library"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Home folder"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Pick a folder"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Double tap to open"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "In the library a book opens on its second tap, so a stray touch does not start it"
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/screens/topbar.lua
+msgid "Top bar"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The tag and the readouts across the top of every screen"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Change"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The small line above the banner, and your handle"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The big line at the top of home; hold it there to change it too"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Recent covers"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Cover size in the recent list on home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Daily goal"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Minutes of reading a day, shown on home and in the log"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "%d MIN"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "KOReader menu"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "In SolarUI's style (off: KOReader's own); also opens with a swipe down from the top"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Notices, menus, lists, the keyboard, pickers and more in SolarUI's style; each kind has its own switch (off: KOReader's own)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Menu height"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "How much of the screen KOReader's menu may take: taller shows more entries and needs fewer pages"
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/targetlist.lua
+msgid "File browser"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Leave SolarUI for KOReader's own file browser"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Gigs and eddies"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Paid reading: gigs and eddies for what you read. Off, nothing pays and every look is free to wear until you turn it back on"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Gigs on the board"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "How many books the board offers; a new count applies when the board is next drawn"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Board drawn anew"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Days before the unopened gigs on the board are swapped for others"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Full refresh in dark mode"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Dark screens ghost more, so they flash sooner (0 never)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Full refresh every"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Screens between flashing refreshes that clear ghosting (0 never)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Keep the book open on Home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Home shows at once and the same book opens again with no loading; the book is closed later"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "PARKING // WHAT IT COSTS"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Going home puts the book away instead of closing it. KOReader closes it for real when you open a different book, after 30 seconds of not touching the screen, or when you open KOReader's menu or its file browser."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "- A different book, KOReader's menu and the file browser take a moment longer, since the close happens then."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "- The book stays in memory while it is put away."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "- Sleeping soon after leaving a book shows that book's sleep screen."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "- KOReader's own gestures (corner taps, edge swipes) do not work on Home until the book is closed."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "- A book read in landscape is closed the normal way."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Library index"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "%d book indexed; rebuild after copying books over"
+msgid_plural "%d books indexed; rebuild after copying books over"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/settings.lua
+msgid "Rebuild"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "%d book indexed"
+msgid_plural "%d books indexed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/settings.lua
+msgid "HOW SOLARUI STAYS FAST"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Home stays loaded while you read, so closing a book is a redraw, not a rebuild. Everything is drawn with flat shapes and refreshed only where it changed."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SUPPORT // KEEP THE DECK ALIVE"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SolarUI is free and made by one person. If it makes your reading better, a coffee helps keep it going."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SCAN WITH YOUR PHONE"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Version"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SolarUI follows KOReader's language (set in KOReader's own settings). The texts are in the l10n folder and can be edited there."
+msgstr ""
+
+#: solarui/screens/settings.lua solarui/screens/updates.lua
+msgid "Updates"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "SolarUI %s is ready to install"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "New versions from GitHub, with their notes"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Oxanium, Chakra Petch, Tomorrow, Rajdhani, Orbitron, Exo 2, Turret Road, Michroma, Electrolize, Audiowide, Wallpoet, Russo One, Iceland, VT323, Press Start 2P, Share Tech, Share Tech Mono and JetBrains Mono, SIL Open Font License"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "A fast cyberpunk home screen for KOReader."
+msgstr ""
+
+#: solarui/screens/shard.lua
+msgid "YOUR NOTE"
+msgstr ""
+
+#: solarui/screens/shards.lua
+msgid "%d SHARD"
+msgid_plural "%d SHARDS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/shards.lua
+msgid "BY BOOK"
+msgstr ""
+
+#: solarui/screens/shards.lua
+msgid "NO SHARDS YET"
+msgstr ""
+
+#: solarui/screens/shards.lua
+msgid "Highlight text while reading and each highlight is recovered here as a data shard. Books already highlighted are collected in the background."
+msgstr ""
+
+#: solarui/screens/shards.lua solarui/ui/launcher.lua
+msgid "SHARDS"
+msgstr ""
+
+#: solarui/screens/shards.lua
+msgid "Data shards"
+msgstr ""
+
+#: solarui/screens/shards.lua
+msgid "RECOVERED // %d FRAGMENT"
+msgid_plural "RECOVERED // %d FRAGMENTS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/shop.lua
+msgid "EQUIPPED"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "TAP TO EQUIP"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "TAP TO BUY"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "BUY %s"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "UNLOCKED // EQUIPPED"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "FREE"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "OWNED"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "ON LOAN"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "NEXT: %s // NEED %s MORE"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "NEXT: %s // READY TO BUY"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "GIGS OFF // LOOKS ON LOAN, THE ONES YOU DID NOT BUY RESET WHEN GIGS COME BACK"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "SHOP // BALANCE %s"
+msgstr ""
+
+#: solarui/screens/shop.lua
+msgid "SHOP // GIGS OFF"
+msgstr ""
+
+#: solarui/screens/targetpick.lua
+msgid "What it opens"
+msgstr ""
+
+#: solarui/screens/targetpick.lua
+msgid "Nothing here to pick."
+msgstr ""
+
+#: solarui/screens/targetpick.lua
+msgid "ITEMS"
+msgstr ""
+
+#: solarui/screens/targetpick.lua
+msgid "PICK // TARGET"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "NO SIGNAL"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "Tag"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "Top bar tag"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "SHOWN %d/%d"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "AVAILABLE"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "The top bar is full"
+msgstr ""
+
+#: solarui/screens/topbar.lua
+msgid "ADD // MOVE // REMOVE"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "From %s"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "Put back"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "Delete for good"
+msgstr ""
+
+#: solarui/screens/trash.lua solarui/ui/dialog.lua
+msgid "Attention"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "Keep"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "It goes for good, with its reading data. This cannot be undone."
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "The trash is empty. Deleted books and folders wait here for %d day."
+msgid_plural "The trash is empty. Deleted books and folders wait here for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/trash.lua
+msgid "BIN"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "Empty"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "All %d item goes for good. This cannot be undone."
+msgid_plural "All %d items go for good. This cannot be undone."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/trash.lua
+msgid "KEPT %d DAY"
+msgid_plural "KEPT %d DAYS"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/updates.lua
+msgid "Installing SolarUI %s"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "SolarUI was not updated"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "PRERELEASE"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "STABLE"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "ASKING GITHUB..."
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "v%s INSTALLED // RESTART KOREADER"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "CHECK FAILED // %s"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "UPDATE AVAILABLE"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "UP TO DATE"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "NOT CHECKED YET"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Check"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Back to stable"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Installed"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Try prerelease"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "NOTES // v%s"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Check once a day (on Wi-Fi that is already on)"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "Tell me about prereleases (test builds, newer but less tried)"
+msgstr ""
+
+#: solarui/screens/updates.lua
+msgid "GITHUB // %s"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "DAYS"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "// RATING"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "// STATISTICS"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "// REVIEW"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "// STATUS"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "Book status"
+msgstr ""
+
+#: solarui/skin/choice.lua
+msgid "// CHOOSE"
+msgstr ""
+
+#: solarui/skin/dictionary.lua
+msgid "// LOOKUP"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "START"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "END"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "// HIGHLIGHT"
+msgstr ""
+
+#: solarui/skin/frontlight.lua solarui/skin/network.lua solarui/skin/qr.lua solarui/skin/textviewer.lua ...
+msgid "Close"
+msgstr ""
+
+#: solarui/skin/fullpage.lua
+msgid "No items"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Notices and questions"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Messages, questions and the small notices at the bottom"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Selected text menu"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The menu after selecting words, and the one for a saved highlight"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Button menus"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The menus of buttons (long-press menus, gestures, plugins)"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Keyboard and text entry"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The on-screen keyboard and the windows you type into"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Lists"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Contents, bookmarks, history, details lists, sorting and the folder chooser"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Dictionary"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The pop-up with a word's meaning"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Pickers"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Choosing a number, a date, a time or one of several"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Viewers"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Notes, texts, QR codes, progress and the book status page"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Wi-Fi list"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The list of networks"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Reader panels"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The settings panel at the bottom of a book and the frontlight window"
+msgstr ""
+
+#: solarui/skin/highlightmenu.lua
+msgid "// SELECTION"
+msgstr ""
+
+#: solarui/skin/inputdialog.lua solarui/ui/textinput.lua
+msgid "// INPUT"
+msgstr ""
+
+#: solarui/skin/keyboard.lua
+msgid "// KEYBOARD"
+msgstr ""
+
+#: solarui/skin/keyboard.lua
+msgid "HIDE"
+msgstr ""
+
+#: solarui/skin/list.lua
+msgid "Choose this folder"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "SECURED"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "CONNECTED"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Disconnect"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "No networks found"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Retry"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "// WI-FI"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Wi-Fi networks"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "// SET"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "YEAR"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "MONTH"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "DAY"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "HOUR"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "SEC"
+msgstr ""
+
+#: solarui/skin/progress.lua
+msgid "// WORKING"
+msgstr ""
+
+#: solarui/skin/qr.lua
+msgid "// SCAN"
+msgstr ""
+
+#: solarui/skin/sort.lua solarui/ui/dialog.lua solarui/ui/textinput.lua
+msgid "Cancel"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "// WARNING"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "// CONFIRM"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "// INFO"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "// MESSAGE"
+msgstr ""
+
+#: solarui/skin/textviewer.lua
+msgid "// TEXT"
+msgstr ""
+
+#: solarui/sleep.lua
+msgid "Book covers"
+msgstr ""
+
+#: solarui/sleep.lua
+msgid "Custom images"
+msgstr ""
+
+#: solarui/sleep.lua
+msgid "Everything"
+msgstr ""
+
+#: solarui/styles/backgrounds.lua
+msgid "PLAIN"
+msgstr ""
+
+#: solarui/styles/backgrounds.lua
+msgid "SCANLINES"
+msgstr ""
+
+#: solarui/styles/backgrounds.lua
+msgid "TRACES"
+msgstr ""
+
+#: solarui/styles/backgrounds.lua
+msgid "NIGHT CITY"
+msgstr ""
+
+#: solarui/styles/flairs.lua
+msgid "PIP"
+msgstr ""
+
+#: solarui/styles/flairs.lua
+msgid "CHEVRONS"
+msgstr ""
+
+#: solarui/styles/flairs.lua
+msgid "CROSSHAIR"
+msgstr ""
+
+#: solarui/styles/flairs.lua
+msgid "BOLT"
+msgstr ""
+
+#: solarui/styles/flairs.lua
+msgid "SCANNER EYE"
+msgstr ""
+
+#: solarui/styles/frames.lua solarui/styles/jackins.lua
+msgid "STANDARD"
+msgstr ""
+
+#: solarui/styles/frames.lua
+msgid "NOTCH"
+msgstr ""
+
+#: solarui/styles/frames.lua
+msgid "CIRCUIT"
+msgstr ""
+
+#: solarui/styles/frames.lua
+msgid "HAZARD"
+msgstr ""
+
+#: solarui/styles/frames.lua
+msgid "GLITCH"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "RESUMING AT %d%%"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "FIRST OPEN"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "JACK-IN"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "DECRYPTING..."
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "[OK] MOUNT FILE // [OK] READ INDEX"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "[..] RENDERING PAGE"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "ADMIT ONE"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "TARGET_LOCKED"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "SCANNING..."
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "TERMINAL"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "POSTER"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "TICKET"
+msgstr ""
+
+#: solarui/styles/jackins.lua
+msgid "SCANNER"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "General"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "Screen and lights"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "ACTION"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "MENU"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "MENU ENTRY"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "PLUGIN"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "Plugins"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "THEIR MENU ENTRIES"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "Plugin actions"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "WHAT PLUGINS ADD TO GESTURES"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "KOREADER ACTIONS"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "Whole KOReader menu"
+msgstr ""
+
+#: solarui/targetlist.lua
+msgid "EVERY TAB AND SUBMENU"
+msgstr ""
+
+#: solarui/targets.lua
+msgid "KOREADER MENU"
+msgstr ""
+
+#: solarui/targets.lua
+msgid "That menu is gone"
+msgstr ""
+
+#: solarui/targets.lua solarui/ui/launcher.lua
+msgid "NOTHING YET"
+msgstr ""
+
+#: solarui/targets.lua
+msgid "MENU // %s"
+msgstr ""
+
+#: solarui/targets.lua
+msgid "ACTION // %s"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Angular sci-fi face, the default"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Squared-off techno face"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Wide, clean console face"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Tall and narrow, fits more on a line"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "The classic sci-fi display face, with Exo 2 for reading"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Low, wide and geometric"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Extended headings, Electrolize for reading"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Rounded racing headings over Share Tech"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Stencilled street headings over Share Tech"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Heavy block headings over Share Tech"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Narrow digital readout"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "VT323, a 1980s video terminal, everywhere"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "Press Start 2P pixel headings over VT323"
+msgstr ""
+
+#: solarui/themes/fonts.lua
+msgid "KOReader's own fonts, for the plainest reading"
+msgstr ""
+
+#: solarui/ui/cover.lua
+msgid "FOLDER // %d"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "EDDIES"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "NEXT: %s"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "%.0f / %d H"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "TOP RANK REACHED"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "%.0f H"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "OPERATOR // ID-CARD"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "AUTH OK"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "LVL %d / %d"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "BOOKS"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "RANK"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "BEST RUN"
+msgstr ""
+
+#: solarui/ui/idcard.lua
+msgid "%dD"
+msgstr ""
+
+#: solarui/ui/keyboard.lua
+msgid "space"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "%d FILE // GRID"
+msgid_plural "%d FILES // GRID"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/launcher.lua
+msgid "FILES // GRID"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "COLLECTIONS"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "%d CACHE"
+msgid_plural "%d CACHES"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/launcher.lua
+msgid "HISTORY"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "TELEMETRY.LOG"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "ALL LOOKS UNLOCKED"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "%d OPEN"
+msgid_plural "%d OPEN"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/launcher.lua
+msgid "BACKLOG CLEAR"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "%d RECOVERED"
+msgid_plural "%d RECOVERED"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/launcher.lua
+msgid "NO HIGHLIGHTS YET"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "GREP THE ARCHIVE"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "SYSTEM"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "UPDATE v%s READY"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "THEME // SETTINGS"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "Pick what this button opens"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "This button always stays, so the settings stay reachable"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "Hide this button?"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "Delete this button?"
+msgstr ""
+
+#: solarui/ui/launcher.lua
+msgid "Hide"
+msgstr ""
+
+#: solarui/ui/progress.lua
+msgid "Segments"
+msgstr ""
+
+#: solarui/ui/progress.lua
+msgid "Heartbeat"
+msgstr ""
+
+#: solarui/ui/progress.lua
+msgid "Scanline"
+msgstr ""
+
+#: solarui/ui/progress.lua
+msgid "Equalizer"
+msgstr ""
+
+#: solarui/ui/shardcard.lua
+msgid "FRAGMENT %d/%d // %s"
+msgstr ""
+
+#: solarui/ui/shardcard.lua
+msgid "DATA SHARD // 0x%s"
+msgstr ""
+
+#: solarui/ui/shardcard.lua
+msgid "RECOVERED"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Clock"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Date"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Wi-Fi"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "WIFI"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Battery"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Frontlight"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Processor load"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Memory"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Storage"
+msgstr ""
+
+#: solarui/ui/statusbar.lua
+msgid "Uptime"
+msgstr ""
+
+#: solarui/update/updater.lua
+msgid "DOWNLOADING %s (%.1f MB)"
+msgstr ""
+
+#: solarui/update/updater.lua
+msgid "CHECKING AND UNPACKING"
+msgstr ""
+
+#: solarui/update/updater.lua
+msgid "SolarUI %s is installed. Restart KOReader to use it."
+msgstr ""
+
+#: main.lua
+msgid "Start with: %1"
+msgstr ""
+
+#: main.lua
+msgid "SolarUI home"
+msgstr ""
+
+#: main.lua
+msgid "Annotate this book"
+msgstr ""

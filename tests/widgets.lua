@@ -1,0 +1,176 @@
+-- Widgets on KOReader's real blitter: every element lays out and paints in
+-- every scheme and mode without errors, taps reach the right element, and a
+-- sheet of all of them is saved for a look (out/widgets-<scheme>-<mode>.png).
+-- Run: cd <emulator>/koreader && ./luajit <repo>/tests/widgets.lua <repo> [out_dir]
+
+local REPO, OUT = arg[1] or ".", arg[2]
+local Kit = dofile(REPO .. "/tests/kit.lua").boot(REPO)
+
+local Theme = require("solarui/theme")
+local Layout = require("solarui/ui/layout")
+local Label = require("solarui/ui/label")
+local Button = require("solarui/ui/button")
+local Panel = require("solarui/ui/panel")
+local Progress = require("solarui/ui/progress")
+local Controls = require("solarui/ui/controls")
+local Deco = require("solarui/ui/deco")
+local Icon = require("solarui/ui/icon")
+local Registry = require("solarui/theme/registry")
+
+local tapped
+-- One of everything, in a column.
+local function sheet()
+    local function btn(v, label, extra)
+        local o = { variant = v, label = label, on_tap = function() tapped = label end }
+        for k, val in pairs(extra or {}) do o[k] = val end
+        return Button:new(o)
+    end
+    return Layout.Column:new({ pad = 16, gap = 10, children = {
+        Label:new({ text = "Display heading", kind = "display" }),
+        Label:new({ text = "Body text that is long enough to need an ellipsis at the end of the line for sure", kind = "body" }),
+        Label:new({ text = "mono 0123456789 // micro", kind = "mono", color = "muted" }),
+        Layout.Row:new({ gap = 8, children = {
+            btn("primary", "Resume", { icon = "forward" }), btn("secondary", "Secondary"), btn("soft", "Soft", { sub = "sub line" }),
+        } }),
+        Layout.Row:new({ gap = 8, children = {
+            btn("chip_on", "Reading"), btn("chip", "Unread"), btn("ghost", "Ghost"), btn("icon", nil, { icon = "search", width = 44 }),
+            btn("secondary", "Locked", { disabled = true }),
+        } }),
+        Progress:new({ value = 0.64 }),
+        Layout.Row:new({ gap = 12, children = {
+            Controls.Toggle:new({ on = true }), Controls.Toggle:new({ on = false }),
+            Controls.Stepper({ value = 6, min = 1, max = 20, format = function(v) return v .. " PG" end }),
+        } }),
+        Controls.Segmented({ options = { { "Light", "light" }, { "Dark", "dark" }, { "System", "system" } }, value = "dark" }),
+        Panel:new({ shape = "chamfer", label = "Active file", pad = 12, child = Label:new({ text = "Chamfer panel" }) }),
+        Panel:new({ shape = "brackets", label = "Brackets", pad = 12, child = Label:new({ text = "Bracket frame" }) }),
+        Panel:new({ shape = "header", title = "$ cat ./now_reading", title_right = "PID 0412", pad = 10,
+            child = Label:new({ text = "Header panel" }) }),
+        Layout.Row:new({ gap = 8, height = 30, children = {
+            Deco.Barcode:new({ width = 90 }), Deco.Stripes:new({ width = 90, dir = "d" }), Deco.Ruler:new({ grow = true }),
+            Icon:new({ name = "home" }), Icon:new({ name = "library", color = "accent" }),
+        } }),
+    } })
+end
+
+local W, H = Kit.Screen:getWidth(), Kit.Screen:getHeight()
+for _, s in ipairs(Registry.schemeList()) do
+    for _, mode in ipairs({ "light", "dark" }) do
+        local Settings = require("solarui/settings")
+        Settings.set("scheme", s.id)
+        Settings.set("mode", mode)
+        Theme.refresh()
+        local root = sheet()
+        local ok, err = pcall(function()
+            root:layout(W, H)
+            local bb = Kit.canvas()
+            local t = Theme.get()
+            require("solarui/gfx/paint").fill(bb, 0, 0, W, H, t.c.bg)
+            root:paint(bb, 0, 0)
+            if OUT then Kit.png(bb, string.format("%s/widgets-%s-%s.png", OUT, s.id, mode)) end
+            bb:free()
+        end)
+        Kit.ok(ok, s.id .. "/" .. mode .. " paints: " .. tostring(err))
+    end
+end
+
+-- taps land on the innermost element that answers them
+do
+    local root = sheet()
+    root:layout(W, H)
+    local bb = Kit.canvas()
+    root:paint(bb, 0, 0)
+    local resume = root.children[4].children[1]
+    local hit = root:hit(resume.x + 5, resume.y + 5, "on_tap")
+    Kit.ok(hit == resume, "a tap on Resume finds Resume")
+    hit.on_tap()
+    Kit.ok(tapped == "Resume", "and runs its action")
+    local locked = root.children[5].children[5]
+    Kit.ok(root:hit(locked.x + 5, locked.y + 5, "on_tap") == nil, "a disabled button takes no taps")
+    Kit.ok(root:hit(W - 2, H - 2, "on_tap") == nil, "empty room takes no taps")
+    -- timing: a whole sheet laid out and painted
+    local ms = Kit.time(function() root:layout(W, H); root:paint(bb, 0, 0) end, 30)
+    print(string.format("sheet layout+paint: %.2f ms", ms))
+    Kit.ok(ms < 30, "a full sheet paints in under 30 ms")
+    bb:free()
+end
+
+-- a tap between the tabs is swallowed (it must not reach KOReader's corner gestures)
+do
+    local bar = require("solarui/ui/tabbar").build({ { id = "a", label = "A" }, { id = "b", label = "B" } }, "a", function() end)
+    bar:layout(W, nil)
+    bar:paint(Kit.canvas(), 0, 0)
+    local gap = bar:hit(W / 2, 2, "on_tap")
+    Kit.ok(gap ~= nil and gap.on_tap == nil, "the tab bar swallows taps that miss a tab")
+end
+
+-- Arabic is shaped and measured as joined text, and paints
+do
+    local Text = require("solarui/gfx/text")
+    local ar = "مرحبا بالعالم"
+    local w = Text.width("body", ar)
+    Kit.ok(w > 0, "Arabic text has a width")
+    local bb = Kit.canvas()
+    local drawn = Text.draw(bb, 10, 10, "body", ar, Theme.color("ink"))
+    Kit.ok(drawn == w, "and is drawn as wide as it is measured")
+    local plain = 0
+    for _i, cp in ipairs(Text.codepoints(ar)) do
+        plain = plain + require("ui/rendertext"):getGlyph(Theme.text("body").face, cp, false).ax
+    end
+    Kit.ok(w ~= plain, "joined letters measure differently from isolated ones")
+    bb:free()
+end
+
+-- the keyboard in every layer and Shift state, and the details editor, paint on every kind of
+-- screen buffer devices use (colour 32 and 24 bit, 16 bit, and grey) in every scheme and mode
+do
+    local BB = require("ffi/blitbuffer")
+    local Paint = require("solarui/gfx/paint")
+    local Keyboard = require("solarui/ui/keyboard")
+    local Settings = require("solarui/settings")
+    local noop = function() end
+    local types = { RGB32 = BB.TYPE_BBRGB32, RGB24 = BB.TYPE_BBRGB24, RGB16 = BB.TYPE_BBRGB16, GREY8 = BB.TYPE_BB8, GREY4 = BB.TYPE_BB4 }
+    for name, type_ in pairs(types) do
+        for _, s in ipairs(Registry.schemeList()) do
+            for _, mode in ipairs({ "light", "dark" }) do
+                Settings.set("scheme", s.id)
+                Settings.set("mode", mode)
+                Theme.refresh()
+                local ok, err = pcall(function()
+                    local bb = BB.new(W, H, type_)
+                    Paint.fill(bb, 0, 0, W, H, Theme.get().c.bg)
+                    for _, layer in ipairs({ "abc", "acc", "num" }) do
+                        for _, shift in ipairs({ false, "once", "lock" }) do
+                            local kb = Keyboard.build({ layer = layer, shift = shift, on_char = noop, on_back = noop,
+                                on_enter = noop, on_layer = noop, on_shift = noop })
+                            kb:layout(W, nil)
+                            kb:paint(bb, 0, 0)
+                        end
+                    end
+                    local edit = require("solarui/screens/metaedit"):new({ path = require("solarui/data/library").all()[1] })
+                    local root = edit:build({ w = W, h = H })
+                    root:layout(W, H)
+                    root:paint(bb, 0, 0)
+                    bb:free()
+                end)
+                Kit.ok(ok, name .. " " .. s.id .. "/" .. mode .. " keyboard and editor paint: " .. tostring(err))
+            end
+        end
+    end
+end
+
+-- every skin is in a group with a switch of its own, so none can only be switched off with all the others
+local Core = require("solarui/skin/core")
+local Groups = require("solarui/skin/groups")
+require("solarui/skin/all")
+for _i, name in ipairs({ "message", "confirm", "highlightmenu", "edithighlight", "buttondialog", "keyboard", "inputdialog", "list", "dictionary",
+    "textviewer", "numbers", "choice", "keyvalue", "sort", "progress", "qr", "network", "bookstatus" }) do
+    require("solarui/skin/" .. name)
+end
+local missing = {}
+for _i, skin in ipairs(Core.skins) do
+    if not Groups.of(skin.name) then missing[#missing + 1] = skin.name end
+end
+Kit.ok(#missing == 0, "every skin is in a group: " .. table.concat(missing, ", "))
+
+Kit.finish("widgets")
