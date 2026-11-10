@@ -10,6 +10,7 @@
 
 local Element = require("solarui/ui/element")
 local Layout = require("solarui/ui/layout")
+local Art = require("solarui/gfx/art")
 local Paint = require("solarui/gfx/paint")
 local Text = require("solarui/gfx/text")
 local Theme = require("solarui/theme")
@@ -68,6 +69,14 @@ function Panel:draw(bb, x, y)
         Paint.roundBox(bb, x, y, w, h, r, self.corners, stroke, fill, line)
         if self.double then
             Paint.roundFrame(bb, x + gap, y + gap, w - 2 * gap, h - 2 * gap, r - gap, self.corners, th.size.hair, th.c.line)
+        end
+        if self.curls then
+            -- a tendril curling in each corner, drawn in the room the padding leaves
+            local cs = th.space.xl - Theme.px(4)
+            local k = Theme.px(100) / 178
+            for i, p in ipairs({ { x + gap, y + gap }, { x + w - gap - cs, y + gap }, { x + w - gap - cs, y + h - gap - cs }, { x + gap, y + h - gap - cs } }) do
+                Art.draw(bb, "card_curl", p[1], p[2], cs, cs, cs / k, cs / k, i - 1)
+            end
         end
     else
         if fill then

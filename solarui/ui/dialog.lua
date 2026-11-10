@@ -3,7 +3,6 @@
 
 local ArtView = require("solarui/ui/artview")
 local Button = require("solarui/ui/button")
-local Deco = require("solarui/ui/deco")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
@@ -29,7 +28,7 @@ end
 local function floating(kids, screen_w, gap, align)
     local th = Theme.get()
     table.insert(kids, 1, ArtView:new({ name = "crest", height = Theme.px(22) }))
-    return Panel:new({ shape = "chamfer", corners = "tb", fill = "bg", double = true, pad = th.space.xl, width = width(screen_w),
+    return Panel:new({ shape = "chamfer", corners = "tb", fill = "bg", double = true, curls = true, pad = th.space.xl, width = width(screen_w),
         child = Layout.Column:new({ gap = gap or th.space.s, align = align, children = kids }) })
 end
 
@@ -86,7 +85,7 @@ function Dialog.confirm(o, close, screen_w)
         danger = o.danger, detail = o.detail, text = o.text,
         rows = { Layout.Row:new({ gap = th.space.m, children = {
             Button:new({ label = o.cancel or _("Cancel"), grow = true, on_tap = closing(close, o.on_cancel) }),
-            Button:new({ label = o.ok or _("OK"), variant = "primary", grow = true, on_tap = closing(close, o.on_ok) }),
+            Button:new({ label = o.ok or _("OK"), variant = "primary", grow = true, art = (not o.danger) and { "bloom", "daisy" } or nil, icon_size = 24, on_tap = closing(close, o.on_ok) }),
         } }) },
     }, screen_w)
 end
@@ -201,13 +200,12 @@ function Dialog.progress(o, screen_w)
     local kids = {}
     if o.tag then kids[#kids + 1] = Label:new({ text = o.tag, kind = "micro", color = "muted" }) end
     if o.title then kids[#kids + 1] = Label:new({ text = o.title, kind = "title", lines = 2 }) end
-    if o.text and o.text ~= "" then kids[#kids + 1] = Label:new({ text = o.text, kind = "mono", lines = 2 }) end
+    if o.text and o.text ~= "" then kids[#kids + 1] = Label:new({ text = o.text, kind = "body", lines = 2 }) end
     if o.value then
-        local Progress = require("solarui/ui/progress")
-        kids[#kids + 1] = Progress:new({ value = o.value, segments = 24, cell_h = 16, color = "accent" })
-        kids[#kids + 1] = Label:new({ text = string.format("%d%%", math.floor(o.value * 100 + 0.5)), kind = "mono", align = "right" })
+        kids[#kids + 1] = ArtView:new({ name = "progress", param = math.floor(o.value * 100 + 0.5), height = Theme.px(52) })
+        kids[#kids + 1] = Label:new({ text = string.format("%d%%", math.floor(o.value * 100 + 0.5)), kind = "body", align = "right" })
     else
-        kids[#kids + 1] = Deco.Stripes:new({ dir = "d", height = Theme.px(14), color = "ink" })
+        kids[#kids + 1] = ArtView:new({ name = "progress", param = 100, height = Theme.px(52) })
     end
     return floating(kids, screen_w, th.space.m)
 end

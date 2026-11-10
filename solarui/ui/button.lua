@@ -7,6 +7,7 @@
 -- optional small line under it.
 
 local Element = require("solarui/ui/element")
+local Art = require("solarui/gfx/art")
 local Icons = require("solarui/gfx/icons")
 local Paint = require("solarui/gfx/paint")
 local Text = require("solarui/gfx/text")
@@ -68,7 +69,7 @@ function Button:naturalWidth()
     local w = 0
     if self.label then w = Text.width(kind, self.label) end
     if self.sub then w = math.max(w, Text.width(sub_kind, self.sub)) end
-    if self.icon then
+    if self.icon or self.art then
         w = w + Theme.px(self.icon_size) + (self.label and th.space.s or 0)
     end
     local pad = self:bare() and 0 or 2 * th.space.l
@@ -108,8 +109,8 @@ function Button:drawContent(bb, x, y, color, accent)
     local th = Theme.get()
     local kind, sub_kind = self:kinds()
     local pad = self:bare() and 0 or th.space.m
-    local isz = self.icon and Theme.px(self.icon_size) or 0
-    local igap = (self.icon and self.label) and th.space.s or 0
+    local isz = (self.icon or self.art) and Theme.px(self.icon_size) or 0
+    local igap = ((self.icon or self.art) and self.label) and th.space.s or 0
     local text_w = self.w - 2 * pad - isz - igap
     local label = self.label and Text.fit(kind, self.label, text_w)
     -- a button too short for both lines keeps its label alone
@@ -122,6 +123,10 @@ function Button:drawContent(bb, x, y, color, accent)
     if self.align == "center" then cx = x + math.floor((self.w - content_w) / 2) end
     if self.icon then
         Icons.draw(bb, self.icon, cx, y + math.floor((self.h - isz) / 2), isz, color, accent)
+        cx = cx + isz + igap
+    elseif self.art then
+        local k = Theme.px(100) / 178
+        Art.draw(bb, self.art[1], cx, y + math.floor((self.h - isz) / 2), isz, isz, isz / k, isz / k, self.art[2])
         cx = cx + isz + igap
     end
     local lh = label and Text.height(kind) or 0

@@ -21,6 +21,15 @@ function Ornaments.frame_corner(c, vw, _vh, k)
     return group(m, m, (tonumber(k) or 0) * 90, group(-m, -m, 0, body))
 end
 
+-- A tendril curling in the corner of a card, a leaf on it; `k` (0 to 3)
+-- turns it to the corner.
+function Ornaments.card_curl(c, vw, vh, k)
+    local m = vw / 2
+    local body = Svg.line(Svg.poly(Svg.join({ { 2, vh * .8 }, { vw * .2, vh * .62 } }, Svg.spiral(vw * .42, vh * .46, vw * .26, 1.5, 200))), c.ink, 1.8)
+        .. Flora.leaf(c, vw * .24, vh * .58, -60, vw * .5, vw * .15, c.leaf, true)
+    return group(m, vh / 2, (tonumber(k) or 0) * 90, group(-m, -vh / 2, 0, body))
+end
+
 -- The bud in the middle of the border's foot, between two leaves.
 function Ornaments.frame_bud(c, vw, vh)
     local m = vw / 2
