@@ -14,6 +14,7 @@ local Books = require("solarui/data/books")
 local Covers = require("solarui/data/covers")
 local Frames = require("solarui/art/frames")
 local Icons = require("solarui/gfx/icons")
+local Mosaic = require("solarui/gfx/mosaic")
 local Paint = require("solarui/gfx/paint")
 local Settings = require("solarui/settings")
 local Text = require("solarui/gfx/text")
@@ -98,10 +99,19 @@ function Cover.cardArt()
     return "glass"
 end
 
+-- What is done to a cover picture: "none", or one of gfx/mosaic.lua's effects.
+function Cover.effect()
+    local e = Settings.get("cover_effect", "none")
+    for _i, id in ipairs(Mosaic.EFFECTS) do
+        if id == e then return e end
+    end
+    return "none"
+end
+
 -- Everything the tile's picture depends on, as one text.
 function Cover:key()
     local has = self.path and Cover.style() ~= "card" and Covers.get(self.path, self:imageSize()) and 1 or 0
-    return table.concat({ self.path or "", self.title or "", self.author or "", self.w, self.h, Cover.style(), Cover.cardArt(), tostring(self.badge),
+    return table.concat({ self.path or "", self.title or "", self.author or "", self.w, self.h, Cover.style(), Cover.cardArt(), Cover.effect(), tostring(self.badge),
         tostring(self.badge_on), tostring(self.folder), tostring(self.stack), tostring(self.count), has, Covers.generation(),
         tostring(Covers.stretch()) }, "|")
 end
@@ -174,7 +184,8 @@ function Cover:drawFace(bb, x, y)
             local iw, ih = img:getWidth(), img:getHeight()
             local ix, iy = x + math.floor((w - iw) / 2), y + math.floor((h - ih) / 2)
             -- night mode inverts the whole screen, so a picture goes in inverted to come out as it is
-            if Theme.nightMode() then invertBlit(bb, img, ix, iy, iw, ih)
+            if Cover.effect() ~= "none" and iw >= Theme.px(40) then Mosaic.paint(bb, img, ix, iy, iw, ih, Cover.effect())
+            elseif Theme.nightMode() then invertBlit(bb, img, ix, iy, iw, ih)
             else bb:blitFrom(img, ix, iy, 0, 0, iw, ih) end
             drawn = true
         end
