@@ -106,8 +106,8 @@ function Host:paintAll(bb, x, y)
         local o = self.overlay
         local off = th.space.s
         if not o.dock then
-            if o.shape == "chamfer" and th.decor.chamfer then
-                Paint.chamfer(bb, x + ox + off, y + oy + off, o.w, o.h, th.size[o.cut] or o.cut, o.corners, th.c.ink)
+            if o.shape == "chamfer" then
+                Paint.round(bb, x + ox + off, y + oy + off, o.w, o.h, th.size[o.cut] or o.cut, o.corners, th.c.ink)
             else
                 Paint.fill(bb, x + ox + off, y + oy + off, o.w, o.h, th.c.ink)
             end

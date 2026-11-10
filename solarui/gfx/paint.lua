@@ -1,6 +1,7 @@
 -- Shape drawing for every widget, built only from KOReader's C rectangle fills
--- so it stays fast in any rotation: plain and chamfered boxes, outlines, corner
--- brackets, stripes, barcodes and ruler ticks. Colours come from the theme.
+-- so it stays fast in any rotation: plain boxes and boxes with rounded
+-- corners (a leaf has two of its corners rounded), their outlines, stripes,
+-- lines and polygons. Colours come from the theme.
 
 local Color = require("solarui/theme/color")
 
@@ -23,7 +24,7 @@ function Paint.frame(bb, x, y, w, h, t, c)
     fill(bb, x + w - t, y + t, t, h - 2 * t, c)
 end
 
--- Which corners are cut: a string of t(op-left), r (top-right), b (bottom-right)
+-- Which corners are rounded: a string of t(op-left), r (top-right), b (bottom-right)
 -- and l (bottom-left), e.g. "tb" for two opposite corners.
 local function corners(spec)
     spec = spec or "trbl"
@@ -31,78 +32,83 @@ local function corners(spec)
         spec:find("b", 1, true) ~= nil, spec:find("l", 1, true) ~= nil
 end
 
--- Fill a box with chamfered corners `cut` pixels deep.
-function Paint.chamfer(bb, x, y, w, h, cut, spec, c)
-    cut = math.min(cut, floor(w / 2), floor(h / 2))
-    if cut <= 0 then return fill(bb, x, y, w, h, c) end
+-- How far a rounded corner of radius r cuts into each of its rows.
+local insets = {}
+local function cornerInsets(r)
+    local t = insets[r]
+    if not t then
+        t = {}
+        for i = 0, r - 1 do
+            local dy = r - i - 0.5
+            t[i] = r - floor(math.sqrt(r * r - dy * dy) + 0.5)
+        end
+        insets[r] = t
+    end
+    return t
+end
+
+-- How far row `i` (from the top) of an h-tall box is cut on the left and on
+-- the right by its rounded corners.
+local function rowInsets(i, h, r, ins, tl, tr, br, bl)
+    local l, rt = 0, 0
+    if i < r then
+        if tl then l = ins[i] end
+        if tr then rt = ins[i] end
+    end
+    local j = h - 1 - i
+    if j < r then
+        if bl and ins[j] > l then l = ins[j] end
+        if br and ins[j] > rt then rt = ins[j] end
+    end
+    return l, rt
+end
+
+-- Fill a box whose corners named in `spec` are rounded by `r` pixels.
+function Paint.round(bb, x, y, w, h, r, spec, c)
+    r = math.min(r, floor(w / 2), floor(h / 2))
+    if r <= 0 then return fill(bb, x, y, w, h, c) end
     local tl, tr, br, bl = corners(spec)
-    fill(bb, x, y + cut, w, h - 2 * cut, c)
-    for i = 0, cut - 1 do
-        local inset = cut - i   -- distance in from the edge on this row
-        local lt = tl and inset or 0
-        local rt = tr and inset or 0
-        fill(bb, x + lt, y + i, w - lt - rt, 1, c)
-        local lb = bl and inset or 0
-        local rb = br and inset or 0
-        fill(bb, x + lb, y + h - 1 - i, w - lb - rb, 1, c)
+    local ins = cornerInsets(r)
+    fill(bb, x, y + r, w, h - 2 * r, c)
+    for i = 0, r - 1 do
+        local l, rt = rowInsets(i, h, r, ins, tl, tr, br, bl)
+        fill(bb, x + l, y + i, w - l - rt, 1, c)
+        local k = h - 1 - i
+        l, rt = rowInsets(k, h, r, ins, tl, tr, br, bl)
+        fill(bb, x + l, y + k, w - l - rt, 1, c)
     end
 end
 
--- Outline a box with chamfered corners, lines `t` pixels thick.
-function Paint.chamferFrame(bb, x, y, w, h, cut, spec, t, c)
-    cut = math.min(cut, floor(w / 2), floor(h / 2))
-    if cut <= 0 then return Paint.frame(bb, x, y, w, h, t, c) end
+-- Outline such a box with lines `t` pixels thick: on each row of a corner,
+-- what the outer shape covers and the shape `t` further in does not.
+function Paint.roundFrame(bb, x, y, w, h, r, spec, t, c)
+    r = math.min(r, floor(w / 2), floor(h / 2))
+    if r <= t then return Paint.frame(bb, x, y, w, h, t, c) end
     local tl, tr, br, bl = corners(spec)
-    local diag = floor(t * 1.42 + 0.5)   -- a diagonal stroke looks as thick as a straight one
-    -- straight edges, shortened where a corner is cut
-    fill(bb, x + (tl and cut or 0), y, w - (tl and cut or 0) - (tr and cut or 0), t, c)
-    fill(bb, x + (bl and cut or 0), y + h - t, w - (bl and cut or 0) - (br and cut or 0), t, c)
-    fill(bb, x, y + (tl and cut or 0), t, h - (tl and cut or 0) - (bl and cut or 0), c)
-    fill(bb, x + w - t, y + (tr and cut or 0), t, h - (tr and cut or 0) - (br and cut or 0), c)
-    -- the diagonals, one short run per row
-    for i = 0, cut - 1 do
-        local inset = cut - i
-        if tl then fill(bb, x + inset - 1, y + i, diag, 1, c) end
-        if tr then fill(bb, x + w - inset + 1 - diag, y + i, diag, 1, c) end
-        if bl then fill(bb, x + inset - 1, y + h - 1 - i, diag, 1, c) end
-        if br then fill(bb, x + w - inset + 1 - diag, y + h - 1 - i, diag, 1, c) end
+    local ins, ins2 = cornerInsets(r), cornerInsets(r - t)
+    local h2 = h - 2 * t
+    local function row(i)
+        local l, rt = rowInsets(i, h, r, ins, tl, tr, br, bl)
+        if i < t or i >= h - t then
+            fill(bb, x + l, y + i, w - l - rt, 1, c)
+        else
+            local l2, rt2 = rowInsets(i - t, h2, r - t, ins2, tl, tr, br, bl)
+            fill(bb, x + l, y + i, t + l2 - l, 1, c)
+            fill(bb, x + w - t - rt2, y + i, t + rt2 - rt, 1, c)
+        end
     end
-end
-
--- Paint the corners a chamfer cuts away with `c`, trimming whatever is
--- already drawn in the box (an image) to the chamfered shape.
-function Paint.cutCorners(bb, x, y, w, h, cut, spec, c)
-    cut = math.min(cut, floor(w / 2), floor(h / 2))
-    local tl, tr, br, bl = corners(spec)
-    for i = 0, cut - 1 do
-        local inset = cut - i
-        if tl then fill(bb, x, y + i, inset, 1, c) end
-        if tr then fill(bb, x + w - inset, y + i, inset, 1, c) end
-        if bl then fill(bb, x, y + h - 1 - i, inset, 1, c) end
-        if br then fill(bb, x + w - inset, y + h - 1 - i, inset, 1, c) end
+    for i = 0, r - 1 do
+        row(i)
+        row(h - 1 - i)
     end
+    fill(bb, x, y + r, t, h - 2 * r, c)
+    fill(bb, x + w - t, y + r, t, h - 2 * r, c)
 end
 
--- A chamfered box filled with `fill_c` and outlined with `line_c`.
-function Paint.chamferBox(bb, x, y, w, h, cut, spec, t, fill_c, line_c)
-    if fill_c then Paint.chamfer(bb, x, y, w, h, cut, spec, fill_c) end
-    if line_c then Paint.chamferFrame(bb, x, y, w, h, cut, spec, t, line_c) end
-end
-
--- Corner brackets at the four corners of a box, arms `len` long.
-function Paint.brackets(bb, x, y, w, h, len, t, c)
-    len = math.min(len, floor(w / 2), floor(h / 2))
-    fill(bb, x, y, len, t, c); fill(bb, x, y, t, len, c)
-    fill(bb, x + w - len, y, len, t, c); fill(bb, x + w - t, y, t, len, c)
-    fill(bb, x, y + h - t, len, t, c); fill(bb, x, y + h - len, t, len, c)
-    fill(bb, x + w - len, y + h - t, len, t, c); fill(bb, x + w - t, y + h - len, t, len, c)
-end
-
--- Square brackets on the left and right sides of a box, arms `arm` long.
-function Paint.sideBrackets(bb, x, y, w, h, arm, t, c)
-    fill(bb, x, y, t, h, c); fill(bb, x + w - t, y, t, h, c)
-    fill(bb, x, y, arm, t, c); fill(bb, x, y + h - t, arm, t, c)
-    fill(bb, x + w - arm, y, arm, t, c); fill(bb, x + w - arm, y + h - t, arm, t, c)
+-- A rounded box filled with `fill_c` and outlined with `line_c`.
+function Paint.roundBox(bb, x, y, w, h, r, spec, t, fill_c, line_c)
+    if fill_c then Paint.round(bb, x, y, w, h, r, spec, fill_c) end
+    if line_c then Paint.roundFrame(bb, x, y, w, h, r, spec, t, line_c) end
 end
 
 -- Stripes across a box: "h" horizontal, "v" vertical, "d" rising diagonal,
@@ -125,35 +131,6 @@ function Paint.stripes(bb, x, y, w, h, dir, period, thick, c)
             end
         end
     end
-end
-
--- Bar widths of the decorative barcode, repeated across its width.
-local BARS = { 3, 2, 1, 3, 4, 1, 1, 3, 2, 2, 1, 4, 3, 1 }
-
--- A decorative barcode filling the box, in `bars` widths when given (see
--- Paint.barsFrom) else the usual pattern.
-function Paint.barcode(bb, x, y, w, h, unit, c, bars)
-    bars = bars or BARS
-    local pos, i = 0, 1
-    while pos < w do
-        local bar = bars[i] * unit
-        local gap = bars[(i % #bars) + 1] * unit
-        fill(bb, x + pos, y, math.min(bar, w - pos), h, c)
-        pos = pos + bar + gap
-        i = (i + 1) % #bars + 1
-    end
-end
-
--- Fourteen bar widths (1 to 4) from a number stream, so a code gets its own barcode.
-function Paint.barsFrom(rnd)
-    local bars = {}
-    for i = 1, #BARS do bars[i] = 1 + math.floor(rnd() * 4) end
-    return bars
-end
-
--- Ruler ticks along a line: a tick `t` wide every `period` pixels.
-function Paint.ticks(bb, x, y, w, h, period, t, c)
-    for xx = 0, w - 1, period do fill(bb, x + xx, y, t, h, c) end
 end
 
 -- A straight line `t` pixels thick between two points, drawn as runs of the

@@ -7,10 +7,7 @@ local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Paint = require("solarui/gfx/paint")
 local Panel = require("solarui/ui/panel")
-local Text = require("solarui/gfx/text")
 local Theme = require("solarui/theme")
-
-local _ = require("solarui/gettext")
 
 local Controls = {}
 
@@ -19,7 +16,7 @@ local Toggle = Element:extend({ on = false })
 Controls.Toggle = Toggle
 
 -- A fixed-size switch.
-function Toggle:naturalWidth() return Theme.px(72) end
+function Toggle:naturalWidth() return Theme.px(64) end
 function Toggle:naturalHeight() return Theme.px(32) end
 
 -- Flip and report the new state.
@@ -28,21 +25,16 @@ function Toggle:on_tap()
     if self.on_change then self.on_change(self.on) end
 end
 
--- An outlined track with a filled knob on the side of the state.
+-- A rounded track, filled when on, with a round knob on the side of the state.
 function Toggle:draw(bb, x, y)
     local th = Theme.get()
     local t = th.size.stroke
-    Paint.frame(bb, x, y, self.w, self.h, t, th.c.ink)
-    local inset = t + Theme.px(2)
-    local kw = math.floor(self.w / 2) - inset
-    local kh = self.h - 2 * inset
-    local kx = self.on and (x + self.w - inset - kw) or (x + inset)
-    Paint.fill(bb, kx, y + inset, kw, kh, self.on and th.c.accent or th.c.ink)
-    local s = self.on and _("ON") or _("OFF")
-    s = Text.fit("micro", s)
-    local color = self.on and th.c.on_accent or th.c.on_ink
-    Text.draw(bb, kx + math.floor((kw - Text.width("micro", s)) / 2),
-        y + inset + math.floor((kh - Text.height("micro")) / 2), "micro", s, color)
+    local r = math.floor(self.h / 2)
+    Paint.roundBox(bb, x, y, self.w, self.h, r, "trbl", t, self.on and th.c.accent or nil, self.on and th.c.accent or th.c.ink)
+    local inset = t + Theme.px(3)
+    local d = self.h - 2 * inset
+    local kx = self.on and (x + self.w - inset - d) or (x + inset)
+    Paint.round(bb, kx, y + inset, d, d, math.floor(d / 2), "trbl", self.on and th.c.on_accent or th.c.ink)
 end
 
 ---------------------------------------------------------------- Segmented

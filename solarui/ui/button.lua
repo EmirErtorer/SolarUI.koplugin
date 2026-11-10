@@ -1,6 +1,7 @@
 -- The one button of the style. A variant picks its colours and shape:
--- primary, secondary, soft, ghost, chip, chip_on, tab, tab_on and icon. Content
--- is an optional icon, a label and an optional small line under it.
+-- primary, secondary, soft, ghost, chip, chip_on, tab, tab_on and icon (the
+-- large ones are leaves, with two opposite corners rounded). Content is an
+-- optional icon, a label and an optional small line under it.
 
 local Element = require("solarui/ui/element")
 local Icons = require("solarui/gfx/icons")
@@ -10,23 +11,24 @@ local Theme = require("solarui/theme")
 
 local Button = Element:extend({ variant = "secondary", align = "center", icon_size = 20 })
 
--- Fill, outline, text colour, cut size and cut corners of each variant.
+-- Fill, outline, text colour, corner radius and which corners are rounded
+-- for each variant (two opposite corners make a leaf).
 local VARIANTS = {
-    primary   = { fill = "accent", text = "on_accent", cut = "cut", corners = "rl" },
-    accent2   = { fill = "accent2", text = "on_accent2", cut = "cut", corners = "rl" },
-    secondary = { line = "ink", text = "ink", cut = "cut", corners = "rl" },
-    soft      = { fill = "soft", text = "ink", cut = "cut_small", corners = "r" },
-    ghost     = { text = "ink", brackets = true },
-    chip      = { line = "ink", text = "ink", cut = "cut_small", corners = "r" },
-    chip_on   = { fill = "accent", text = "on_accent", cut = "cut_small", corners = "r" },
+    primary   = { fill = "accent", text = "on_accent", cut = "cut", corners = "tb" },
+    accent2   = { fill = "accent2", text = "on_accent2", cut = "cut", corners = "tb" },
+    secondary = { line = "ink", text = "ink", cut = "cut", corners = "tb" },
+    soft      = { fill = "soft", text = "ink", cut = "cut_small", corners = "tb" },
+    ghost     = { line = "line", text = "ink", cut = "cut_small", corners = "trbl" },
+    chip      = { line = "ink", text = "ink", cut = "cut_small", corners = "trbl" },
+    chip_on   = { fill = "accent", text = "on_accent", cut = "cut_small", corners = "trbl" },
     tab       = { text = "ink" },
-    tab_on    = { fill = "accent", text = "on_accent" },
-    icon      = { line = "ink", text = "ink" },
-    icon_on   = { fill = "ink", text = "on_ink" },
+    tab_on    = { fill = "accent", text = "on_accent", cut = "cut", corners = "tr" },
+    icon      = { line = "ink", text = "ink", cut = "cut_small", corners = "trbl" },
+    icon_on   = { fill = "ink", text = "on_ink", cut = "cut_small", corners = "trbl" },
     seg       = { text = "ink" },
-    seg_on    = { fill = "ink", text = "on_ink" },
-    disabled  = { line = "line", text = "muted", stripes = true },
-    danger    = { line = "accent", text = "accent", cut = "cut_small", corners = "r" },
+    seg_on    = { fill = "ink", text = "on_ink", cut = "cut_small", corners = "trbl" },
+    disabled  = { line = "line", text = "muted", cut = "cut_small", corners = "trbl" },
+    danger    = { line = "accent2", text = "accent2", cut = "cut_small", corners = "tb" },
 }
 Button.VARIANTS = VARIANTS
 
@@ -64,21 +66,10 @@ end
 function Button:draw(bb, x, y)
     local th = Theme.get()
     local look = self:look()
-    local w, h = self.w, self.h
-    local stroke = th.size.stroke
     local fill = look.fill and Theme.color(look.fill)
     local line = look.line and Theme.color(look.line)
-    local cut = (look.cut and th.decor.chamfer) and th.size[look.cut] or 0
-    if look.stripes then Paint.stripes(bb, x, y, w, h, "d", Theme.px(10), Theme.px(4), th.c.soft) end
-    if cut > 0 then
-        Paint.chamferBox(bb, x, y, w, h, cut, self.corners or look.corners, stroke, fill, line)
-    else
-        if fill then Paint.fill(bb, x, y, w, h, fill) end
-        if line then Paint.frame(bb, x, y, w, h, stroke, line) end
-    end
-    if look.brackets and th.decor.brackets then
-        Paint.sideBrackets(bb, x, y, w, h, math.floor(h / 4), stroke, Theme.color(look.text))
-    end
+    local r = look.cut and th.size[look.cut] or 0
+    Paint.roundBox(bb, x, y, self.w, self.h, r, self.corners or look.corners, th.size.stroke, fill, line)
     -- an icon's accent lights only stand out on an unfilled button
     self:drawContent(bb, x, y, Theme.color(look.text), not fill and Theme.color("accent") or nil)
 end

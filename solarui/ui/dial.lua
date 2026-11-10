@@ -87,7 +87,7 @@ function Dial:draw(bb, x, y)
     local side = self.w
     local g = geometry(side)
     bb:blitFrom(ring(side, bb), x, y, 0, 0, side, side)
-    Paint.brackets(bb, x, y, side, side, Theme.px(18), th.size.stroke, th.c.ink)
+    Paint.roundFrame(bb, x, y, side, side, Theme.px(12), "trbl", th.size.stroke, th.c.ink)
     Paint.fill(bb, x + g.cx - g.half - 3, y + g.cy - g.half - 3, 2 * g.half + 6, 2 * g.half + 6, th.c.bg)
     local ox, oy = x + g.cx - g.half, y + g.cy - g.half
     local gap = 2
@@ -101,8 +101,8 @@ function Dial:draw(bb, x, y)
     -- the reticle: brackets in ink over a second set in the page colour, so it shows on any cell
     local col, row = cellOf(self.sat, self.val)
     local rx, ry = ox + (col - 1) * g.cell - 3, oy + (row - 1) * g.cell - 3
-    Paint.brackets(bb, rx - 1, ry - 1, g.cell + 4, g.cell + 4, math.floor(g.cell / 2), 4, th.c.bg)
-    Paint.brackets(bb, rx, ry, g.cell + 2, g.cell + 2, math.floor(g.cell / 2), 2, th.c.ink)
+    Paint.frame(bb, rx - 1, ry - 1, g.cell + 4, g.cell + 4, 4, th.c.bg)
+    Paint.frame(bb, rx, ry, g.cell + 2, g.cell + 2, 2, th.c.ink)
     -- the marker on the ring at the hue
     local a = math.rad(self.hue)
     local mr = g.r - g.width / 2

@@ -1,12 +1,12 @@
--- The status line across the top of every screen: the tag on the left (the
--- reader's own text), a ruler, then the readouts the reader chose, in their
--- order (System > Home > Top bar). Once a minute only the `live` readouts
+-- The status line across the top of every page but home: the tag on the left
+-- (the reader's own text), a whiplash rule, then the readouts the reader
+-- chose, in their order (Settings > Home > Top bar). Once a minute only the `live` readouts
 -- (clock, date, battery, Wi-Fi) are read again, and the bar is redrawn only
 -- when one of them changed; the rest are read when a screen is drawn, so
 -- jumpy values like processor load never cause e-ink refreshes by themselves.
 
 local DeviceInfo = require("solarui/data/device")
-local Deco = require("solarui/ui/deco")
+local ArtView = require("solarui/ui/artview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Settings = require("solarui/settings")
@@ -15,8 +15,8 @@ local _ = require("solarui/gettext")
 
 local StatusBar = {}
 
-StatusBar.TAG = "CYBR//DECK"
-StatusBar.DEFAULT = { "clock", "battery", "cpu", "mem" }
+StatusBar.TAG = "SolarUI"
+StatusBar.DEFAULT = { "date", "clock", "battery" }
 StatusBar.MAX = 6
 
 -- Percent text for a fraction, or nil.
@@ -29,35 +29,35 @@ end
 StatusBar.ITEMS = {
     { id = "clock", name = _("Clock"), live = true, read = function() return DeviceInfo.clock() end },
     { id = "date", name = _("Date"), live = true, read = function() return os.date("%d.%m") end },
-    { id = "wifi", name = _("Wi-Fi"), muted = true, live = true, read = function() return DeviceInfo.wifi() and _("WIFI") or nil end },
+    { id = "wifi", name = _("Wi-Fi"), muted = true, live = true, read = function() return DeviceInfo.wifi() and _("Wi-Fi") or nil end },
     { id = "battery", name = _("Battery"), live = true, read = function()
         local p = DeviceInfo.battery()
-        return p and ((DeviceInfo.charging() and "BAT+ " or "BAT ") .. p .. "%")
+        return p and ((DeviceInfo.charging() and "+" or "") .. p .. "%")
     end },
     { id = "light", name = _("Frontlight"), read = function()
         local Device = require("device")
         if not Device:hasFrontlight() then return nil end
         local ok, v = pcall(function() return Device:getPowerDevice():frontlightIntensity() end)
-        return ok and v and ("LUM " .. v) or nil
+        return ok and v and (_("Light") .. " " .. v) or nil
     end },
-    { id = "cpu", name = _("Processor load"), read = function() return pct("CPU", require("solarui/data/sysinfo").cpuLoad()) end },
+    { id = "cpu", name = _("Processor load"), read = function() return pct(_("CPU"), require("solarui/data/sysinfo").cpuLoad()) end },
     { id = "mem", name = _("Memory"), read = function()
         local used, total = require("solarui/data/sysinfo").memory()
-        return used and pct("MEM", used / total)
+        return used and pct(_("Memory"), used / total)
     end },
     { id = "disk", name = _("Storage"), read = function()
         local drives = require("solarui/data/sysinfo").storage()
         local d = drives[1]
-        return d and pct("DSK", d.used / d.total)
+        return d and pct(_("Disk"), d.used / d.total)
     end },
     { id = "book", name = _("Book progress"), read = function()
         local History = require("solarui/data/history")
         local cur = History.current()
-        return cur and pct("FILE", require("solarui/data/books").state(cur.path).percent)
+        return cur and pct(_("Book"), require("solarui/data/books").state(cur.path).percent)
     end },
     { id = "uptime", name = _("Uptime"), read = function()
         local up = require("solarui/data/sysinfo").uptime().total
-        return up and string.format("UP %dH%02d", math.floor(up / 3600), math.floor(up % 3600 / 60))
+        return up and string.format(_("Up %d:%02d"), math.floor(up / 3600), math.floor(up % 3600 / 60))
     end },
 }
 
@@ -98,7 +98,7 @@ function StatusBar.build()
     local th = Theme.get()
     local kids = {
         Label:new({ text = StatusBar.tag(), kind = "mono_small", color = "ink" }),
-        Deco.Ruler:new({ grow = true, height = Theme.px(7) }),
+        ArtView:new({ name = "whiplash", grow = true, height = Theme.px(10) }),
     }
     local labels = {}
     for _i, id in ipairs(StatusBar.shown()) do

@@ -1,7 +1,7 @@
--- A container that frames one child in the style's shapes: "chamfer" (cut
--- corners), "frame" (plain outline), "brackets" (corner marks), "header" (an
--- inverted title strip over a frame), "rail" (a bar down the left, or the
--- right with side = "r") or "none".
+-- A container that frames one child in the style's shapes: "chamfer" (a
+-- leaf: the corners named in `corners` are rounded), "frame" (an outline with
+-- softened corners), "header" (a filled title strip over a frame), "rail" (a
+-- bar down the left, or the right with side = "r") or "none".
 -- A `label` sits on the border. `backdrop` and `trim` are optional functions
 -- (bb, x, y, w, h, top, pad) that paint behind the content and over the border;
 -- top is the height of the title strip, pad the padding on the left.
@@ -57,25 +57,25 @@ function Panel:draw(bb, x, y)
     local line = self.line and Theme.color(self.line)
     local fill = self.fill and Theme.color(self.fill)
     local shape = self.shape
-    if shape == "chamfer" and not th.decor.chamfer then shape = "frame" end
-    if shape == "brackets" and not th.decor.brackets then shape = "none" end
+    if shape == "brackets" then shape = "frame" end
+    local soft = Theme.px(5)
     if shape == "chamfer" then
-        Paint.chamferBox(bb, x, y, w, h, th.size[self.cut] or self.cut, self.corners, stroke, fill, line)
+        Paint.roundBox(bb, x, y, w, h, th.size[self.cut] or self.cut, self.corners, stroke, fill, line)
     else
-        if fill then Paint.fill(bb, x, y, w, h, fill) end
+        if fill then
+            if shape == "frame" or shape == "header" then Paint.round(bb, x, y, w, h, soft, "trbl", fill) else Paint.fill(bb, x, y, w, h, fill) end
+        end
         if self.backdrop then self.backdrop(bb, x, y, w, h, shape == "header" and self:headerHeight() or 0) end
         if shape == "frame" or shape == "header" then
-            Paint.frame(bb, x, y, w, h, stroke, line)
-        elseif shape == "brackets" then
-            Paint.brackets(bb, x, y, w, h, th.size.bracket, stroke, line)
+            Paint.roundFrame(bb, x, y, w, h, soft, "trbl", stroke, line)
         elseif shape == "rail" then
-            local bar = Theme.px(5)
-            Paint.fill(bb, self.side == "r" and x + w - bar or x, y, bar, h, line)
+            local bar = Theme.px(4)
+            Paint.round(bb, self.side == "r" and x + w - bar or x, y, bar, h, Theme.px(2), "trbl", line)
         end
     end
     if shape == "header" then
         local hh = self:headerHeight()
-        Paint.fill(bb, x, y, w, hh, line)
+        Paint.round(bb, x, y, w, hh, soft, "tr", line)
         local pad = th.space.m
         local ty = y + math.floor((hh - Text.height("label")) / 2)
         if self.title then Text.draw(bb, x + pad, ty, "label", Text.fit("label", self.title, w - 2 * pad), th.c.on_ink) end

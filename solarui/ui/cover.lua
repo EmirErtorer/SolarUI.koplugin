@@ -1,9 +1,8 @@
--- A book's cover tile in the reader's cover style: ASCII art of the cover
--- (the default; in colour on colour screens), the cover image, or a typeset
--- "data card" with the title, author and a pattern, which is also what any
--- style falls back to without a cover. Can carry a small badge (NEW, 64%,
--- DONE). A folder shows its first book's cover stacked on two sheets with a
--- FOLDER strip; an empty one a card with a folder icon.
+-- A book's cover tile in the reader's cover style: the cover image, or a
+-- typeset card with the title, author and a pattern, which is also what a
+-- book without a cover gets. Can carry a small badge (New, 64%, Done). A
+-- folder shows its first book's cover stacked on two sheets with a strip
+-- along the bottom; an empty one a card with a folder icon.
 
 local Blitbuffer = require("ffi/blitbuffer")
 local Element = require("solarui/ui/element")
@@ -83,15 +82,8 @@ function Cover.style()
     return Settings.get("cover_style") == "card" and "card" or "image"
 end
 
--- How deep the tile's top-right corner is cut, or nil when the style has
--- no chamfers.
-function Cover:cut(th)
-    if not th.decor.chamfer then return nil end
-    return self.w >= Theme.px(120) and th.size.cut or th.size.cut_small
-end
-
 -- Draw the tile. A folder (stack = true) is its first book's cover with two
--- sheets peeking out behind it and a FOLDER strip along the bottom.
+-- sheets peeking out behind it and a strip along the bottom.
 function Cover:draw(bb, x, y)
     if not self.stack then return self:drawFace(bb, x, y) end
     local th = Theme.get()
@@ -110,7 +102,7 @@ function Cover:draw(bb, x, y)
     self.w, self.h = w, h
 end
 
--- The FOLDER strip along a folder's bottom edge: icon, word and count.
+-- The strip along a folder's bottom edge: a folder icon and how many it holds.
 function Cover:drawFolderStrip(bb, x, y, th)
     local kind = self.w < Theme.px(90) and "micro" or "label"
     local sh = Text.height(kind) + Theme.px(6)
@@ -118,12 +110,12 @@ function Cover:drawFolderStrip(bb, x, y, th)
     Paint.fill(bb, x, sy, self.w, sh, th.c.ink)
     local isz = sh - Theme.px(6)
     Icons.draw(bb, "folder", x + Theme.px(4), sy + Theme.px(3), isz, th.c.on_ink, th.c.on_ink)
-    local text = self.count and string.format(_("FOLDER // %d"), self.count) or _("FOLDER")
+    local text = self.count and tostring(self.count) or _("Folder")
     Text.draw(bb, x + Theme.px(8) + isz, sy + Theme.px(3), kind, Text.fit(kind, text, self.w - isz - Theme.px(12)), th.c.on_ink)
 end
 
 -- Draw a cover face: image or data card (an empty slot is just its frame),
--- then badge and folder icon, then the cut corner over all of it.
+-- then badge and folder icon, then the frame over all of it.
 function Cover:drawFace(bb, x, y)
     local th = Theme.get()
     local w, h = self.w, self.h
@@ -145,13 +137,7 @@ function Cover:drawFace(bb, x, y)
     if not drawn and (self.path or self.title) then self:drawCard(bb, x, y, th) end
     if self.folder and not self.path then self:drawFolderTab(bb, x, y, th) end
     if self.badge then self:drawBadge(bb, x, y, th) end
-    local cut = self:cut(th)
-    if cut then
-        Paint.cutCorners(bb, x, y, w, h, cut, "r", th.c.bg)
-        Paint.chamferFrame(bb, x, y, w, h, cut, "r", stroke, th.c.ink)
-    else
-        Paint.frame(bb, x, y, w, h, stroke, th.c.ink)
-    end
+    Paint.frame(bb, x, y, w, h, stroke, th.c.ink)
 end
 
 -- The typeset card: pattern, then a box with title and author at the bottom.
@@ -180,12 +166,11 @@ function Cover:drawCard(bb, x, y, th)
     end
 end
 
--- A small label in the top-right corner, kept clear of the cut corner.
+-- A small label in the top-right corner.
 function Cover:drawBadge(bb, x, y, th)
     local s = Text.fit("micro", self.badge)
     local pad = Theme.px(4)
-    local pad_r = math.max(pad, self:cut(th) or 0)
-    local bw = Text.width("micro", s) + pad + pad_r
+    local bw = Text.width("micro", s) + 2 * pad
     local bh = Text.height("micro") + Theme.px(2)
     local fill = self.badge_on and th.c.accent or th.c.ink
     local fg = self.badge_on and th.c.on_accent or th.c.on_ink

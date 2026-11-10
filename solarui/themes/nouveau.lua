@@ -35,6 +35,6 @@ return {
         status = 22,       -- status bar height
         tabbar = 58,       -- bottom tab bar height
     },
-    -- shapes are leaves: the corners named by a widget are rounded, the rest stay sharp
-    decor = { brackets = false, barcode = false, hatch = false, ruler = false, chamfer = false, leaf = true },
+    -- (a later style may switch decorations of its own on here)
+    decor = {},
 }
