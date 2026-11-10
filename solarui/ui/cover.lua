@@ -87,10 +87,21 @@ function Cover.style()
     return Settings.get("cover_style") == "card" and "card" or "image"
 end
 
+-- The art a typeset card wears behind its title: "glass", "garden", "halo",
+-- "scales" (art/coverart.lua) or "lines", the plain stripes.
+Cover.ART = { "glass", "garden", "halo", "scales", "lines" }
+function Cover.cardArt()
+    local a = Settings.get("card_art", "glass")
+    for _i, id in ipairs(Cover.ART) do
+        if id == a then return a end
+    end
+    return "glass"
+end
+
 -- Everything the tile's picture depends on, as one text.
 function Cover:key()
     local has = self.path and Cover.style() ~= "card" and Covers.get(self.path, self:imageSize()) and 1 or 0
-    return table.concat({ self.path or "", self.title or "", self.author or "", self.w, self.h, Cover.style(), tostring(self.badge),
+    return table.concat({ self.path or "", self.title or "", self.author or "", self.w, self.h, Cover.style(), Cover.cardArt(), tostring(self.badge),
         tostring(self.badge_on), tostring(self.folder), tostring(self.stack), tostring(self.count), has, Covers.generation(),
         tostring(Covers.stretch()) }, "|")
 end
@@ -180,7 +191,13 @@ function Cover:drawCard(bb, x, y, th)
     local info = self.path and Books.info(self.path)
     local title = self.title or (info and info.title) or ""
     local author = self.author or (info and info.author)
-    pattern(bb, x, y, w, h, PATTERNS[hash(title) % #PATTERNS + 1], th)
+    local art = Cover.cardArt()
+    if art == "lines" then
+        pattern(bb, x, y, w, h, PATTERNS[hash(title) % #PATTERNS + 1], th)
+    else
+        local k = Cutout.unit()
+        Art.draw(bb, "cover_" .. art, x, y, w, h, w / k, h / k, hash(title) % 6)
+    end
     if h < Theme.px(60) then return end
     local pad = math.max(Theme.px(4), math.floor(w / 16))
     local inner = w - 4 * pad
