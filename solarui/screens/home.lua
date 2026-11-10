@@ -29,8 +29,9 @@ local _ = require("solarui/gettext")
 local Home = Screen:extend()
 
 -- Heights of the blocks, in the scene's units.
-local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 150, 640, 222, 196, 186, 22
+local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 140, 624, 212, 200, 190, 26
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
+local HEAD = 158              -- where headings start, clear of the climbing rose
 
 -- Shown again after a book: the book just read is back in front.
 function Home:onRaise()
@@ -51,7 +52,7 @@ local function heading(scene, text, y)
     scene:place(Layout.Row:new({ gap = scene:px(16), children = {
         Label:new({ text = text, kind = "title" }),
         ArtView:new({ name = "whiplash", unit = scene.k, grow = true, height = scene:px(24) }),
-    } }), LEFT, y, RIGHT - LEFT, 46)
+    } }), HEAD, y, RIGHT - HEAD, 46)
 end
 
 -- A caption centred under a drawing.
@@ -66,8 +67,8 @@ function Home:status(scene)
     local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "heading", color = "muted",
         text = Format.date("%A, %d %B") })
     local row = Layout.Row:new({ gap = scene:px(22), valign = "bottom", children = { clock, date }, labels = { clock, date } })
-    self.clock = scene:place(row, 168, 26, 540, 78)
-    scene:backdrop("tendril_top", 40, 96, 992, 70)
+    self.clock = scene:place(row, 168, 22, 540, 78)
+    scene:backdrop("tendril_top", 40, 86, 992, 70)
 
     local Device = require("device")
     scene:sprite("wifi", 716, 10, 110, 110, nil, function() return DeviceInfo.wifi() and 1 or 0 end)
@@ -88,15 +89,15 @@ end
 
 -- One of the three plant buttons beside the cover.
 local function bookButton(scene, art, text, cx, y, on_tap)
-    scene:backdrop(art, cx - 58, y, 116, 116)
-    caption(scene, text, cx - 70, y + 122, 140, "small")
-    scene:touch(cx - 68, y - 4, 136, 160, on_tap)
+    scene:backdrop(art, cx - 54, y, 108, 108)
+    caption(scene, text, cx - 71, y + 112, 142, "small")
+    scene:touch(cx - 68, y - 4, 136, 150, on_tap)
 end
 
 -- The hero: the book in front of its halo, and all about it to the right.
 function Home:hero(scene, y, cur)
-    scene:backdrop("halo", 75, y, 480, 480)
-    scene:backdrop("sprig", 476, y + 24, 130, 150)
+    scene:backdrop("halo", 85, y, 470, 470)
+    scene:backdrop("sprig", 486, y + 10, 120, 138)
     local x0, w = 612, RIGHT - 612
     if not cur then
         scene:sprite("rose_cluster", 0, y + 330, 200, 300)
@@ -114,12 +115,12 @@ function Home:hero(scene, y, cur)
     local info, st = Books.info(path), Books.state(path)
     local pct = math.floor(st.percent * 100 + 0.5)
     scene:place(Cover:new({ path = path, on_tap = function() Actions.open(path) end, on_hold = function() Actions.details(path) end }),
-        165, y + 124, 300, 450)
-    scene:sprite("rose_cluster", 0, y + 330, 200, 300)
-    scene:sprite("plaque", 140, y + 552, 350, 84)
+        172, y + 118, 296, 444)
+    scene:sprite("rose_cluster", 6, y + 318, 200, 300)
+    scene:sprite("plaque", 145, y + 538, 350, 84)
     scene:place(Label:new({ text = st.percent > 0 and _("Continue reading") or _("Start reading"), kind = "heading", color = "on_accent",
-        align = "center" }), 170, y + 552, 290, 84)
-    scene:touch(140, y + 548, 350, 92, function() Actions.open(path) end)
+        align = "center" }), 175, y + 538, 290, 84)
+    scene:touch(145, y + 534, 350, 92, function() Actions.open(path) end)
 
     local who = info.author or ""
     if info.series then who = who .. (who ~= "" and "  ·  " or "") .. info.series .. (info.series_index and (" " .. info.series_index) or "") end
@@ -135,12 +136,12 @@ function Home:hero(scene, y, cur)
             Label:new({ text = pct .. "%", kind = "title" }),
             Label:new({ text = pages, kind = "small", color = "muted", grow = true }),
         } }),
-    } }), x0, y + 30, w)
+    } }), x0, y + 24, w)
 
-    local by = y + 474
-    bookButton(scene, "btn_details", _("Details"), 676, by, function() Actions.details(path) end)
+    local by = y + 462
+    bookButton(scene, "btn_details", _("Details"), 668, by, function() Actions.details(path) end)
     bookButton(scene, "btn_bookmarks", _("Bookmarks"), 810, by, function() App.push("annotations", { path = path, kind = "bookmarks" }) end)
-    bookButton(scene, "btn_highlights", _("Highlights"), 944, by, function() App.push("annotations", { path = path, kind = "highlights" }) end)
+    bookButton(scene, "btn_highlights", _("Highlights"), 952, by, function() App.push("annotations", { path = path, kind = "highlights" }) end)
 end
 
 -- The reading block: today as a sunflower filling toward the goal, the week
@@ -158,21 +159,21 @@ function Home:reading(scene, y)
     local streak, books = Stats.streak(), Stats.booksThisYear()
     local function log() App.go("history") end
 
-    scene:sprite("sunflower", 108, y + 44, 150, 150, math.floor(math.min(1, minutes / goal) * 20 + 0.5))
-    caption(scene, string.format(_("%d min today"), minutes), 58, y + 194, 250)
-    scene:touch(58, y + 40, 250, 184, log)
+    scene:sprite("sunflower", 150, y + 44, 130, 130, math.floor(math.min(1, minutes / goal) * 20 + 0.5))
+    caption(scene, string.format(_("%d min today"), minutes), 100, y + 176, 230)
+    scene:touch(100, y + 44, 230, 166, log)
 
-    local wx, wy, ww, wh = 384, y + 36, 360, 140
+    local wx, wy, ww, wh = 392, y + 40, 350, 124
     scene:sprite("week", wx, wy, ww, wh, table.concat(days))
     for i, s in ipairs(HomeArt.weekSpots(ww, wh)) do
-        caption(scene, letters[i], wx + s[1] - 20, wy + s[2] + 8, 40, "micro")
+        caption(scene, letters[i], wx + s[1] - 20, wy + s[2] + 6, 40, "micro")
     end
-    caption(scene, string.format(_.n("%d day in a row", "%d days in a row", streak), streak), wx, y + 194, ww)
-    scene:touch(wx, y + 40, ww, 184, log)
+    caption(scene, string.format(_.n("%d day in a row", "%d days in a row", streak), streak), wx, y + 176, ww)
+    scene:touch(wx, y + 44, ww, 166, log)
 
-    scene:sprite("lily", 806, y + 34, 170, 160, books)
-    caption(scene, string.format(_.n("%d book this year", "%d books this year", books), books), 770, y + 194, 240)
-    scene:touch(770, y + 40, 236, 184, log)
+    scene:sprite("lily", 818, y + 40, 146, 136, books)
+    caption(scene, string.format(_.n("%d book this year", "%d books this year", books), books), 770, y + 176, 240)
+    scene:touch(770, y + 44, 236, 166, log)
 end
 
 -- The shelf: the books opened last, standing in a row. Tapping one brings
@@ -183,21 +184,22 @@ function Home:shelf(scene, y, cur)
     for _i, item in ipairs(History.recent(8)) do
         if not (cur and item.path == cur.path) and #books < 6 then books[#books + 1] = item.path end
     end
-    local step = (RIGHT - LEFT - 88) / 5
-    scene:backdrop("sprouts", LEFT + 88 + (step - 88) / 2 - step / 2, y + 114, step * 5, 64, 5)
-    scene:backdrop("shelf", 30, y + 172, 1012, 40)
+    local x0 = LEFT + 30
+    local step = (RIGHT - x0 - 88) / 5
+    scene:backdrop("sprouts", x0 + 44, y + 122, step * 5, 64, 5)
+    scene:backdrop("shelf", 30, y + 180, 1012, 40)
     if #books == 0 then
-        scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), LEFT + 120, y + 70, 700)
+        scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), HEAD + 20, y + 90, 700)
     end
     for i, p in ipairs(books) do
         scene:place(Cover:new({ path = p, on_tap = function() self.picked = p; App.update() end, on_hold = function() Actions.details(p) end }),
-            LEFT + (i - 1) * step, y + 48, 88, 132)
+            x0 + (i - 1) * step, y + 54, 88, 132)
     end
 end
 
 -- The dock: a plant for each place to go, growing from one root.
 function Home:dock(scene, y)
-    scene:backdrop("root", 20, y + 118, 1032, 40)
+    scene:backdrop("root", 20, y + 104, 1032, 40)
     local entries = LauncherData.visible()
     local slot = (RIGHT - LEFT + 40) / math.max(1, #entries)
     local size = math.min(150, slot - 10)
@@ -205,12 +207,12 @@ function Home:dock(scene, y)
     for i, entry in ipairs(entries) do
         local art, icon, label, action = Launcher.describe(entry)
         local cx = LEFT - 20 + slot * (i - .5)
-        local top = y + 134 - tall
+        local top = y + 120 - tall
         scene:backdrop(art, cx - size / 2, top, size, tall)
         if art == "dock_medallion" then
             scene:place(Icon:new({ name = icon, size = math.floor(size * .3 / 1.787) }), cx - size * .22, top + tall * .4 - size * .22, size * .44, size * .44)
         end
-        caption(scene, label, cx - slot / 2, y + 150, slot, #entries > 6 and "small" or "heading")
+        caption(scene, label, cx - slot / 2, y + 144, slot, #entries > 6 and "small" or "heading")
         scene:touch(cx - slot / 2 + 4, y - 4, slot - 8, DOCK_H, action, function() Launcher.askRemove(entry, App.update) end)
     end
 end
@@ -235,8 +237,8 @@ function Home:build(ctx)
     if shelf then y = y + SHELF_H + gap end
     local dock_y = math.max(y, scene.vh - FOOT - DOCK_H)
 
-    scene:backdrop("vine_left", 4, 34, 150, dock_y + 150 - 34)
-    scene:backdrop("vine_right", 990, dock_y - 250, 78, 400)
+    scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34)
+    scene:backdrop("vine_right", 990, dock_y - 270, 78, 400)
     self:status(scene)
     self:hero(scene, hero_y, cur)
     if stats then self:reading(scene, stats_y) end
