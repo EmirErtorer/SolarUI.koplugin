@@ -82,10 +82,15 @@ function Launcher.setCustom(id, custom)
     change(id, function(e) e.custom = custom end)
 end
 
+-- Give an entry a flower of its own (nil goes back to its usual one).
+function Launcher.setPlant(id, plant)
+    change(id, function(e) e.plant = plant end)
+end
+
 -- Remove a button the reader made, or undo the changes to a built-in one.
 function Launcher.remove(id)
     change(id, function(e, list, i)
-        if builtin[id] then e.custom = nil else table.remove(list, i) end
+        if builtin[id] then e.custom, e.plant = nil, nil else table.remove(list, i) end
     end)
 end
 

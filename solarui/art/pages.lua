@@ -4,6 +4,7 @@
 -- SVG for a vw x vh canvas. They are drawn bold, to read at the size of a
 -- button.
 
+local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
@@ -19,10 +20,9 @@ local function stalk(c, vw, vh, top)
         .. Flora.leaf(c, vw * .49, vh * .88, -32, vh * .34, vh * .11, nil, true)
 end
 
--- Library: a ginkgo fan.
+-- Library: a narcissus.
 function Pages.plant_library(c, vw, vh)
-    return Svg.line(string.format("M%s %s q%s %s %s %s", n(vw * .5), n(vh * .78), n(vh * .06), n(vh * .1), n(-vh * .04), n(vh * .2)), c.stem, vh * .06)
-        .. Flora.ginkgo(c, vw * .5, vh * .8, 0, vh * .56, c.gold)
+    return stalk(c, vw, vh, .6) .. Blooms.narcissus(c, vw * .5, vh * .38, vh * .36)
 end
 
 -- Collections: a rose between two leaves.
@@ -30,14 +30,14 @@ function Pages.plant_collections(c, vw, vh)
     return stalk(c, vw, vh, .6) .. Flora.rose(c, vw * .5, vh * .4, vh * .34, 12)
 end
 
--- The reading log: a fern crozier.
+-- The reading log: a crocus.
 function Pages.plant_history(c, vw, vh)
-    return Flora.crozier(c, vw * .56, vh, 0, vh * .58, vh * .26)
+    return stalk(c, vw, vh, .66) .. Blooms.crocus(c, vw * .5, vh * .66, 0, vh * .56)
 end
 
--- Search: a dandelion clock.
+-- Search: a pansy.
 function Pages.plant_search(c, vw, vh)
-    return stalk(c, vw, vh, .6) .. Flora.dandelion(c, vw * .5, vh * .38, vh * .34)
+    return stalk(c, vw, vh, .6) .. Blooms.pansy(c, vw * .5, vh * .38, vh * .34)
 end
 
 -- Settings: a daisy like a toothed wheel.
@@ -50,14 +50,14 @@ function Pages.plant_details(c, vw, vh)
     return Flora.frond(c, vw * .5, vh * .98, -8, vh * .84)
 end
 
--- Highlights: the eye of a peacock feather.
+-- Highlights: a dandelion in bloom.
 function Pages.plant_highlights(c, vw, vh)
-    return Flora.peacock(c, vw * .52, vh * .4, 12, vh * .32)
+    return stalk(c, vw, vh, .6) .. Blooms.karahindiba(c, vw * .5, vh * .38, vh * .34)
 end
 
--- Bookmarks: a single sage ginkgo leaf, like one pressed between pages.
+-- Bookmarks: a maple leaf, like one pressed between pages.
 function Pages.plant_bookmarks(c, vw, vh)
-    return Flora.ginkgo(c, vw * .5, vh * .88, 8, vh * .5, c.sage)
+    return Blooms.maple(c, vw * .5, vh * .88, 8, vh * .8)
 end
 
 -- Notes: a tulip.

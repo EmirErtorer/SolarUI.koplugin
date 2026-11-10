@@ -6,6 +6,7 @@ local Addons = require("solarui/apps/addons")
 local App = require("solarui/app")
 local InkAway = require("solarui/apps/inkaway")
 local LauncherData = require("solarui/data/launcher")
+local Species = require("solarui/art/species")
 local Targets = require("solarui/targets")
 local _ = require("solarui/gettext")
 
@@ -17,19 +18,25 @@ local BUILTIN = {
     collections = function() return "dock_collections", "collections", _("Collections"), function() App.go("collections") end end,
     history = function() return "dock_history", "history", _("History"), function() App.go("history") end end,
     search = function() return "dock_search", "search", _("Search"), function() App.push("search") end end,
-    inkaway = function() return "dock_medallion", InkAway.icon, "Ink Away", function() Addons.launch(InkAway) end end, -- i18n: keep
+    inkaway = function() return "dock_inkaway", InkAway.icon, "Ink Away", function() Addons.launch(InkAway) end end, -- i18n: keep
     settings = function() return "dock_settings", "settings", _("Settings"), function() App.go("settings") end end,
 }
 
+-- Every flower a button can grow as: the species of art/species.lua that
+-- have a drawing for the dock, the ones the built-in buttons have first.
+Launcher.PLANTS = Species.plants()
+
 -- The plant, icon, name and action of an entry: the reader's own when it has
--- them (on a blank seed pod that carries its icon), else the built-in one.
+-- them, else the built-in one. The flower is the one the reader picked, else
+-- the built-in's own, else a blank seed pod that carries the icon.
 function Launcher.describe(entry)
     local c = entry.custom
     if c then
-        return "dock_medallion", c.icon, c.name or "",
+        return entry.plant or "dock_medallion", c.icon, c.name or "",
             function() if c.target then Targets.run(c.target) else App.toast(_("Pick what this button opens")) end end
     end
-    return BUILTIN[entry.id]()
+    local art, icon, label, action = BUILTIN[entry.id]()
+    return entry.plant or art, icon, label, action
 end
 
 -- Ask before taking a button away: the reader's own are deleted, a built-in

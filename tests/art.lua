@@ -15,12 +15,12 @@ local time = require("ui/time")
 -- name, virtual width, virtual height, param
 local SHEET = {
     { "vine_left", 150, 900 }, { "vine_right", 80, 420 }, { "halo", 480, 480 }, { "rose_cluster", 200, 300 }, { "sprig", 130, 150 },
-    { "clock_frame", 320, 130 }, { "clock_wing", 200, 38, "l" }, { "clock_wing", 330, 38, "r" }, { "plaque", 350, 84 }, { "whiplash", 500, 24 },
+    { "clock_frame", 320, 130 }, { "clock_wing", 200, 84, "l" }, { "clock_wing", 330, 84, "r" }, { "plaque", 350, 84 }, { "whiplash", 500, 24 },
     { "progress", 400, 70, 0 }, { "progress", 400, 70, 7 }, { "progress", 400, 70, 42 }, { "progress", 400, 70, 78 }, { "progress", 400, 70, 100 },
     { "btn_details", 120, 120 }, { "btn_bookmarks", 120, 120 }, { "btn_highlights", 120, 120 },
     { "sunflower", 150, 150, 13 }, { "week", 410, 126, "0011011|5" }, { "week", 410, 126, "1100000|1" }, { "sunflower", 150, 150, 21 }, { "lily", 170, 160, 23 }, { "lily", 170, 160, 12 }, { "lily", 170, 160, 0 },
     { "shelf", 1012, 40 }, { "sprouts", 902, 64, 5 }, { "root", 1032, 40 },
-    { "dock_library", 150, 130 }, { "dock_collections", 150, 130 }, { "dock_history", 150, 130 }, { "dock_search", 150, 130 },
+    { "dock_library", 150, 130 }, { "dock_collections", 150, 130 }, { "dock_history", 150, 130 }, { "dock_search", 150, 130 }, { "dock_inkaway", 150, 130 }, { "dock_karahindiba", 150, 130 }, { "dock_maple", 150, 130 }, { "dock_rose", 150, 130 }, { "dock_tulip", 150, 130 }, { "dock_ginkgo", 150, 130 }, { "dock_fern", 150, 130 }, { "dock_clock", 150, 130 },
     { "dock_settings", 150, 130 }, { "dock_medallion", 150, 130 },
     { "plant_library", 80, 80 }, { "plant_collections", 80, 80 }, { "plant_history", 80, 80 }, { "plant_search", 80, 80 },
     { "plant_settings", 80, 80 }, { "plant_details", 80, 80 }, { "plant_highlights", 80, 80 }, { "plant_bookmarks", 80, 80 },

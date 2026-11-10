@@ -30,6 +30,8 @@ local Home = Screen:extend()
 -- Heights of the blocks, in the scene's units.
 local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 200, 190, 26
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
+-- The flowers that carry a button's own icon in their heart.
+local ICON_FLOWERS = { dock_medallion = true, dock_inkaway = true }
 local HEAD = 158              -- where headings start, clear of the climbing rose (the scene's own default)
 
 -- Shown again after a book: the book just read is back in front.
@@ -52,8 +54,8 @@ end
 function Home:status(scene)
     local fx, fy, fw, fh = 376, 8, 320, 130
     scene:backdrop("clock_frame", fx, fy, fw, fh)
-    scene:backdrop("clock_wing", 172, 96, fx - 176, 38, "l")
-    scene:backdrop("clock_wing", fx + fw + 4, 114, 1030 - fx - fw - 4, 38, "r")
+    scene:backdrop("clock_wing", 172, 63, fx - 176, 84, "l")
+    scene:backdrop("clock_wing", fx + fw + 4, 85, 1030 - fx - fw - 4, 84, "r")
     local clock = Label:new({ item = StatusBar.item("clock"), kind = "clock", align = "center", text = DeviceInfo.clock() })
     local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "small", color = "muted",
         align = "center", text = Format.date("%A, %d %B") })
@@ -64,16 +66,16 @@ function Home:status(scene)
     scene:sprite("wifi", 716, 10, 110, 110, nil, function() return DeviceInfo.wifi() and 1 or 0 end)
     scene:touch(712, 8, 110, 112, function() require("dispatcher"):execute({ toggle_wifi = true }) end)
     if Device:hasFrontlight() then
-        scene:sprite("lamp", 830, 16, 80, 100, nil, function()
+        scene:sprite("lamp", 830, 20, 80, 100, nil, function()
             local ok, on = pcall(function() return Device:getPowerDevice():isFrontlightOn() end)
             return (ok and on) and 1 or 0
         end)
-        scene:touch(824, 8, 88, 112, function() require("dispatcher"):execute({ show_frontlight_dialog = true }) end)
+        scene:touch(824, 8, 88, 128, function() require("dispatcher"):execute({ show_frontlight_dialog = true }) end)
     end
     local level = DeviceInfo.battery()
     if level then
-        scene:sprite("battery", 912, 58, 100, 50, nil, function() return math.floor((DeviceInfo.battery() or 0) / 10 + 0.5) end)
-        scene:caption(level .. "%", 912, 26, 100, "small")
+        scene:sprite("battery", 912, 85, 100, 50, nil, function() return math.floor((DeviceInfo.battery() or 0) / 10 + 0.5) end)
+        scene:caption(level .. "%", 912, 50, 100, "small")
     end
 end
 
@@ -122,9 +124,9 @@ function Home:hero(scene, y, cur)
         ArtView:new({ name = "whiplash", unit = scene.k, height = scene:px(24) }),
         Label:new({ text = opened, kind = "small", color = "muted" }),
         ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(70) }),
-        Layout.Row:new({ gap = scene:px(14), valign = "bottom", children = {
+        Layout.Row:new({ gap = scene:px(14), valign = "center", children = {
             Label:new({ text = pct .. "%", kind = "title" }),
-            Label:new({ text = pages, kind = "small", color = "muted", grow = true }),
+            Label:new({ text = pages, kind = "body", color = "muted", grow = true }),
         } }),
     } }), x0, y + 24, w)
 
@@ -167,7 +169,7 @@ function Home:dock(scene, y)
         local cx = LEFT - 20 + slot * (i - .5)
         local top = y + 120 - tall
         scene:backdrop(art, cx - size / 2, top, size, tall)
-        if art == "dock_medallion" then
+        if ICON_FLOWERS[art] then
             scene:place(Icon:new({ name = icon, size = math.floor(size * .3 / 1.787) }), cx - size * .22, top + tall * .4 - size * .22, size * .44, size * .44)
         end
         scene:caption(label, cx - slot / 2, y + 144, slot, #entries > 6 and "small" or "heading")

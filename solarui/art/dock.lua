@@ -2,6 +2,7 @@
 -- to go), the root they grow from, and the three living things of the status
 -- row. Each is function(c, vw, vh, param) returning SVG for a vw x vh canvas.
 
+local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
@@ -32,8 +33,8 @@ local function foot(c, vw, vh)
     return Flora.leaf(c, vw * .5, vh * .9, -152, vh * .3, vh * .1) .. Flora.leaf(c, vw * .5, vh * .9, -28, vh * .3, vh * .1)
 end
 
--- Library: a ginkgo fan, its veins like the pages of a book fanned open.
-function Dock.dock_library(c, vw, vh)
+-- A ginkgo fan, its veins like the pages of a book fanned open.
+function Dock.dock_ginkgo(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .8, 6) .. foot(c, vw, vh)
         .. Flora.ginkgo(c, vw * .5, vh * .82, 0, vh * .56, c.gold)
 end
@@ -48,14 +49,14 @@ function Dock.dock_collections(c, vw, vh)
         .. Flora.rose(c, vw * .5, vh * .3, vh * .24, 10)
 end
 
--- History: a fern crozier still unwinding, a grown frond behind it.
-function Dock.dock_history(c, vw, vh)
+-- A fern crozier still unwinding, a grown frond behind it.
+function Dock.dock_fern(c, vw, vh)
     return Flora.frond(c, vw * .66, vh, 26, vh * .5)
         .. Flora.crozier(c, vw * .5, vh, 0, vh * .58, vh * .27)
 end
 
--- Search: a dandelion clock, a lens on its stem.
-function Dock.dock_search(c, vw, vh)
+-- A dandelion clock, a lens on its stem.
+function Dock.dock_clock(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh)
         .. Flora.dandelion(c, vw * .5, vh * .38, vh * .35)
 end
@@ -64,6 +65,46 @@ end
 function Dock.dock_settings(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .5, 5) .. foot(c, vw, vh)
         .. Flora.daisy(c, vw * .5, vh * .38, vh * .37, 10)
+end
+
+-- Library: a narcissus.
+function Dock.dock_library(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.narcissus(c, vw * .5, vh * .4, vh * .38)
+end
+
+-- History: a crocus.
+function Dock.dock_history(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .62, 5) .. foot(c, vw, vh) .. Blooms.crocus(c, vw * .5, vh * .64, 0, vh * .5)
+end
+
+-- Search: a pansy.
+function Dock.dock_search(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.pansy(c, vw * .5, vh * .4, vh * .36)
+end
+
+-- Ink Away: a lily with a pale heart for the button's own icon.
+function Dock.dock_inkaway(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.lily(c, vw * .5, vh * .4, vh * .4)
+end
+
+-- A dandelion in bloom (karahindiba).
+function Dock.dock_karahindiba(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.karahindiba(c, vw * .5, vh * .4, vh * .36)
+end
+
+-- A maple leaf on its stalk.
+function Dock.dock_maple(c, vw, vh)
+    return foot(c, vw, vh) .. Blooms.maple(c, vw * .5, vh * .9, 0, vh * .8)
+end
+
+-- A single rose.
+function Dock.dock_rose(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .5, 5) .. foot(c, vw, vh) .. Flora.rose(c, vw * .5, vh * .36, vh * .3, 10)
+end
+
+-- A single tulip.
+function Dock.dock_tulip(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Flora.tulip(c, vw * .5, vh * .62, 0, vh * .34, c.bloom2)
 end
 
 -- Anything else: an honesty pod, a blank disc for the button's own icon.

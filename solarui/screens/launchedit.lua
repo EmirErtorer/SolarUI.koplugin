@@ -67,9 +67,15 @@ function LaunchEdit:build()
                 App.push("iconpick", { current = c.icon, on_pick = function(name) self:set("icon", name) end })
             end }),
         } })),
+        row(_("Flower"), nil, Button:new({ label = _("Choose"), on_tap = function()
+            App.push("flowerpick", { current = select(1, LauncherUI.describe(entry)), on_pick = function(name)
+                Launcher.setPlant(entry.id, name)
+                App.update()
+            end })
+        end })),
         row(_("Opens"), Targets.describe(c.target), Button:new({ label = _("Pick"), on_tap = function() self:pickTarget() end })),
     }
-    local undo = builtin and entry.custom
+    local undo = builtin and (entry.custom or entry.plant)
     if not builtin or undo then
         body[#body + 1] = Button:new({ label = builtin and _("Restore the original") or _("Delete this button"), icon = builtin and "restore" or "trash",
             variant = builtin and "secondary" or "danger", corners = "tb", on_tap = function()

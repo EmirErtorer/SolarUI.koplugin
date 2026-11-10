@@ -30,12 +30,13 @@ local Library = require("solarui/data/library")
 
 local only = {}
 for i = 3, #arg do only[arg[i]] = true end
-local SCREENS = { "home", "library", "dossier", "collections", "history", "search", "settings", "trash", "fonts", "topbar", "launcher", "launchedit", "iconpick", "targetpick", "metaedit", "filepick", "colourpick", "annotations", "updates" }
+local SCREENS = { "home", "library", "dossier", "collections", "history", "search", "settings", "trash", "fonts", "topbar", "launcher", "launchedit", "iconpick", "flowerpick", "targetpick", "metaedit", "filepick", "colourpick", "annotations", "updates" }
 local PARAMS = {
     dossier = function() return { path = Library.all()[1] } end,
     metaedit = function() return { path = Library.all()[1] } end,
     launchedit = function() return { id = "library" } end,
     iconpick = function() return { current = "pen", on_pick = function() end } end,
+    flowerpick = function() return { current = "dock_library", on_pick = function() end } end,
     targetpick = function() return { done = function() end } end,
     colourpick = function() return { title = "Accent", current = "#2F5D46", on_pick = function() end } end,
     annotations = function() return { path = Library.all()[1], kind = "highlights" } end,

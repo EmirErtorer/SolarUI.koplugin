@@ -3,10 +3,11 @@
 -- progress vine and the shelf. Each is
 -- function(c, vw, vh, param) returning SVG for a vw x vh canvas.
 
+local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
-local n, vary = Svg.n, Svg.vary
+local n, group, vary = Svg.n, Svg.group, Svg.vary
 local sin = math.sin
 
 local Home = {}
@@ -128,24 +129,30 @@ function Home.clock_frame(c, vw, vh)
         .. Svg.circle(m, 4, 8, c.gold, c.ink, 1.6) .. Svg.circle(m, 4, 3, c.bloom, c.ink, 1)
 end
 
--- A whiplash line running out from the clock's cartouche with two ivy
--- leaves and a tendril: `side` "l" runs left with its leaves up, "r" runs
--- right with them hanging.
+-- A leaf, a bud or a leaf of ivy on a short curved stalk that starts at (x, y)
+-- on the line and heads `ang`, so that whatever grows is joined to the line.
+local function branch(c, x, y, ang, len, tip, fill)
+    local end_ = {
+        leaf = function() return Flora.leaf(c, len, 0, -8, len * 1.5, len * .5, fill) end,
+        ivy = function() return Flora.vineLeaf(c, len, 0, 80, len * 1.25, fill) end,
+        bud = function() return Flora.rosebud(c, len, 0, 90, len * .8, fill) end,
+    }
+    return group(x, y, ang, Svg.line(string.format("M-2 0 Q%s %s %s 0", n(len * .5), n(-len * .22), n(len)), c.stem, 2.6) .. end_[tip]())
+end
+
+-- A whiplash line running out from the clock's cartouche with leaves, ivy and
+-- a bud, each on its own stalk from the line: `side` "l" runs left with its
+-- growth up, "r" runs right with it hanging.
 function Home.clock_wing(c, vw, vh, side)
     local line, pts = Flora.whiplash(c, vw, vh * .56)
     local len, up = Svg.length(pts), side == "l"
     local out = {}
-    for i, f in ipairs({ .24, .44, .68 }) do
-        local x, y, ang = Svg.along(pts, len * f)
-        local turn = ang + (up and 0 or 180) + (i == 1 and -24 or 20)
-        if i == 2 then
-            out[#out + 1] = Flora.tendril(c, x, y, turn, vh * .5, up)
-        else
-            out[#out + 1] = Flora.vineLeaf(c, x, y, turn, vh * (i == 1 and .5 or .4), i == 3 and c.sage or c.leaf)
-        end
+    for i, node in ipairs({ { .2, "leaf", 30, 58 }, { .42, "bud", 24, 70 }, { .62, "ivy", 22, 56 }, { .84, "leaf", 26, 64 } }) do
+        local x, y, ang = Svg.along(pts, len * node[1])
+        out[#out + 1] = branch(c, x, y, ang + node[4] * (up and -1 or 1), node[3], node[2], i % 2 == 0 and c.sage or nil)
     end
     local body = table.concat(out) .. line
-    return Svg.group(up and vw or 0, vh * .22, 0, body, up and -1 or 1, 1)
+    return Svg.group(up and vw or 0, up and vh * .34 or vh * .1, 0, body, up and -1 or 1, 1)
 end
 
 -- The halo behind the cover: a golden ring of tiles round a pale disc.
@@ -300,11 +307,11 @@ function Home.btn_details(c, vw, vh)
     return Flora.frond(c, vw * .5, vh * .98, -8, vh * .8)
 end
 function Home.btn_bookmarks(c, vw, vh)
-    return Svg.line(string.format("M%s %s q6 12 -4 22", n(vw * .5), n(vh * .78)), c.ink, 3)
-        .. Flora.ginkgo(c, vw * .5, vh * .8, 8, vh * .47)
+    return Blooms.maple(c, vw * .5, vh * .84, 8, vh * .72)
 end
 function Home.btn_highlights(c, vw, vh)
-    return Flora.peacock(c, vw * .54, vh * .38, 14, vh * .3)
+    return Svg.line(string.format("M%s %s q-8 14 2 %s", n(vw * .5), n(vh * .6), n(vh * .36)), c.stem, 3.4)
+        .. Blooms.karahindiba(c, vw * .5, vh * .38, vh * .34)
 end
 
 -- The shelf: a rail with curled ends and ironwork curves beneath it.

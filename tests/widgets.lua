@@ -131,6 +131,13 @@ do
     Kit.ok(Header.plant("nowhere").name == "plant_sprout" and Header.plant(nil).name == "plant_sprout", "any other page gets the sprout")
     local Sprites = require("solarui/art/sprites")
     for name in pairs(Header.PLANTS) do Kit.ok(Sprites["plant_" .. name] ~= nil, "plant_" .. name .. " is a drawing") end
+    -- every species has its three names, and the ones with a dock drawing have it
+    local Species = require("solarui/art/species")
+    for _i, sp in ipairs(Species.LIST) do
+        Kit.ok(sp.en and sp.latin and sp.tr, sp.id .. " has an English, a Latin and a Turkish name")
+        Kit.ok(not sp.dock or Sprites[sp.dock] ~= nil, sp.id .. " has its dock drawing")
+    end
+    Kit.ok(Species.ofDock("dock_library").latin == "Narcissus poeticus", "a dock drawing leads to its species")
 end
 
 -- Arabic is shaped and measured as joined text, and paints
