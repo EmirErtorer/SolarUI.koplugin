@@ -21,15 +21,15 @@ local Home = {}
 -- spread, `size` and `lean` make no two stops alike.
 local function growth(c, k, x, y, ang, reach, size, lean)
     local side = k % 2 == 0 and 1 or -1
-    if side < 0 then reach = math.min(reach, (x - 6) / .95) end
+    if side < 0 then reach = math.min(reach, (x - 6) / 1.25) end
     local out = ang + side * (62 + lean * .4)
     local kind = k % 5
     if kind == 0 then
-        return Flora.roseLeaf(c, x, y, out, reach * .85 * size, 5)
+        return Flora.roseLeaf(c, x, y, out, reach * 1.1 * size, 5)
     elseif kind == 1 then
-        return Flora.shoot(c, x, y, out - side * 10, reach * .8 * size, "bud")
+        return Flora.shoot(c, x, y, out - side * 10, reach * 1.0 * size, "bud")
     elseif kind == 2 then
-        return Flora.roseLeaf(c, x, y, out, reach * .62 * size, 3, c.sage)
+        return Flora.roseLeaf(c, x, y, out, reach * .8 * size, 3, c.sage)
             .. Flora.tendril(c, x, y, ang - side * 70, reach * .26, side > 0)
     elseif kind == 3 then
         local warm = k % 10 == 3
@@ -37,7 +37,7 @@ local function growth(c, k, x, y, ang, reach, size, lean)
         return Svg.stem(Svg.spline({ { x, y }, { x + side * reach * .22, y + reach * .02 }, { sx, sy } }, 6), Svg.taper(4.4, 2.8), c.stem, c.ink, 1.3)
             .. Flora.rose(c, sx, sy, reach * .3, k * 23, warm and c.bloom or c.bloom2, warm and c.bloom2 or c.bloom)
     end
-    return Flora.shoot(c, x, y, out - side * 10, reach * .7 * size, "tendril", c.sage)
+    return Flora.shoot(c, x, y, out - side * 10, reach * .85 * size, "tendril", c.sage)
 end
 
 -- The climbing stem dressed from `from` to `to` along it: a stop about every
@@ -73,7 +73,7 @@ function Home.vine_left(c, vw, vh, season)
     local pts = Svg.join(stem, Svg.spiral(top[1] + r, top[2], r, 1.7, -90))
     local len = Svg.length(stem)
     local function width(t) return (11 - 6.5 * t) * (1 + .09 * sin(t * 46)) end
-    return dress(c, stem, 70, len - 60, 64, vw * .52)
+    return dress(c, stem, 70, len - 60, 56, vw * .52)
         .. Svg.stem(pts, width, c.stem, c.ink, 1.7)
 end
 
