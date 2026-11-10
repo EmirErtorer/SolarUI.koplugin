@@ -34,7 +34,7 @@ function Metric.value(rec)
     return Metric.pages() and rec.pages or rec.seconds / 60
 end
 
--- A number as "25 MIN" or "12 PG".
+-- A number as "25 min" or "12 pages".
 function Metric.text(value)
     return string.format("%d %s", math.floor(value + 0.5), Metric.unit())
 end

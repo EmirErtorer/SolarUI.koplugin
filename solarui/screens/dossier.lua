@@ -48,7 +48,7 @@ local function formatLine(path, info, st)
     local ext = (file:match("%.([^.]+)$") or "?"):upper()
     local parts = { ext, Format.size((lfs.attributes(path) or {}).size) }
     local pages = st.pages or info.pages
-    if pages then parts[#parts + 1] = string.format("%d PG", pages) end
+    if pages then parts[#parts + 1] = string.format(_.n("%d page", "%d pages", pages), pages) end
     return table.concat(parts, " \u{B7} ")
 end
 

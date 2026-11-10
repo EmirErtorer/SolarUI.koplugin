@@ -67,8 +67,8 @@ function Home:status(scene)
     local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "heading", color = "muted",
         text = Format.date("%A, %d %B") })
     local row = Layout.Row:new({ gap = scene:px(22), valign = "bottom", children = { clock, date }, labels = { clock, date } })
-    self.clock = scene:place(row, 168, 22, 540, 78)
-    scene:backdrop("tendril_top", 40, 86, 992, 70)
+    self.clock = scene:place(row, 168, 30, 540, 78)
+    scene:backdrop("tendril_top", 40, 92, 992, 70)
 
     local Device = require("device")
     scene:sprite("wifi", 716, 10, 110, 110, nil, function() return DeviceInfo.wifi() and 1 or 0 end)
