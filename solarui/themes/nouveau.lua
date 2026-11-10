@@ -18,6 +18,7 @@ return {
         mono_small = { "body", 12 },
         micro = { "body", 11 },
         number = { "display", 30 },
+        clock = { "clock", 31 },
     },
     -- letter spacing (base pixels) per kind of text
     tracking = {},

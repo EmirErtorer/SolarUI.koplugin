@@ -1,5 +1,5 @@
 -- The drawings of the home screen's garden: the climbing rose up the left
--- edge, the halo behind the cover with its roses, the Continue plaque, the
+-- edge, the clock's cartouche, the halo behind the cover with its roses, the Continue plaque, the
 -- progress vine and the shelf. Each is
 -- function(c, vw, vh, param) returning SVG for a vw x vh canvas.
 
@@ -98,19 +98,54 @@ function Home.vine_right(c, vw, vh)
     return table.concat(out) .. Svg.stem(stem, Svg.taper(8, 3.5), c.stem, c.ink, 1.6) .. Flora.rosebud(c, tx, ty, -28, vw * .2)
 end
 
--- The line under the status row: a whiplash tendril with a few vine leaves.
-function Home.tendril_top(c, vw, vh)
-    local pts = Svg.spline({ { 4, vh * .86 }, { vw * .2, vh * .34 }, { vw * .42, vh * .62 }, { vw * .62, vh * .36 }, { vw * .84, vh * .3 }, { vw - 8, vh * .56 } }, 14)
+-- The outline of the clock's cartouche on a vw x vh canvas, drawn `i` units
+-- inside its edge: upright sides under a low arch.
+local function cartouche(vw, vh, i)
+    local function p(x, y) return n(x) .. " " .. n(y) end
+    local l, r, t, b = 4 + i, vw - 4 - i, 4 + i, vh - 4 - i
+    return string.format("M%s C%s %s %s C%s %s %s C%s %s %s C%s %s %sZ",
+        p(l + 20, b), p(l + 4, b), p(l - 2, vh * .64), p(l + 4, vh * .46),
+        p(l + 16, vh * .14 + i * .5), p(vw * .3, t), p(vw / 2, t),
+        p(vw * .7, t), p(r - 16, vh * .14 + i * .5), p(r - 4, vh * .46),
+        p(r + 2, vh * .64), p(r - 4, b), p(r - 20, b))
+end
+
+-- The clock's cartouche: an arched panel with a fine golden line inside it,
+-- a rosette between two leaves at its crown, a curl at each foot and a short
+-- rule between the time and the date.
+function Home.clock_frame(c, vw, vh)
+    local m = vw / 2
+    local function foot(x, ccw)
+        return Svg.line(Svg.poly(Svg.spiral(x, vh - 15, 10, 1.3, 180, ccw)), c.ink, 2.2)
+    end
+    local ry = vh * .635
+    return foot(12, false) .. foot(vw - 12, true)
+        .. Svg.path(cartouche(vw, vh, 0), c.cream, c.ink, 2.8)
+        .. Svg.line(cartouche(vw, vh, 7), c.gold, 1.8)
+        .. Svg.line(string.format("M%s %s L%s %s M%s %s L%s %s", n(m - vw * .2), n(ry), n(m - 9), n(ry), n(m + 9), n(ry), n(m + vw * .2), n(ry)), c.ink, 1.3)
+        .. Svg.circle(m, ry, 3.2, c.bloom, c.ink, 1)
+        .. Flora.leaf(c, m - 5, 5, 172, 30, 9, nil, true) .. Flora.leaf(c, m + 5, 5, 8, 30, 9, nil, true)
+        .. Svg.circle(m, 4, 8, c.gold, c.ink, 1.6) .. Svg.circle(m, 4, 3, c.bloom, c.ink, 1)
+end
+
+-- A whiplash line running out from the clock's cartouche with two ivy
+-- leaves and a tendril: `side` "l" runs left with its leaves up, "r" runs
+-- right with them hanging.
+function Home.clock_wing(c, vw, vh, side)
+    local line, pts = Flora.whiplash(c, vw, vh * .56)
+    local len, up = Svg.length(pts), side == "l"
     local out = {}
-    for i, f in ipairs({ .16, .33, .5, .7, .88 }) do
-        local x, y, ang = Svg.along(pts, Svg.length(pts) * f)
-        if i % 2 == 1 then
-            out[#out + 1] = Flora.vineLeaf(c, x, y, ang + (i % 4 == 1 and 150 or -30) + 90, vh * .44, i == 3 and c.sage or c.leaf)
+    for i, f in ipairs({ .24, .44, .68 }) do
+        local x, y, ang = Svg.along(pts, len * f)
+        local turn = ang + (up and 0 or 180) + (i == 1 and -24 or 20)
+        if i == 2 then
+            out[#out + 1] = Flora.tendril(c, x, y, turn, vh * .5, up)
         else
-            out[#out + 1] = Flora.tendril(c, x, y, ang + 30, vh * .34, i == 4)
+            out[#out + 1] = Flora.vineLeaf(c, x, y, turn, vh * (i == 1 and .5 or .4), i == 3 and c.sage or c.leaf)
         end
     end
-    return table.concat(out) .. Svg.path(Svg.ribbon(pts, Svg.swell(6, 1.2)), c.ink)
+    local body = table.concat(out) .. line
+    return Svg.group(up and vw or 0, vh * .22, 0, body, up and -1 or 1, 1)
 end
 
 -- The halo behind the cover: a golden ring of tiles round a pale disc.

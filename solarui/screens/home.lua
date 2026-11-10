@@ -46,15 +46,19 @@ function Home:shown()
     return History.current()
 end
 
--- The status row: the time and date, and three living things that are the
--- Wi-Fi, the frontlight and the battery.
+-- The status row: the time over the date in an arched cartouche at the top
+-- of the page, a whiplash line running out to each side of it, and three
+-- living things that are the Wi-Fi, the frontlight and the battery.
 function Home:status(scene)
-    local clock = Label:new({ item = StatusBar.item("clock"), kind = "hero", text = DeviceInfo.clock() })
-    local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "heading", color = "muted",
-        text = Format.date("%A, %d %B") })
-    local row = Layout.Row:new({ gap = scene:px(22), valign = "bottom", children = { clock, date }, labels = { clock, date } })
-    self.clock = scene:place(row, 168, 30, 540, 78)
-    scene:backdrop("tendril_top", 40, 92, 992, 70)
+    local fx, fy, fw, fh = 376, 8, 320, 130
+    scene:backdrop("clock_frame", fx, fy, fw, fh)
+    scene:backdrop("clock_wing", 172, 96, fx - 176, 38, "l")
+    scene:backdrop("clock_wing", fx + fw + 4, 114, 1030 - fx - fw - 4, 38, "r")
+    local clock = Label:new({ item = StatusBar.item("clock"), kind = "clock", align = "center", text = DeviceInfo.clock() })
+    local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "small", color = "muted",
+        align = "center", text = Format.date("%A, %d %B") })
+    self.clock = scene:place(Layout.Column:new({ children = { clock, Layout.Spacer:new({ grow = true }), date }, labels = { clock, date } }),
+        fx + 24, fy + 12, fw - 48, fh - 23)
 
     local Device = require("device")
     scene:sprite("wifi", 716, 10, 110, 110, nil, function() return DeviceInfo.wifi() and 1 or 0 end)
