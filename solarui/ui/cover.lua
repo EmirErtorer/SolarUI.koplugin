@@ -196,7 +196,7 @@ function Cover:drawCard(bb, x, y, th)
         pattern(bb, x, y, w, h, PATTERNS[hash(title) % #PATTERNS + 1], th)
     else
         local k = Cutout.unit()
-        Art.draw(bb, "cover_" .. art, x, y, w, h, w / k, h / k, hash(title) % 6)
+        Art.draw(bb, "cover_" .. art, x, y, w, h, w / k, h / k, hash(title) % 12)
     end
     if h < Theme.px(60) then return end
     local pad = math.max(Theme.px(4), math.floor(w / 16))

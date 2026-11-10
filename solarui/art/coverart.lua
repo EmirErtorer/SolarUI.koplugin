@@ -1,7 +1,7 @@
 -- The pictures a typeset book cover can wear behind its title: stained
 -- glass, a garden of flowers, a golden halo and peacock scales. Each is
 -- function(c, vw, vh, variant) returning SVG for a vw x vh canvas, `variant`
--- (0 to 5, picked from the title) turning the colours and the layout so that
+-- (0 to 11, picked from the title) turning the colours and the layout so that
 -- books differ. Drawn once per size and variant, then shared by every book.
 
 local Blooms = require("solarui/art/blooms")
@@ -52,7 +52,7 @@ function CoverArt.cover_glass(c, vw, vh, v)
     local cols = panes(c, v)
     local m, fy = vw / 2, Frames.rise(vw, vh) * 1.15
     local out = { sheet(vw, vh, c.ink) }
-    local K = 7
+    local K = 5 + 2 * (v % 3)
     for k = 0, K - 1 do
         local a0, a1 = -90 + k * 180 / K, -90 + (k + 1) * 180 / K
         for ring = 0, 1 do
@@ -60,7 +60,8 @@ function CoverArt.cover_glass(c, vw, vh, v)
             out[#out + 1] = Svg.path(sector(m, fy, r0, r1, a0, a1), cols[(k * 3 + ring * 2) % #cols + 1], c.ink, 2.6)
         end
     end
-    local dw, dh = vw / 3.6, vw / 2.7
+    local dw = vw / (3 + .6 * (math.floor(v / 3) % 4))
+    local dh = dw * 1.35
     for i = 0, math.ceil((vh - fy) / (dh / 2)) + 1 do
         for j = -1, 5 do
             local x, y = m + (j - 2 + (i % 2) * .5) * dw, fy + i * dh / 2
@@ -70,7 +71,7 @@ function CoverArt.cover_glass(c, vw, vh, v)
     end
     local cy, R = vh * .42, vw * .24
     out[#out + 1] = Svg.circle(m, cy, R, c.cream, c.ink, 3.4) .. Svg.circle(m, cy, R * .84, nil, c.gold, 2.2)
-        .. Flora.rose(c, m, cy, R * .74, v * 22)
+        .. (v % 4 == 3 and Flora.daisy(c, m, cy, R * .74, 12) or Flora.rose(c, m, cy, R * .74, v * 22))
     return table.concat(out)
 end
 
@@ -97,7 +98,7 @@ function CoverArt.cover_garden(c, vw, vh, v)
     v = tonumber(v) or 0
     local m = vw / 2
     local out = { sheet(vw, vh, v % 2 == 0 and c.pale or c.soft), climber(c, vw, vh, -1, v), climber(c, vw, vh, 1, v) }
-    local kind = v % 3
+    local kind = math.floor(v / 2) % 3
     if kind == 0 then
         out[#out + 1] = Flora.leaf(c, m, vh * .56, -150, vw * .3, vw * .1) .. Flora.leaf(c, m, vh * .56, -30, vw * .3, vw * .1)
             .. Svg.line(string.format("M%s %s L%s %s", n(m), n(vh * .62), n(m), n(vh * .3)), c.stem, vw * .03)
@@ -133,9 +134,9 @@ function CoverArt.cover_halo(c, vw, vh, v)
         end
         out[#out + 1] = Svg.path(Svg.ribbon(pts, Svg.swell(vw * .035, 1)), c.ink)
     end
-    out[#out + 1] = Svg.circle(m, cy, R, c.gold, c.ink, 2.4) .. Svg.dots(m, cy, R * .82, 14, R * .17, c.cream)
-        .. Svg.dots(m, cy, R * .82, 7, R * .13, v % 2 == 0 and c.bloom or c.sky) .. Svg.circle(m, cy, R * .66, c.pale, c.ink, 1.8)
-        .. Svg.circle(m, cy, R * .58, nil, c.gold, 1.2) .. (v % 2 == 0 and Flora.rose(c, m, cy, R * .5, v * 20) or Blooms.lily(c, m, cy, R * .5))
+    out[#out + 1] = Svg.circle(m, cy, R, c.gold, c.ink, 2.4) .. Svg.dots(m, cy, R * .82, 14 + 4 * (v % 2), R * .17, c.cream)
+        .. Svg.dots(m, cy, R * .82, 7 + 2 * (v % 2), R * .13, v % 2 == 0 and c.bloom or c.sky) .. Svg.circle(m, cy, R * .66, c.pale, c.ink, 1.8)
+        .. Svg.circle(m, cy, R * .58, nil, c.gold, 1.2) .. (v % 3 == 0 and Flora.rose(c, m, cy, R * .5, v * 20) or v % 3 == 1 and Blooms.lily(c, m, cy, R * .5) or Flora.daisy(c, m, cy, R * .5, 12))
     return table.concat(out)
 end
 
@@ -144,7 +145,7 @@ end
 function CoverArt.cover_scales(c, vw, vh, v)
     v = tonumber(v) or 0
     local cols = panes(c, v)
-    local s = vw / 4.4
+    local s = vw / (3.4 + .7 * (v % 4))
     local R = s * .62
     local out = { sheet(vw, vh, c.ink) }
     for i = 0, math.ceil(vh / (s * .5)) + 1 do
