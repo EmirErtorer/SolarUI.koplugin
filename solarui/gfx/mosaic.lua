@@ -39,13 +39,13 @@ end
 -- A colour to paint into the tile with: the tile is always RGB, and is turned
 -- to grey on a black and white screen when it is blended in.
 local function rgb(r, g, b)
-    return Blitbuffer.ColorRGB32(floor(r), floor(g), floor(b), 0xFF)
+    return Blitbuffer.ColorRGB32(max(0, min(255, floor(r))), max(0, min(255, floor(g))), max(0, min(255, floor(b))), 0xFF)
 end
 
 -- A colour made richer and coarser for glass.
 local function glass(r, g, b)
     local m = (r + g + b) / 3
-    local function q(v) return min(255, floor((m + (v - m) * 1.35) / 43 + .5) * 43) end
+    local function q(v) return max(0, min(255, floor((m + (v - m) * 1.35) / 43 + .5) * 43)) end
     return rgb(q(r), q(g), q(b))
 end
 
