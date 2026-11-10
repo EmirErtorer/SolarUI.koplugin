@@ -1,0 +1,123 @@
+-- The drawings of the plants along the bottom of home (one for each place
+-- to go), the root they grow from, and the three living things of the status
+-- row. Each is function(c, vw, vh, param) returning SVG for a vw x vh canvas.
+
+local Flora = require("solarui/art/flora")
+local Svg = require("solarui/art/svg")
+
+local n = Svg.n
+
+local Dock = {}
+
+-- A stalk from the foot of the canvas up to (x, y).
+local function stalk(c, vw, vh, x, y, w)
+    return Svg.stem(Svg.spline({ { vw * .5, vh }, { vw * .5 + (x - vw * .5) * .3, vh * .86 }, { x, y } }, 6), Svg.taper(w or 6, (w or 6) * .7), c.stem, c.ink, 1.5)
+end
+
+-- The root every plant of the dock grows from: a long swaying runner.
+function Dock.root(c, vw, vh)
+    local way = {}
+    for i = 0, 8 do way[#way + 1] = { 6 + (vw - 12) * i / 8, vh * (i % 2 == 0 and .62 or .36) } end
+    local pts = Svg.spline(way, 10)
+    local out = {}
+    for i, f in ipairs({ .08, .31, .5, .7, .93 }) do
+        local x, y, ang = Svg.along(pts, Svg.length(pts) * f)
+        out[#out + 1] = Flora.leaf(c, x, y, ang + (i % 2 == 0 and 140 or 40), vh * .5, vh * .16)
+    end
+    return table.concat(out) .. Svg.stem(pts, Svg.swell(9, 4), c.stem, c.ink, 1.7)
+end
+
+-- Library: a ginkgo fan, its veins like the pages of a book fanned open.
+function Dock.dock_library(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .84, 6)
+        .. Flora.ginkgo(c, vw * .4, vh * .92, -62, vh * .28, c.sage)
+        .. Flora.ginkgo(c, vw * .5, vh * .84, -4, vh * .56, c.gold)
+end
+
+-- Collections: flowers of three kinds gathered into a posy.
+function Dock.dock_collections(c, vw, vh)
+    local function stem(x, y) return stalk(c, vw, vh, x, y, 4) end
+    return stem(vw * .24, vh * .5) .. stem(vw * .76, vh * .46) .. stem(vw * .5, vh * .34)
+        .. Flora.leaf(c, vw * .44, vh * .8, -150, vh * .3, vh * .09) .. Flora.leaf(c, vw * .56, vh * .82, -30, vh * .3, vh * .09)
+        .. Flora.tulip(c, vw * .24, vh * .52, -18, vh * .2, c.bloom2)
+        .. Flora.daisy(c, vw * .76, vh * .34, vh * .19, 9)
+        .. Flora.rose(c, vw * .5, vh * .28, vh * .22, 10)
+end
+
+-- History: a fern crozier still unwinding.
+function Dock.dock_history(c, vw, vh)
+    return Flora.frond(c, vw * .68, vh, 24, vh * .46)
+        .. Flora.crozier(c, vw * .5, vh, 0, vh * .56, vh * .28)
+end
+
+-- Search: a dandelion clock, a lens on its stem.
+function Dock.dock_search(c, vw, vh)
+    return stalk(c, vw, vh, vw * .6, vh * .6, 5)
+        .. Flora.leaf(c, vw * .52, vh * .9, -160, vh * .3, vh * .09)
+        .. Flora.dandelion(c, vw * .46, vh * .4, vh * .35)
+end
+
+-- Settings: a daisy whose petals are the teeth of a wheel.
+function Dock.dock_settings(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .5, 5)
+        .. Flora.leaf(c, vw * .5, vh * .88, -150, vh * .3, vh * .09) .. Flora.leaf(c, vw * .5, vh * .82, -30, vh * .3, vh * .09)
+        .. Flora.daisy(c, vw * .5, vh * .38, vh * .37, 10)
+end
+
+-- Anything else: an honesty pod, a blank disc for the button's own icon.
+function Dock.dock_medallion(c, vw, vh)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5)
+        .. Flora.leaf(c, vw * .5, vh * .9, -30, vh * .28, vh * .09)
+        .. Svg.circle(vw * .5, vh * .4, vh * .36, c.pale, c.ink, 2.2) .. Svg.circle(vw * .5, vh * .4, vh * .29, c.cream, c.ink, 1.1)
+end
+
+-- Wi-Fi: a dragonfly, its wings coloured in when the network is on.
+function Dock.wifi(c, vw, vh, on)
+    return Flora.dragonfly(c, vw * .42, vh * .42, 62, vw * .25, tonumber(on) == 1 and 4 or 0)
+end
+
+-- The frontlight: a lamp bud hanging from a bent stalk, lit or not.
+function Dock.lamp(c, vw, vh, on)
+    local lit = tonumber(on) == 1
+    local stalk_pts = Svg.spline({ { vw * .2, vh }, { vw * .12, vh * .56 }, { vw * .3, vh * .14 }, { vw * .6, vh * .08 }, { vw * .72, vh * .3 } }, 8)
+    local rays = {}
+    if lit then
+        for a = 120, 240, 30 do
+            local x0, y0 = Svg.pol(vw * .44, a, vw * .72, vh * .42)
+            local x1, y1 = Svg.pol(vw * .56, a, vw * .72, vh * .42)
+            rays[#rays + 1] = string.format("M%s %s L%s %s", n(x0), n(y0), n(x1), n(y1))
+        end
+    end
+    return (lit and Svg.line(table.concat(rays, " "), c.ink, 2) or "")
+        .. Svg.stem(stalk_pts, Svg.taper(5, 3), c.stem, c.ink, 1.4)
+        .. Flora.rosebud(c, vw * .72, vh * .3, 180, vw * .27, lit and c.gold or c.cream)
+end
+
+-- The battery: a leaf coloured in as far as it is charged (`level` 0 to 10).
+function Dock.battery(c, vw, vh, level)
+    local f = math.max(0, math.min(10, tonumber(level) or 0)) / 10
+    local L, W, y = vw * .8, vh * .42, vh * .56
+    local x0 = vw * .12
+    local top = Svg.cubic(0, 0, L * .2, -W * 1.25, L * .7, -W * .95, L, 0, 24)
+    local bottom = Svg.cubic(0, 0, L * .3, W * .85, L * .7, W * .55, L, 0, 24)
+    local function upTo(edge)
+        local out = {}
+        for _i, p in ipairs(edge) do
+            if p[1] <= L * f then out[#out + 1] = p end
+        end
+        return out
+    end
+    local a, b = upTo(top), upTo(bottom)
+    local shape = {}
+    for _i, p in ipairs(a) do shape[#shape + 1] = p end
+    for i = #b, 2, -1 do shape[#shape + 1] = b[i] end
+    local whole = Svg.join(top, {})
+    for i = #bottom - 1, 2, -1 do whole[#whole + 1] = bottom[i] end
+    local body = Svg.path(Svg.poly(whole, true), c.cream)
+        .. (#shape > 2 and Svg.path(Svg.poly(shape, true), c.leaf) or "")
+        .. Svg.path(Svg.poly(whole, true), nil, c.ink, 2)
+        .. Svg.line(string.format("M0 0 Q%s %s %s 0", n(L * .5), n(-W * .25), n(L * .92)), c.ink, 1.1)
+    return Svg.line(string.format("M%s %s L%s %s", n(vw * .02), n(y + vh * .14), n(x0), n(y)), c.ink, 2.4) .. Svg.group(x0, y, -10, body)
+end
+
+return Dock
