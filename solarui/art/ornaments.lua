@@ -48,9 +48,9 @@ function Ornaments.dayphase(c, vw, vh, phase)
     end
     if phase == 0 then
         local r = vh * .3
-        return star(vw * .2, vh * .3, 6) .. star(vw * .8, vh * .22, 5) .. star(vw * .74, vh * .5, 4) .. horizon
+        return star(vw * .2, vh * .3, 6) .. star(vw * .8, vh * .22, 5) .. star(vw * .74, vh * .5, 4)
             .. Svg.path(string.format("M%s %s A%s %s 0 1 1 %s %s A%s %s 0 0 0 %s %sZ", n(cx + r * .5), n(hy - r * 1.3), n(r), n(r), n(cx - r * .3), n(hy - r * .1),
-                n(r * .78), n(r * .78), n(cx + r * .5), n(hy - r * 1.3)), c.cream, c.ink, 2)
+                n(r * .78), n(r * .78), n(cx + r * .5), n(hy - r * 1.3)), c.sky, c.ink, 2)
     end
     local r = vh * .27
     local sun = phase == 3 and c.bloom or c.gold

@@ -55,7 +55,7 @@ end
 function Home:status(scene)
     local fx, fy, fw, fh = 376, 8, 320, 130
     scene:backdrop("clock_frame", fx, fy, fw, fh)
-    scene:backdrop("clock_wing", 172, 63, fx - 176, 84, "l")
+    scene:backdrop("clock_wing", 172, 71, fx - 176, 84, "l")
     scene:backdrop("clock_wing", fx + fw + 4, 85, 1030 - fx - fw - 4, 84, "r")
     local clock = Label:new({ item = StatusBar.item("clock"), kind = "clock", align = "center", text = DeviceInfo.clock() })
     local date = Label:new({ item = { live = true, read = function() return Format.date("%a, %d %B") end }, kind = "small", color = "muted",
@@ -91,8 +91,9 @@ end
 -- The hero: the book in front of its halo, and all about it to the right.
 function Home:hero(scene, y, cur)
     scene:backdrop("peacock_fan", 20, y - 65, 600, 600)
-    scene:backdrop("halo", 85, y, 470, 470)
+    -- the sprig grows from behind the halo, so it is drawn first
     scene:backdrop("sprig", 486, y + 10, 120, 138)
+    scene:backdrop("halo", 85, y, 470, 470)
     local x0, w = 612, RIGHT - 612
     if not cur then
         scene:sprite("rose_cluster", 6, y + 330, 200, 300)
@@ -184,7 +185,7 @@ end
 -- The ornaments of the border, the sun or moon of the hour and a butterfly.
 function Home:ornaments(scene)
     scene:frameOrnaments()
-    scene:sprite("dayphase", 262, 4, 72, 54, nil, function()
+    scene:sprite("dayphase", 268, 24, 64, 44, nil, function()
         local h = tonumber(os.date("%H")) or 12
         return (h >= 5 and h < 8) and 1 or (h >= 8 and h < 17) and 2 or (h >= 17 and h < 20) and 3 or 0
     end)

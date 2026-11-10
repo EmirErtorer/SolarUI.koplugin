@@ -150,7 +150,7 @@ function Home.clock_wing(c, vw, vh, side)
     local line, pts = Flora.whiplash(c, vw, vh * .56)
     local len, up = Svg.length(pts), side == "l"
     local out = {}
-    for i, node in ipairs({ { .2, "leaf", 30, 58 }, { .42, "bud", 24, 70 }, { .62, "ivy", 22, 56 }, { .84, "leaf", 26, 64 } }) do
+    for i, node in ipairs({ { .2, "leaf", 20, 58 }, { .42, "bud", 17, 70 }, { .62, "ivy", 16, 56 }, { .84, "leaf", 19, 64 } }) do
         local x, y, ang = Svg.along(pts, len * node[1])
         out[#out + 1] = branch(c, x, y, ang + node[4] * (up and -1 or 1), node[3], node[2], i % 2 == 0 and c.sage or nil)
     end
