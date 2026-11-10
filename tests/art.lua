@@ -16,7 +16,7 @@ local time = require("ui/time")
 local SHEET = {
     { "vine_left", 150, 900 }, { "vine_right", 80, 420 }, { "halo", 480, 480 }, { "rose_cluster", 200, 300 }, { "sprig", 130, 150 },
     { "clock_frame", 320, 130 }, { "clock_wing", 200, 38, "l" }, { "clock_wing", 330, 38, "r" }, { "plaque", 350, 84 }, { "whiplash", 500, 24 },
-    { "progress", 400, 70, 0 }, { "progress", 400, 70, 42 }, { "progress", 400, 70, 100 },
+    { "progress", 400, 70, 0 }, { "progress", 400, 70, 7 }, { "progress", 400, 70, 42 }, { "progress", 400, 70, 78 }, { "progress", 400, 70, 100 },
     { "btn_details", 120, 120 }, { "btn_bookmarks", 120, 120 }, { "btn_highlights", 120, 120 },
     { "sunflower", 150, 150, 13 }, { "week", 410, 126, "0011011|5" }, { "week", 410, 126, "1100000|1" }, { "sunflower", 150, 150, 21 }, { "lily", 170, 160, 23 }, { "lily", 170, 160, 12 }, { "lily", 170, 160, 0 },
     { "shelf", 1012, 40 }, { "sprouts", 902, 64, 5 }, { "root", 1032, 40 },

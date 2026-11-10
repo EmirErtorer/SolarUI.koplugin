@@ -7,7 +7,7 @@ local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
 local n, vary = Svg.n, Svg.vary
-local sin, pi = math.sin, math.pi
+local sin = math.sin
 
 local Home = {}
 
@@ -226,40 +226,73 @@ function Home.whiplash(c, vw, vh)
     return (Flora.whiplash(c, vw, vh))
 end
 
--- Where the progress vine's stem is at `x` (shared with what is set on it).
-local function vineY(x, vw, vh)
-    return vh * .56 + vh * .13 * sin(2 * pi * (x - 6) / (vw * .243))
+-- The way the progress vine takes across a vw x vh canvas: a wave whose
+-- swings are never the same width or height twice.
+local function vineWay(vw, vh)
+    local way = { { 10, vh * .62 } }
+    local x, i = 10, 0
+    while true do
+        x = x + vw * (.07 + .08 * vary(i, 31))
+        if x > vw - 44 then break end
+        way[#way + 1] = { x, vh * (.56 + (i % 2 == 0 and -1 or 1) * (.05 + .15 * vary(i, 32))) }
+        i = i + 1
+    end
+    way[#way + 1] = { vw - 26, vh * .5 }
+    return Svg.spline(way, 8)
 end
 
--- The progress vine: grown and in leaf as far as `pct` percent, a rose at
--- its tip; the rest a dotted line with buds still closed.
+-- What grows at stop `k` of the read part of the progress vine, at (x, y)
+-- where it heads `ang`: a broad leaf, a rose leaf, a bud on a short stalk,
+-- two small leaves or a tendril, on whichever side, `s` the canvas height.
+local function vineGrowth(c, k, x, y, ang, s)
+    local side = vary(k, 33) > .5 and 1 or -1
+    local turn = ang + side * (48 + 34 * vary(k, 34))
+    local kind = math.floor(vary(k, 35) * 5)
+    if kind == 0 then
+        local L = s * (.42 + .2 * vary(k, 36))
+        return Flora.leaf(c, x, y, turn, L, L * .34)
+    elseif kind == 1 then
+        return Flora.roseLeaf(c, x, y, turn, s * .6, 3)
+    elseif kind == 2 then
+        local bx, by = Svg.pol(s * .26, turn + 90, x, y)
+        return Svg.line(string.format("M%s %s L%s %s", n(x), n(y), n(bx), n(by)), c.stem, 2.4)
+            .. Flora.rosebud(c, bx, by, turn + 90, s * .12, k % 2 == 0 and c.bloom or c.bloom2)
+    elseif kind == 3 then
+        return Flora.leaf(c, x, y, turn, s * .36, s * .13) .. Flora.leaf(c, x, y, ang - side * 62, s * .27, s * .1, c.sage)
+    end
+    return Flora.tendril(c, x, y, turn + 90, s * .3, side > 0) .. Flora.leaf(c, x, y, ang - side * 50, s * .3, s * .11, c.sage)
+end
+
+-- The progress vine: lush as far as `pct` percent, with leaves, buds and
+-- tendrils along a thick stem and a rose in bloom at its tip; the way still
+-- to go a thin line with pale leaf outlines. Unread, it is a bud at the start.
 function Home.progress(c, vw, vh, pct)
     pct = math.max(0, math.min(100, tonumber(pct) or 0))
-    local x0, x1 = 8, vw - 22
-    local tip = x0 + (x1 - x0) * pct / 100
-    local wave = vw * .243
-    local out, dots, grown = {}, {}, {}
-    for x = x0, x1, 9 do
-        if x > tip + 14 then dots[#dots + 1] = Svg.circle(x, vineY(x, vw, vh), 1.5, c.ink) end
-    end
-    for x = x0, tip, 4 do grown[#grown + 1] = { x, vineY(x, vw, vh) } end
-    grown[#grown + 1] = { tip, vineY(tip, vw, vh) }
-    -- a leaf or a closed bud at every crest and trough
-    local k = 0
-    local x = x0 + wave * .25
-    while x < x1 do
-        local up = k % 2 == 1
-        local y = vineY(x, vw, vh)
-        if x < tip - 10 then
-            out[#out + 1] = Flora.leaf(c, x, y, up and -62 or 62, vh * .46, vh * .15)
-        elseif x > tip + 22 then
-            out[#out + 1] = Flora.leaf(c, x, y, up and -62 or 62, vh * .26, vh * .08, c.cream, true)
+    local pts = vineWay(vw, vh)
+    local len = Svg.length(pts)
+    local tip = len * pct / 100
+    local faint = setmetatable({ ink = c.muted, leaf = c.soft, sage = c.soft }, { __index = c })
+    local out = { Svg.line(Svg.poly(pts), c.muted, 1.7) }
+    local lush = {}
+    local d, k = 16, 0
+    while d < len - 8 do
+        local x, y, ang = Svg.along(pts, d)
+        if d < tip - 18 then
+            lush[#lush + 1] = vineGrowth(c, k, x, y, ang, vh)
+        elseif d > tip + 24 and k % 2 == 0 then
+            out[#out + 1] = Flora.leaf(faint, x, y, ang + (k % 4 == 0 and -58 or 58), vh * (.2 + .1 * vary(k, 38)), vh * .075, nil, true)
         end
-        x, k = x + wave / 2, k + 1
+        d, k = d + 19 + 22 * vary(k, 37), k + 1
     end
-    local stem = #grown > 1 and Svg.stem(grown, Svg.taper(6.5, 4.5), c.stem, c.ink, 1.5) or ""
-    return table.concat(dots) .. table.concat(out) .. stem
-        .. Flora.roseGlyph(c, tip + 4, vineY(tip, vw, vh), vh * .2, pct * 3, c.bloom)
+    out[#out + 1] = table.concat(lush)
+    local tx, ty, tang = Svg.along(pts, tip)
+    if pct == 0 then
+        return table.concat(out) .. Flora.leaf(c, tx, ty, tang + 70, vh * .3, vh * .1) .. Flora.rosebud(c, tx, ty + 4, 24, vh * .2)
+    end
+    local grown = Svg.head(pts, tip)
+    if #grown > 1 and tip > 6 then out[#out + 1] = Svg.stem(grown, Svg.taper(7, 4.6), c.stem, c.ink, 1.5) end
+    return table.concat(out) .. Flora.leaf(c, tx, ty, tang - 128, vh * .34, vh * .12) .. Flora.leaf(c, tx, ty, tang + 118, vh * .3, vh * .11, c.sage)
+        .. Flora.rose(c, tx + 2, ty, vh * (.23 + .05 * pct / 100), pct * 3, c.bloom, c.bloom2)
 end
 
 -- The three book buttons, each its own plant.

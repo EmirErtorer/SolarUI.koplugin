@@ -185,6 +185,25 @@ function Svg.along(pts, dist)
     return last[1], last[2], math.deg(math.atan2(last[2] - before[2], last[1] - before[1]))
 end
 
+-- The first `dist` of a list of points: those passed on the way, and the
+-- point exactly `dist` along as the last.
+function Svg.head(pts, dist)
+    local out, run = { pts[1] }, 0
+    for i = 2, #pts do
+        local a, b = pts[i - 1], pts[i]
+        local dx, dy = b[1] - a[1], b[2] - a[2]
+        local len = sqrt(dx * dx + dy * dy)
+        if run + len >= dist then
+            local t = len > 0 and (dist - run) / len or 0
+            out[#out + 1] = { a[1] + dx * t, a[2] + dy * t }
+            return out
+        end
+        out[#out + 1] = b
+        run = run + len
+    end
+    return out
+end
+
 -- The length of a list of points.
 function Svg.length(pts)
     local run = 0
