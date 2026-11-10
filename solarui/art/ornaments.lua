@@ -102,7 +102,7 @@ end
 function Ornaments.peacock_fan(c, vw, vh)
     local cx, cy, reach = vw / 2, vh / 2, vw * .43
     local out = {}
-    for _i, a in ipairs({ 38, 58, 78 }) do
+    for _i, a in ipairs({ 112, 130 }) do
         local x, y = Svg.pol(reach, a, cx, cy)
         local qx, qy = Svg.pol(reach * .5, a, cx, cy)
         out[#out + 1] = Svg.line(string.format("M%s %s L%s %s", n(qx), n(qy), n(x), n(y)), c.stem, 3) .. Flora.peacock(c, x, y, a, 24)

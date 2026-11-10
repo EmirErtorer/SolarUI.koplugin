@@ -151,7 +151,7 @@ function Home:shelf(scene, y, cur)
     local step = (RIGHT - x0 - 88) / 5
     scene:backdrop("sprouts", x0 + 44, y + 122, step * 5, 64, 5)
     scene:backdrop("shelf", 30, y + 180, 1012, 40)
-    scene:backdrop("snail", 770, y - 6, 56, 38)
+    scene:backdrop("snail", 780, y + 1, 46, 31)
     if #books == 0 then
         scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), HEAD + 20, y + 90, 700)
     end
