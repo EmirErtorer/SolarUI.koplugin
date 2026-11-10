@@ -22,12 +22,12 @@ function Actions.open(path)
     App.openBook(path)
 end
 
--- Open the book at a data shard (its highlight), when it can be found.
-function Actions.openAt(path, shard)
+-- Open the book at a place in it (a highlight, note or bookmark), when it can be found.
+function Actions.openAt(path, place)
     App.openBook(path, function(ui)
-        if shard.page then
+        if place.page then
             local Event = require("ui/event")
-            ui:handleEvent(Event:new(ui.paging and "GotoPage" or "GotoXPointer", shard.page, shard.pos0))
+            ui:handleEvent(Event:new(ui.paging and "GotoPage" or "GotoXPointer", place.page, place.pos0))
         end
     end)
 end
@@ -45,7 +45,7 @@ function Actions.tapBook(path)
         return Actions.open(path)
     end
     armed = { path = path, at = now }
-    App.toast(_("TAP AGAIN TO OPEN"))
+    App.toast(_("Tap again to open"))
 end
 
 -- Take the book out of the reading history (the file stays).
@@ -55,7 +55,7 @@ function Actions.unhistory(path)
     App.update()
 end
 
--- Show the book's dossier.
+-- Show the book's details.
 function Actions.details(path)
     App.push("dossier", { path = path })
 end
@@ -299,7 +299,7 @@ end
 
 -- Every action on a book as a tile of a sheet: { icon, label, sub, danger, on_tap }.
 -- `after(new_path)` runs once a rename or move has put the book somewhere else.
--- The hold sheet and the dossier's "more" sheet both pick from this list.
+-- The hold sheet and the details "more" sheet both pick from this list.
 local function bookTile(path, key, after)
     local st = Books.state(path)
     local tiles = {
@@ -332,7 +332,7 @@ function Actions.bookSheet(path)
     bookSheet(path, { "open", "details", "status", "collections", "rename", "edit", "move", "forget", "delete" })
 end
 
--- What the dossier keeps out of sight: the rest of the actions on the book.
+-- What the details screen keeps out of sight: the rest of the actions on the book.
 function Actions.moreSheet(path, after)
     bookSheet(path, { "folder", "rename", "move", "forget", "delete" }, after)
 end

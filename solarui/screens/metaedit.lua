@@ -54,7 +54,7 @@ local function row(path, f)
             Label:new({ text = f.name:upper(), kind = "mono_small", color = "muted", width = Theme.px(112) }),
             Label:new({ text = value ~= "" and value or "—", kind = "body", grow = true, lines = 2,
                 color = value ~= "" and "ink" or "muted" }),
-            Label:new({ text = changed and _("EDITED") or "", kind = "micro", color = "muted" }),
+            Label:new({ text = changed and _("Edited") or "", kind = "micro", color = "muted" }),
         } }) })
 end
 
@@ -71,13 +71,13 @@ function MetaEdit:build()
         Label:new({ text = _("Tap a detail to change it. Hold it to bring back what the book says. The book file is not changed."),
             kind = "mono_small", color = "muted", lines = 3 }),
         Layout.Row:new({ gap = th.space.s, children = {
-            Button:new({ label = _("RESET ALL"), icon = "trash", grow = true, disabled = not Metadata.changed(path),
+            Button:new({ label = _("Reset all"), icon = "trash", grow = true, disabled = not Metadata.changed(path),
                 on_tap = function()
                     Metadata.reset(path)
                     App.toast(_("Back to the book's own"))
                     App.update()
                 end }),
-            Button:new({ label = _("DONE"), icon = "check", variant = "primary", grow = true, on_tap = function() App.back() end }),
+            Button:new({ label = _("Done"), icon = "check", variant = "primary", grow = true, on_tap = function() App.back() end }),
         } }),
     }
     return Frame.page({

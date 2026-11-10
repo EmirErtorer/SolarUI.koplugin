@@ -2,7 +2,7 @@
 -- remembering it (so home and System show it without asking again), and
 -- installing a release after checking its download.
 --
--- When it checks: when the reader asks (System > About > Updates), and by
+-- When it checks: when the reader asks (Settings > About > Updates), and by
 -- itself at most once a day when SolarUI opens, only if Wi-Fi is already
 -- connected (it never turns Wi-Fi on). A check is one request, run in a
 -- background process that ends with it.
@@ -87,10 +87,10 @@ function Updater.install(release, step, done)
         if not ok then Updater.error = why end
         done(ok, why)
     end
-    step(string.format(_("DOWNLOADING %s (%.1f MB)"), release.tag, release.size / 1048576))
+    step(string.format(_("Downloading %s (%.1f MB)"), release.tag, release.size / 1048576))
     Net.get(release.url, release.size, 300, function(zip, err)
         if not zip then return finish(nil, err) end
-        step(_("CHECKING AND UNPACKING"))
+        step(_("Checking and unpacking"))
         UIManager:nextTick(function()
             local Addons = require("solarui/apps/addons")
             local ok, res, uerr = pcall(Unpack.replace, zip, release, Policy.SELF.folder, Addons.pluginsDir(), Updater.folder())

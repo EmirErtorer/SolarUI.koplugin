@@ -59,7 +59,7 @@ function LaunchEdit:build()
             App.input(_("Button name"), c.name, function(text)
                 text = util.trim(text or "")
                 if text ~= "" then self:set("name", text) end
-            end, _("Save"), { placeholder = _("NAME") })
+            end, _("Save"), { placeholder = _("Name") })
         end })),
         row(_("Icon"), c.icon, Layout.Row:new({ gap = th.space.s, children = {
             Icon:new({ name = c.icon, size = 26 }),
@@ -71,13 +71,13 @@ function LaunchEdit:build()
     }
     local undo = builtin and entry.custom
     if not builtin or undo then
-        body[#body + 1] = Button:new({ label = builtin and _("RESTORE THE ORIGINAL") or _("DELETE THIS BUTTON"), icon = builtin and "restore" or "trash",
+        body[#body + 1] = Button:new({ label = builtin and _("Restore the original") or _("Delete this button"), icon = builtin and "restore" or "trash",
             variant = builtin and "secondary" or "danger", corners = "tb", on_tap = function()
                 Launcher.remove(entry.id)
                 App.pop()
             end })
     end
-    return Frame.page({ screen = self, title = c.name, path = builtin and _("BUILT-IN // REPLACE") or _("CUSTOM // BUTTON"), tab = "settings",
+    return Frame.page({ screen = self, title = c.name, tab = "settings",
         body = Layout.Column:new({ gap = th.space.s, clip = true, children = body }) })
 end
 

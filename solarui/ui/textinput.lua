@@ -46,7 +46,7 @@ function TextInput.build(o)
     table.insert(actions, 1, Label:new({ text = o.title, kind = "title", grow = true }))
     local header = Layout.Row:new({ gap = th.space.m, children = actions })
     if collapsed then
-        local panel = Panel:new({ shape = "header", title = _("// INPUT"), fill = "bg", width = o.screen_w,
+        local panel = Panel:new({ shape = "header", title = _("Type here"), fill = "bg", width = o.screen_w,
             pad = { th.space.m, th.space.m, th.space.s, th.space.m }, child = Layout.Column:new({ gap = th.space.m, children = { header, field } }) })
         panel.dock = "bottom"
         return panel, field
@@ -56,7 +56,7 @@ function TextInput.build(o)
         on_char = o.on_char, on_back = o.on_back, on_enter = o.on_enter,
         on_layer = o.on_layer, on_shift = o.on_shift,
     })
-    local panel = Panel:new({ shape = "header", title = _("// INPUT"), title_right = o.state.layer == "acc" and "ÁÃÇ" or nil,
+    local panel = Panel:new({ shape = "header", title = _("Type here"), title_right = o.state.layer == "acc" and "ÁÃÇ" or nil,
         fill = "bg", width = o.screen_w, pad = { th.space.m, th.space.m, th.space.s, th.space.m },
         child = Layout.Column:new({ gap = th.space.m, children = { header, field, keyboard } }) })
     panel.dock = "bottom"

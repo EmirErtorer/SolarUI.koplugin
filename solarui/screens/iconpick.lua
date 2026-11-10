@@ -57,9 +57,9 @@ function IconPick:build()
     })
     local body = { grid,
         Label:new({ text = _("Add your own SVGs to the solarui-icons folder in KOReader's settings folder."), kind = "micro", color = "muted", lines = 2 }),
-        Frame.pager(self, _("GLYPHS"), function(p) self:setPage(p) end) }
+        Frame.pager(self, _("Icons"), function(p) self:setPage(p) end) }
     table.insert(body, 1, self:sourceRow())
-    return Frame.page({ screen = self, title = _("Icon"), path = _("PICK // GLYPH"), tab = "settings",
+    return Frame.page({ screen = self, title = _("Icon"), tab = "settings",
         body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

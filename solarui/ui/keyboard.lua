@@ -91,7 +91,7 @@ function Keyboard.build(o)
     if layer ~= "abc" then layerKey("abc", "abc") end
     if layer ~= "num" then layerKey("num", "?123") end
     if layer ~= "acc" then layerKey("acc", "\u{E1}\u{E3}\u{E7}") end
-    bottom[#bottom + 1] = { label = table.concat({ "//", _("space"), "//" }, " "), on_tap = function() o.on_char(" ") end, variant = "ghost", kind = "mono_small" }
+    bottom[#bottom + 1] = { label = _("space"), on_tap = function() o.on_char(" ") end, variant = "ghost", kind = "mono_small" }
     bottom[#bottom + 1] = { label = o.enter_label or _("OK"), on_tap = o.on_enter, variant = "primary", width = Theme.px(110) }
     rows[#rows + 1] = bottom
     return Keyboard.grid(rows)

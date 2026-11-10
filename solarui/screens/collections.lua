@@ -1,4 +1,4 @@
--- Collections ("caches"): Favorites pinned as a large card over a paged grid
+-- Collections: Favorites pinned as a large card over a paged grid
 -- of every other collection, each showing a few of its covers. Tap one to
 -- browse it, hold one to rename or delete it; "+ New" makes a new collection.
 
@@ -81,7 +81,7 @@ local function holdSheet(c)
         if c.name == require("readcollection").default_collection_name then
             return App.toast(_("Favorites always stays"))
         end
-        App.sheet({ title = c.title, sub = _("COLLECTION"), actions = {
+        App.sheet({ title = c.title, sub = _("Collection"), actions = {
             { icon = "edit", label = _("Rename"), on_tap = function() askRename(c) end },
             { icon = "trash", label = _("Delete"), danger = true, on_tap = function() askRemove(c) end },
         } })
@@ -96,7 +96,7 @@ local function card(c, _w, h)
         mosaic(c.books, math.floor(inner_h * 0.75), inner_h),
         Layout.Column:new({ grow = true, gap = th.space.xs, children = {
             Label:new({ text = c.title, kind = "heading" }),
-            Label:new({ text = string.format(_.n("%d FILE", "%d FILES", #c.books), #c.books), kind = "mono_small" }),
+            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "mono_small" }),
         } }),
     } }) })
 end
@@ -112,9 +112,9 @@ local function pinned(c)
     return Panel:new({ shape = "chamfer", corners = "tb", pad = th.space.l, on_tap = open(c), on_hold = holdSheet(c), child = Layout.Row:new({ gap = th.space.l, children = {
         Layout.Overlay:new({ width = Theme.px(140), height = Theme.px(112), children = fan }),
         Layout.Column:new({ grow = true, gap = th.space.xs, children = {
-            Label:new({ text = _("PINNED // QUEUE"), kind = "micro", color = "muted" }),
+            Label:new({ text = _("Pinned"), kind = "micro", color = "muted" }),
             Label:new({ text = c.title, kind = "display" }),
-            Label:new({ text = string.format(_.n("%d FILE", "%d FILES", #c.books), #c.books), kind = "mono" }),
+            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "mono" }),
         } }),
     } }) })
 end
@@ -151,9 +151,9 @@ function CollectionsScreen:build()
         on_change = function(mode) self.mode, self.page = mode, 1; App.update() end })
     if self.mode == "series" then
         return Frame.page({
-            screen = self, title = _("Series"), path = "/SYS/SERIES/", tab = "collections",
+            screen = self, title = _("Series"), tab = "collections",
             body = Layout.Column:new({ gap = th.space.l, children = { switch, self:seriesBody(),
-                Frame.pager(self, _("CACHE"), function(p) self:setPage(p) end) } }),
+                Frame.pager(self, _("Page"), function(p) self:setPage(p) end) } }),
         })
     end
     local all = Collections.list()
@@ -170,9 +170,9 @@ function CollectionsScreen:build()
         kids[#kids + 1] = Grid:new({ grow = true, items = rest, page = self.page, cols = 2, cell_h = Theme.px(112),
             make = card, on_layout = function(_c, pages, page) self.pages, self.page = pages, page end })
     end
-    kids[#kids + 1] = Frame.pager(self, _("CACHE"), function(p) self:setPage(p) end)
+    kids[#kids + 1] = Frame.pager(self, _("Page"), function(p) self:setPage(p) end)
     return Frame.page({
-        screen = self, title = _("Collections"), path = "/SYS/CACHES/", tab = "collections",
+        screen = self, title = _("Collections"), tab = "collections",
         actions = { Button:new({ label = _("+ New"), variant = "primary", corners = "r", on_tap = create }) },
         body = Layout.Column:new({ gap = th.space.l, children = kids }),
     })

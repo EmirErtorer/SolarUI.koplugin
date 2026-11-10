@@ -31,22 +31,22 @@ local function range(kind, back)
         local monday = Statsdb.midnight((now.wday + 5) % 7 + 7 * back)
         local last = monday + 6 * DAY
         return { from = monday, to = monday + 7 * DAY - 1, count = 7, span = DAY,
-            caption = Format.upper(Format.date("%d %b", monday)) .. " - " .. Format.upper(Format.date("%d %b", last)),
-            label = function(i) return Format.upper(Format.date("%a", monday + (i - 1) * DAY + 43200)) end,
+            caption = Format.date("%d %b", monday) .. " - " .. Format.date("%d %b", last),
+            label = function(i) return Format.date("%a", monday + (i - 1) * DAY + 43200) end,
             start = function(i) return monday + (i - 1) * DAY end }
     elseif kind == "month" then
         local first = at(now.year, now.month - back, 1)
         local t = os.date("*t", first)
         local days = tonumber(os.date("%d", at(t.year, t.month + 1, 0)))
         return { from = first, to = first + days * DAY - 1, count = days, span = DAY,
-            caption = Format.upper(Format.date("%B %Y", first)),
+            caption = Format.date("%B %Y", first),
             label = function(i) return (i == 1 or i % 5 == 0) and tostring(i) or "" end,
             start = function(i) return first + (i - 1) * DAY end }
     end
     local year = now.year - back
     return { from = at(year, 1, 1), to = at(year + 1, 1, 1) - 1, count = 12, month = true, year = year,
         caption = tostring(year),
-        label = function(i) return Format.chars(Format.upper(Format.date("%b", at(year, i, 1))), 1) end,
+        label = function(i) return Format.chars(Format.date("%b", at(year, i, 1)), 1) end,
         start = function(i) return at(year, i, 1) end }
 end
 
@@ -75,9 +75,9 @@ end
 
 -- "+12% VS BEFORE", or nothing to compare with.
 local function versus(now_s, before_s)
-    if before_s <= 0 then return _("NOTHING BEFORE") end
+    if before_s <= 0 then return _("Nothing before") end
     local pct = math.floor((now_s - before_s) / before_s * 100 + 0.5)
-    return string.format(pct >= 0 and _("+%d%% VS BEFORE") or _("%d%% VS BEFORE"), pct)
+    return string.format(pct >= 0 and _("+%d%% vs before") or _("%d%% vs before"), pct)
 end
 
 -- One bar chart under its title, the picked bar's value (or the best) on the right.
@@ -94,7 +94,7 @@ end
 
 -- Build the tab. State on the screen: period ("week", "month", "year"),
 -- back (steps back from now) and bar (the bar picked, or nil). Minutes and
--- pages each get a chart (or one skyline of both).
+-- pages each get a chart (or one chart of both).
 function Period.build(screen)
     local th = Theme.get()
     local kind, back = screen.period, screen.back
@@ -111,7 +111,7 @@ function Period.build(screen)
         best_s, best_p = math.max(best_s, s), math.max(best_p, pages[i])
     end
     local pick = screen.bar and secs[screen.bar] and screen.bar or nil
-    local when = pick and Format.upper(Format.date("%d %b", r.start(pick) + 43200))
+    local when = pick and Format.date("%d %b", r.start(pick) + 43200)
 
     local seg = Controls.Segmented({ options = { { _("Week"), "week" }, { _("Month"), "month" }, { _("Year"), "year" } },
         value = kind, kind = "label", on_change = function(v) screen.period, screen.back, screen.bar = v, 0, nil; App.update() end })
@@ -119,15 +119,15 @@ function Period.build(screen)
         on_prev = function() screen.back, screen.bar = back + 1, nil; App.update() end,
         on_next = function() screen.back, screen.bar = back - 1, nil; App.update() end })
     local tiles = Layout.Row:new({ gap = th.space.m, children = {
-        tile(_("TIME"), Format.duration(total.seconds), versus(total.seconds, prev.seconds)),
-        tile(_("PAGES"), tostring(total.pages), string.format(_.n("%d DAY READ", "%d DAYS READ", total.days), total.days)),
-        tile(_("AVG / DAY"), Format.duration(math.floor(total.seconds / elapsed(r))), _("OVER THE PERIOD")),
+        tile(_("Time"), Format.duration(total.seconds), versus(total.seconds, prev.seconds)),
+        tile(_("Pages"), tostring(total.pages), string.format(_.n("%d day read", "%d days read", total.days), total.days)),
+        tile(_("Average per day"), Format.duration(math.floor(total.seconds / elapsed(r))), _("Over the period")),
     } })
     local body = { seg, nav, tiles }
-    body[#body + 1] = barChart(screen, _("MINUTES READ"), pick and string.format(_("%s = %d MIN"), when, Format.minutes(secs[pick]))
-        or string.format(_("BEST %s"), Format.duration(best_s)), mins, labels, pick, 120)
-    body[#body + 1] = barChart(screen, _("PAGES READ"), pick and string.format(_("%s = %d PG"), when, pages[pick])
-        or string.format(_("BEST %d PG"), best_p), pages, labels, pick, 100)
+    body[#body + 1] = barChart(screen, _("Minutes read"), pick and string.format(_("%s = %d min"), when, Format.minutes(secs[pick]))
+        or string.format(_("Best %s"), Format.duration(best_s)), mins, labels, pick, 120)
+    body[#body + 1] = barChart(screen, _("Pages read"), pick and string.format(_("%s = %d pages"), when, pages[pick])
+        or string.format(_("Best %d pages"), best_p), pages, labels, pick, 100)
     return Layout.Column:new({ grow = true, gap = th.space.l, children = body })
 end
 

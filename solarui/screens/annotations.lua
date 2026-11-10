@@ -17,9 +17,9 @@ local AnnotationsScreen = Screen:extend()
 
 -- What each kind is called and says when there is none.
 local KINDS = {
-    highlights = { title = _("HIGHLIGHTS"), empty = _("No highlights in this book yet. Select text while reading and choose Highlight.") },
-    notes = { title = _("NOTES"), empty = _("No notes in this book yet. Add a note to a highlight while reading.") },
-    bookmarks = { title = _("BOOKMARKS"), empty = _("No bookmarks in this book yet. Tap the top corner of a page while reading to add one.") },
+    highlights = { title = _("Highlights"), empty = _("No highlights in this book yet. Select text while reading and choose Highlight.") },
+    notes = { title = _("Notes"), empty = _("No notes in this book yet. Add a note to a highlight while reading.") },
+    bookmarks = { title = _("Bookmarks"), empty = _("No bookmarks in this book yet. Tap the top corner of a page while reading to add one.") },
 }
 
 -- Start on the first page.
@@ -31,7 +31,7 @@ local function meta(a)
     if a.chapter and a.chapter ~= "" then parts[#parts + 1] = a.chapter end
     if a.pageno then parts[#parts + 1] = string.format("PG %s", a.pageno) end
     if a.date then parts[#parts + 1] = a.date:match("^%S+") or a.date end
-    return table.concat(parts, " // ")
+    return table.concat(parts, " · ")
 end
 
 -- One saved item as a card.
@@ -61,7 +61,7 @@ function AnnotationsScreen:build()
     if #cards == 0 then
         body = Label:new({ grow = true, text = KINDS[kind].empty, kind = "body", color = "muted", align = "center", lines = 4 })
     else
-        body = Frame.paged(self, cards, _("SECTOR"))
+        body = Frame.paged(self, cards, _("Page"))
     end
     return Frame.page({
         screen = self, title = KINDS[kind].title, path = Books.info(path).title, tab = "library",

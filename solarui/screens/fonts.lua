@@ -1,4 +1,4 @@
--- Choosing SolarUI's font: the bundled cyberpunk sets first, then any font
+-- Choosing SolarUI's font: the bundled sets first, then any font
 -- installed on the device, each shown in its own face. Paged, so any number
 -- of fonts fits.
 
@@ -58,7 +58,7 @@ function FontsScreen:build()
     if self.tab == "device" and not self.device then self.device = deviceSets() end
     local sets = self.tab == "device" and self.device or Registry.fontSets()
     local body = {
-        Controls.Segmented({ options = { { _("Cyberpunk"), "cyber" }, { _("Device"), "device" } }, value = self.tab, kind = "label",
+        Controls.Segmented({ options = { { _("Bundled"), "cyber" }, { _("Device"), "device" } }, value = self.tab, kind = "label",
             on_change = function(v) self.tab, self.page = v, 1; App.update() end }),
     }
     if #sets == 0 then
@@ -67,9 +67,9 @@ function FontsScreen:build()
         body[#body + 1] = Grid:new({ grow = true, items = sets, page = self.page, cols = 1, cell_h = Theme.px(64), row_gap = th.space.s,
             make = function(set) return FontsScreen.card(set, set.id == chosen) end,
             on_layout = function(_c, pages, page) self.pages, self.page = pages, page end })
-        body[#body + 1] = Frame.pager(self, self.tab == "device" and _("FONTS") or _("SETS"), function(p) self:setPage(p) end)
+        body[#body + 1] = Frame.pager(self, self.tab == "device" and _("Fonts") or _("Sets"), function(p) self:setPage(p) end)
     end
-    return Frame.page({ screen = self, title = _("Fonts"), path = string.format(_.n("%d AVAILABLE", "%d AVAILABLE", #sets), #sets), tab = "settings",
+    return Frame.page({ screen = self, title = _("Fonts"), path = string.format(_.n("%d available", "%d available", #sets), #sets), tab = "settings",
         body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

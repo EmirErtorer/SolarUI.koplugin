@@ -1,4 +1,4 @@
--- A book's dossier: who the book is, the synopsis with the room that is left, the
+-- A book's details: who the book is, the synopsis with the room that is left, the
 -- saved highlights, notes and bookmarks as buttons to their lists, and the actions.
 
 local Actions = require("solarui/actions")
@@ -26,8 +26,8 @@ local _ = require("solarui/gettext")
 
 local Dossier = Screen:extend()
 
--- Reading status as the dossier names it.
-local STATUS = { new = _("NEW"), reading = _("READING"), complete = _("DONE"), abandoned = _("ON HOLD") }
+-- Reading status as the details screen names it.
+local STATUS = { new = _("New"), reading = _("Reading"), complete = _("Done"), abandoned = _("Paused") }
 
 -- Swipe up and down to page through a long synopsis.
 function Dossier:onSwipe(dir)
@@ -55,19 +55,19 @@ end
 -- When the book was added and last opened.
 local function datesLine(path)
     local added = (lfs.attributes(path) or {}).modification
-    return string.format(_("ADDED %s // OPENED %s"), added and os.date("%Y-%m-%d", added) or "?", Format.ago(History.lastOpened(path)))
+    return string.format(_("Added %s · opened %s"), added and os.date("%Y-%m-%d", added) or "?", Format.ago(History.lastOpened(path)))
 end
 
 -- How far the book is read: one line of numbers over the bar (nothing for a book not started).
 local function progress(path, st)
     local th = Theme.get()
     local pct = math.floor(st.percent * 100 + 0.5)
-    local text = string.format(_("DECRYPTED %d%%"), pct)
+    local text = string.format(_("%d%% read"), pct)
     local t = Insights.book(path)
     if t and t.seconds > 0 then
         local left = st.status == "complete" and 0 or math.max(0, t.total_pages - t.pages) * t.per_page
-        text = text .. string.format(" // %s", Format.duration(t.seconds))
-        if left > 0 then text = text .. string.format(_(" // %s LEFT"), Format.duration(left)) end
+        text = text .. string.format(" · %s", Format.duration(t.seconds))
+        if left > 0 then text = text .. string.format(_(" · %s left"), Format.duration(left)) end
     end
     return Layout.Column:new({ gap = th.space.xs, children = {
         Label:new({ text = text, kind = "mono_small", lines = 2 }),
@@ -75,7 +75,7 @@ local function progress(path, st)
     } })
 end
 
--- Build the dossier: who the book is, the synopsis with all the room that is left, and a short row of actions.
+-- Build the details screen: who the book is, the synopsis with all the room that is left, and a short row of actions.
 function Dossier:build()
     local th = Theme.get()
     self.synopsis_page = self.synopsis_page or {}
@@ -85,18 +85,18 @@ function Dossier:build()
     local who = info.author or _("Unknown author")
     if info.series then who = who .. " \u{B7} " .. info.series .. (info.series_index and (" #" .. info.series_index) or "") end
     local held = Collections.holding(path)
-    -- after a rename or move the dossier follows the book to its new path
+    -- after a rename or move the screen follows the book to its new path
     local function moved(to) self.params.path = to; App.update() end
 
     local chips = Layout.Row:new({ gap = th.space.s, children = {
-        Button:new({ label = string.format("%s \u{B7} %s", _("STATUS"), STATUS[st.status] or ""), variant = "chip", kind = "mono_small",
+        Button:new({ label = string.format("%s \u{B7} %s", _("Status"), STATUS[st.status] or ""), variant = "chip", kind = "mono_small",
             on_tap = function() Actions.statusSheet(path) end }),
-        Button:new({ label = #held > 0 and string.format(_("CACHES \u{B7} %d"), #held) or _("+ CACHE"), variant = "chip", kind = "mono_small",
+        Button:new({ label = #held > 0 and string.format(_("Collections \u{B7} %d"), #held) or _("+ Collection"), variant = "chip", kind = "mono_small",
             on_tap = function() Actions.collect(path) end }),
     } })
     local facts = { Label:new({ text = info.title, kind = "display", lines = 3 }),
         Label:new({ text = who, kind = "body", color = "muted", lines = 2 }) }
-    if info.genres and #info.genres > 0 then facts[#facts + 1] = line(table.concat(info.genres, " \u{B7} "):upper()) end
+    if info.genres and #info.genres > 0 then facts[#facts + 1] = line(table.concat(info.genres, " \u{B7} ")) end
     facts[#facts + 1] = line(formatLine(path, info, st))
     facts[#facts + 1] = line(datesLine(path))
     facts[#facts + 1] = chips
@@ -107,7 +107,7 @@ function Dossier:build()
 
     local synopsis = Layout.Column:new({ grow = true, gap = th.space.s, children = {
         Layout.Row:new({ gap = th.space.m, children = {
-            Label:new({ text = _("SYNOPSIS"), kind = "micro", color = "muted" }),
+            Label:new({ text = _("Synopsis"), kind = "micro", color = "muted" }),
             Deco.Divider:new({ grow = true }),
         } }),
         ScrollText:new({ grow = true, text = info.description and util.htmlToPlainTextIfHtml(info.description) or _("No description in this book's details."),
@@ -122,14 +122,14 @@ function Dossier:build()
             on_tap = function() App.push("annotations", { path = path, kind = kind }) end })
     end
     local counts = Layout.Row:new({ gap = th.space.m, children = {
-        count("highlights", _("HIGHLIGHTS")), count("notes", _("NOTES")), count("bookmarks", _("BOOKMARKS")),
+        count("highlights", _("Highlights")), count("notes", _("Notes")), count("bookmarks", _("Bookmarks")),
     } })
 
-    local main = Button:new({ label = _("OPEN FILE"), icon = "forward", variant = "primary", corners = "tb", grow = true, on_tap = function() Actions.open(path) end })
+    local main = Button:new({ label = _("Open book"), icon = "forward", variant = "primary", corners = "tb", grow = true, on_tap = function() Actions.open(path) end })
     local actions = Layout.Row:new({ gap = th.space.s, height = Theme.px(64), children = {
         main,
-        Button:new({ label = _("EDIT INFO"), icon = "edit", variant = "tab", kind = "mono_small", on_tap = function() Actions.editDetails(path) end }),
-        Button:new({ label = _("MORE"), icon = "menu", variant = "tab", kind = "mono_small", on_tap = function() Actions.moreSheet(path, moved) end }),
+        Button:new({ label = _("Edit details"), icon = "edit", variant = "tab", kind = "mono_small", on_tap = function() Actions.editDetails(path) end }),
+        Button:new({ label = _("More"), icon = "menu", variant = "tab", kind = "mono_small", on_tap = function() Actions.moreSheet(path, moved) end }),
     } })
 
     local kids = { head }
@@ -138,7 +138,7 @@ function Dossier:build()
     kids[#kids + 1] = counts
     kids[#kids + 1] = actions
     return Frame.page({
-        screen = self, title = _("File dossier"), path = filemanagerutil.abbreviate(dir), tab = "library",
+        screen = self, title = _("Details"), path = filemanagerutil.abbreviate(dir), tab = "library",
         body = Layout.Column:new({ gap = th.space.l, children = kids }),
     })
 end

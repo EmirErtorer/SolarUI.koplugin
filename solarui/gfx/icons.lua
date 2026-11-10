@@ -147,7 +147,7 @@ end
 -- has any icon.
 function Icons.sources()
     local out = {}
-    for _i, src in ipairs({ { id = "set", label = _("SOLARUI") }, { id = "reader", label = _("READER") }, { id = "ko", label = _("KOREADER") } }) do
+    for _i, src in ipairs({ { id = "set", label = _("SolarUI") }, { id = "reader", label = _("Reader") }, { id = "ko", label = _("KOReader") } }) do
         src.names = Icons.list(src.id)
         if #src.names > 0 then out[#out + 1] = src end
     end

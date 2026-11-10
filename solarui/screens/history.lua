@@ -1,4 +1,4 @@
--- The reading log ("telemetry"): tabs for the log itself, a week, month or
+-- The reading log: tabs for the log itself, a week, month or
 -- year at a time, streaks and records, a calendar, and the yearly goal. A
 -- scope button limits every number to chosen folders. Each tab is a module
 -- in screens/log/.
@@ -57,9 +57,9 @@ function History:build()
             on_tap = function() Metric.toggle(); App.update() end })
     end
     local n = #Scope.folders()
-    local path = "/VAR/LOG/" .. (Scope.active() and (" // " .. string.format(_.n("%d FOLDER", "%d FOLDERS", n), n)) or "") -- i18n: keep
+    local path = Scope.active() and string.format(_.n("%d folder", "%d folders", n), n) or nil
     return Frame.page({
-        screen = self, title = _("Telemetry.log"), path = path, tab = "history", actions = actions,
+        screen = self, title = _("Reading log"), path = path, tab = "history", actions = actions,
         body = Layout.Column:new({ gap = th.space.m, children = { tabs, module.build(self) } }),
     })
 end

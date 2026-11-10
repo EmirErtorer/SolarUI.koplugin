@@ -77,7 +77,7 @@ function FilePick:build()
         grow = true, items = items, page = self.page, cols = 1, cell_h = Theme.px(54), gap = 0, row_gap = 0,
         make = function(e)
             return ListRow.build({ icon = e.dir and "folder" or "image", title = e.name, title_kind = "body",
-                meta = e.dir and _("FOLDER") or Format.size(e.size),
+                meta = e.dir and _("Folder") or Format.size(e.size),
                 on_tap = function()
                     if e.dir then self:cd(e.path) else params.on_pick(e.path) end
                 end })
@@ -85,15 +85,15 @@ function FilePick:build()
         on_layout = function(_cap, pages, page) self.pages, self.page = pages, page end,
     })
     local body = { Label:new({ text = self.dir, kind = "mono_small", color = "muted" }), grid,
-        Frame.pager(self, _("FILES"), function(p) self:setPage(p) end) }
+        Frame.pager(self, _("Files"), function(p) self:setPage(p) end) }
     if params.pick_dir then
-        table.insert(body, 2, Button:new({ label = _("SAVE HERE"), icon = "download", variant = "primary",
+        table.insert(body, 2, Button:new({ label = _("Save here"), icon = "download", variant = "primary",
             on_tap = function() params.on_pick(self.dir) end }))
     end
     if #items == 0 then
         table.insert(body, params.pick_dir and 3 or 2, Label:new({ text = params.pick_dir and _("No folders here.") or _("No pictures or folders here."), kind = "small", color = "muted" }))
     end
-    return Frame.page({ screen = self, title = params.title or (params.pick_dir and _("Choose a folder") or _("Choose a file")), path = params.pick_dir and _("PICK // FOLDER") or _("PICK // FILE"), tab = "settings",
+    return Frame.page({ screen = self, title = params.title or (params.pick_dir and _("Choose a folder") or _("Choose a file")), tab = "settings",
         actions = { up }, body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

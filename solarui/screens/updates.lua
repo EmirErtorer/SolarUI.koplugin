@@ -55,7 +55,7 @@ local function card(rel, label, action)
     local kids = {
         Layout.Column:new({ grow = true, children = {
             Label:new({ text = "v" .. rel.version, kind = "title" }),
-            Label:new({ text = (rel.pre and _("PRERELEASE") or _("STABLE")) .. (rel.date and (" // " .. rel.date) or ""),
+            Label:new({ text = (rel.pre and _("Prerelease") or _("Stable")) .. (rel.date and (" · " .. rel.date) or ""),
                 kind = "mono_small", color = "muted" }),
         } }),
     }
@@ -73,15 +73,15 @@ function Updates:build()
     local th = Theme.get()
     local o = Updater.offers
     local status
-    if Updater.busy == "checking" then status = _("ASKING GITHUB...")
-    elseif Updater.installed then status = string.format(_("v%s INSTALLED // RESTART KOREADER"), Updater.installed)
-    elseif Updater.error then status = string.format(_("CHECK FAILED // %s"), Updater.error)
-    elseif o then status = (o.stable_action == "update" or o.pre_action == "try") and _("UPDATE AVAILABLE") or _("UP TO DATE")
-    else status = _("NOT CHECKED YET") end
+    if Updater.busy == "checking" then status = _("Asking GitHub...")
+    elseif Updater.installed then status = string.format(_("v%s installed. Restart KOReader."), Updater.installed)
+    elseif Updater.error then status = string.format(_("Check failed: %s"), Updater.error)
+    elseif o then status = (o.stable_action == "update" or o.pre_action == "try") and _("Update available") or _("Up to date")
+    else status = _("Not checked yet") end
     local body = {
         Layout.Row:new({ gap = th.space.m, children = {
             Layout.Column:new({ grow = true, children = {
-                Label:new({ text = "SOLARUI v" .. Version, kind = "title" }), -- i18n: keep
+                Label:new({ text = "SolarUI v" .. Version, kind = "title" }), -- i18n: keep
                 Label:new({ text = status, kind = "mono_small", color = "muted", lines = 2 }),
             } }),
             Button:new({ label = _("Check"), on_tap = function() self:check(); App.update() end }),
@@ -99,7 +99,7 @@ function Updates:build()
         if o.pre_action == "try" then shown = o.pre end
     end
     if shown and shown.notes ~= "" then
-        body[#body + 1] = Panel:new({ shape = "brackets", label = string.format(_("NOTES // v%s"), shown.version),
+        body[#body + 1] = Panel:new({ shape = "brackets", label = string.format(_("Notes for v%s"), shown.version),
             pad = th.space.l, grow = true, child = ScrollText:new({ text = Policy.notes(shown.notes), kind = "small",
                 state = self.notes_page, on_turn = function() App.update() end }) })
     else
@@ -114,7 +114,7 @@ function Updates:build()
         Label:new({ text = _("Tell me about prereleases (test builds, newer but less tried)"), kind = "small", grow = true, lines = 2 }),
         Controls.Toggle:new({ on = Updater.preOn(), on_change = function(on) Settings.save("update_pre", on); App.update() end }),
     } })
-    return Frame.page({ screen = self, title = _("Updates"), path = string.format(_("GITHUB // %s"), Policy.SELF.repo:upper()), tab = "settings",
+    return Frame.page({ screen = self, title = _("Updates"), path = Policy.SELF.repo, tab = "settings",
         body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

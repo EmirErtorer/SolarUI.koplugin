@@ -9,11 +9,11 @@ local Achievements = {}
 -- Each ladder: its name, the levels with their short labels, and where its
 -- number comes from.
 local LADDERS = {
-    { name = _("CLEARANCE"), item = _("CLEARANCE_%dH"), levels = Insights.MILESTONES, of = function(n) return n.hours end,
+    { name = _("Hours read"), item = _("%d hours"), levels = Insights.MILESTONES, of = function(n) return n.hours end,
         short = function(v) return v >= 1000 and (v / 1000) .. "K" or tostring(v) end },
-    { name = _("UPTIME"), item = _("UPTIME_%dD"), levels = { 3, 7, 14, 30, 100, 365 }, of = function(n) return n.streak end,
+    { name = _("Day streak"), item = _("%d days"), levels = { 3, 7, 14, 30, 100, 365 }, of = function(n) return n.streak end,
         short = tostring },
-    { name = _("ARCHIVE"), item = _("ARCHIVE_%d"), levels = { 1, 5, 10, 25, 50, 100 }, of = function(n) return n.finished end,
+    { name = _("Books finished"), item = _("%d books"), levels = { 1, 5, 10, 25, 50, 100 }, of = function(n) return n.finished end,
         short = tostring },
 }
 

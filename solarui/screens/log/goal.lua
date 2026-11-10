@@ -50,15 +50,15 @@ function GoalTab.build(screen)
     local ladders = Achievements.ladders(numbers)
     local got, latest = Achievements.summary(ladders)
 
-    local nav = navrow({ label = string.format(_("ARCHIVE_%d"), year), can_next = screen.goal_back > 0,
+    local nav = navrow({ label = string.format(_("%d"), year), can_next = screen.goal_back > 0,
         on_prev = function() screen.goal_back, screen.page = screen.goal_back + 1, 1; App.update() end,
         on_next = function() screen.goal_back, screen.page = screen.goal_back - 1, 1; App.update() end })
     local goal = Layout.Column:new({ gap = th.space.s, children = {
         Layout.Row:new({ gap = th.space.m, children = {
-            tile(_("FINISHED"), string.format("%d/%d", #shelf, target), string.format(_("%d%% OF THE GOAL"), math.floor(math.min(#shelf / target, 1) * 100))),
-            tile(_("ACHIEVED"), tostring(got), latest or _("NONE YET")),
+            tile(_("Finished"), string.format("%d/%d", #shelf, target), string.format(_("%d%% of the goal"), math.floor(math.min(#shelf / target, 1) * 100))),
+            tile(_("Achieved"), tostring(got), latest or _("None yet")),
             Layout.Column:new({ children = {
-                Label:new({ text = _("YEAR GOAL"), kind = "micro", color = "muted" }),
+                Label:new({ text = _("Year goal"), kind = "micro", color = "muted" }),
                 Controls.Stepper({ value = target, min = 1, max = 999, step = 1, format = function(v) return tostring(v) end, value_w = 48,
                     on_change = function(v) Goal.setTarget(v); App.update() end }),
             } }),
@@ -68,12 +68,12 @@ function GoalTab.build(screen)
     local body = { nav, goal }
     for _i, l in ipairs(ladders) do body[#body + 1] = ladder(l) end
     if #shelf == 0 then
-        body[#body + 1] = Label:new({ grow = true, text = _("NO BOOKS FINISHED THIS YEAR. MARK A BOOK DONE AND IT SHELVES HERE."), kind = "small", color = "muted", lines = 3 })
+        body[#body + 1] = Label:new({ grow = true, text = _("No books finished this year. Mark a book as done and it shelves here."), kind = "small", color = "muted", lines = 3 })
     else
         body[#body + 1] = Grid:new({ grow = true, items = shelf, page = screen.page, min_cell_w = Theme.px(96), ratio = 1.72,
             make = function(item, w, h) return BookTile.build(item.path, w, h, { on_tap = function() Actions.details(item.path) end }) end,
             on_layout = function(_cap, pages, page) screen.pages, screen.page = pages, page end })
-        body[#body + 1] = Frame.pager(screen, _("SHELF"), function(p) screen:setPage(p) end)
+        body[#body + 1] = Frame.pager(screen, _("Shelf"), function(p) screen:setPage(p) end)
     end
     return Layout.Column:new({ grow = true, gap = th.space.m, children = body })
 end

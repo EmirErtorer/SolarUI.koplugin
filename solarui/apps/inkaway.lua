@@ -13,7 +13,7 @@ local InkAway = {
     -- the event Ink Away opens on
     open_event = "InkAwayOpen",
     icon = "pen",
-    tagline = _("DRAW // NOTES // INK"),
+    tagline = _("Draw, notes and ink"),
     description = _("Draw, take notes and write on your books with a finger or a stylus: drawings with layers, notebooks with lined, grid and planner pages, and ink on any book that follows the text. Export a transparent PNG or a PDF."),
 }
 
@@ -59,7 +59,7 @@ function InkAway.quickMenu(ui, in_book)
     end
     local o = {
         title = "Ink Away",   -- i18n: keep
-        sub = _("DRAW // NOTES // INK"), cols = 1, dock = "top", actions = actions,
+        sub = _("Draw, notes and ink"), cols = 1, dock = "top", actions = actions,
     }
     if not in_book then
         require("solarui/app").sheet(o)

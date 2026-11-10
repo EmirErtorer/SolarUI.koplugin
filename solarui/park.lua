@@ -1,4 +1,4 @@
--- Reader parking (System > Speed, on by default). Leaving a book for home
+-- Reader parking (Settings > Speed, on by default). Leaving a book for home
 -- does not close it: home is raised over the live reader, which stays open
 -- underneath, so going home takes one paint and opening the same book again
 -- is a swap, with no load. The real close (KOReader writing the book's data

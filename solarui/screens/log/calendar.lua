@@ -21,7 +21,7 @@ local function weekdays()
     local kids = {}
     for i = 1, 7 do
         -- 1 January 2001 was a Monday
-        local initial = Format.chars(Format.upper(Format.date("%a", os.time({ year = 2001, month = 1, day = i, hour = 12 }))), 1)
+        local initial = Format.chars(Format.date("%a", os.time({ year = 2001, month = 1, day = i, hour = 12 })), 1)
         kids[i] = Label:new({ text = initial, kind = "micro", color = "muted", align = "center", grow = true })
     end
     return Layout.Row:new({ children = kids })
@@ -47,7 +47,7 @@ function Calendar.build(screen)
         end
     end
     for day, d in pairs(month_days) do levels[day] = Metric.level(Metric.value(d), goal, top) end
-    local nav = navrow({ label = Format.upper(Format.date("%B %Y", first)), can_next = screen.cal_back > 0,
+    local nav = navrow({ label = Format.date("%B %Y", first), can_next = screen.cal_back > 0,
         on_prev = function() screen.cal_back = screen.cal_back + 1; App.update() end,
         on_next = function() screen.cal_back = screen.cal_back - 1; App.update() end })
     local month = Charts.Month:new({ first = (tonumber(os.date("%w", first)) + 6) % 7 + 1, days = days, levels = levels,
@@ -68,10 +68,10 @@ function Calendar.build(screen)
         end
     end
     local pattern = Layout.Column:new({ gap = th.space.s, children = {
-        Label:new({ text = string.format(_("WHEN YOU READ // MON-SUN BY HOUR // %s"), Metric.pages() and _("PAGES") or _("TIME")), kind = "label" }),
+        Label:new({ text = string.format(_("When you read, by hour: %s"), Metric.pages() and _("Pages") or _("Time")), kind = "label" }),
         Charts.Heatmap:new({ levels = lv, weeks = 24, rows = 7, col_labels = { [1] = "00", [7] = "06", [13] = "12", [19] = "18", [24] = "23" } }),
     } })
-    local note = string.format(_.n("%s // %d PAGE THIS MONTH", "%s // %d PAGES THIS MONTH", month_pages), Format.duration(month_seconds), month_pages)
+    local note = string.format(_.n("%s · %d page this month", "%s · %d pages this month", month_pages), Format.duration(month_seconds), month_pages)
     local kids = { nav, weekdays(), month }
     kids[#kids + 1] = Label:new({ text = note, kind = "mono_small", color = "muted" })
     kids[#kids + 1] = pattern

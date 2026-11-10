@@ -34,7 +34,7 @@ end
 local function itemRow(it, buttons)
     return EditRow.line({
         Label:new({ text = it.name, kind = "heading", grow = true }),
-        Label:new({ text = it.read() or _("NO SIGNAL"), kind = "mono_small", color = "muted" }),
+        Label:new({ text = it.read() or _("Nothing to show"), kind = "mono_small", color = "muted" }),
     }, buttons)
 end
 
@@ -58,7 +58,7 @@ function TopBar:build()
                 end, _("Save"), { placeholder = StatusBar.TAG })
             end }),
         } }),
-        Label:new({ text = string.format(_("SHOWN %d/%d"), #ids, StatusBar.MAX), kind = "label" }),
+        Label:new({ text = string.format(_("Shown %d/%d"), #ids, StatusBar.MAX), kind = "label" }),
     }
     for i, id in ipairs(ids) do
         local it = StatusBar.item(id)
@@ -71,7 +71,7 @@ function TopBar:build()
             })
         end
     end
-    body[#body + 1] = Label:new({ text = _("AVAILABLE"), kind = "label" })
+    body[#body + 1] = Label:new({ text = _("Available"), kind = "label" })
     for _i, it in ipairs(StatusBar.ITEMS) do
         if not on[it.id] then
             body[#body + 1] = itemRow(it, { iconButton("plus", function()
@@ -82,7 +82,7 @@ function TopBar:build()
             end) })
         end
     end
-    return Frame.page({ screen = self, title = _("Top bar"), path = _("ADD // MOVE // REMOVE"), tab = "settings",
+    return Frame.page({ screen = self, title = _("Top bar"), tab = "settings",
         body = Layout.Column:new({ gap = th.space.s, clip = true, children = body }) })
 end
 

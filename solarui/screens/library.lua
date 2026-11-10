@@ -135,13 +135,13 @@ end
 function Library:source()
     local p = self.params
     if p.collection then
-        return {}, Collections.books(p.collection), Collections.title(p.collection), "/SYS/CACHES/"
+        return {}, Collections.books(p.collection), Collections.title(p.collection), nil
     end
     if p.series then
-        return {}, Groups.seriesBooks(p.series), p.series, "/SYS/SERIES/"
+        return {}, Groups.seriesBooks(p.series), p.series, nil
     end
     if p.query then
-        return {}, Data.search(p.query), _("Search"), "/GREP/"
+        return {}, Data.search(p.query), _("Search"), nil
     end
     if self:grouped() then return self:groupSource() end
     local dir = self:dir()
@@ -271,13 +271,13 @@ function Library:selectBar()
     end
     return Layout.Column:new({ gap = th.space.xs, children = {
         Layout.Row:new({ gap = th.space.s, children = {
-            Label:new({ text = string.format(_.n("%d PICKED", "%d PICKED", #picked), #picked), kind = "mono", grow = true }),
-            Button:new({ label = _("ALL"), variant = "chip", height = Theme.px(36), on_tap = function() self:toggleAll() end }),
-            Button:new({ label = _("DONE"), variant = "chip_on", height = Theme.px(36), on_tap = function() self:endSelect() end }),
+            Label:new({ text = string.format(_.n("%d picked", "%d picked", #picked), #picked), kind = "mono", grow = true }),
+            Button:new({ label = _("All"), variant = "chip", height = Theme.px(36), on_tap = function() self:toggleAll() end }),
+            Button:new({ label = _("Done"), variant = "chip_on", height = Theme.px(36), on_tap = function() self:endSelect() end }),
         } }),
         Layout.Row:new({ gap = th.space.xs, children = {
-            act(_("STATUS"), Actions.statusSheetMany), act(_("CACHE +"), Actions.collectMany),
-            act(_("MOVE"), Actions.moveMany), act(_("DELETE"), Actions.deleteMany),
+            act(_("Status"), Actions.statusSheetMany), act(_("Collect"), Actions.collectMany),
+            act(_("Move"), Actions.moveMany), act(_("Delete"), Actions.deleteMany),
         } }),
     } })
 end
@@ -302,7 +302,7 @@ function Library:cell(item, w, h, as_list)
         local open = function() self:go(path) end
         local hold = not (self.params.pick or f.virtual) and function() Actions.folderSheet(path, open) end or nil
         if as_list then
-            return ListRow.build({ icon = "folder", title = f.name, meta = f.virtual and string.format(_.n("%d BOOK", "%d BOOKS", f.count), f.count) or _("FOLDER"),
+            return ListRow.build({ icon = "folder", title = f.name, meta = f.virtual and string.format(_.n("%d book", "%d books", f.count), f.count) or _("Folder"),
                 height = h, on_tap = open, on_hold = hold })
         end
         local inside = not f.virtual and Data.list(path).books
@@ -320,7 +320,7 @@ function Library:cell(item, w, h, as_list)
             value_color = on and "accent" or nil, height = h, on_tap = open, on_hold = hold })
     end
     if self.selecting then
-        return BookTile.build(p, w, h, { on_tap = open, on_hold = hold, badge = on and _("PICKED") or _("TAP"), badge_on = on })
+        return BookTile.build(p, w, h, { on_tap = open, on_hold = hold, badge = on and _("Picked") or _("Tap"), badge_on = on })
     end
     return BookTile.build(p, w, h, { on_tap = open, on_hold = hold })
 end
@@ -376,7 +376,7 @@ function Library:build()
     if not pick then body_kids[#body_kids + 1] = self:filterRow(counts) end
     if #items == 0 then
         local empty = pick and _("No folders here. Make one with + Folder, or move it here.")
-            or self.params.query and _("NO MATCHES") or _("Nothing here yet. Copy books in, or make a folder with + New.")
+            or self.params.query and _("No matches") or _("Nothing here yet. Copy books in, or make a folder with + New.")
         body_kids[#body_kids + 1] = Label:new({ grow = true, text = empty, kind = "body", color = "muted", align = "center", lines = 3 })
     else
         body_kids[#body_kids + 1] = Grid:new({
@@ -387,7 +387,7 @@ function Library:build()
             on_layout = function(cap, pages, page) self.capacity, self.pages, self.page = cap, pages, page end,
         })
     end
-    body_kids[#body_kids + 1] = Frame.pager(self, _("SECTOR"), function(p) self:setPage(p) end)
+    body_kids[#body_kids + 1] = Frame.pager(self, _("Letters"), function(p) self:setPage(p) end)
     if self.selecting then body_kids[#body_kids + 1] = self:selectBar() end
     if pick then
         body_kids[#body_kids + 1] = Button:new({ label = pick.label or _("Move here"), icon = pick.icon or "move", variant = "primary", corners = "tb",

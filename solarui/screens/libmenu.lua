@@ -122,7 +122,7 @@ local function viewsSheet(lib)
     local views = Settings.get("library_views", {})
     local options = {}
     for _i, v in ipairs(views) do
-        options[#options + 1] = { label = v.name, sub = string.format("%s // %s", LibMenu.groupName(v.group), LibMenu.SORT_NAMES[v.sort] or v.sort),
+        options[#options + 1] = { label = v.name, sub = string.format("%s · %s", LibMenu.groupName(v.group), LibMenu.SORT_NAMES[v.sort] or v.sort),
             on_tap = function() useView(lib, v) end }
     end
     options[#options + 1] = { label = _("Save this view"), icon = "plus", on_tap = function()

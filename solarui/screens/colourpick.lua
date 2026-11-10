@@ -58,12 +58,12 @@ function ColourPick:preview(rgb)
     end
     local ok = readable(rgb)
     return Layout.Row:new({ gap = th.space.l, valign = "center", children = {
-        pair(_("IN USE"), Swatch:new({ colors = { self.params.current }, size = 34 })),
-        pair(_("NEW"), Swatch:new({ colors = { Color.hex(rgb) }, size = 34 })),
-        pair(_("IN GREY"), Swatch:new({ colors = { Color.hex({ grey, grey, grey }) }, size = 34 })),
+        pair(_("In use"), Swatch:new({ colors = { self.params.current }, size = 34 })),
+        pair(_("New"), Swatch:new({ colors = { Color.hex(rgb) }, size = 34 })),
+        pair(_("In grey"), Swatch:new({ colors = { Color.hex({ grey, grey, grey }) }, size = 34 })),
         Layout.Row:new({ grow = true, gap = th.space.s, valign = "center", children = {
             Icon:new({ name = ok and "check" or "warning", size = 22, color = ok and "ink" or "accent" }),
-            Label:new({ text = ok and _("READS ON THE PAGE") or _("TOO FAINT ON THE PAGE"), kind = "mono_small", lines = 2, grow = true }),
+            Label:new({ text = ok and _("Reads on the page") or _("Too faint on the page"), kind = "mono_small", lines = 2, grow = true }),
         } }),
     } })
 end
@@ -93,20 +93,20 @@ function ColourPick:build()
     local dial = Dial:new({ hue = self.hue, sat = self.sat, val = self.val, size = 360,
         on_change = function(h, s, v) self.hue, self.sat, self.val = h, s, v; App.update() end })
     local readout = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
-        Label:new({ text = string.format("%s // H%d S%d V%d", hex, math.floor(self.hue + 0.5), math.floor(self.sat * 100 + 0.5), math.floor(self.val * 100 + 0.5)),
+        Label:new({ text = string.format("%s · H%d S%d V%d", hex, math.floor(self.hue + 0.5), math.floor(self.sat * 100 + 0.5), math.floor(self.val * 100 + 0.5)),
             kind = "mono", grow = true }),
-        Button:new({ icon = "edit", label = _("HEX"), variant = "secondary", on_tap = function()
+        Button:new({ icon = "edit", label = _("Hex"), variant = "secondary", on_tap = function()
             App.input(_("Colour code"), hex, function(text) self:setHex(util.trim(text or "")) end, _("Use"), { placeholder = "#2457D6" })
         end }),
     } })
     local hue_row = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
-        Label:new({ text = _("HUE"), kind = "label", grow = true }),
+        Label:new({ text = _("Hue"), kind = "label", grow = true }),
         Controls.Stepper({ value = math.floor(self.hue / 5 + 0.5) * 5 % 360, min = 0, max = 355, step = 5, format = function(v) return v .. "\u{00B0}" end, value_w = 64,
             on_change = function(v) self.hue = v; App.update() end }),
     } })
     local buttons = Layout.Row:new({ gap = th.space.m, children = {
-        Button:new({ label = _("CANCEL"), variant = "secondary", grow = true, on_tap = function() App.pop() end }),
-        Button:new({ label = _("USE COLOUR"), icon = "check", variant = "primary", grow = true, corners = "tb", on_tap = function()
+        Button:new({ label = _("Cancel"), variant = "secondary", grow = true, on_tap = function() App.pop() end }),
+        Button:new({ label = _("Use colour"), icon = "check", variant = "primary", grow = true, corners = "tb", on_tap = function()
             App.pop()
             params.on_pick(hex)
         end }),
@@ -122,7 +122,7 @@ function ColourPick:build()
         local centred = Layout.Row:new({ grow = true, valign = "stretch", children = { Layout.Spacer:new({ grow = true }), dial, Layout.Spacer:new({ grow = true }) } })
         body = Layout.Column:new({ gap = th.space.m, children = { centred, controls } })
     end
-    return Frame.page({ screen = self, title = params.title or _("Colour"), path = _("PICK // HSV"), tab = "settings", body = body })
+    return Frame.page({ screen = self, title = params.title or _("Colour"), tab = "settings", body = body })
 end
 
 return ColourPick

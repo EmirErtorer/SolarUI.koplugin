@@ -17,16 +17,16 @@ function Metric.toggle()
     Settings.save("log_metric", Metric.pages() and "minutes" or "pages")
 end
 
--- The short unit: "MIN" or "PG".
+-- The short unit: "min" or "pages".
 function Metric.unit()
-    return Metric.pages() and _("PG") or _("MIN")
+    return Metric.pages() and _("pages") or _("min")
 end
 
 -- The chart title for what is counted, over `span` ("week", "weeks", or nothing for the bare title).
 function Metric.title(span)
-    if span == "week" then return Metric.pages() and _("PAGES READ // LAST 7 DAYS") or _("MINUTES READ // LAST 7 DAYS") end
-    if span == "weeks" then return Metric.pages() and _("PAGES READ // 12 WEEKS") or _("MINUTES READ // 12 WEEKS") end
-    return Metric.pages() and _("PAGES READ") or _("MINUTES READ")
+    if span == "week" then return Metric.pages() and _("Pages read, last 7 days") or _("Minutes read, last 7 days") end
+    if span == "weeks" then return Metric.pages() and _("Pages read, 12 weeks") or _("Minutes read, 12 weeks") end
+    return Metric.pages() and _("Pages read") or _("Minutes read")
 end
 
 -- The number to chart for a day, month or hour record { seconds, pages }.

@@ -65,9 +65,9 @@ function TargetPick:build()
             end,
             on_layout = function(_cap, pages, page) self.pages, self.page = pages, page end,
         })
-        body[2] = Frame.pager(self, _("ITEMS"), function(p) self:setPage(p) end)
+        body[2] = Frame.pager(self, _("Items"), function(p) self:setPage(p) end)
     end
-    return Frame.page({ screen = self, title = level.title, path = _("PICK // TARGET"), tab = "settings",
+    return Frame.page({ screen = self, title = level.title, tab = "settings",
         body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

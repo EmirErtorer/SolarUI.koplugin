@@ -45,17 +45,17 @@ function Week.build(screen)
     local values, labels = {}, {}
     for i, d in ipairs(week) do
         values[i] = Metric.value(d)
-        labels[i] = Format.upper(Format.date("%a", d.time))
+        labels[i] = Format.date("%a", d.time)
     end
     local sel = week[screen.day] or week[#week]
 
     local tiles = Layout.Row:new({ gap = th.space.m, children = {
-        tile(_("TIME"), Format.duration(totals.seconds), _("last 7 days")),
-        tile(_("PAGES"), tostring(totals.pages), _("last 7 days")),
-        tile(_("STREAK"), tostring(Stats.streak()), string.format(_.n("day, best %d", "days, best %d", Stats.streak()), Stats.bestStreak())),
+        tile(_("Time"), Format.duration(totals.seconds), _("last 7 days")),
+        tile(_("Pages"), tostring(totals.pages), _("last 7 days")),
+        tile(_("Streak"), tostring(Stats.streak()), string.format(_.n("day, best %d", "days, best %d", Stats.streak()), Stats.bestStreak())),
     } })
 
-    local detail = string.format("%s = %s", Format.upper(Format.date("%a", sel.time)), Metric.text(Metric.value(sel)))
+    local detail = string.format("%s = %s", Format.date("%a", sel.time), Metric.text(Metric.value(sel)))
     local shown = Charts.Bars:new({ values = values, labels = labels, goal = Metric.goal(goal), selected = screen.day, height = Theme.px(130),
             on_select = function(i) screen.day = i; App.update() end })
     local chart = Layout.Column:new({ gap = th.space.s, children = {
@@ -71,10 +71,10 @@ function Week.build(screen)
         Charts.Heatmap:new({ levels = activity(goal) }),
     } })
 
-    local log = { Label:new({ text = _("SESSION LOG"), kind = "label" }) }
+    local log = { Label:new({ text = _("Recent reading"), kind = "label" }) }
     for _i, s in ipairs(Stats.sessions(6)) do
         log[#log + 1] = ListRow.build({ thumb = false, title = s.title or "?", title_kind = "body",
-            meta = Format.upper(Format.date("%a %d %b %H:%M", s.time)), value = string.format(_("%dM // %d PG"), Format.minutes(s.seconds), s.pages),
+            meta = Format.date("%a %d %b %H:%M", s.time), value = string.format(_("%d min · %d pages"), Format.minutes(s.seconds), s.pages),
             height = Theme.px(46) })
     end
     if #log == 1 then log[2] = Label:new({ text = _("No reading recorded yet. Statistics must be on."), kind = "small", color = "muted" }) end

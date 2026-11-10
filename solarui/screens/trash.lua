@@ -57,7 +57,7 @@ function TrashScreen:build()
             end,
             on_layout = function(_c, pages, page) self.pages, self.page = pages, page end })
     end
-    body[#body + 1] = Frame.pager(self, _("BIN"), function(p) self:setPage(p) end)
+    body[#body + 1] = Frame.pager(self, _("Trash"), function(p) self:setPage(p) end)
     local actions = {}
     if #items > 0 then
         actions[1] = Button:new({ label = _("Empty"), variant = "danger", on_tap = function()
@@ -66,7 +66,7 @@ function TrashScreen:build()
                 on_ok = function() Trash.empty(); App.update() end })
         end })
     end
-    return Frame.page({ screen = self, title = _("Trash"), path = string.format(_.n("KEPT %d DAY", "KEPT %d DAYS", Trash.KEEP_DAYS), Trash.KEEP_DAYS),
+    return Frame.page({ screen = self, title = _("Trash"), path = string.format(_.n("Kept %d day", "Kept %d days", Trash.KEEP_DAYS), Trash.KEEP_DAYS),
         tab = "library", actions = actions, body = Layout.Column:new({ gap = th.space.m, children = body }) })
 end
 

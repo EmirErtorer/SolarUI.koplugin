@@ -59,9 +59,9 @@ end
 function Addons.statusLine(addon)
     local s = Addons.status(addon)
     if s == "ready" then return addon.tagline end
-    if s == "disabled" then return _("SWITCHED OFF // TAP") end
-    if s == "restart" then return _("RESTART TO USE") end
-    return _("GET IT // FREE")
+    if s == "disabled" then return _("Switched off, tap to turn on") end
+    if s == "restart" then return _("Restart to use") end
+    return _("Free to get")
 end
 
 -- Install from GitHub: newest stable release, checked and unpacked, then
@@ -78,13 +78,13 @@ function Addons.install(addon)
             on_ok = function() Addons.install(addon) end })
     end
     local function run()
-        step(_("1/3 // ASKING GITHUB"))
+        step(_("1/3 Asking GitHub"))
         GitHub.latest(addon, function(release, why)
             if not release then return fail(why) end
-            step(string.format(_("2/3 // DOWNLOADING %s %s (%.1f MB)"), addon.name:upper(), release.version, release.size / 1048576))
+            step(string.format(_("2/3 Downloading %s %s (%.1f MB)"), addon.name, release.version, release.size / 1048576))
             Net.get(release.url, release.size, 300, function(zip, err)
                 if not zip then return fail(err) end
-                step(_("3/3 // CHECKING AND UNPACKING"))
+                step(_("3/3 Checking and unpacking"))
                 UIManager:nextTick(function()
                     local ok, res, uerr = pcall(Unpack.install, zip, release, addon.folder, Addons.pluginsDir())
                     os.remove(zip)

@@ -35,7 +35,7 @@ local function entryRow(entry, i, count)
         Icon:new({ name = icon, size = 24, color = muted }),
         Layout.Column:new({ grow = true, children = {
             Label:new({ text = label, kind = "heading", color = muted }),
-            Label:new({ text = entry.hidden and _("HIDDEN") or sub, kind = "mono_small", color = "muted" }),
+            Label:new({ text = entry.hidden and _("Hidden") or sub, kind = "mono_small", color = "muted" }),
         } }),
     }, buttons, not fixed and function() LauncherUI.askRemove(entry, App.update) end or nil)
 end
@@ -45,12 +45,12 @@ function LauncherScreen:build()
     local entries = Launcher.entries()
     local body = {}
     for i, entry in ipairs(entries) do body[#body + 1] = entryRow(entry, i, #entries) end
-    body[#body + 1] = Button:new({ label = _("+ ADD BUTTON"), variant = "primary", corners = "tb", on_tap = function()
+    body[#body + 1] = Button:new({ label = _("+ Add button"), variant = "primary", corners = "tb", on_tap = function()
         if not Launcher.canAdd() then return App.toast(_("The launcher is full")) end
         App.push("launchedit", { id = Launcher.add() })
     end })
-    return Frame.page({ screen = self, title = _("Launcher"), path = _("ADD // MOVE // HIDE // EDIT"), tab = "settings",
-        body = Frame.paged(self, body, _("PAGE")) })
+    return Frame.page({ screen = self, title = _("Launcher"), tab = "settings",
+        body = Frame.paged(self, body, _("Page")) })
 end
 
 return LauncherScreen
