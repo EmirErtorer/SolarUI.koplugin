@@ -13,7 +13,7 @@ local Grid = require("solarui/ui/grid")
 local Insights = require("solarui/data/insights")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
-local Progress = require("solarui/ui/progress")
+local ArtView = require("solarui/ui/artview")
 local Theme = require("solarui/theme")
 local navrow = require("solarui/ui/navrow")
 local tile = require("solarui/ui/stattile")
@@ -63,7 +63,7 @@ function GoalTab.build(screen)
                     on_change = function(v) Goal.setTarget(v); App.update() end }),
             } }),
         } }),
-        Progress:new({ value = math.min(#shelf / target, 1) }),
+        ArtView:new({ name = "goal_tree", param = math.floor(math.min(#shelf / target, 1) * 100 + .5), height = Theme.px(110) }),
     } })
     local body = { nav, goal }
     for _i, l in ipairs(ladders) do body[#body + 1] = ladder(l) end

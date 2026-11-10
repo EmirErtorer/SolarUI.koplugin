@@ -111,6 +111,34 @@ function Pages.row_curl(c, vw, vh)
     return Svg.line(Svg.poly(Svg.join({ { 0, vh * .6 }, { vw - r * 2.2, vh * .6 } }, Svg.spiral(vw - r * 2.2, vh * .6 - r, r, 1.3, 180, true))), c.line, 1.3)
 end
 
+-- The year's goal as a blossom tree on a wide canvas: a leafy crown in which
+-- as many of 24 places are in flower as `pct` percent of the goal, the rest
+-- still buds, on a trunk that forks, standing on a rolling line of ground.
+function Pages.goal_tree(c, vw, vh, pct)
+    local filled = math.floor((math.max(0, math.min(100, tonumber(pct) or 0)) / 100) * 24 + .5)
+    local m, cy = vw / 2, vh * .4
+    local rx, ry = math.min(vw * .3, vh * 1.15), vh * .34
+    local out = { Svg.line(string.format("M0 %s C%s %s %s %s %s %s", n(vh * .93), n(vw * .25), n(vh * .8), n(vw * .35), n(vh * 1.04), n(m - vw * .06), n(vh * .94)), c.stem, 2.4),
+        Svg.line(string.format("M%s %s C%s %s %s %s %s %s", n(m + vw * .06), n(vh * .94), n(vw * .65), n(vh * 1.04), n(vw * .75), n(vh * .8), n(vw), n(vh * .93)), c.stem, 2.4) }
+    out[#out + 1] = Svg.stem(Svg.spline({ { m, vh * .96 }, { m + 3, vh * .78 }, { m - 2, vh * .6 }, { m, cy + ry * .5 } }, 6), Svg.taper(vh * .09, vh * .05), c.stem, c.ink, 1.6)
+    out[#out + 1] = Svg.line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(m), n(vh * .66), n(m - vh * .12), n(vh * .55), n(m - rx * .5), n(cy), n(m), n(vh * .66), n(m + vh * .1), n(vh * .52), n(m + rx * .5), n(cy - ry * .1)), c.stem, vh * .035)
+    out[#out + 1] = Svg.ellipse(m, cy, rx, ry, 0, c.leaf, c.ink, 2)
+    for i = 0, 23 do
+        local a = i * 360 / 24 + 8 * Svg.vary(i, 9)
+        local ring = i % 2 == 0 and .62 or .28
+        local px, py = Svg.pol(1, a, 0, 0)
+        local x, y = m + px * rx * ring * (.85 + .2 * Svg.vary(i, 3)), cy - py * ry * ring * (.85 + .2 * Svg.vary(i, 4))
+        local r = vh * .075
+        if i < filled then
+            out[#out + 1] = Flora.petal and (Flora.around(x, y, r * .5, 5, Flora.petal(c, r * 1.3, r * .55, c.bloom2, 1.1))) or ""
+            out[#out + 1] = Svg.circle(x, y, r * .5, c.gold, c.ink, 1)
+        else
+            out[#out + 1] = Svg.circle(x, y, r * .55, c.sage, c.ink, 1.1)
+        end
+    end
+    return table.concat(out)
+end
+
 -- A small flower head, by species id, to stand before a section's name.
 function Pages.bloom(c, vw, vh, id)
     local r = math.min(vw, vh) * .42
