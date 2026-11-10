@@ -3,14 +3,7 @@
 
 local _ = require("solarui/gettext")
 
-local Case = require("solarui/i18n/case")
-
 local Format = {}
-
--- `s` in capitals for the language in use (Turkish i, Greek without accents...).
-function Format.upper(s)
-    return Case.upper(s, _.language())
-end
 
 -- The first `n` characters of `s` (whole UTF-8 characters, not bytes).
 function Format.chars(s, n)

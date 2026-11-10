@@ -15,7 +15,7 @@ local function trip(label, leave)
         if ui then leave(ui) end
     end)
     H.step(2.5, function()
-        H.check(H.cyberTop() and H.screen() == "home",
+        H.check(H.onTop() and H.screen() == "home",
             label .. ": back on SolarUI home (top " .. tostring(H.top() and H.top().name) .. ")")
     end)
 end
@@ -40,8 +40,8 @@ H.step(S, function()
 end)
 H.step(2.5, function() require("apps/reader/readerui").instance:handleEvent(require("ui/event"):new("Home")) end)
 H.step(2.5, function()
-    H.check(not H.cyberTop(), "chose the file browser: a closed book returns to it")
+    H.check(not H.onTop(), "chose the file browser: a closed book returns to it")
     H.event("SolarUIHome")
 end)
-H.step(S, function() H.check(H.cyberTop(), "SolarUI home action works from the file browser") end)
+H.step(S, function() H.check(H.onTop(), "SolarUI home action works from the file browser") end)
 H.step(S, function() G_reader_settings:saveSetting("start_with", "solarui") end)

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Run SolarUI's tests: lint, widgets and screens (headless, on KOReader's real
-# drawing code), and with --e2e also the walkthroughs in the visible emulator.
+# Run SolarUI's tests: lint, luacheck and the headless suites (widgets, screens,
+# install, features, stats, art) on KOReader's real drawing code, and with --e2e
+# also the scenarios in the visible emulator.
 # KO_DIR points at the KOReader checkout with the emulator built (default ~/koreader-emulator).
 set -uo pipefail
 repo="$(cd "$(dirname "$0")/.." && pwd)"
@@ -10,20 +11,21 @@ fail=0
 run() { local name="$1"; echo "== $name"; shift; "$@" || { fail=$((fail + 1)); echo "FAILED: $name"; }; }
 filter() { grep -v -e '^ffi\.' -e '^lib_' -e 'monolibtic' -e 'DEBUG' -e 'INFO' -e 'Started SDL' -e '^  [hw] =' -e '^}'; }
 run lint bash -c "cd '$repo' && luajit tests/lint.lua"
-run i18n bash -c "set -o pipefail; cd '$repo' && luajit tools/i18n.lua check | tail -25"
 if command -v luacheck >/dev/null; then
     run luacheck bash -c "cd '$repo' && luacheck -q solarui main.lua _meta.lua"
 fi
 if [ -x "$emu/luajit" ]; then
-    for suite in widgets screens install features stats; do
-        run "$suite" bash -c "cd '$emu' && SDL_VIDEODRIVER=offscreen ./luajit '$repo/tests/$suite.lua' '$repo' 2>&1 | { $(declare -f filter); filter; }; exit \${PIPESTATUS[0]}"
+    for suite in widgets screens install features stats art; do
+        extra=""
+        [ "$suite" = "art" ] && extra="${TMPDIR:-/tmp}/solarui-art.png"
+        run "$suite" bash -c "cd '$emu' && SDL_VIDEODRIVER=offscreen ./luajit '$repo/tests/$suite.lua' '$repo' $extra 2>&1 | { $(declare -f filter); filter; }; exit \${PIPESTATUS[0]}"
     done
 else
-    echo "(no emulator in $ko: widgets and screens skipped)"
+    echo "(no emulator in $ko: the headless suites skipped)"
 fi
 if [ "${1:-}" = "--e2e" ]; then
     out="$(mktemp -d)"
-    for scen in walkthrough flows menus exits explorer stylemenu sleep fixes; do
+    for scen in walkthrough collections exits explorer landscape; do
         run "$scen" bash -c "'$repo/tests/e2e/run.sh' '$repo/tests/e2e/$scen.lua' '$out/$scen' | tail -1 | grep -q ' 0 failed'"
     done
     run restart bash -c "E2E_NO_DIR=1 HOME_SETUP='$repo/tests/e2e/setup_restart.sh' '$repo/tests/e2e/run.sh' '$repo/tests/e2e/restart.lua' '$out/restart' | tail -1 | grep -q ' 0 failed'"

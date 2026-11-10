@@ -18,7 +18,7 @@ mkdir -p "$repo/dist"
 rm -rf "$out" "$repo/dist/$name"
 mkdir -p "$out"
 for item in main.lua _meta.lua LICENSE solarui fonts icons l10n; do
-    rsync -a --exclude '.DS_Store' "$repo/$item" "$out/"
+    rsync -a --exclude '.DS_Store' --exclude '/l10n/*/' "$repo/$item" "$out/"
 done
 touch "$out"   # the build time, not the repo folder's
 (cd "$repo/dist" && zip -qrX "$name" SolarUI.koplugin)

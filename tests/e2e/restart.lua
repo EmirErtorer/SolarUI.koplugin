@@ -11,6 +11,6 @@ H.step(0.5, function()
     if ui then ui:handleEvent(require("ui/event"):new("Home")) end
 end)
 H.step(3, function()
-    H.check(H.cyberTop() and H.screen() == "home", "closing it shows SolarUI home (top " .. tostring(H.top() and H.top().name) .. ")")
+    H.check(H.onTop() and H.screen() == "home", "closing it shows SolarUI home (top " .. tostring(H.top() and H.top().name) .. ")")
     H.shot("r01-home")
 end)

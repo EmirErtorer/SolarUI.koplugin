@@ -111,8 +111,8 @@ function Policy.due(now, last, tried)
     return bad(last) or now - last >= Policy.DAY
 end
 
--- Release notes (GitHub's Markdown) as plain lines to read: headings in
--- capitals, bullets with a dash, links and marks taken out.
+-- Release notes (GitHub's Markdown) as plain lines to read: headings kept as
+-- plain text, bullets with a dash, links and marks taken out.
 function Policy.notes(md)
     local out = {}
     for line in ((md or ""):gsub("\r", "") .. "\n"):gmatch("([^\n]*)\n") do
@@ -120,7 +120,7 @@ function Policy.notes(md)
             :gsub("%*%*(.-)%*%*", "%1"):gsub("`([^`]*)`", "%1")
         local heading = line:match("^%s*#+%s+(.+)$")
         local bullet = line:match("^%s*[%-%*%+]%s+(.+)$")
-        if heading then out[#out + 1] = "// " .. heading:upper()
+        if heading then out[#out + 1] = heading
         elseif bullet then out[#out + 1] = "- " .. bullet
         elseif line:match("%S") then out[#out + 1] = (line:gsub("^%s+", ""))
         elseif #out > 0 and out[#out] ~= "" then out[#out + 1] = "" end

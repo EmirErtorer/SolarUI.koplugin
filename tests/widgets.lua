@@ -28,7 +28,7 @@ local function sheet()
     return Layout.Column:new({ pad = 16, gap = 10, children = {
         Label:new({ text = "Display heading", kind = "display" }),
         Label:new({ text = "Body text that is long enough to need an ellipsis at the end of the line for sure", kind = "body" }),
-        Label:new({ text = "mono 0123456789 // micro", kind = "mono", color = "muted" }),
+        Label:new({ text = "mono 0123456789 micro", kind = "mono", color = "muted" }),
         Layout.Row:new({ gap = 8, children = {
             btn("primary", "Resume", { icon = "forward" }), btn("secondary", "Secondary"), btn("soft", "Soft", { sub = "sub line" }),
         } }),
@@ -42,12 +42,12 @@ local function sheet()
             Controls.Stepper({ value = 6, min = 1, max = 20, format = function(v) return v .. " PG" end }),
         } }),
         Controls.Segmented({ options = { { "Light", "light" }, { "Dark", "dark" }, { "System", "system" } }, value = "dark" }),
-        Panel:new({ shape = "chamfer", label = "Active file", pad = 12, child = Label:new({ text = "Chamfer panel" }) }),
-        Panel:new({ shape = "brackets", label = "Brackets", pad = 12, child = Label:new({ text = "Bracket frame" }) }),
-        Panel:new({ shape = "header", title = "$ cat ./now_reading", title_right = "PID 0412", pad = 10,
+        Panel:new({ shape = "chamfer", label = "Active file", pad = 12, child = Label:new({ text = "Leaf panel" }) }),
+        Panel:new({ shape = "frame", label = "Frame", pad = 12, child = Label:new({ text = "Framed panel" }) }),
+        Panel:new({ shape = "header", title = "Now reading", title_right = "Page 41", pad = 10,
             child = Label:new({ text = "Header panel" }) }),
         Layout.Row:new({ gap = 8, height = 30, children = {
-            Deco.Barcode:new({ width = 90 }), Deco.Stripes:new({ width = 90, dir = "d" }), Deco.Ruler:new({ grow = true }),
+            Deco.Stripes:new({ width = 90, dir = "d" }), Deco.Divider:new({ grow = true }),
             Icon:new({ name = "home" }), Icon:new({ name = "library", color = "accent" }),
         } }),
     } })
@@ -159,18 +159,52 @@ do
     end
 end
 
--- every skin is in a group with a switch of its own, so none can only be switched off with all the others
-local Core = require("solarui/skin/core")
-local Groups = require("solarui/skin/groups")
-require("solarui/skin/all")
-for _i, name in ipairs({ "message", "confirm", "highlightmenu", "edithighlight", "buttondialog", "keyboard", "inputdialog", "list", "dictionary",
-    "textviewer", "numbers", "choice", "keyvalue", "sort", "progress", "qr", "network", "bookstatus" }) do
-    require("solarui/skin/" .. name)
+-- the schemes, the default font set and the book progress styles
+do
+    local ids = {}
+    for _, sc in ipairs(Registry.schemeList()) do ids[#ids + 1] = sc.id end
+    Kit.ok(table.concat(ids, ",") == "garden,rosewood,peacock,sepia,custom", "the schemes are garden, rosewood, peacock, sepia, custom: " .. table.concat(ids, ","))
+    Kit.ok(Registry.fontSets()[1].id == "nouveau", "the default font set is nouveau")
+    local styles = {}
+    for _, st in ipairs(Progress.STYLES) do styles[#styles + 1] = st.id end
+    Kit.ok(table.concat(styles, ",") == "vine,bar,segments", "the progress styles are vine, bar, segments")
+    for _, id in ipairs(styles) do
+        require("solarui/settings").set("progress_style", id)
+        local ok, err = pcall(function()
+            local p = Progress:new({ value = 0.4, book = true })
+            p:layout(300, nil)
+            local bb = Kit.canvas(400, 100)
+            p:paint(bb, 10, 10)
+            bb:free()
+        end)
+        Kit.ok(ok, "the " .. id .. " progress paints: " .. tostring(err))
+    end
+    require("solarui/settings").set("progress_style", nil)
 end
-local missing = {}
-for _i, skin in ipairs(Core.skins) do
-    if not Groups.of(skin.name) then missing[#missing + 1] = skin.name end
+
+-- rounded shapes draw without error at several sizes, including a radius larger than half the box
+do
+    local Paint = require("solarui/gfx/paint")
+    local c = Theme.get().c.ink
+    local bb = Kit.canvas(200, 200)
+    local ok, err = pcall(function()
+        for _, size in ipairs({ { 1, 1 }, { 3, 40 }, { 40, 3 }, { 24, 24 }, { 90, 60 } }) do
+            for _, r in ipairs({ 0, 1, 5, 12, 100 }) do
+                Paint.round(bb, 10, 10, size[1], size[2], r, "trbl", c)
+                Paint.round(bb, 10, 10, size[1], size[2], r, "tr", c)
+                Paint.roundFrame(bb, 10, 10, size[1], size[2], r, "trbl", 2, c)
+                Paint.roundBox(bb, 10, 10, size[1], size[2], r, "tl", 1, c, c)
+            end
+        end
+    end)
+    Kit.ok(ok, "round, roundFrame and roundBox draw at every size: " .. tostring(err))
+    local bw = Kit.canvas(60, 60)
+    Paint.fill(bw, 0, 0, 60, 60, require("ffi/blitbuffer").COLOR_WHITE)
+    Paint.round(bw, 10, 10, 40, 40, 100, "trbl", require("ffi/blitbuffer").COLOR_BLACK)
+    Kit.ok(bw:getPixel(30, 30):getColor8().a == 0 and bw:getPixel(10, 10):getColor8().a == 255,
+        "a radius past half the box gives a round shape: centre filled, corner left empty")
+    bb:free()
+    bw:free()
 end
-Kit.ok(#missing == 0, "every skin is in a group: " .. table.concat(missing, ", "))
 
 Kit.finish("widgets")

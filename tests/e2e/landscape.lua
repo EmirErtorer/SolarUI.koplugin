@@ -20,7 +20,7 @@ H.step(S, function()
     require("apps/reader/readerui").instance:handleEvent(require("ui/event"):new("Home"))
 end)
 H.step(3, function()
-    H.check(H.cyberTop() and H.screen() == "home", "back on SolarUI home")
+    H.check(H.onTop() and H.screen() == "home", "back on SolarUI home")
     H.check(Screen:getWidth() < Screen:getHeight(), "screen upright again")
     local host = H.top()
     local d = host and host.dimen

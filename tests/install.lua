@@ -102,6 +102,6 @@ o = Policy.offers({ self_rel("v1.3.0-beta.1", true), self_rel("v1.3.0", false) }
 Kit.ok(o.pre == nil and o.stable_action == "current", "a prerelease older than stable is not offered")
 Kit.ok(Policy.due(100000, nil, nil) and not Policy.due(100000, 99000, nil) and not Policy.due(200000, nil, 199000),
     "the daily check is due once a day, not right after a failed try")
-Kit.ok(Policy.notes("## Added\n- **Bold** [link](http://x)"):find("// ADDED\n%- Bold link") ~= nil, "release notes read as plain lines")
+Kit.ok(Policy.notes("## Added\n- **Bold** [link](http://x)"):find("Added\n%- Bold link") ~= nil, "release notes read as plain lines")
 
 Kit.finish("install")

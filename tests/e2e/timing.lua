@@ -38,7 +38,7 @@ for round = 1, 3 do
     H.step(4, function()
         t0 = time.now()
         H.event("SolarUIHome")
-        waitFor(function() return H.cyberTop() end, function(ms)
+        waitFor(function() return H.onTop() end, function(ms)
             local p = require("solarui/perf").last
             results[#results + 1] = string.format("round %d: back home %d ms (SolarUI build %.0f ms, paint %.0f ms)", round, ms, p.build or -1, p.paint or -1)
         end)

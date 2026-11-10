@@ -19,6 +19,9 @@ local ROLES = { "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_a
 
 local MAX_SPRITES = 48
 
+-- The kinds of buffer KOReader can blend a colour sprite straight into.
+local DIRECT = { [Blitbuffer.TYPE_BB8] = true, [Blitbuffer.TYPE_BBRGB16] = true, [Blitbuffer.TYPE_BBRGB32] = true }
+
 local sprites = {}   -- key -> buffer (false when the drawing failed)
 local order = {}     -- keys, oldest first
 local layers = {}    -- slot -> { sig, w, h, type, bb }
@@ -69,8 +72,8 @@ end
 -- Blend a sprite into `bb` with its top-left at (x, y).
 local function blend(bb, s, x, y)
     local w, h = s:getWidth(), s:getHeight()
-    if bb:getType() == Blitbuffer.TYPE_BBRGB24 then
-        -- blending straight into a 24-bit buffer ends KOReader, so go through a copy
+    if not DIRECT[bb:getType()] then
+        -- blending straight into any other kind of buffer ends KOReader, so go through a copy
         local tmp = Blitbuffer.new(w, h, Blitbuffer.TYPE_BBRGB32)
         tmp:blitFrom(bb, 0, 0, x, y, w, h)
         tmp:alphablitFrom(s, 0, 0, 0, 0, w, h)

@@ -6,7 +6,7 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ko="${KO_DIR:-$HOME/koreader-emulator}"
 w="${1:-600}"; h="${2:-800}"; dpi="${3:-167}"
-rsync -a --delete --exclude '.git' --exclude 'tests' --exclude 'tools' --exclude '.DS_Store' \
+rsync -a --delete --exclude '/.git' --exclude '/tests' --exclude '/tools' --exclude '/dist' --exclude '/l10n/*/' --exclude '.DS_Store' \
     "$here/" "$ko/plugins/SolarUI.koplugin/"
 export PATH="/opt/homebrew/opt/gnu-getopt/bin:/opt/homebrew/opt/make/libexec/gnubin:$PATH"
 cd "$ko"

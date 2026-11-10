@@ -229,7 +229,7 @@ function SettingsScreen:about()
                 return v and string.format(_("SolarUI %s is ready to install"), v) or _("New versions from GitHub, with their notes")
             end)(),
             Button:new({ label = _("Open"), on_tap = function() App.push("updates") end })),
-        row(_("Fonts"), _("Griffy, Milonga, Gabriela, Federo, Glass Antiqua and Share Tech Mono, SIL Open Font License"), Layout.Spacer:new({ width = 1 })),
+        row(_("Fonts"), _("Griffy, Milonga, Gabriela, Federo and Glass Antiqua, SIL Open Font License"), Layout.Spacer:new({ width = 1 })),
         Label:new({ text = _("An Art Nouveau garden of a home screen for KOReader."), kind = "body", color = "muted", lines = 2 }),
         supportPanel(),
     }

@@ -48,7 +48,7 @@ function Drive:init()
         return s and s.id
     end
     -- Is SolarUI's window on top?
-    function H.cyberTop()
+    function H.onTop()
         local t = H.top()
         return t ~= nil and t.name == "solarui"
     end

@@ -1,7 +1,7 @@
 -- The library explorer on a copy of the library: make a folder, move a book
 -- (with its reading data) into it through the folder picker, open it and use
 -- the breadcrumbs, rename the folder, delete the book to the trash and put
--- it back where it was, in its history again. Also the Ink Away tile.
+-- it back where it was, in its history again. Also the Ink Away button.
 local H = ...
 local S = 0.8
 local lfs = require("libs/libkoreader-lfs")
@@ -98,9 +98,14 @@ H.step(S, function()
     H.check(inHistory(moved), "and in its history again")
     H.check(require("solarui/data/trash").count() == 0, "the trash is empty again")
 end)
--- the Ink Away tile: installed here, so it opens Ink Away
+-- the Ink Away button: installed here, so it opens Ink Away
 H.step(S, function() H.app().go("home") end)
-H.step(S, function() H.tap("INK AWAY") end)
+local function tapInkAway()
+    local el = H.find(nil, require("solarui/apps/inkaway").icon)
+    H.check(el ~= nil, "the Ink Away button is on home")
+    if el then H.tapAt(el.x + el.w / 2, el.y + el.h / 2) end
+end
+H.step(S, tapInkAway)
 H.step(2, function()
     local UIManager = require("ui/uimanager")
     local above = {}
@@ -111,11 +116,11 @@ H.step(2, function()
     end
     local inkaway = false
     for _i, w in ipairs(above) do if tostring(w.name):find("inkaway") then inkaway = true end end
-    H.check(inkaway, "INK AWAY opens Ink Away over SolarUI")
+    H.check(inkaway, "the Ink Away button opens Ink Away over SolarUI")
     H.shot("x09-inkaway")
     for _i, w in ipairs(above) do UIManager:close(w) end
 end)
--- as if it were not installed: the tile describes it and offers the install
+-- as if it were not installed: the button offers the install
 local Addons, real_status
 H.step(S, function()
     Addons = require("solarui/apps/addons")
@@ -123,14 +128,11 @@ H.step(S, function()
     Addons.status = function() return "missing" end
     H.app().update()
 end)
+H.step(S, tapInkAway)
 H.step(S, function()
-    H.check(H.find("GET IT // FREE") ~= nil, "the tile says it can be got")
-    H.tap("INK AWAY")
-end)
-H.step(S, function()
-    H.check(H.find("Install") ~= nil, "without Ink Away the tile offers to install it")
+    H.check(H.find("Install") ~= nil, "without Ink Away the button offers to install it")
     H.shot("x10-install-offer")
     H.tap("Not now")
     Addons.status = real_status
 end)
-H.step(S, function() H.check(H.cyberTop() and H.screen() == "home", "Not now leaves home as it was") end)
+H.step(S, function() H.check(H.onTop() and H.screen() == "home", "Not now leaves home as it was") end)
