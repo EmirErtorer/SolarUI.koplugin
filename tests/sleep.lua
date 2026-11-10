@@ -18,5 +18,15 @@ end
 Kit.ok(painted > 400, "the sleep picture is painted (" .. painted .. " samples differ from the page)")
 Kit.png(bb, OUT)
 bb:free()
+local gb = Sleep.compose(600, 800, "garden")
+local gpainted = 0
+for y = 0, 799, 7 do
+    for x = 0, 599, 7 do
+        if gb:getPixel(x, y):getColor8().a ~= bg then gpainted = gpainted + 1 end
+    end
+end
+Kit.ok(gpainted > 400, "the garden sleep picture is painted (" .. gpainted .. " samples differ from the page)")
+Kit.png(gb, OUT:gsub("%.png$", "-garden.png"))
+gb:free()
 print("sleep picture: " .. OUT)
 Kit.finish("sleep")

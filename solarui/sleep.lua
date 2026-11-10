@@ -1,12 +1,16 @@
--- Draws a full-screen picture in the garden's style (the border with its
--- corners, the halo, both vines, the flowers of the dock, a bee and a
--- butterfly) and saves it as a PNG, to be chosen as KOReader's sleep screen.
+-- Draws a full-screen picture in the garden's style and saves it as a PNG, to
+-- be chosen as KOReader's sleep screen: either the home poster (the border
+-- with its corners, the halo, both vines, the flowers of the dock, a bee and a
+-- butterfly) or the garden as it is now.
 
 local Blitbuffer = require("ffi/blitbuffer")
 local DataStorage = require("datastorage")
 local Device = require("device")
+local GardenView = require("solarui/ui/gardenview")
+local Layout = require("solarui/garden/layout")
 local Scene = require("solarui/ui/scene")
 local Season = require("solarui/art/season")
+local State = require("solarui/garden/state")
 
 local Sleep = {}
 
@@ -15,8 +19,26 @@ function Sleep.path()
     return DataStorage:getSettingsDir() .. "/solarui-sleep.png"
 end
 
--- Compose the picture for a w x h screen into a new buffer.
-function Sleep.compose(w, h)
+-- The scene of the garden as it is now, for a w x h screen.
+local function gardenScene(w, h)
+    State.refresh()
+    local scene = Scene.make("sleep_garden", w, h, Layout.HEIGHT)
+    GardenView.compose(scene)
+    return scene
+end
+
+-- Compose the picture for a w x h screen into a new buffer: the home poster,
+-- or with kind "garden" the garden as it is now.
+function Sleep.compose(w, h, kind)
+    local scene = kind == "garden" and gardenScene(w, h) or Sleep.poster(w, h)
+    scene:layout(w, h)
+    local bb = Blitbuffer.new(w, h, Blitbuffer.TYPE_BBRGB32)
+    scene:paint(bb, 0, 0)
+    return bb
+end
+
+-- The scene of the home poster for a w x h screen.
+function Sleep.poster(w, h)
     local scene = Scene.make("sleep", w, h, 1448)
     scene:border(14, 2.5)
     scene:border(21, 1.2)
@@ -33,15 +55,12 @@ function Sleep.compose(w, h)
     local plants = { "dock_library", "dock_collections", "dock_history", "dock_search", "dock_inkaway", "dock_settings" }
     scene:backdrop("root", 20, scene.vh - 150, 1032, 40)
     for i, name in ipairs(plants) do scene:backdrop(name, 120 + (i - 1) * 150, scene.vh - 250, 130, 113) end
-    scene:layout(w, h)
-    local bb = Blitbuffer.new(w, h, Blitbuffer.TYPE_BBRGB32)
-    scene:paint(bb, 0, 0)
-    return bb
+    return scene
 end
 
 -- Make the picture at the screen's size and save it; returns the path.
-function Sleep.make()
-    local bb = Sleep.compose(Device.screen:getWidth(), Device.screen:getHeight())
+function Sleep.make(kind)
+    local bb = Sleep.compose(Device.screen:getWidth(), Device.screen:getHeight(), kind)
     local path = Sleep.path()
     bb:writePNG(path)
     bb:free()

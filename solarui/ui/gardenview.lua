@@ -16,7 +16,8 @@ local function plantParam(entry, faded)
 end
 
 -- Put the garden on `scene`. o: { faded, pose (id -> "1" or "2"), hour,
--- on_tap(id, kind) for a plant or animal, on_bed(id) for a bare bed }.
+-- on_tap(id, kind) for a plant or animal, on_bed(id) for a bare bed, sprites
+-- (a table that is filled with each animal's element, to repaint it alone) }.
 function GardenView.compose(scene, o)
     o = o or {}
     local vh = scene.vh
@@ -44,7 +45,10 @@ function GardenView.compose(scene, o)
         if a.here then
             local pose = (o.pose and o.pose[a.def.id] or "1") .. (o.faded and ":wash" or "")
             if o.faded then scene:backdrop("animal_" .. a.def.id, b.x, b.y, b.w, b.h, pose)
-            else scene:sprite("animal_" .. a.def.id, b.x, b.y, b.w, b.h, nil, function() return (o.pose and o.pose[a.def.id] or "1") end) end
+            else
+                local el = scene:sprite("animal_" .. a.def.id, b.x, b.y, b.w, b.h, nil, function() return (o.pose and o.pose[a.def.id] or "1") end)
+                if o.sprites then o.sprites[a.def.id] = el end
+            end
         elseif a.mood == "hiding" then
             scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, wash)
         end

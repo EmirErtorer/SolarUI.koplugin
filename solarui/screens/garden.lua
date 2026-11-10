@@ -15,6 +15,7 @@ local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
 local State = require("solarui/garden/state")
 local Theme = require("solarui/theme")
+local UIManager = require("ui/uimanager")
 local Cast = require("solarui/garden/cast")
 local _ = require("solarui/gettext")
 
@@ -23,10 +24,46 @@ local Garden = Screen:extend()
 local ARCH = { x = 236, y = 130, w = 600, h = 560 }   -- the frame of the big picture
 local CARD = { x = 186, y = 720, w = 700, h = 520 }   -- the card under it
 
+local TICK = 45          -- seconds between two small movements
+local FULL_EVERY = 10    -- movements between two full refreshes that clear the ghosts
+
 -- Nothing is shown large to begin with, and no animal has moved yet.
 function Garden:init()
     self.focus = nil
     self.pose = {}
+    self.sprites = {}
+    self.ticks = 0
+end
+
+-- Flip an animal between its two poses and repaint just its own patch.
+function Garden:move(id)
+    local el = self.sprites[id]
+    if not el then return end
+    self.pose[id] = self.pose[id] == "2" and "1" or "2"
+    App.repaint(el, "fast")
+end
+
+-- A slow tick: one or two of the animals about make a small movement. Every
+-- few ticks the screen is redrawn whole to clear the ghosts. It goes on only
+-- while the garden is the screen in front.
+function Garden:tick()
+    self.timer = false
+    if not (App.isOpen() and App.current() == self) then return end
+    self.ticks = self.ticks + 1
+    if self.focus then return self:schedule() end
+    local ids = {}
+    for id in pairs(self.sprites) do ids[#ids + 1] = id end
+    table.sort(ids)
+    for i = 0, math.min(1, #ids - 1) do self:move(ids[(self.ticks + i * 3) % #ids + 1]) end
+    if self.ticks % FULL_EVERY == 0 then return App.render("full") end
+    self:schedule()
+end
+
+-- Set the next tick going, once.
+function Garden:schedule()
+    if self.timer or not App.isOpen() then return end
+    self.timer = true
+    UIManager:scheduleIn(TICK, function() self:tick() end)
 end
 
 -- Back closes the big picture first.
@@ -113,7 +150,10 @@ function Garden:focused(scene)
     else
         local b = Layout.ANIMALS[self.focus]
         local k = math.min(fit.w / b.w, fit.h / b.h)
-        scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, "1")
+        local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
+            function() return self.pose[self.focus] or "1" end)
+        self.sprites[self.focus] = pic
+        scene:touch(fit.x, fit.y, fit.w, fit.h, function() self:move(self.focus) end)
     end
     scene:place(GardenCard.build(self.focus, self:actions(self.focus)), CARD.x, CARD.y + oy, CARD.w, CARD.h)
 end
@@ -123,11 +163,13 @@ function Garden:build(ctx)
     State.refresh()
     if self.focus and not State.entry(self.focus) then self.focus = nil end
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h, Layout.HEIGHT)
-    GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose,
+    self.sprites = {}
+    GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites,
         on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil,
         on_bed = not self.focus and function(id) self:askPlant(id) end or nil })
     self:heading(scene)
     if self.focus then self:focused(scene) else self:plaque(scene) end
+    self:schedule()
     return scene
 end
 
