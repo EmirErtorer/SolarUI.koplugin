@@ -86,17 +86,11 @@ function Blooms.pansy(c, cx, cy, R)
     return group(cx, cy, 0, body)
 end
 
--- A lily (zambak) of radius `R`: six long cream petals streaked with pink, a
--- paler disc at the heart for an icon, and stamens with golden anthers.
+-- A lily (zambak) of radius `R`, kept plain: six long cream petals round a
+-- large pale disc that carries a button's icon.
 function Blooms.lily(c, cx, cy, R)
-    local stamens = {}
-    for i = 0, 5 do
-        local x, y = Svg.pol(R * .56, i * 60 + 30)
-        stamens[#stamens + 1] = Svg.line(string.format("M0 0 L%s %s", n(x), n(y)), c.ink, 1) .. Svg.ellipse(x, y, R * .09, R * .05, i * 60 + 30, c.gold, c.ink, 1)
-    end
-    local body = around(0, 0, 0, 6, petal(c, R, R * .3, c.cream, 1.7) .. Svg.line(string.format("M0 %s L0 %s", n(-R * .25), n(-R * .8)), c.bloom, 2), 0)
-        .. around(0, 0, 0, 6, petal(c, R * .78, R * .24, c.cream, 1.5), 30)
-        .. table.concat(stamens) .. Svg.circle(0, 0, R * .6, c.cream, c.ink, 1.6)
+    local body = around(0, 0, 0, 6, petal(c, R, R * .34, c.cream, 1.8), 0)
+        .. Svg.circle(0, 0, R * .62, c.cream, c.ink, 1.8)
     return group(cx, cy, 0, body)
 end
 

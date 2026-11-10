@@ -12,7 +12,7 @@ local InkAway = {
     zip = function(tag) return "ink-away.koplugin-" .. tag .. ".zip" end,
     -- the event Ink Away opens on
     open_event = "InkAwayOpen",
-    icon = "pen",
+    icon = "quill",
     tagline = _("Draw, notes and ink"),
     description = _("Draw, take notes and write on your books with a finger or a stylus: drawings with layers, notebooks with lined, grid and planner pages, and ink on any book that follows the text. Export a transparent PNG or a PDF."),
 }
