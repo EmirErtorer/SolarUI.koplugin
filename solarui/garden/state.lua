@@ -160,6 +160,17 @@ function State.animals(hour)
     return out
 end
 
+-- The entry (see State.plants and State.animals) of a plant or an animal
+-- that is in the garden, and which of the two it is; nil when it is not.
+function State.entry(id, hour)
+    for _i, e in ipairs(State.plants()) do
+        if e.def.id == id then return e, "plant" end
+    end
+    for _i, e in ipairs(State.animals(hour)) do
+        if e.def.id == id then return e, "animal" end
+    end
+end
+
 -- The record of a plant or an animal, or nil.
 function State.rec(id)
     local d = State.get()

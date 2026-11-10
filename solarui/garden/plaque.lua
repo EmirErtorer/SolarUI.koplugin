@@ -13,7 +13,8 @@ local MIN, MAX = 20, 140   -- letters a passage may have to fit the plaque
 -- { text, title }.
 function Plaque.candidates()
     local out = {}
-    for _i, path in ipairs(History.recent(8)) do
+    for _i, item in ipairs(History.recent(8)) do
+        local path = item.path
         for _j, a in ipairs(Annotations.kinds(path).highlights) do
             local n = select(2, a.text:gsub("[^\128-\191]", ""))   -- letters, not bytes
             if n >= MIN and n <= MAX then out[#out + 1] = { text = a.text, title = Books.info(path).title } end

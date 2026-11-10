@@ -19,6 +19,7 @@ local BUILTIN = {
     history = function() return "dock_history", "history", _("History"), function() App.go("history") end end,
     search = function() return "dock_search", "search", _("Search"), function() App.push("search") end end,
     inkaway = function() return "dock_inkaway", InkAway.icon, "Ink Away", function() Addons.launch(InkAway) end end, -- i18n: keep
+    garden = function() return "dock_garden", "tools", _("Garden"), function() App.push("garden") end end,
     settings = function() return "dock_settings", "settings", _("Settings"), function() App.go("settings") end end,
 }
 

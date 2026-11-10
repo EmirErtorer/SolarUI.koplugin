@@ -5,6 +5,7 @@
 -- Everything is a plain function of a facts table so it can be tested.
 
 local Cast = require("solarui/garden/cast")
+local _ = require("solarui/gettext")
 
 local Visitors = {}
 
@@ -68,6 +69,25 @@ function Visitors.about(def, hour)
     if def.about == "day" then return hour >= 7 and hour < 19 end
     if def.about == "night" then return hour >= 19 or hour < 5 end
     return true
+end
+
+-- What to do to find an animal, as a sentence for the field notes.
+function Visitors.hint(def)
+    local f = def.find
+    local text
+    if f.kind == "start" then return _("Lives in the garden from the start.") end
+    if f.kind == "bloom" then text = string.format(_("Have %d plants in bloom."), f.n)
+    elseif f.kind == "morning" then text = string.format(_("Read %d pages in the early morning."), f.n)
+    elseif f.kind == "night" then text = string.format(_("Read %d pages late at night."), f.n)
+    elseif f.kind == "books" then text = string.format(_("Finish %d books."), f.n)
+    elseif f.kind == "streak" then text = string.format(_("Read %d days in a row."), f.n)
+    else text = "" end
+    if f.id then
+        local plant = Cast.plant(f.id)
+        local until_ = f.stage == 3 and _("it has a bud") or _("it blooms")
+        text = (text ~= "" and (text .. " ") or "") .. string.format(_("Grow the %s until %s."), plant.en, until_)
+    end
+    return text
 end
 
 return Visitors
