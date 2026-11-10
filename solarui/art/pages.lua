@@ -139,6 +139,17 @@ function Pages.goal_tree(c, vw, vh, pct)
     return table.concat(out)
 end
 
+-- A shelf rail for under a row of covers: a rule with a curl at each end.
+function Pages.rail_line(c, vw, vh)
+    local r = vh * .3
+    local y = vh * .55
+    local left = Svg.spiral(r * 1.2, y - r, r, 1.3, 0, true)
+    local rail = {}
+    for i = #left, 1, -1 do rail[#rail + 1] = left[i] end
+    rail = Svg.poly(Svg.join(rail, Svg.join({ { r * 1.2, y }, { vw - r * 1.2, y } }, Svg.spiral(vw - r * 1.2, y - r, r, 1.3, 0))))
+    return Svg.line(rail, c.ink, 2.6) .. Svg.line(rail, c.stem, 1.2)
+end
+
 -- A small flower head, by species id, to stand before a section's name.
 function Pages.bloom(c, vw, vh, id)
     local r = math.min(vw, vh) * .42

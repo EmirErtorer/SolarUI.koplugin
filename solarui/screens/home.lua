@@ -181,16 +181,9 @@ function Home:dock(scene, y)
     end
 end
 
--- The ornaments of the border (a curl at each corner, a bud at the foot),
--- the sun or moon of the hour and a butterfly.
+-- The ornaments of the border, the sun or moon of the hour and a butterfly.
 function Home:ornaments(scene)
-    local left, right = -scene.ox / scene.k, (scene.width - scene.ox) / scene.k - 90
-    local bottom = scene.vh - 90
-    scene:backdrop("frame_corner", left, 0, 90, 90, 0)
-    scene:backdrop("frame_corner", right, 0, 90, 90, 1)
-    scene:backdrop("frame_corner", right, bottom, 90, 90, 2)
-    scene:backdrop("frame_corner", left, bottom, 90, 90, 3)
-    scene:backdrop("frame_bud", (scene.width / 2 - scene.ox) / scene.k - 30, scene.vh - 52, 60, 30)
+    scene:frameOrnaments()
     scene:sprite("dayphase", 262, 12, 92, 72, nil, function()
         local h = tonumber(os.date("%H")) or 12
         return (h >= 5 and h < 8) and 1 or (h >= 8 and h < 17) and 2 or (h >= 17 and h < 20) and 3 or 0

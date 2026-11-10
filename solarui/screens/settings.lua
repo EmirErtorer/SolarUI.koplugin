@@ -148,6 +148,11 @@ function SettingsScreen:home()
             Controls.Toggle:new({ on = Settings.get("home_shelf", true), on_change = function(on) save("home_shelf", on) end })),
         row(_("Seasons on home"), _("The vines blossom in spring, turn gold in autumn and go pale in winter"),
             Controls.Toggle:new({ on = Settings.get("home_season", true), on_change = function(on) save("home_season", on) end })),
+        row(_("Sleep picture"), _("Draws a picture in the garden's style to choose as KOReader's sleep screen (Settings, Screen, Sleep screen, Wallpaper, Custom image)"),
+            Button:new({ label = _("Make"), on_tap = function()
+                local path = require("solarui/sleep").make()
+                App.toast(string.format(_("Saved to %s"), path))
+            end })),
         row(_("Library opens in"), _("The folder the Library starts in; KOReader's home folder stays the top of the library"),
             Button:new({ label = Settings.get("library_start_dir") and Files.name(Settings.get("library_start_dir")) or _("Home folder"), on_tap = function()
                 App.choose({ title = _("Library opens in"), options = {

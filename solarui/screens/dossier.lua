@@ -7,6 +7,8 @@ local App = require("solarui/app")
 local Books = require("solarui/data/books")
 local Button = require("solarui/ui/button")
 local Collections = require("solarui/data/collections")
+local ArtView = require("solarui/ui/artview")
+local Panel = require("solarui/ui/panel")
 local Section = require("solarui/ui/section")
 local Cover = require("solarui/ui/cover")
 local Format = require("solarui/format")
@@ -100,17 +102,31 @@ function Dossier:build()
     facts[#facts + 1] = line(formatLine(path, info, st))
     facts[#facts + 1] = line(datesLine(path))
     facts[#facts + 1] = chips
+    -- an ex libris plate under the cover
+    local plate = Panel:new({ shape = "frame", double = true, pad = { th.space.xs, th.space.s }, child = Layout.Row:new({ gap = th.space.xs, valign = "center", children = {
+        ArtView:new({ name = "bloom", param = "daisy", width = Theme.px(22), height = Theme.px(22) }),
+        Label:new({ text = _("Ex libris"), kind = "small", color = "muted", grow = true, align = "center" }),
+    } }) })
     local head = Layout.Row:new({ gap = th.space.l, valign = "top", children = {
-        Cover:new({ path = path, width = Theme.px(110), height = Theme.px(162) }),
+        Layout.Column:new({ gap = th.space.s, width = Theme.px(110), children = {
+            Cover:new({ path = path, width = Theme.px(110), height = Theme.px(162) }), plate } }),
         Layout.Column:new({ grow = true, gap = th.space.s, children = facts }),
     } })
 
+    -- the synopsis opens with a large initial, the rest of the text beside it
+    local text = info.description and util.htmlToPlainTextIfHtml(info.description) or _("No description in this book's details.")
+    local initial
+    if info.description then
+        initial = text:match("^%s*([%z\1-\127\194-\244][\128-\191]*)")
+        if initial and initial:match("%w") then text = text:gsub("^%s*[%z\1-\127\194-\244][\128-\191]*", "", 1) else initial = nil end
+    end
+    local body = ScrollText:new({ grow = true, text = text, color = info.description and "ink" or "muted", state = self.synopsis_page, on_turn = function() App.update() end })
     local synopsis = Layout.Column:new({ grow = true, gap = th.space.s, children = {
         Section.title(_("Synopsis")),
-        ScrollText:new({ grow = true, text = info.description and util.htmlToPlainTextIfHtml(info.description) or _("No description in this book's details."),
-            color = info.description and "ink" or "muted", state = self.synopsis_page, on_turn = function() App.update() end }),
+        initial and Layout.Row:new({ grow = true, gap = th.space.xs, valign = "top", children = {
+            Label:new({ text = initial:upper(), kind = "hero", color = "accent" }), body } }) or body,
     } })
-    self.synopsis = synopsis.children[2]
+    self.synopsis = body
 
     -- the saved items as three buttons, each opening its list
     local kinds = Annotations.kinds(path)

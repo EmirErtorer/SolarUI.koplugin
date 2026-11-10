@@ -3,6 +3,7 @@
 -- Columns are fixed by `cols`, or as many as fit cells `min_cell_w` wide.
 -- One column makes it a paged list.
 
+local Art = require("solarui/gfx/art")
 local Element = require("solarui/ui/element")
 local Theme = require("solarui/theme")
 
@@ -42,9 +43,17 @@ function Grid:layout(w, h)
     if self.on_layout then self.on_layout(capacity, pages, self.page) end
 end
 
--- Paint the cells row by row.
+-- Paint the cells row by row, a shelf rail under each row when `rails` is
+-- set and the gap between rows has room for one.
 function Grid:paint(bb, x, y)
     self.x, self.y = x, y
+    local rh = math.min(Theme.px(12), self.gap_y - Theme.px(3))
+    if self.rails and rh >= Theme.px(6) then
+        local k = Theme.px(100) / 178
+        for row = 0, math.floor((#self.children - 1) / self.ncols) do
+            Art.draw(bb, "rail_line", x, y + row * (self.cell_h + self.gap_y) + self.cell_h + Theme.px(2), self.w, rh, self.w / k, rh / k)
+        end
+    end
     for i, el in ipairs(self.children) do
         local col = (i - 1) % self.ncols
         local row = math.floor((i - 1) / self.ncols)

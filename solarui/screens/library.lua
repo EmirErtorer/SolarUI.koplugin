@@ -382,7 +382,7 @@ function Library:build()
         body_kids[#body_kids + 1] = Grid:new({
             grow = true, items = items, page = self.page,
             cols = as_list and 1 or nil, min_cell_w = Theme.px(Cover.SIZES[Settings.get("cover_size", "m")] or 120), cell_h = as_list and Theme.px(56) or nil, ratio = 1.72,
-            row_gap = as_list and 0 or th.space.l,
+            row_gap = as_list and 0 or th.space.l, rails = not as_list,
             make = function(item, w, h) return self:cell(item, w, h, as_list) end,
             on_layout = function(cap, pages, page) self.capacity, self.pages, self.page = cap, pages, page end,
         })
