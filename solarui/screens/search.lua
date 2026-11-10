@@ -12,6 +12,7 @@ local Search = Library:extend()
 -- Start with the given query, or ask for one as soon as the screen is up.
 function Search:init(params)
     Library.init(self, params)
+    self.plant = "search"
     params.query = params.query or ""
     if params.query == "" then UIManager:nextTick(function() self:ask() end) end
 end
@@ -32,7 +33,7 @@ end
 -- The query field: tap it to type a new search.
 function Search:topRow()
     local q = self.params.query
-    return Button:new({ label = q ~= "" and q or _("type to search"), icon = "search", kind = "mono", align = "left",
+    return Button:new({ label = q ~= "" and q or _("type to search"), icon = "search", kind = "body", align = "left",
         variant = "secondary", on_tap = function() self:ask() end })
 end
 

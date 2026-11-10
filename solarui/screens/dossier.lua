@@ -7,7 +7,7 @@ local App = require("solarui/app")
 local Books = require("solarui/data/books")
 local Button = require("solarui/ui/button")
 local Collections = require("solarui/data/collections")
-local Deco = require("solarui/ui/deco")
+local Section = require("solarui/ui/section")
 local Cover = require("solarui/ui/cover")
 local Format = require("solarui/format")
 local Frame = require("solarui/screens/frame")
@@ -39,7 +39,7 @@ end
 
 -- One line of small grey facts.
 local function line(text)
-    return Label:new({ text = text, kind = "mono_small", color = "muted", lines = 2 })
+    return Label:new({ text = text, kind = "small", color = "muted", lines = 2 })
 end
 
 -- Format, size and pages of the book on one line.
@@ -70,7 +70,7 @@ local function progress(path, st)
         if left > 0 then text = text .. string.format(_(" · %s left"), Format.duration(left)) end
     end
     return Layout.Column:new({ gap = th.space.xs, children = {
-        Label:new({ text = text, kind = "mono_small", lines = 2 }),
+        Label:new({ text = text, kind = "small", lines = 2 }),
         Progress:new({ value = st.percent, segments = 30, book = true }),
     } })
 end
@@ -89,9 +89,9 @@ function Dossier:build()
     local function moved(to) self.params.path = to; App.update() end
 
     local chips = Layout.Row:new({ gap = th.space.s, children = {
-        Button:new({ label = string.format("%s \u{B7} %s", _("Status"), STATUS[st.status] or ""), variant = "chip", kind = "mono_small",
+        Button:new({ label = string.format("%s \u{B7} %s", _("Status"), STATUS[st.status] or ""), variant = "chip", kind = "small",
             on_tap = function() Actions.statusSheet(path) end }),
-        Button:new({ label = #held > 0 and string.format(_("Collections \u{B7} %d"), #held) or _("+ Collection"), variant = "chip", kind = "mono_small",
+        Button:new({ label = #held > 0 and string.format(_("Collections \u{B7} %d"), #held) or _("+ Collection"), variant = "chip", kind = "small",
             on_tap = function() Actions.collect(path) end }),
     } })
     local facts = { Label:new({ text = info.title, kind = "display", lines = 3 }),
@@ -106,10 +106,7 @@ function Dossier:build()
     } })
 
     local synopsis = Layout.Column:new({ grow = true, gap = th.space.s, children = {
-        Layout.Row:new({ gap = th.space.m, children = {
-            Label:new({ text = _("Synopsis"), kind = "micro", color = "muted" }),
-            Deco.Divider:new({ grow = true }),
-        } }),
+        Section.title(_("Synopsis")),
         ScrollText:new({ grow = true, text = info.description and util.htmlToPlainTextIfHtml(info.description) or _("No description in this book's details."),
             color = info.description and "ink" or "muted", state = self.synopsis_page, on_turn = function() App.update() end }),
     } })
@@ -128,8 +125,8 @@ function Dossier:build()
     local main = Button:new({ label = _("Open book"), icon = "forward", variant = "primary", corners = "tb", grow = true, on_tap = function() Actions.open(path) end })
     local actions = Layout.Row:new({ gap = th.space.s, height = Theme.px(64), children = {
         main,
-        Button:new({ label = _("Edit details"), icon = "edit", variant = "tab", kind = "mono_small", on_tap = function() Actions.editDetails(path) end }),
-        Button:new({ label = _("More"), icon = "menu", variant = "tab", kind = "mono_small", on_tap = function() Actions.moreSheet(path, moved) end }),
+        Button:new({ label = _("Edit details"), icon = "edit", variant = "tab", kind = "small", on_tap = function() Actions.editDetails(path) end }),
+        Button:new({ label = _("More"), icon = "menu", variant = "tab", kind = "small", on_tap = function() Actions.moreSheet(path, moved) end }),
     } })
 
     local kids = { head }
@@ -138,7 +135,7 @@ function Dossier:build()
     kids[#kids + 1] = counts
     kids[#kids + 1] = actions
     return Frame.page({
-        screen = self, title = _("Details"), path = filemanagerutil.abbreviate(dir), tab = "library",
+        plant = "details", screen = self, title = _("Details"), path = filemanagerutil.abbreviate(dir), tab = "library",
         body = Layout.Column:new({ gap = th.space.l, children = kids }),
     })
 end

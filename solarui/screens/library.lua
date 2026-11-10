@@ -16,6 +16,7 @@ local Cover = require("solarui/ui/cover")
 local Collections = require("solarui/data/collections")
 local Data = require("solarui/data/library")
 local Files = require("solarui/data/files")
+local EmptyState = require("solarui/ui/emptystate")
 local Frame = require("solarui/screens/frame")
 local Grid = require("solarui/ui/grid")
 local Groups = require("solarui/data/libgroups")
@@ -163,16 +164,16 @@ function Library:breadcrumbs()
     local base = self.trail[1]
     local first = self:grouped() and LibMenu.groupName(LibMenu.group()) or (base == home() and _("Library") or Files.name(base))
     for i, dir in ipairs(self.trail) do
-        if i > 1 then kids[#kids + 1] = Label:new({ text = "/", kind = "mono", color = "muted" }) end
+        if i > 1 then kids[#kids + 1] = Label:new({ text = "\u{203A}", kind = "body", color = "muted" }) end
         local current = i == #self.trail
-        kids[#kids + 1] = Button:new({ label = i == 1 and first or self:crumbName(dir), kind = "mono_small",
+        kids[#kids + 1] = Button:new({ label = i == 1 and first or self:crumbName(dir), kind = "small",
             variant = current and "chip_on" or "seg", height = Theme.px(34),
             on_tap = not current and function() self:goTo(i) end or nil })
     end
     -- the end of a deep trail matters most: drop the oldest crumbs that do not fit
     local row = Layout.Row:new({ gap = th.space.xs, children = kids })
     row.clip_start = true
-    return Panel:new({ shape = "chamfer", corners = "r", cut = "cut_small", pad = { th.space.xs, th.space.s }, child = row })
+    return row
 end
 
 -- The filter chips, the extra filters button and the grid / list switch.
@@ -271,7 +272,7 @@ function Library:selectBar()
     end
     return Layout.Column:new({ gap = th.space.xs, children = {
         Layout.Row:new({ gap = th.space.s, children = {
-            Label:new({ text = string.format(_.n("%d picked", "%d picked", #picked), #picked), kind = "mono", grow = true }),
+            Label:new({ text = string.format(_.n("%d picked", "%d picked", #picked), #picked), kind = "body", grow = true }),
             Button:new({ label = _("All"), variant = "chip", height = Theme.px(36), on_tap = function() self:toggleAll() end }),
             Button:new({ label = _("Done"), variant = "chip_on", height = Theme.px(36), on_tap = function() self:endSelect() end }),
         } }),
@@ -342,7 +343,7 @@ function Library:actions()
         list[#list + 1] = Button:new({ icon = "search", variant = "icon", width = th.size.touch, on_tap = function() App.push("search") end })
     end
     if self:dir() then
-        list[#list + 1] = Button:new({ label = _("+ New"), variant = "primary", corners = "r", on_tap = function() self:newSheet() end })
+        list[#list + 1] = Button:new({ label = _("+ New"), variant = "primary", on_tap = function() self:newSheet() end })
     end
     list[#list + 1] = Button:new({ icon = "menu", variant = "icon", width = th.size.touch, on_tap = function() self:menu() end })
     return list
@@ -377,7 +378,7 @@ function Library:build()
     if #items == 0 then
         local empty = pick and _("No folders here. Make one with + Folder, or move it here.")
             or self.params.query and _("No matches") or _("Nothing here yet. Copy books in, or make a folder with + New.")
-        body_kids[#body_kids + 1] = Label:new({ grow = true, text = empty, kind = "body", color = "muted", align = "center", lines = 3 })
+        body_kids[#body_kids + 1] = EmptyState.build({ plant = self.plant or "library", text = empty })
     else
         body_kids[#body_kids + 1] = Grid:new({
             grow = true, items = items, page = self.page,
@@ -387,7 +388,7 @@ function Library:build()
             on_layout = function(cap, pages, page) self.capacity, self.pages, self.page = cap, pages, page end,
         })
     end
-    body_kids[#body_kids + 1] = Frame.pager(self, _("Letters"), function(p) self:setPage(p) end)
+    body_kids[#body_kids + 1] = Frame.pager(self, _("Page"), function(p) self:setPage(p) end)
     if self.selecting then body_kids[#body_kids + 1] = self:selectBar() end
     if pick then
         body_kids[#body_kids + 1] = Button:new({ label = pick.label or _("Move here"), icon = pick.icon or "move", variant = "primary", corners = "tb",
@@ -395,7 +396,7 @@ function Library:build()
     end
     return Frame.page({
         screen = self, title = title, path = path, actions = self:actions(),
-        tab = (self.params.collection or self.params.series) and "collections" or "library",
+        plant = self.plant, tab = (self.params.collection or self.params.series) and "collections" or "library",
         body = Layout.Column:new({ gap = th.space.m, children = body_kids }),
     })
 end

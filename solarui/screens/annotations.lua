@@ -5,6 +5,7 @@
 local Actions = require("solarui/actions")
 local Annotations = require("solarui/data/annotations")
 local Books = require("solarui/data/books")
+local EmptyState = require("solarui/ui/emptystate")
 local Frame = require("solarui/screens/frame")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
@@ -29,7 +30,7 @@ function AnnotationsScreen:init() self.page = 1 end
 local function meta(a)
     local parts = {}
     if a.chapter and a.chapter ~= "" then parts[#parts + 1] = a.chapter end
-    if a.pageno then parts[#parts + 1] = string.format("PG %s", a.pageno) end
+    if a.pageno then parts[#parts + 1] = string.format(_("Page %s"), a.pageno) end
     if a.date then parts[#parts + 1] = a.date:match("^%S+") or a.date end
     return table.concat(parts, " · ")
 end
@@ -37,13 +38,13 @@ end
 -- One saved item as a card.
 local function card(path, a, kind)
     local th = Theme.get()
-    local kids = { Label:new({ text = meta(a), kind = "mono_small", color = "muted", lines = 2 }) }
+    local kids = { Label:new({ text = meta(a), kind = "small", color = "muted", lines = 2 }) }
     local shown = kind == "notes" and a.note or a.text
     if shown and shown ~= "" then kids[#kids + 1] = Label:new({ text = shown, kind = "body", lines = 6 }) end
     if kind ~= "notes" and a.note then
-        kids[#kids + 1] = Label:new({ text = a.note, kind = "mono_small", color = "accent", lines = 3 })
+        kids[#kids + 1] = Label:new({ text = a.note, kind = "small", color = "accent", lines = 3 })
     elseif kind == "notes" and a.text ~= "" then
-        kids[#kids + 1] = Label:new({ text = a.text, kind = "mono_small", color = "muted", lines = 3 })
+        kids[#kids + 1] = Label:new({ text = a.text, kind = "small", color = "muted", lines = 3 })
     end
     return Panel:new({ shape = "frame", pad = th.space.m, on_tap = function() Actions.openAt(path, a) end,
         child = Layout.Column:new({ gap = th.space.xs, children = kids }) })
@@ -59,12 +60,12 @@ function AnnotationsScreen:build()
     for i = #list, 1, -1 do cards[#cards + 1] = card(path, list[i], kind) end   -- newest first
     local body
     if #cards == 0 then
-        body = Label:new({ grow = true, text = KINDS[kind].empty, kind = "body", color = "muted", align = "center", lines = 4 })
+        body = EmptyState.build({ plant = kind, title = KINDS[kind].title, text = KINDS[kind].empty })
     else
         body = Frame.paged(self, cards, _("Page"))
     end
     return Frame.page({
-        screen = self, title = KINDS[kind].title, path = Books.info(path).title, tab = "library",
+        screen = self, title = KINDS[kind].title, path = Books.info(path).title, tab = "library", plant = kind,
         body = Layout.Column:new({ gap = th.space.l, children = { body } }),
     })
 end
