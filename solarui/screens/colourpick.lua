@@ -54,7 +54,7 @@ function ColourPick:preview(rgb)
     local th = Theme.get()
     local grey = Color.grey(rgb)
     local function pair(name, swatch)
-        return Layout.Column:new({ children = { Label:new({ text = name, kind = "micro", color = "muted" }), swatch } })
+        return Layout.Column:new({ children = { Label:new({ text = name, kind = "small", color = "muted" }), swatch } })
     end
     local ok = readable(rgb)
     return Layout.Row:new({ gap = th.space.l, valign = "center", children = {
@@ -63,7 +63,7 @@ function ColourPick:preview(rgb)
         pair(_("In grey"), Swatch:new({ colors = { Color.hex({ grey, grey, grey }) }, size = 34 })),
         Layout.Row:new({ grow = true, gap = th.space.s, valign = "center", children = {
             Icon:new({ name = ok and "check" or "warning", size = 22, color = ok and "ink" or "accent" }),
-            Label:new({ text = ok and _("Reads on the page") or _("Too faint on the page"), kind = "mono_small", lines = 2, grow = true }),
+            Label:new({ text = ok and _("Reads on the page") or _("Too faint on the page"), kind = "small", lines = 2, grow = true }),
         } }),
     } })
 end
@@ -94,13 +94,13 @@ function ColourPick:build()
         on_change = function(h, s, v) self.hue, self.sat, self.val = h, s, v; App.update() end })
     local readout = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
         Label:new({ text = string.format("%s · H%d S%d V%d", hex, math.floor(self.hue + 0.5), math.floor(self.sat * 100 + 0.5), math.floor(self.val * 100 + 0.5)),
-            kind = "mono", grow = true }),
+            kind = "body", grow = true }),
         Button:new({ icon = "edit", label = _("Hex"), variant = "secondary", on_tap = function()
             App.input(_("Colour code"), hex, function(text) self:setHex(util.trim(text or "")) end, _("Use"), { placeholder = "#2457D6" })
         end }),
     } })
     local hue_row = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
-        Label:new({ text = _("Hue"), kind = "label", grow = true }),
+        Label:new({ text = _("Hue"), kind = "heading", grow = true }),
         Controls.Stepper({ value = math.floor(self.hue / 5 + 0.5) * 5 % 360, min = 0, max = 355, step = 5, format = function(v) return v .. "\u{00B0}" end, value_w = 64,
             on_change = function(v) self.hue = v; App.update() end }),
     } })

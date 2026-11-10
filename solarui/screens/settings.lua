@@ -14,6 +14,7 @@ local Custom = require("solarui/themes/custom")
 local Files = require("solarui/data/files")
 local Fonts = require("solarui/screens/fonts")
 local Frame = require("solarui/screens/frame")
+local Section = require("solarui/ui/section")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Library = require("solarui/data/library")
@@ -77,11 +78,11 @@ function SettingsScreen:look()
         scheme_rows[#scheme_rows + 1] = Layout.Row:new({ gap = th.space.m, children = kids })
     end
     local kids = {
-        Label:new({ text = _("Colour scheme"), kind = "label" }),
+        Section.title(_("Colour scheme")),
         Layout.Column:new({ gap = th.space.s, children = scheme_rows }),
-        Label:new({ text = _("Mode"), kind = "label" }),
+        Section.title(_("Mode")),
         Controls.Segmented({ options = { { _("Light"), "light" }, { _("Dark"), "dark" }, { _("System"), "system" } },
-            value = Theme.mode(), kind = "label", on_change = function(v) Theme.set("mode", v) end }),
+            value = Theme.mode(), kind = "small", on_change = function(v) Theme.set("mode", v) end }),
     }
     if scheme == "custom" then
         local a = row(_("Accent"), _("Buttons, badges and the chosen tab"), Button:new({ label = _("Pick"), on_tap = function()
@@ -99,12 +100,12 @@ end
 -- The Covers section: style and size in the library.
 function SettingsScreen:covers()
     return {
-        Label:new({ text = _("Style"), kind = "label" }),
+        Section.title(_("Style")),
         Controls.Segmented({ options = { { _("Image"), "image" }, { _("Card"), "card" } },
-            value = Cover.style(), kind = "label", on_change = function(v) save("cover_style", v) end }),
-        Label:new({ text = _("Size in the library"), kind = "label" }),
+            value = Cover.style(), kind = "small", on_change = function(v) save("cover_style", v) end }),
+        Section.title(_("Size in the library")),
         Controls.Segmented({ options = { { "S", "s" }, { "M", "m" }, { "L", "l" }, { "XL", "xl" } },
-            value = Settings.get("cover_size", "m"), kind = "label", on_change = function(v) save("cover_size", v) end }),
+            value = Settings.get("cover_size", "m"), kind = "small", on_change = function(v) save("cover_size", v) end }),
         row(_("Stretch covers"), _("Fill each cover frame, even if the proportions change"),
             Controls.Toggle:new({ on = Covers.stretch(), on_change = function(on) save("cover_stretch", on) end })),
     }
@@ -176,7 +177,7 @@ function SettingsScreen:speed()
                 if not on then require("solarui/park").finish() end
             end })),
         Panel:new({ shape = "frame", pad = th.space.m, child = Layout.Column:new({ gap = th.space.xs, children = {
-            Label:new({ text = _("What keeping the book open costs"), kind = "micro", color = "muted" }),
+            Section.title(_("What keeping the book open costs")),
             Label:new({ text = _("Going home puts the book away instead of closing it. KOReader closes it for real when you open a different book, after 30 seconds of not touching the screen, or when you open KOReader's menu or its file browser."),
                 kind = "small", lines = 5 }),
             Label:new({ text = _("- A different book, KOReader's menu and the file browser take a moment longer, since the close happens then."),
@@ -195,7 +196,7 @@ function SettingsScreen:speed()
                 App.update()
             end })),
         Panel:new({ shape = "frame", pad = th.space.m, child = Layout.Column:new({ gap = th.space.xs, children = {
-            Label:new({ text = _("How SolarUI stays fast"), kind = "micro", color = "muted" }),
+            Section.title(_("How SolarUI stays fast")),
             Label:new({ text = _("Home stays loaded while you read, so closing a book is a redraw, not a rebuild. The artwork is drawn once and kept, and the screen is refreshed only where it changed."),
                 kind = "small", lines = 4 }),
         } }) }),
@@ -212,8 +213,8 @@ local function supportPanel()
             Layout.Column:new({ grow = true, gap = th.space.s, children = {
                 Label:new({ text = _("SolarUI is free and made by one person. If it makes your reading better, a coffee helps keep it going."),
                     kind = "body", lines = 5 }),
-                Label:new({ text = _("Scan with your phone"), kind = "micro", color = "accent" }),
-                Label:new({ text = "buymeacoffee.com/emirertorer", kind = "mono_small", color = "muted" }), -- i18n: keep
+                Label:new({ text = _("Scan with your phone"), kind = "small", color = "accent" }),
+                Label:new({ text = "buymeacoffee.com/emirertorer", kind = "small", color = "muted" }), -- i18n: keep
             } }),
         } }) })
 end
@@ -221,9 +222,9 @@ end
 -- The About section.
 function SettingsScreen:about()
     return {
-        row(_("Version"), nil, Label:new({ text = Version, kind = "mono" })),
+        row(_("Version"), nil, Label:new({ text = Version, kind = "body" })),
         row(_("Language"), _("SolarUI follows KOReader's language (set in KOReader's own settings). The texts are in the l10n folder and can be edited there."),
-            Label:new({ text = require("solarui/gettext").language():upper(), kind = "mono" })),
+            Label:new({ text = require("solarui/gettext").language():upper(), kind = "body" })),
         row(_("Updates"), (function()
                 local v = require("solarui/update/updater").available()
                 return v and string.format(_("SolarUI %s is ready to install"), v) or _("New versions from GitHub, with their notes")
@@ -238,7 +239,7 @@ end
 -- Build the screen.
 function SettingsScreen:build()
     local th = Theme.get()
-    local tabs = Controls.Segmented({ options = SECTIONS, value = self.section, kind = "label", on_change = function(v) self.section, self.page = v, 1; App.update() end })
+    local tabs = Controls.Segmented({ options = SECTIONS, value = self.section, kind = "small", on_change = function(v) self.section, self.page = v, 1; App.update() end })
     return Frame.page({
         screen = self, title = _("Settings"), tab = "settings",
         body = Layout.Column:new({ gap = th.space.m, children = { tabs, Frame.paged(self, self[self.section](self), _("Page")) } }),

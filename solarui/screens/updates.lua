@@ -56,15 +56,15 @@ local function card(rel, label, action)
         Layout.Column:new({ grow = true, children = {
             Label:new({ text = "v" .. rel.version, kind = "title" }),
             Label:new({ text = (rel.pre and _("Prerelease") or _("Stable")) .. (rel.date and (" · " .. rel.date) or ""),
-                kind = "mono_small", color = "muted" }),
+                kind = "small", color = "muted" }),
         } }),
     }
     if action then
         kids[#kids + 1] = Button:new({ label = label, variant = "primary", on_tap = function() action(rel) end })
     else
-        kids[#kids + 1] = Label:new({ text = label, kind = "label", color = "muted" })
+        kids[#kids + 1] = Label:new({ text = label, kind = "heading", color = "muted" })
     end
-    return Panel:new({ shape = "chamfer", corners = "r", line = "ink", pad = { th.space.s, th.space.m },
+    return Panel:new({ shape = "frame", double = true, pad = { th.space.s, th.space.m },
         child = Layout.Row:new({ gap = th.space.m, children = kids }) })
 end
 
@@ -82,7 +82,7 @@ function Updates:build()
         Layout.Row:new({ gap = th.space.m, children = {
             Layout.Column:new({ grow = true, children = {
                 Label:new({ text = "SolarUI v" .. Version, kind = "title" }), -- i18n: keep
-                Label:new({ text = status, kind = "mono_small", color = "muted", lines = 2 }),
+                Label:new({ text = status, kind = "small", color = "muted", lines = 2 }),
             } }),
             Button:new({ label = _("Check"), on_tap = function() self:check(); App.update() end }),
         } }),
@@ -99,7 +99,7 @@ function Updates:build()
         if o.pre_action == "try" then shown = o.pre end
     end
     if shown and shown.notes ~= "" then
-        body[#body + 1] = Panel:new({ shape = "brackets", label = string.format(_("Notes for v%s"), shown.version),
+        body[#body + 1] = Panel:new({ shape = "frame", title = string.format(_("Notes for v%s"), shown.version),
             pad = th.space.l, grow = true, child = ScrollText:new({ text = Policy.notes(shown.notes), kind = "small",
                 state = self.notes_page, on_turn = function() App.update() end }) })
     else

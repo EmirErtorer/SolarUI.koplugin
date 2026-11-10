@@ -7,7 +7,7 @@ local Button = require("solarui/ui/button")
 local Format = require("solarui/format")
 local Frame = require("solarui/screens/frame")
 local Grid = require("solarui/ui/grid")
-local Label = require("solarui/ui/label")
+local EmptyState = require("solarui/ui/emptystate")
 local Layout = require("solarui/ui/layout")
 local ListRow = require("solarui/ui/listrow")
 local Screen = require("solarui/screens/screen")
@@ -47,8 +47,8 @@ function TrashScreen:build()
     local items = Trash.list()
     local body = {}
     if #items == 0 then
-        body[1] = Label:new({ grow = true, text = string.format(_.n("The trash is empty. Deleted books and folders wait here for %d day.",
-            "The trash is empty. Deleted books and folders wait here for %d days.", Trash.KEEP_DAYS), Trash.KEEP_DAYS), kind = "body", color = "muted", align = "center", lines = 3 })
+        body[1] = EmptyState.build({ plant = "settings", title = _("The trash is empty"), text = string.format(_.n("Deleted books and folders wait here for %d day.",
+            "Deleted books and folders wait here for %d days.", Trash.KEEP_DAYS), Trash.KEEP_DAYS) })
     else
         body[1] = Grid:new({ grow = true, items = items, page = self.page, cols = 1, cell_h = Theme.px(58), row_gap = 0,
             make = function(it)

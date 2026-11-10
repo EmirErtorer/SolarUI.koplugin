@@ -51,10 +51,10 @@ local function row(path, f)
     local changed = Metadata.changed(path, f.key)
     return Panel:new({ shape = "frame", pad = th.space.m, on_tap = function() edit(path, f) end,
         on_hold = function() restore(path, f) end, child = Layout.Row:new({ gap = th.space.m, children = {
-            Label:new({ text = f.name:upper(), kind = "mono_small", color = "muted", width = Theme.px(112) }),
+            Label:new({ text = f.name:upper(), kind = "small", color = "muted", width = Theme.px(112) }),
             Label:new({ text = value ~= "" and value or "—", kind = "body", grow = true, lines = 2,
                 color = value ~= "" and "ink" or "muted" }),
-            Label:new({ text = changed and _("Edited") or "", kind = "micro", color = "muted" }),
+            Label:new({ text = changed and _("Edited") or "", kind = "small", color = "muted" }),
         } }) })
 end
 
@@ -69,7 +69,7 @@ function MetaEdit:build()
         Label:new({ text = info.title, kind = "display", lines = 2 }),
         Layout.Column:new({ gap = th.space.s, children = rows }),
         Label:new({ text = _("Tap a detail to change it. Hold it to bring back what the book says. The book file is not changed."),
-            kind = "mono_small", color = "muted", lines = 3 }),
+            kind = "small", color = "muted", lines = 3 }),
         Layout.Row:new({ gap = th.space.s, children = {
             Button:new({ label = _("Reset all"), icon = "trash", grow = true, disabled = not Metadata.changed(path),
                 on_tap = function()

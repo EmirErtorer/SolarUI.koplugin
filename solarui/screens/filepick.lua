@@ -84,7 +84,7 @@ function FilePick:build()
         end,
         on_layout = function(_cap, pages, page) self.pages, self.page = pages, page end,
     })
-    local body = { Label:new({ text = self.dir, kind = "mono_small", color = "muted" }), grid,
+    local body = { Label:new({ text = self.dir, kind = "small", color = "muted" }), grid,
         Frame.pager(self, _("Files"), function(p) self:setPage(p) end) }
     if params.pick_dir then
         table.insert(body, 2, Button:new({ label = _("Save here"), icon = "download", variant = "primary",

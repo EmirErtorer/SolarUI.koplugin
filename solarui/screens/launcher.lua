@@ -35,7 +35,7 @@ local function entryRow(entry, i, count)
         Icon:new({ name = icon, size = 24, color = muted }),
         Layout.Column:new({ grow = true, children = {
             Label:new({ text = label, kind = "heading", color = muted }),
-            Label:new({ text = entry.hidden and _("Hidden") or sub, kind = "mono_small", color = "muted" }),
+            Label:new({ text = entry.hidden and _("Hidden") or sub, kind = "small", color = "muted" }),
         } }),
     }, buttons, not fixed and function() LauncherUI.askRemove(entry, App.update) end or nil)
 end

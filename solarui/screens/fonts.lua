@@ -7,6 +7,7 @@ local Controls = require("solarui/ui/controls")
 local Frame = require("solarui/screens/frame")
 local Grid = require("solarui/ui/grid")
 local Icon = require("solarui/ui/icon")
+local EmptyState = require("solarui/ui/emptystate")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Panel = require("solarui/ui/panel")
@@ -34,12 +35,12 @@ end
 -- One font set as a card, its name set in its own face; tapping it picks the set.
 function FontsScreen.card(set, chosen)
     local th = Theme.get()
-    return Panel:new({ shape = chosen and "chamfer" or "frame", corners = "r", fill = chosen and "soft" or nil,
+    return Panel:new({ shape = "frame", double = chosen, fill = chosen and "soft" or nil,
         pad = { th.space.s, th.space.m }, on_tap = function() Theme.set("fontset", set.id) end,
         child = Layout.Row:new({ gap = th.space.m, children = {
             Layout.Column:new({ grow = true, children = {
                 Label:new({ text = set.name, kind = { "title", set.id } }),
-                Label:new({ text = set.note, kind = "micro", color = "muted" }),
+                Label:new({ text = set.note, kind = "small", color = "muted" }),
             } }),
             chosen and Icon:new({ name = "check", size = 26 }) or Layout.Spacer:new({ width = 1 }),
         } }) })
@@ -47,7 +48,7 @@ end
 
 -- Start on the tab of the font in use.
 function FontsScreen:init()
-    self.tab = Settings.get("fontset", ""):match("^device:") and "device" or "cyber"
+    self.tab = Settings.get("fontset", ""):match("^device:") and "device" or "bundled"
     self.page = 1
 end
 
@@ -58,11 +59,11 @@ function FontsScreen:build()
     if self.tab == "device" and not self.device then self.device = deviceSets() end
     local sets = self.tab == "device" and self.device or Registry.fontSets()
     local body = {
-        Controls.Segmented({ options = { { _("Bundled"), "cyber" }, { _("Device"), "device" } }, value = self.tab, kind = "label",
+        Controls.Segmented({ options = { { _("Bundled"), "bundled" }, { _("Device"), "device" } }, value = self.tab, kind = "small",
             on_change = function(v) self.tab, self.page = v, 1; App.update() end }),
     }
     if #sets == 0 then
-        body[#body + 1] = Label:new({ grow = true, text = _("No fonts found on this device."), kind = "body", color = "muted", align = "center" })
+        body[#body + 1] = EmptyState.build({ plant = "settings", title = _("No fonts found on this device.") })
     else
         body[#body + 1] = Grid:new({ grow = true, items = sets, page = self.page, cols = 1, cell_h = Theme.px(64), row_gap = th.space.s,
             make = function(set) return FontsScreen.card(set, set.id == chosen) end,

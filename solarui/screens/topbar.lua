@@ -6,6 +6,7 @@ local App = require("solarui/app")
 local Button = require("solarui/ui/button")
 local EditRow = require("solarui/ui/editrow")
 local Frame = require("solarui/screens/frame")
+local Section = require("solarui/ui/section")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Screen = require("solarui/screens/screen")
@@ -34,7 +35,7 @@ end
 local function itemRow(it, buttons)
     return EditRow.line({
         Label:new({ text = it.name, kind = "heading", grow = true }),
-        Label:new({ text = it.read() or _("Nothing to show"), kind = "mono_small", color = "muted" }),
+        Label:new({ text = it.read() or _("Nothing to show"), kind = "small", color = "muted" }),
     }, buttons)
 end
 
@@ -49,7 +50,7 @@ function TopBar:build()
         Layout.Row:new({ gap = th.space.m, children = {
             Layout.Column:new({ grow = true, children = {
                 Label:new({ text = _("Tag"), kind = "heading" }),
-                Label:new({ text = StatusBar.tag(), kind = "mono", color = "muted" }),
+                Label:new({ text = StatusBar.tag(), kind = "body", color = "muted" }),
             } }),
             Button:new({ label = _("Edit"), on_tap = function()
                 App.input(_("Top bar tag"), StatusBar.tag(), function(text)
@@ -58,7 +59,7 @@ function TopBar:build()
                 end, _("Save"), { placeholder = StatusBar.TAG })
             end }),
         } }),
-        Label:new({ text = string.format(_("Shown %d/%d"), #ids, StatusBar.MAX), kind = "label" }),
+        Section.title(_("Shown"), string.format("%d/%d", #ids, StatusBar.MAX)),
     }
     for i, id in ipairs(ids) do
         local it = StatusBar.item(id)
@@ -71,7 +72,7 @@ function TopBar:build()
             })
         end
     end
-    body[#body + 1] = Label:new({ text = _("Available"), kind = "label" })
+    body[#body + 1] = Section.title(_("Available"))
     for _i, it in ipairs(StatusBar.ITEMS) do
         if not on[it.id] then
             body[#body + 1] = itemRow(it, { iconButton("plus", function()
