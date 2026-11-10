@@ -30,21 +30,22 @@ local SHEET = {
 }
 
 local W = math.floor(1100 * K)
-local bb = Kit.canvas(W, math.floor(2700 * K))
+local bb = Kit.canvas(W, math.floor(3400 * K))
 bb:fill(Theme.color("bg"))
-local x, y, row_h = 10, 10, 0
+local x, y, row_h = 30, 30, 0
 local total = 0
 for _, s in ipairs(SHEET) do
     local w, h = math.floor(s[2] * K), math.floor(s[3] * K)
-    if x + w > W - 10 then x, y, row_h = 10, y + row_h + 14, 0 end
+    if x + w > W - 30 then x, y, row_h = 30, y + row_h + 40, 0 end
     local t0 = time.now()
-    local sprite = Art.sprite(s[1], w, h, s[2], s[3], s[4])
+    local sprite, _dx, _dy, cut = Art.sprite(s[1], w, h, s[2], s[3], s[4])
     local ms = time.to_ms(time.since(t0))
     total = total + ms
     Kit.ok(sprite ~= nil, s[1] .. " draws")
+    Kit.ok(not cut, s[1] .. " is not cut by its canvas")
     if sprite then Art.draw(bb, s[1], x, y, w, h, s[2], s[3], s[4]) end
     print(string.format("%-18s %4dx%-4d %6.1f ms", s[1], w, h, ms))
-    x, row_h = x + w + 14, math.max(row_h, h)
+    x, row_h = x + w + 40, math.max(row_h, h)
 end
 print(string.format("total %.0f ms", total))
 Kit.png(bb, OUT)

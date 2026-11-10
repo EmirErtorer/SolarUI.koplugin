@@ -44,6 +44,25 @@ local PARAMS = {
 
 Library.all()
 local W, H = Kit.Screen:getWidth(), Kit.Screen:getHeight()
+
+-- Where a painted screen has something on its outermost pixels (a drawing
+-- cut by the screen's edge), as text; nil when the edge is clear.
+local function edgeTouched(bb)
+    local bg = Theme.get().painted.bg
+    local function clear(x, y)
+        local p = bb:getPixel(x, y)
+        return p:getR() == bg[1] and p:getG() == bg[2] and p:getB() == bg[3]
+    end
+    for y = 0, H - 1 do
+        if not clear(0, y) then return "left at " .. y end
+        if not clear(W - 1, y) then return "right at " .. y end
+    end
+    for x = 0, W - 1 do
+        if not clear(x, 0) then return "top at " .. x end
+        if not clear(x, H - 1) then return "bottom at " .. x end
+    end
+    return nil
+end
 for _, id in ipairs(SCREENS) do
     if next(only) == nil or only[id] then
         local ok_mod, Mod = pcall(require, "solarui/screens/" .. id)
@@ -62,6 +81,10 @@ for _, id in ipairs(SCREENS) do
                         root:layout(W, H)
                         Paint.fill(bb, 0, 0, W, H, Theme.get().c.bg)
                         root:paint(bb, 0, 0)
+                        if id == "home" then
+                            local where = edgeTouched(bb)
+                            Kit.ok(not where, "home keeps its drawings off the screen's edge: " .. tostring(where))
+                        end
                         if scheme == "garden" and mode == "light" then
                             local ms = Kit.time(function()
                                 local r = Mod:new(PARAMS[id] and PARAMS[id]() or {}):build({ w = W, h = H })

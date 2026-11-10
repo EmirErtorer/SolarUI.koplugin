@@ -3,7 +3,10 @@
 -- solarui/art/sprites.lua. Small ones that change (a flower that fills) are
 -- kept as sprites and blended in on every paint; a whole backdrop of them is
 -- composed once into a layer the size of the screen and then just copied.
+-- A drawing may reach past the box it is given: it is rasterised with room
+-- around it and trimmed to what was drawn, so its box never cuts it.
 
+local Alpha = require("solarui/gfx/alpha")
 local Blitbuffer = require("ffi/blitbuffer")
 local DataStorage = require("datastorage")
 local RenderImage = require("ui/renderimage")
@@ -57,20 +60,41 @@ local function scratch()
     return svg_file
 end
 
--- Rasterise drawing `name` at w x h pixels from a vw x vh canvas; nil when
--- there is no such drawing or it fails.
+-- How far a drawing may reach past its box on every side, in pixels at
+-- `zoom` pixels a unit: plants lean out of the box they were composed in.
+local function bleed(vw, vh, zoom)
+    return math.ceil(math.max(12, math.min(80, math.min(vw, vh) * .4)) * zoom)
+end
+
+-- Rasterise drawing `name` for a w x h pixel box from a vw x vh canvas, with
+-- room around the box for what reaches past it, trimmed to what was drawn.
+-- Gives the picture, where its corner lies from the box's corner, and
+-- whether it ran out of even that room; nil when there is no such drawing
+-- or it fails.
 local function render(name, w, h, vw, vh, param)
     local draw = require("solarui/art/sprites")[name]
     if not draw or w < 1 or h < 1 then return nil end
+    local zoom = math.min(w / vw, h / vh)
+    local pad = bleed(vw, vh, zoom)
+    local ox, oy = pad + (w - vw * zoom) / 2, pad + (h - vh * zoom) / 2
+    local W, H = w + 2 * pad, h + 2 * pad
     local f = io.open(scratch(), "w")
     if not f then return nil end
-    f:write(Svg.document(vw, vh, draw(palette(), vw, vh, param)))
+    f:write(Svg.document(W, H, string.format('<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g>', ox, oy, zoom,
+        draw(palette(), vw, vh, param))))
     f:close()
-    return RenderImage:renderSVGImageFile(scratch(), w, h) or nil
+    local bb = RenderImage:renderSVGImageFile(scratch(), W, H, 1)
+    if not bb then return nil end
+    local full_w, full_h = bb:getWidth(), bb:getHeight()
+    local x, y
+    bb, x, y = Alpha.trim(bb)
+    local cut = x == 0 or y == 0 or x + bb:getWidth() == full_w or y + bb:getHeight() == full_h
+    return bb, x - pad, y - pad, cut
 end
 
--- Blend a sprite into `bb` with its top-left at (x, y).
-local function blend(bb, s, x, y)
+-- Blend a 32-bit picture with see-through parts into `bb` with its top-left
+-- at (x, y).
+function Art.blend(bb, s, x, y)
     local w, h = s:getWidth(), s:getHeight()
     if not DIRECT[bb:getType()] then
         -- blending straight into any other kind of buffer ends KOReader, so go through a copy
@@ -84,28 +108,32 @@ local function blend(bb, s, x, y)
     end
 end
 
--- The kept sprite of a drawing (see render), drawn on first use.
+-- The kept sprite of a drawing (see render), drawn on first use: the
+-- picture, where its corner lies from the box's corner, and whether the
+-- drawing ran off its canvas.
 function Art.sprite(name, w, h, vw, vh, param)
     sync()
     local key = table.concat({ name, w, h, vw, vh, tostring(param) }, "|")
     local s = sprites[key]
     if s == nil then
-        s = render(name, w, h, vw, vh, param) or false
+        local pic, dx, dy, cut = render(name, w, h, vw, vh, param)
+        s = pic and { bb = pic, dx = dx, dy = dy, cut = cut } or false
         sprites[key] = s
         order[#order + 1] = key
         if #order > MAX_SPRITES then
             local old = table.remove(order, 1)
-            if sprites[old] then sprites[old]:free() end
+            if sprites[old] then sprites[old].bb:free() end
             sprites[old] = nil
         end
     end
-    return s or nil
+    if not s then return nil end
+    return s.bb, s.dx, s.dy, s.cut
 end
 
--- Draw a kept sprite with its top-left at (x, y).
+-- Draw a kept sprite for the box with its top-left at (x, y).
 function Art.draw(bb, name, x, y, w, h, vw, vh, param)
-    local s = Art.sprite(name, w, h, vw, vh, param)
-    if s then blend(bb, s, x, y) end
+    local s, dx, dy = Art.sprite(name, w, h, vw, vh, param)
+    if s then Art.blend(bb, s, x + dx, y + dy) end
 end
 
 -- Paint a backdrop: `items` are { name, x, y, w, h, vw, vh, param } (or
@@ -132,9 +160,9 @@ function Art.layer(slot, bb, x, y, w, h, items, sig)
                 canvas:paintRectRGB32(i, i, t, h - 2 * i, c)
                 canvas:paintRectRGB32(w - i - t, i, t, h - 2 * i, c)
             else
-                local s = render(it[1], it[4], it[5], it[6], it[7], it[8])
+                local s, dx, dy = render(it[1], it[4], it[5], it[6], it[7], it[8])
                 if s then
-                    canvas:alphablitFrom(s, it[2], it[3], 0, 0, s:getWidth(), s:getHeight())
+                    canvas:alphablitFrom(s, it[2] + dx, it[3] + dy, 0, 0, s:getWidth(), s:getHeight())
                     s:free()
                 end
             end
@@ -154,7 +182,7 @@ end
 -- Free every sprite and backdrop (the look changed, or SolarUI closed).
 function Art.free()
     for _k, s in pairs(sprites) do
-        if s then s:free() end
+        if s then s.bb:free() end
     end
     for _k, l in pairs(layers) do l.bb:free() end
     sprites, order, layers, colours = {}, {}, {}, nil

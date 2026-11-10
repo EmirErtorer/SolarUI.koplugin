@@ -100,7 +100,7 @@ function Home:hero(scene, y, cur)
     scene:backdrop("sprig", 486, y + 10, 120, 138)
     local x0, w = 612, RIGHT - 612
     if not cur then
-        scene:sprite("rose_cluster", 0, y + 330, 200, 300)
+        scene:sprite("rose_cluster", 6, y + 330, 200, 300)
         scene:place(Layout.Column:new({ gap = scene:px(14), children = {
             Label:new({ text = _("Nothing open yet"), kind = "hero", lines = 2 }),
             ArtView:new({ name = "whiplash", unit = scene.k, height = scene:px(24) }),
