@@ -206,6 +206,13 @@ function Svg.document(vw, vh, body)
         n(vw), n(vh), n(vw), n(vh), body)
 end
 
+-- A fixed number from 0 to 1 for index `i` (and a `salt` to tell uses apart):
+-- the same unevenness every time a plant is drawn.
+function Svg.vary(i, salt)
+    local v = sin(i * 12.9898 + (salt or 0) * 78.233) * 43758.5453
+    return v - math.floor(v)
+end
+
 -- cos and sin of an angle in degrees (0 is up, clockwise), for drawings that
 -- place many points.
 function Svg.dir(deg)

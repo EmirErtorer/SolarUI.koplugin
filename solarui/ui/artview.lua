@@ -2,9 +2,12 @@
 -- on every paint from its kept sprite. `param` picks its state (how far a
 -- flower has filled); `param_fn`, when set, reads the state anew each paint.
 -- `unit` is how many pixels one unit of the drawing's own canvas takes.
+-- `fill` names a colour role painted behind it (for a drawing that lies over
+-- another page, as on the edge of a drop-down).
 
 local Art = require("solarui/gfx/art")
 local Element = require("solarui/ui/element")
+local Paint = require("solarui/gfx/paint")
 local Theme = require("solarui/theme")
 
 local ArtView = Element:extend({})
@@ -22,6 +25,7 @@ end
 -- Draw the artwork across the box.
 function ArtView:draw(bb, x, y)
     if self.w < 2 or self.h < 2 then return end
+    if self.fill then Paint.fill(bb, x, y, self.w, self.h, Theme.color(self.fill)) end
     local k = self:scale()
     local param = self.param_fn and self.param_fn() or self.param
     Art.draw(bb, self.name, x, y, self.w, self.h, math.floor(self.w / k + 0.5), math.floor(self.h / k + 0.5), param)

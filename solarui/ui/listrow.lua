@@ -1,5 +1,7 @@
 -- A list row: an optional small cover, a title over a meta line, and an
--- optional value on the right. Tapping it runs on_tap, holding runs on_hold.
+-- optional value on the right, over a budded rule. Tapping it runs on_tap,
+-- holding runs on_hold. Nothing in a row is artwork: only text, a cover
+-- and plain fills.
 
 local Cover = require("solarui/ui/cover")
 local Deco = require("solarui/ui/deco")
@@ -34,8 +36,8 @@ function ListRow.build(o)
     kids[#kids + 1] = Layout.Column:new({ grow = true, children = lines })
     if o.value then kids[#kids + 1] = Label:new({ text = o.value, kind = "mono_small", color = o.value_color or "ink" }) end
     if o.trailing then kids[#kids + 1] = o.trailing end
-    local row = Layout.Row:new({ gap = th.space.m, height = h - th.size.hair, children = kids })
-    local col = Layout.Column:new({ children = { row, Deco.Divider:new({}) }, on_tap = o.on_tap, on_hold = o.on_hold })
+    local row = Layout.Row:new({ gap = th.space.m, height = h - Theme.px(5), children = kids })
+    local col = Layout.Column:new({ children = { row, Deco.RowRule:new({}) }, on_tap = o.on_tap, on_hold = o.on_hold })
     return col
 end
 

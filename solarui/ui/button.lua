@@ -1,7 +1,10 @@
--- The one button of the style. A variant picks its colours and shape:
--- primary, secondary, soft, ghost, chip, chip_on, tab, tab_on and icon (the
--- large ones are leaves, with two opposite corners rounded). Content is an
--- optional icon, a label and an optional small line under it.
+-- The one button of the style. A variant picks its colours and shape. The
+-- large ones are leaves, with two opposite corners rounded: primary and
+-- accent2 (filled, with a fine inner line), secondary, soft, danger. The
+-- small ones are round like buds: ghost, chip, chip_on, icon, icon_on, seg_on.
+-- tab, seg and plain have no shape of their own; tab_on is a soft leaf with
+-- a mark under its label. Content is an optional icon, a label and an
+-- optional small line under it.
 
 local Element = require("solarui/ui/element")
 local Icons = require("solarui/gfx/icons")
@@ -11,30 +14,45 @@ local Theme = require("solarui/theme")
 
 local Button = Element:extend({ variant = "secondary", align = "center", icon_size = 20 })
 
--- Fill, outline, text colour, corner radius and which corners are rounded
--- for each variant (two opposite corners make a leaf).
+-- Fill, outline, text colour, corner radius ("round" is half the height)
+-- and which corners are rounded for each variant (two opposite corners make
+-- a leaf). `inner` rules a fine line inside the edge, `mark` a short bar
+-- under the content.
 local VARIANTS = {
-    primary   = { fill = "accent", text = "on_accent", cut = "cut", corners = "tb" },
-    accent2   = { fill = "accent2", text = "on_accent2", cut = "cut", corners = "tb" },
+    primary   = { fill = "accent", text = "on_accent", cut = "cut", corners = "tb", inner = true },
+    accent2   = { fill = "accent2", text = "on_accent2", cut = "cut", corners = "tb", inner = true },
     secondary = { line = "ink", text = "ink", cut = "cut", corners = "tb" },
     soft      = { fill = "soft", text = "ink", cut = "cut_small", corners = "tb" },
-    ghost     = { line = "line", text = "ink", cut = "cut_small", corners = "trbl" },
-    chip      = { line = "ink", text = "ink", cut = "cut_small", corners = "trbl" },
-    chip_on   = { fill = "accent", text = "on_accent", cut = "cut_small", corners = "trbl" },
+    ghost     = { line = "line", text = "ink", cut = "round" },
+    chip      = { line = "ink", text = "ink", cut = "round" },
+    chip_on   = { fill = "accent", text = "on_accent", cut = "round" },
     tab       = { text = "ink" },
-    tab_on    = { fill = "accent", text = "on_accent", cut = "cut", corners = "tr" },
-    icon      = { line = "ink", text = "ink", cut = "cut_small", corners = "trbl" },
-    icon_on   = { fill = "ink", text = "on_ink", cut = "cut_small", corners = "trbl" },
+    tab_on    = { fill = "soft", text = "ink", cut = "cut", corners = "tb", mark = "accent" },
+    icon      = { line = "ink", text = "ink", cut = "round" },
+    icon_on   = { fill = "ink", text = "on_ink", cut = "round" },
+    plain     = { text = "ink" },
     seg       = { text = "ink" },
-    seg_on    = { fill = "ink", text = "on_ink", cut = "cut_small", corners = "trbl" },
-    disabled  = { line = "line", text = "muted", cut = "cut_small", corners = "trbl" },
+    seg_on    = { fill = "accent", text = "on_accent", cut = "round" },
     danger    = { line = "accent2", text = "accent2", cut = "cut_small", corners = "tb" },
 }
 Button.VARIANTS = VARIANTS
 
--- The variant's colour roles.
+-- Each variant's look when it is disabled: its own shape, emptied and greyed.
+local DISABLED = {}
+for name, v in pairs(VARIANTS) do
+    DISABLED[name] = { line = (v.fill or v.line) and "line" or nil, text = "muted", cut = v.cut, corners = v.corners }
+end
+
+-- The variant's colour roles and shape.
 function Button:look()
-    return VARIANTS[self.disabled and "disabled" or self.variant] or VARIANTS.secondary
+    local set = self.disabled and DISABLED or VARIANTS
+    return set[self.variant] or set.secondary
+end
+
+-- Is this one of the bare icon variants (no padding round the icon)?
+function Button:bare()
+    local v = self.variant
+    return v:sub(1, 4) == "icon" or v == "plain"
 end
 
 -- Text kinds used for the label and the small line.
@@ -53,7 +71,7 @@ function Button:naturalWidth()
     if self.icon then
         w = w + Theme.px(self.icon_size) + (self.label and th.space.s or 0)
     end
-    local pad = self.variant:sub(1, 4) == "icon" and 0 or 2 * th.space.l
+    local pad = self:bare() and 0 or 2 * th.space.l
     return math.max(w + pad, th.size.touch)
 end
 
@@ -68,10 +86,20 @@ function Button:draw(bb, x, y)
     local look = self:look()
     local fill = look.fill and Theme.color(look.fill)
     local line = look.line and Theme.color(look.line)
-    local r = look.cut and th.size[look.cut] or 0
-    Paint.roundBox(bb, x, y, self.w, self.h, r, self.corners or look.corners, th.size.stroke, fill, line)
+    local r = look.cut == "round" and math.floor(self.h / 2) or (look.cut and th.size[look.cut] or 0)
+    local spec = self.corners or look.corners
+    Paint.roundBox(bb, x, y, self.w, self.h, r, spec, th.size.stroke, fill, line)
+    local text = Theme.color(look.text)
+    local gap = Theme.px(3)
+    if look.inner and self.h >= 12 * gap and self.w >= 20 * gap then
+        Paint.roundFrame(bb, x + gap, y + gap, self.w - 2 * gap, self.h - 2 * gap, r - gap, spec, th.size.hair, text)
+    end
+    if look.mark then
+        local mw = math.floor(self.w * .36)
+        Paint.round(bb, x + math.floor((self.w - mw) / 2), y + self.h - 2 * gap, mw, gap, gap, "trbl", Theme.color(look.mark))
+    end
     -- an icon's accent lights only stand out on an unfilled button
-    self:drawContent(bb, x, y, Theme.color(look.text), not fill and Theme.color("accent") or nil)
+    self:drawContent(bb, x, y, text, not fill and Theme.color("accent") or nil)
 end
 
 -- Lay out icon, label and small line inside the button (the small line only
@@ -79,7 +107,7 @@ end
 function Button:drawContent(bb, x, y, color, accent)
     local th = Theme.get()
     local kind, sub_kind = self:kinds()
-    local pad = self.variant:sub(1, 4) == "icon" and 0 or th.space.m
+    local pad = self:bare() and 0 or th.space.m
     local isz = self.icon and Theme.px(self.icon_size) or 0
     local igap = (self.icon and self.label) and th.space.s or 0
     local text_w = self.w - 2 * pad - isz - igap

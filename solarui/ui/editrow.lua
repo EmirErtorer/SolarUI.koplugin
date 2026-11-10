@@ -1,5 +1,5 @@
 -- The line of an editing screen (top bar, launcher): what it is on the left,
--- small icon buttons for its moves on the right, a divider underneath.
+-- small icon buttons for its moves on the right, a budded rule underneath.
 
 local Button = require("solarui/ui/button")
 local Deco = require("solarui/ui/deco")
@@ -23,7 +23,7 @@ function EditRow.line(kids, buttons, on_hold)
     for _i, b in ipairs(buttons or {}) do all[#all + 1] = b end
     return Layout.Column:new({ children = {
         Layout.Row:new({ gap = th.space.m, pad = { Theme.px(3), 0 }, children = all, on_hold = on_hold }),
-        Deco.Divider:new({}),
+        Deco.RowRule:new({}),
     } })
 end
 

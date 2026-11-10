@@ -27,47 +27,48 @@ function Dock.root(c, vw, vh)
     return table.concat(out) .. Svg.stem(pts, Svg.swell(9, 4), c.stem, c.ink, 1.7)
 end
 
+-- Two leaves spreading from the foot of a stalk.
+local function foot(c, vw, vh)
+    return Flora.leaf(c, vw * .5, vh * .9, -152, vh * .3, vh * .1) .. Flora.leaf(c, vw * .5, vh * .9, -28, vh * .3, vh * .1)
+end
+
 -- Library: a ginkgo fan, its veins like the pages of a book fanned open.
 function Dock.dock_library(c, vw, vh)
-    return stalk(c, vw, vh, vw * .5, vh * .84, 6)
-        .. Flora.ginkgo(c, vw * .4, vh * .92, -62, vh * .28, c.sage)
-        .. Flora.ginkgo(c, vw * .5, vh * .84, -4, vh * .56, c.gold)
+    return stalk(c, vw, vh, vw * .5, vh * .8, 6) .. foot(c, vw, vh)
+        .. Flora.ginkgo(c, vw * .5, vh * .82, 0, vh * .56, c.gold)
 end
 
 -- Collections: flowers of three kinds gathered into a posy.
 function Dock.dock_collections(c, vw, vh)
     local function stem(x, y) return stalk(c, vw, vh, x, y, 4) end
-    return stem(vw * .24, vh * .5) .. stem(vw * .76, vh * .46) .. stem(vw * .5, vh * .34)
-        .. Flora.leaf(c, vw * .44, vh * .8, -150, vh * .3, vh * .09) .. Flora.leaf(c, vw * .56, vh * .82, -30, vh * .3, vh * .09)
-        .. Flora.tulip(c, vw * .24, vh * .52, -18, vh * .2, c.bloom2)
-        .. Flora.daisy(c, vw * .76, vh * .34, vh * .19, 9)
-        .. Flora.rose(c, vw * .5, vh * .28, vh * .22, 10)
+    return stem(vw * .26, vh * .5) .. stem(vw * .74, vh * .46) .. stem(vw * .5, vh * .34)
+        .. foot(c, vw, vh)
+        .. Flora.tulip(c, vw * .26, vh * .52, -18, vh * .2, c.bloom2)
+        .. Flora.daisy(c, vw * .74, vh * .36, vh * .19, 9)
+        .. Flora.rose(c, vw * .5, vh * .3, vh * .24, 10)
 end
 
--- History: a fern crozier still unwinding.
+-- History: a fern crozier still unwinding, a grown frond behind it.
 function Dock.dock_history(c, vw, vh)
-    return Flora.frond(c, vw * .68, vh, 24, vh * .46)
-        .. Flora.crozier(c, vw * .5, vh, 0, vh * .56, vh * .28)
+    return Flora.frond(c, vw * .66, vh, 26, vh * .5)
+        .. Flora.crozier(c, vw * .5, vh, 0, vh * .58, vh * .27)
 end
 
 -- Search: a dandelion clock, a lens on its stem.
 function Dock.dock_search(c, vw, vh)
-    return stalk(c, vw, vh, vw * .6, vh * .6, 5)
-        .. Flora.leaf(c, vw * .52, vh * .9, -160, vh * .3, vh * .09)
-        .. Flora.dandelion(c, vw * .46, vh * .4, vh * .35)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh)
+        .. Flora.dandelion(c, vw * .5, vh * .38, vh * .35)
 end
 
 -- Settings: a daisy whose petals are the teeth of a wheel.
 function Dock.dock_settings(c, vw, vh)
-    return stalk(c, vw, vh, vw * .5, vh * .5, 5)
-        .. Flora.leaf(c, vw * .5, vh * .88, -150, vh * .3, vh * .09) .. Flora.leaf(c, vw * .5, vh * .82, -30, vh * .3, vh * .09)
+    return stalk(c, vw, vh, vw * .5, vh * .5, 5) .. foot(c, vw, vh)
         .. Flora.daisy(c, vw * .5, vh * .38, vh * .37, 10)
 end
 
 -- Anything else: an honesty pod, a blank disc for the button's own icon.
 function Dock.dock_medallion(c, vw, vh)
-    return stalk(c, vw, vh, vw * .5, vh * .6, 5)
-        .. Flora.leaf(c, vw * .5, vh * .9, -30, vh * .28, vh * .09)
+    return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh)
         .. Svg.circle(vw * .5, vh * .4, vh * .36, c.pale, c.ink, 2.2) .. Svg.circle(vw * .5, vh * .4, vh * .29, c.cream, c.ink, 1.1)
 end
 

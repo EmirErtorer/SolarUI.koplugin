@@ -1,8 +1,10 @@
 -- A container that frames one child in the style's shapes: "chamfer" (a
--- leaf: the corners named in `corners` are rounded), "frame" (an outline with
--- softened corners), "header" (a filled title strip over a frame), "rail" (a
--- bar down the left, or the right with side = "r") or "none".
--- A `label` sits on the border. `backdrop` and `trim` are optional functions
+-- leaf: the corners named in `corners` are rounded, outlined in ink),
+-- "frame" (a quiet outline with round corners, `radius` pixels when given),
+-- "header" (a frame with a title over a budded rule), "rail" (a bar down the
+-- left, or the right with side = "r") or "none". `line` names another
+-- outline colour (false for none); `double` rules a fine second line inside
+-- the edge, as on a poster. A `label` sits on the border. `backdrop` and `trim` are optional functions
 -- (bb, x, y, w, h, top, pad) that paint behind the content and over the border;
 -- top is the height of the title strip, pad the padding on the left.
 
@@ -12,7 +14,7 @@ local Paint = require("solarui/gfx/paint")
 local Text = require("solarui/gfx/text")
 local Theme = require("solarui/theme")
 
-local Panel = Element:extend({ shape = "frame", line = "ink", corners = "t", cut = "cut", thick = "stroke", pad = 0 })
+local Panel = Element:extend({ shape = "frame", corners = "t", cut = "cut", thick = "stroke", pad = 0 })
 
 -- Padding in pixels; a header strip adds to the top.
 function Panel:insets()
@@ -54,35 +56,44 @@ function Panel:draw(bb, x, y)
     local th = Theme.get()
     local w, h = self.w, self.h
     local stroke = th.size[self.thick] or self.thick
-    local line = self.line and Theme.color(self.line)
     local fill = self.fill and Theme.color(self.fill)
     local shape = self.shape
     if shape == "brackets" then shape = "frame" end
-    local soft = Theme.px(5)
+    local line
+    if self.line ~= false then line = Theme.color(self.line or (shape == "chamfer" and "ink" or "line")) end
+    local soft = self.radius or th.size.cut_small
+    local gap = Theme.px(4)
     if shape == "chamfer" then
-        Paint.roundBox(bb, x, y, w, h, th.size[self.cut] or self.cut, self.corners, stroke, fill, line)
+        local r = th.size[self.cut] or self.cut
+        Paint.roundBox(bb, x, y, w, h, r, self.corners, stroke, fill, line)
+        if self.double then
+            Paint.roundFrame(bb, x + gap, y + gap, w - 2 * gap, h - 2 * gap, r - gap, self.corners, th.size.hair, th.c.line)
+        end
     else
         if fill then
             if shape == "frame" or shape == "header" then Paint.round(bb, x, y, w, h, soft, "trbl", fill) else Paint.fill(bb, x, y, w, h, fill) end
         end
         if self.backdrop then self.backdrop(bb, x, y, w, h, shape == "header" and self:headerHeight() or 0) end
-        if shape == "frame" or shape == "header" then
+        if (shape == "frame" or shape == "header") and line then
             Paint.roundFrame(bb, x, y, w, h, soft, "trbl", stroke, line)
-        elseif shape == "rail" then
+        elseif shape == "rail" and line then
             local bar = Theme.px(4)
             Paint.round(bb, self.side == "r" and x + w - bar or x, y, bar, h, Theme.px(2), "trbl", line)
         end
     end
     if shape == "header" then
         local hh = self:headerHeight()
-        Paint.round(bb, x, y, w, hh, soft, "tr", line)
         local pad = th.space.m
         local ty = y + math.floor((hh - Text.height("label")) / 2)
-        if self.title then Text.draw(bb, x + pad, ty, "label", Text.fit("label", self.title, w - 2 * pad), th.c.on_ink) end
+        if self.title then Text.draw(bb, x + pad, ty, "label", Text.fit("label", self.title, w - 2 * pad), th.c.ink) end
         if self.title_right then
             local s = Text.fit("label", self.title_right)
-            Text.draw(bb, x + w - pad - Text.width("label", s), ty, "label", s, th.c.on_ink)
+            Text.draw(bb, x + w - pad - Text.width("label", s), ty, "label", s, th.c.muted)
         end
+        -- the rule under the title, growing out of a bud
+        local d = Theme.px(5)
+        Paint.disc(bb, x + pad, y + hh - d, d, th.c.leaf)
+        Paint.fill(bb, x + pad + d + Theme.px(3), y + hh - math.ceil(d / 2), w - 2 * pad - d - Theme.px(3), th.size.hair, th.c.line)
     end
     if self.label then
         -- a small caption breaking the top border

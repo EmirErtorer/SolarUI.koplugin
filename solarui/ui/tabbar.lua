@@ -1,8 +1,9 @@
--- The bottom tab bar shared by every screen but home: one tab per section,
--- the current one filled with the accent.
+-- The bottom tab bar shared by every screen but home: one tab per section
+-- under the runner the home dock grows from, the current one a soft leaf
+-- with a mark under its name.
 
 local Button = require("solarui/ui/button")
-local Deco = require("solarui/ui/deco")
+local ArtView = require("solarui/ui/artview")
 local Layout = require("solarui/ui/layout")
 local Theme = require("solarui/theme")
 
@@ -20,7 +21,7 @@ function TabBar.build(tabs, current, on_select)
         })
     end
     -- swallow: a tap between the tabs is not KOReader's corner gesture (frontlight...)
-    return Layout.Column:new({ swallow = true, children = { Deco.Divider:new({ color = "ink", thick = "stroke" }), row } })
+    return Layout.Column:new({ swallow = true, children = { ArtView:new({ name = "root", height = Theme.px(16) }), row } })
 end
 
 return TabBar

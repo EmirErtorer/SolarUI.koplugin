@@ -6,52 +6,65 @@
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
-local n = Svg.n
+local n, vary = Svg.n, Svg.vary
 local sin, pi = math.sin, math.pi
 
 local Home = {}
 
--- Leaves, thorns, buds and blooms set along a climbing stem, one every
--- `step` units, by turns to the right and to the left.
+-- What grows at stop `k` of the climbing rose, at (x, y) where the stem
+-- heads `ang`: leaves in overlapping pairs, thorns, side shoots, buds and
+-- blooms by turns. `reach` is how far it may spread, `size` and `lean` make
+-- no two stops alike.
+local function growth(c, k, x, y, ang, reach, size, lean)
+    local right, left = ang + 60 + lean, ang - 60 + lean
+    local kind = k % 6
+    if kind == 0 then
+        return Flora.roseLeaf(c, x, y, right + 34, reach * .5 * size, 3, c.sage)
+            .. Flora.roseLeaf(c, x, y, right, reach * .78 * size, 5)
+    elseif kind == 1 then
+        return Flora.thorn(c, x, y, ang + 180, 9) .. Flora.tendril(c, x, y, ang + 30, reach * .26, true)
+            .. Flora.roseLeaf(c, x, y, left, reach * .44 * size, 3)
+    elseif kind == 2 then
+        return Flora.roseLeaf(c, x, y, left - 20, reach * .34 * size, 3, c.sage)
+            .. Flora.shoot(c, x, y, right - 20, reach * .62 * size, "bud")
+    elseif kind == 3 then
+        return Flora.roseLeaf(c, x, y, left, reach * .42 * size, 3)
+            .. Flora.roseLeaf(c, x, y, right + 18, reach * .6 * size, 3)
+    elseif kind == 4 then
+        local sx, sy = x + reach * .5, y - reach * .2
+        local warm = k % 12 == 4
+        return Svg.stem(Svg.spline({ { x, y }, { x + reach * .22, y + reach * .02 }, { sx, sy } }, 6), Svg.taper(4.4, 2.8), c.stem, c.ink, 1.3)
+            .. Flora.roseLeaf(c, x + reach * .2, y, ang + 128, reach * .42, 3)
+            .. Flora.roseLeaf(c, x + reach * .24, y - reach * .04, ang + 20, reach * .36, 3, c.sage)
+            .. Flora.rose(c, sx, sy, reach * .33, k * 23, warm and c.bloom or c.bloom2, warm and c.bloom2 or c.bloom)
+    end
+    return Flora.thorn(c, x, y, ang, 9) .. Flora.roseLeaf(c, x, y, left, reach * .46 * size, 3)
+        .. Flora.shoot(c, x, y, right, reach * .44 * size, "tendril", c.sage)
+end
+
+-- The climbing stem dressed from `from` to `to` along it: a stop about every
+-- `step` units, never quite evenly.
 local function dress(c, pts, from, to, step, reach)
     local out = {}
-    local k = 0
-    local d = from
+    local k, d = 0, from
     while d < to do
         local x, y, ang = Svg.along(pts, d)
-        local kind = k % 6
-        if kind == 0 then
-            out[#out + 1] = Flora.roseLeaf(c, x, y, ang + 58, reach * .78, 5)
-        elseif kind == 1 then
-            out[#out + 1] = Flora.thorn(c, x, y, ang + 180, 9) .. Flora.roseLeaf(c, x, y, ang - 62, reach * .42, 3)
-        elseif kind == 2 then
-            local sx, sy = x + reach * .46, y - reach * .34
-            out[#out + 1] = Svg.stem(Svg.spline({ { x, y }, { x + reach * .2, y - reach * .06 }, { sx, sy } }, 6), Svg.taper(4, 2.4), c.stem, c.ink, 1.3)
-                .. Flora.rosebud(c, sx, sy, 38, reach * .2)
-        elseif kind == 3 then
-            out[#out + 1] = Flora.tendril(c, x, y, ang + 20, reach * .34, true) .. Flora.roseLeaf(c, x, y, ang + 50, reach * .6, 3)
-        elseif kind == 4 then
-            local sx, sy = x + reach * .5, y - reach * .2
-            out[#out + 1] = Svg.stem(Svg.spline({ { x, y }, { x + reach * .22, y + reach * .02 }, { sx, sy } }, 6), Svg.taper(4.4, 2.8), c.stem, c.ink, 1.3)
-                .. Flora.roseLeaf(c, x + reach * .2, y, ang + 120, reach * .4, 3)
-                .. Flora.rose(c, sx, sy, reach * .3, k * 23, k % 12 == 4 and c.bloom or c.bloom2, k % 12 == 4 and c.bloom2 or c.bloom)
-        else
-            out[#out + 1] = Flora.thorn(c, x, y, ang, 9) .. Flora.roseLeaf(c, x, y, ang - 56, reach * .46, 3)
-        end
+        out[#out + 1] = growth(c, k, x, y, ang, reach, .82 + .3 * vary(k, 1), (vary(k, 2) - .5) * 26)
+        d = d + step * (.78 + .44 * vary(k, 3))
         k = k + 1
-        d = d + step
     end
     return table.concat(out)
 end
 
 -- The climbing rose up the left edge: it rises from the bottom of the canvas,
--- sways, and curls over into a crozier at the top.
+-- sways unevenly, thickens at its joints and curls over into a crozier at
+-- the top.
 function Home.vine_left(c, vw, vh)
     local way = { { vw * .36, vh } }
-    local y, side = vh - 150, 1
+    local y, side, i = vh - 150, 1, 0
     while y > 150 do
-        way[#way + 1] = { vw * (side > 0 and .46 or .3), y }
-        y, side = y - 170, -side
+        way[#way + 1] = { vw * ((side > 0 and .45 or .31) + (vary(i, 4) - .5) * .06), y }
+        y, side, i = y - 150 - 50 * vary(i, 5), -side, i + 1
     end
     way[#way + 1] = { vw * .32, 96 }
     way[#way + 1] = { vw * .34, 60 }
@@ -60,21 +73,26 @@ function Home.vine_left(c, vw, vh)
     local top = stem[#stem]
     local pts = Svg.join(stem, Svg.spiral(top[1] + r, top[2], r, 1.7, -90))
     local len = Svg.length(stem)
-    return dress(c, stem, 70, len - 60, 66, vw * .52)
-        .. Svg.stem(pts, Svg.taper(11, 4.5), c.stem, c.ink, 1.7)
+    local function width(t) return (11 - 6.5 * t) * (1 + .09 * sin(t * 46)) end
+    return dress(c, stem, 70, len - 60, 62, vw * .52)
+        .. Svg.stem(pts, width, c.stem, c.ink, 1.7)
 end
 
--- The shorter vine up the right edge, leaning left, ending in a bud.
+-- The shorter vine up the right edge, leaning left, ending in a bud: ivy
+-- leaves of several sizes, some doubled, and a tendril now and then.
 function Home.vine_right(c, vw, vh)
     local stem = Svg.spline({ { vw * .7, vh }, { vw * .82, vh * .72 }, { vw * .6, vh * .44 }, { vw * .74, vh * .2 }, { vw * .5, 34 } }, 12)
     local out = {}
-    local d, k = 50, 0
+    local d, k = 46, 0
     local len = Svg.length(stem)
     while d < len - 30 do
         local x, y, ang = Svg.along(stem, d)
-        out[#out + 1] = Flora.vineLeaf(c, x, y, ang + (k % 2 == 0 and -150 or -30) + 90, vw * .3, k % 3 == 2 and c.sage or c.leaf)
-        if k % 3 == 1 then out[#out + 1] = Flora.tendril(c, x, y, ang - 60, vw * .26) end
-        d, k = d + 74, k + 1
+        local turn = ang + (k % 2 == 0 and -60 or 60) + (vary(k, 6) - .5) * 30
+        local s = vw * (.22 + .12 * vary(k, 7))
+        if k % 3 == 0 then out[#out + 1] = Flora.vineLeaf(c, x, y, turn + (k % 2 == 0 and -40 or 40), s * .7, c.sage) end
+        out[#out + 1] = Flora.vineLeaf(c, x, y, turn, s, k % 4 == 3 and c.sage or c.leaf)
+        if k % 3 == 1 then out[#out + 1] = Flora.tendril(c, x, y, ang - 60, vw * .26, k % 2 == 0) end
+        d, k = d + 58 + 30 * vary(k, 8), k + 1
     end
     local tx, ty = stem[#stem][1], stem[#stem][2]
     return table.concat(out) .. Svg.stem(stem, Svg.taper(8, 3.5), c.stem, c.ink, 1.6) .. Flora.rosebud(c, tx, ty, -28, vw * .2)
@@ -131,8 +149,10 @@ function Home.rose_cluster(c, vw, vh)
         .. Flora.roseLeaf(c, vw * .1, vh * .6, -150, vw * .24, 3)
         .. Flora.roseLeaf(c, vw * .44, vh * .5, 38, vw * .44, 5)
         .. Flora.roseLeaf(c, vw * .4, vh * .24, -70, vw * .3, 3)
+        .. Flora.roseLeaf(c, vw * .56, vh * .46, 4, vw * .34, 3, c.sage)
+        .. Flora.shoot(c, vw * .24, vh * .5, -66, vw * .3, "tendril", c.sage)
         .. Flora.rosebud(c, vw * .74, vh * .16, 52, vw * .11)
-        .. Flora.rose(c, vw * .34, vh * .66, vw * .2, 20, c.bloom2, c.bloom)
+        .. Flora.rose(c, vw * .34, vh * .66, vw * .21, 20, c.bloom2, c.bloom)
         .. Flora.rose(c, vw * .52, vh * .32, vw * .28, 0, c.bloom, c.bloom2)
 end
 
@@ -168,11 +188,7 @@ end
 
 -- A whiplash rule: it swells, thins and ends in a curl.
 function Home.whiplash(c, vw, vh)
-    local r = vh * .3
-    local pts = Svg.spline({ { 2, vh * .62 }, { vw * .25, vh * .3 }, { vw * .55, vh * .72 }, { vw * .8, vh * .4 }, { vw - r * 2.6, vh * .5 } }, 12)
-    local last = pts[#pts]
-    local curl = Svg.spiral(last[1], last[2] - r, r, 1.3, 180, true)
-    return Svg.path(Svg.ribbon(pts, Svg.swell(vh * .22, 1)), c.ink) .. Svg.line(Svg.poly(curl), c.ink, 1.8)
+    return (Flora.whiplash(c, vw, vh))
 end
 
 -- Where the progress vine's stem is at `x` (shared with what is set on it).

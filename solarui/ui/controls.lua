@@ -25,7 +25,8 @@ function Toggle:on_tap()
     if self.on_change then self.on_change(self.on) end
 end
 
--- A rounded track, filled when on, with a round knob on the side of the state.
+-- A round track, filled when on, with a knob on the side of the state: a
+-- closed bud when off, a flower with its heart showing when on.
 function Toggle:draw(bb, x, y)
     local th = Theme.get()
     local t = th.size.stroke
@@ -34,11 +35,16 @@ function Toggle:draw(bb, x, y)
     local inset = t + Theme.px(3)
     local d = self.h - 2 * inset
     local kx = self.on and (x + self.w - inset - d) or (x + inset)
-    Paint.round(bb, kx, y + inset, d, d, math.floor(d / 2), "trbl", self.on and th.c.on_accent or th.c.ink)
+    Paint.disc(bb, kx, y + inset, d, self.on and th.c.on_accent or th.c.ink)
+    if self.on then
+        local heart = math.floor(d / 3)
+        local off = math.floor((d - heart) / 2)
+        Paint.disc(bb, kx + off, y + inset + off, heart, th.c.accent)
+    end
 end
 
 ---------------------------------------------------------------- Segmented
--- A framed row of choices; `options` is a list of { label, value } (with an
+-- A round-ended row of choices, the chosen one a filled bud; `options` is a list of { label, value } (with an
 -- optional `icon`, `on_hold` and `on_tap` of their own; `disabled` for all).
 function Controls.Segmented(o)
     local row = Layout.Row:new({ children = {} })
@@ -54,11 +60,11 @@ function Controls.Segmented(o)
         })
     end
     local th = Theme.get()
-    return Panel:new({ shape = "frame", pad = th.size.stroke, child = row, width = o.width, grow = o.grow })
+    return Panel:new({ shape = "frame", radius = th.size.touch, pad = th.size.stroke, child = row, width = o.width, grow = o.grow })
 end
 
 ---------------------------------------------------------------- Stepper
--- A framed minus / value / plus control for numbers from `min` to `max`.
+-- A round-ended minus / value / plus control for numbers from `min` to `max`.
 function Controls.Stepper(o)
     local step = o.step or 1
     local function set(v)
@@ -74,7 +80,7 @@ function Controls.Stepper(o)
         Button:new({ icon = "forward", variant = "seg_on", width = side, height = side, icon_size = 16,
             on_tap = function() set(o.value + step) end }),
     } })
-    return Panel:new({ shape = "frame", pad = Theme.get().size.stroke, child = row })
+    return Panel:new({ shape = "frame", radius = side, pad = Theme.get().size.stroke, child = row })
 end
 
 return Controls

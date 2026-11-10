@@ -1,4 +1,5 @@
--- Small decorative elements of the style: a divider line and a hatched box.
+-- Small decorative elements of the style: a divider line, the budded rule
+-- under a row and a hatched box.
 
 local Element = require("solarui/ui/element")
 local Paint = require("solarui/gfx/paint")
@@ -13,6 +14,19 @@ function Deco.Divider:naturalHeight()
 end
 function Deco.Divider:draw(bb, x, y)
     Paint.fill(bb, x, y, self.w, self.h, Theme.color(self.color))
+end
+
+-- The rule under a row of a list: a hairline growing out of a small bud at
+-- its left end. Drawn with plain fills, so a long list costs nothing more.
+Deco.RowRule = Element:extend({ color = "line", bud = "leaf" })
+function Deco.RowRule:naturalHeight()
+    return Theme.px(5)
+end
+function Deco.RowRule:draw(bb, x, y)
+    local d = self.h
+    local hair = Theme.get().size.hair
+    Paint.disc(bb, x, y, d, Theme.color(self.bud))
+    Paint.fill(bb, x + d + Theme.px(3), y + math.floor((d - hair) / 2), self.w - d - Theme.px(3), hair, Theme.color(self.color))
 end
 
 -- A box filled with stripes ("h", "v", "d", "b"), like a print's hatching.

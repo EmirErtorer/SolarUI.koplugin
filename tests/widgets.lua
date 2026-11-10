@@ -50,6 +50,12 @@ local function sheet()
             Deco.Stripes:new({ width = 90, dir = "d" }), Deco.Divider:new({ grow = true }),
             Icon:new({ name = "home" }), Icon:new({ name = "library", color = "accent" }),
         } }),
+        require("solarui/ui/header").pageHeader("Highlights", "highlights", { sub = "A book", on_back = function() end }),
+        require("solarui/ui/section").title("Section", "3 of 6"),
+        require("solarui/ui/listrow").build({ title = "A row", meta = "Its small line", value = "12" }),
+        require("solarui/ui/pager").build({ page = 2, pages = 5 }, "Page", function() end),
+        require("solarui/ui/emptystate").build({ plant = "bookmarks", title = "No bookmarks yet", text = "Tap the top corner of a page.",
+            action = btn("primary", "Open the book") }),
     } })
 end
 
@@ -102,6 +108,29 @@ do
     bar:paint(Kit.canvas(), 0, 0)
     local gap = bar:hit(W / 2, 2, "on_tap")
     Kit.ok(gap ~= nil and gap.on_tap == nil, "the tab bar swallows taps that miss a tab")
+end
+
+-- the paging row turns pages within the pages there are, and no further
+do
+    local state, went = { page = 1, pages = 3 }, nil
+    local row = require("solarui/ui/pager").build(state, "Page", function(p) went = p end)
+    row:layout(W, nil)
+    row.children[2].on_tap()
+    Kit.ok(went == nil, "back on the first page goes nowhere")
+    row.children[4].on_tap()
+    Kit.ok(went == 2, "forward opens the next page")
+    row.children[5].on_tap()
+    Kit.ok(went == 3, "last opens the last page")
+    Kit.ok(#require("solarui/ui/pager").build(state, nil, function() end, false).children == 3, "without ends it is two arrows round the page")
+end
+
+-- a header shows the plant asked for, or the sprout for a name the garden does not know
+do
+    local Header = require("solarui/ui/header")
+    Kit.ok(Header.plant("search").name == "plant_search", "a known plant is drawn by its name")
+    Kit.ok(Header.plant("nowhere").name == "plant_sprout" and Header.plant(nil).name == "plant_sprout", "any other page gets the sprout")
+    local Sprites = require("solarui/art/sprites")
+    for name in pairs(Header.PLANTS) do Kit.ok(Sprites["plant_" .. name] ~= nil, "plant_" .. name .. " is a drawing") end
 end
 
 -- Arabic is shaped and measured as joined text, and paints

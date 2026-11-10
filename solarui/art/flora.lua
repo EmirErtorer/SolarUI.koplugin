@@ -102,7 +102,7 @@ function Flora.vineLeaf(c, x, y, rot, s, fill)
     d[#d + 1] = string.format("Q%s %s %s", n(-s * .62), n(s * .2), p(s * tips[1][2], tips[1][1]))
     for i = 2, #tips do
         local mid = (tips[i - 1][1] + tips[i][1]) / 2
-        d[#d + 1] = string.format("Q%s %s", p(s * .36, mid), p(s * tips[i][2], tips[i][1]))
+        d[#d + 1] = string.format("Q%s %s", p(s * .5, mid), p(s * tips[i][2], tips[i][1]))
     end
     d[#d + 1] = string.format("Q%s %s 0 0Z", n(s * .62), n(s * .2))
     local body = Svg.path(table.concat(d, " "), fill or c.leaf, c.ink, 1.7)
@@ -124,21 +124,32 @@ function Flora.thorn(c, x, y, rot, s)
     return group(x, y, rot, Svg.path(string.format("M%s 0 L0 %s L%s 0Z", n(-s * .4), n(-s), n(s * .4)), c.stem, c.ink, 1.2))
 end
 
--- A full rose seen from above, `r` across its outer petals.
+-- A full rose seen from above, `r` across its outer petals: rings of broad
+-- petals that overlap, each ring shorter and turned against the last, round
+-- a furled heart.
 function Flora.rose(c, cx, cy, r, rot, fill, fill2)
     fill, fill2 = fill or c.bloom, fill2 or c.bloom2
-    local function rosePetal(L, W, colour)
-        return Svg.path(string.format("M0 0 C%s %s %s %s %s %s Q0 %s %s %s C%s %s %s %s 0 0Z",
+    local function rosePetal(L, W, colour, fold)
+        local body = Svg.path(string.format("M0 0 C%s %s %s %s %s %s Q0 %s %s %s C%s %s %s %s 0 0Z",
             n(-W * 1.05), n(-L * .2), n(-W * 1.3), n(-L * .92), n(-W * .28), n(-L * 1.03), n(-L * .9), n(W * .28), n(-L * 1.03),
             n(W * 1.3), n(-L * .92), n(W * 1.05), n(-L * .2)), colour, c.ink, 1.5)
-            .. Svg.line(string.format("M%s %s Q0 %s %s %s", n(-W * .62), n(-L * .7), n(-L * .9), n(W * .62), n(-L * .7)), c.ink, .9)
+        if not fold then return body end
+        return body .. Svg.line(string.format("M%s %s Q0 %s %s %s", n(-W * .62), n(-L * .74), n(-L * .92), n(W * .62), n(-L * .74)), c.ink, .9)
     end
-    local body = around(0, 0, r * .55, 5, petal(c, r * .62, r * .2, c.leaf, 1.3), 36)
-        .. around(0, 0, 0, 5, rosePetal(r, r * .5, fill))
-        .. around(0, 0, 0, 5, rosePetal(r * .74, r * .4, fill2), 36)
-        .. around(0, 0, 0, 4, rosePetal(r * .5, r * .3, fill), 15)
-        .. around(0, 0, 0, 3, rosePetal(r * .3, r * .2, fill2), 50)
-        .. Svg.circle(0, 0, r * .1, fill, c.ink, 1.2)
+    -- one ring: `count` petals `len` long, no two quite the same length
+    local function ring(count, len, wide, colour, start, fold)
+        return around(0, 0, 0, count, function(i)
+            local L = r * len * (.94 + .12 * Svg.vary(i, count))
+            return rosePetal(L, L * wide, colour, fold)
+        end, start)
+    end
+    local body = around(0, 0, r * .6, 5, petal(c, r * .56, r * .2, c.leaf, 1.3), 36)
+        .. ring(6, 1, .56, fill, 0, r >= 30)
+        .. ring(5, .8, .56, fill2, 30, r >= 30)
+        .. ring(5, .6, .54, fill, 66)
+        .. ring(3, .42, .56, fill2, 20)
+        .. Svg.circle(0, 0, r * .2, fill, c.ink, 1.3)
+        .. Svg.line(Svg.poly(Svg.spiral(0, 0, r * .15, 1.3, 40)), c.ink, 1)
     return group(cx, cy, rot or 0, body)
 end
 
@@ -198,11 +209,11 @@ function Flora.frond(c, x, y, rot, H, fill)
 end
 
 -- A fern crozier: a stalk rising from (x, y) that curls over into a spiral of
--- radius `r`, with small leaves along its back.
+-- radius `r`, with small leaves low on its back.
 function Flora.crozier(c, x, y, rot, H, r, fill)
     local pts = Svg.join(Svg.spline({ { 0, 0 }, { -r * .5, -H * .45 }, { -r, -H } }, 10), Svg.spiral(0, -H, r, 1.8, -90))
     local body = Svg.stem(pts, Svg.taper(r * .34, r * .16), fill or c.leaf, c.ink, 1.8)
-    for _i, k in ipairs({ .12, .24, .36, .46, .56 }) do
+    for _i, k in ipairs({ .08, .17, .26 }) do
         local p = pts[math.max(1, math.floor(#pts * k))]
         local q = pts[math.max(1, math.floor(#pts * k)) + 1]
         local ang = math.deg(math.atan2(q[2] - p[2], q[1] - p[1])) - 115
@@ -316,6 +327,39 @@ function Flora.tulip(c, x, y, rot, s, fill)
         .. Svg.line(string.format("M%s %s Q%s %s 0 %s M%s %s Q%s %s 0 %s", n(-s * .22), n(-s * .8), n(-s * .3), n(-s * .3), n(-s * .02),
             n(s * .22), n(-s * .8), n(s * .3), n(-s * .3), n(-s * .02)), c.ink, 1)
     return group(x, y, rot, body)
+end
+
+-- A side shoot growing right from (x, y), `L` long: a thin bending stem with
+-- small leaflets by turns above and below it, and at its tip a bud ("bud"),
+-- a tendril ("tendril") or a last leaflet.
+function Flora.shoot(c, x, y, rot, L, tip, fill)
+    local pts = Svg.spline({ { 0, 0 }, { L * .4, -L * .16 }, { L * .78, -L * .18 }, { L, -L * .36 } }, 6)
+    local len = Svg.length(pts)
+    local body = ""
+    for i, f in ipairs({ .3, .52, .74 }) do
+        local px, py, ang = Svg.along(pts, len * f)
+        body = body .. leaflet(c, px, py, ang + (i % 2 == 0 and 58 or -58), L * (.34 - i * .03), fill)
+    end
+    body = body .. Svg.stem(pts, Svg.taper(L * .07, L * .035), c.stem, c.ink, 1.2)
+    local tx, ty, tang = Svg.along(pts, len)
+    if tip == "bud" then
+        body = body .. Flora.rosebud(c, tx, ty, tang + 90, L * .2)
+    elseif tip == "tendril" then
+        body = body .. Flora.tendril(c, tx, ty, tang + 90, L * .3)
+    else
+        body = body .. leaflet(c, tx, ty, tang, L * .3, fill)
+    end
+    return group(x, y, rot, body)
+end
+
+-- A whiplash line across a vw x vh canvas: it swells, thins and ends in a
+-- curl. Also returns its points, for what grows on it.
+function Flora.whiplash(c, vw, vh)
+    local r = vh * .3
+    local pts = Svg.spline({ { 2, vh * .62 }, { vw * .25, vh * .3 }, { vw * .55, vh * .72 }, { vw * .8, vh * .4 }, { vw - r * 2.6, vh * .5 } }, 12)
+    local last = pts[#pts]
+    local curl = Svg.spiral(last[1], last[2] - r, r, 1.3, 180, true)
+    return Svg.path(Svg.ribbon(pts, Svg.swell(vh * .22, 1)), c.ink) .. Svg.line(Svg.poly(curl), c.ink, 1.8), pts
 end
 
 return Flora

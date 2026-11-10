@@ -15,7 +15,7 @@ return function(o)
     end
     return Layout.Row:new({ gap = th.space.s, children = {
         arrow("back", o.on_prev, o.can_prev),
-        Label:new({ text = o.label, kind = "mono", align = "center", grow = true }),
+        Label:new({ text = o.label, kind = "label", align = "center", grow = true }),
         arrow("forward", o.on_next, o.can_next),
     } })
 end

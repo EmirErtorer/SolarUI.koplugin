@@ -17,7 +17,7 @@ local Art = {}
 local ROLES = { "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_accent",
     "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
 
-local MAX_SPRITES = 48
+local MAX_SPRITES = 64
 
 -- The kinds of buffer KOReader can blend a colour sprite straight into.
 local DIRECT = { [Blitbuffer.TYPE_BB8] = true, [Blitbuffer.TYPE_BBRGB16] = true, [Blitbuffer.TYPE_BBRGB32] = true }

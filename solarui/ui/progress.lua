@@ -1,5 +1,5 @@
--- Progress bars. The plain one is a row of cells filled up to `value` (0 to
--- 1), used for gauges. A book's progress (book = true) is drawn in the
+-- Progress bars. The plain one is a round-ended bar filled up to `value` (0
+-- to 1), used for gauges. A book's progress (book = true) is drawn in the
 -- reader's chosen style: a vine that has grown that far with a rose at its
 -- tip, a rounded bar, or the cells.
 
@@ -28,7 +28,7 @@ end
 
 -- The style this bar is drawn in.
 function Progress:style()
-    return self.book and Progress.bookStyle() or by_id.segments
+    return self.book and Progress.bookStyle() or by_id.bar
 end
 
 -- One cell tall, or the style's height.

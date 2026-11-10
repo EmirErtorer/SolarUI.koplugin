@@ -22,11 +22,15 @@ local SHEET = {
     { "shelf", 1012, 40 }, { "sprouts", 902, 64, 5 }, { "root", 1032, 40 },
     { "dock_library", 150, 130 }, { "dock_collections", 150, 130 }, { "dock_history", 150, 130 }, { "dock_search", 150, 130 },
     { "dock_settings", 150, 130 }, { "dock_medallion", 150, 130 },
+    { "plant_library", 80, 80 }, { "plant_collections", 80, 80 }, { "plant_history", 80, 80 }, { "plant_search", 80, 80 },
+    { "plant_settings", 80, 80 }, { "plant_details", 80, 80 }, { "plant_highlights", 80, 80 }, { "plant_bookmarks", 80, 80 },
+    { "plant_notes", 80, 80 }, { "plant_sprout", 80, 80 }, { "section_curl", 100, 24 }, { "crest", 300, 40 },
+    { "page_rule", 992, 28 }, { "plant_collections", 220, 220 },
     { "wifi", 90, 90, 1 }, { "wifi", 90, 90, 0 }, { "lamp", 80, 100, 1 }, { "lamp", 80, 100, 0 }, { "battery", 100, 50, 7 }, { "battery", 100, 50, 2 },
 }
 
 local W = math.floor(1100 * K)
-local bb = Kit.canvas(W, math.floor(2300 * K))
+local bb = Kit.canvas(W, math.floor(2700 * K))
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 10, 10, 0
 local total = 0

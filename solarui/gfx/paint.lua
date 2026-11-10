@@ -111,6 +111,12 @@ function Paint.roundBox(bb, x, y, w, h, r, spec, t, fill_c, line_c)
     if line_c then Paint.roundFrame(bb, x, y, w, h, r, spec, t, line_c) end
 end
 
+-- A filled disc `d` pixels across with its top-left at (x, y): a bud on a
+-- rule, a page dot, the knob of a switch.
+function Paint.disc(bb, x, y, d, c)
+    Paint.round(bb, x, y, d, d, floor(d / 2), "trbl", c)
+end
+
 -- Stripes across a box: "h" horizontal, "v" vertical, "d" rising diagonal,
 -- "b" falling diagonal; a `thick` line every `period` pixels.
 function Paint.stripes(bb, x, y, w, h, dir, period, thick, c)

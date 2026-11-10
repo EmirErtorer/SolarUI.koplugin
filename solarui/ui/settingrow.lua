@@ -1,5 +1,5 @@
 -- One line of a settings page: the setting's name and a short explanation on
--- the left, its control on the right, a divider underneath.
+-- the left, its control on the right, a budded rule underneath.
 
 local Deco = require("solarui/ui/deco")
 local Label = require("solarui/ui/label")
@@ -15,6 +15,6 @@ return function(label, sub, control)
         Layout.Row:new({ gap = th.space.m, pad = { th.space.s, 0 }, children = {
             Layout.Column:new({ grow = true, children = text }), control,
         } }),
-        Deco.Divider:new({}),
+        Deco.RowRule:new({}),
     } })
 end

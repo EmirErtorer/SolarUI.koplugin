@@ -1,11 +1,13 @@
 -- Dialogs and toasts drawn in the style. The host shows the element these
 -- build as an overlay; every action calls `close` before it runs.
 
+local ArtView = require("solarui/ui/artview")
 local Button = require("solarui/ui/button")
 local Deco = require("solarui/ui/deco")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
+local Pager = require("solarui/ui/pager")
 local Panel = require("solarui/ui/panel")
 local Theme = require("solarui/theme")
 local _ = require("solarui/gettext")
@@ -22,10 +24,12 @@ function Dialog.inner(w, wide)
     return width(w, wide) - 2 * Theme.get().space.xl
 end
 
--- The floating panel every dialog is: a chamfered card of `kids` in a column.
+-- The floating panel every dialog is: a leaf-shaped card with a fine second
+-- line inside its edge, a crest at its head and the `kids` in a column.
 local function floating(kids, screen_w, gap, align)
     local th = Theme.get()
-    return Panel:new({ shape = "chamfer", corners = "tb", fill = "bg", pad = th.space.xl, width = width(screen_w),
+    table.insert(kids, 1, ArtView:new({ name = "crest", height = Theme.px(22) }))
+    return Panel:new({ shape = "chamfer", corners = "tb", fill = "bg", double = true, pad = th.space.xl, width = width(screen_w),
         child = Layout.Column:new({ gap = gap or th.space.s, align = align, children = kids }) })
 end
 
@@ -61,8 +65,8 @@ function Dialog.card(o, screen_w)
         kids[#kids + 1] = Label:new({ text = o.title, kind = "title", lines = 2 })
     end
     if o.detail then
-        kids[#kids + 1] = Panel:new({ shape = "frame", pad = { th.space.xs, th.space.m }, child =
-            Label:new({ text = o.detail, kind = "mono", align = "center" }) })
+        kids[#kids + 1] = Panel:new({ shape = "frame", fill = "soft", line = false, pad = { th.space.xs, th.space.m }, child =
+            Label:new({ text = o.detail, kind = "body", align = "center" }) })
     end
     if o.text and o.text ~= "" then
         kids[#kids + 1] = Label:new({ text = o.text, kind = "body", lines = o.lines or 9, align = centred and "center" or "left" })
@@ -116,19 +120,14 @@ end
 function Dialog.rowsPerPage(screen_h)
     local th = Theme.get()
     local row = th.size.touch + th.space.s
-    local fixed = 2 * th.space.xl + 3 * row + Theme.px(24)   -- title, paging row, Close
+    local fixed = 2 * th.space.xl + 3 * row + Theme.px(24 + 22) + th.space.s   -- crest, title, paging row, Close
     return math.max(3, math.floor((screen_h * 0.92 - fixed) / row))
 end
 
--- The row that pages through a long list: back, "3 / 7", forward; show(page) opens a page.
+-- The row that pages through a long list: back, "Page 3 of 7" over page
+-- dots, forward; show(page) opens a page.
 function Dialog.pager(page, pages, show)
-    local th = Theme.get()
-    local function go(p) return function() show(p) end end
-    return Layout.Row:new({ gap = th.space.s, children = {
-        Button:new({ label = "<", grow = true, variant = page > 1 and "soft" or "ghost", on_tap = page > 1 and go(page - 1) or nil }),
-        Label:new({ text = page .. " / " .. pages, kind = "mono", align = "center" }),
-        Button:new({ label = ">", grow = true, variant = page < pages and "soft" or "ghost", on_tap = page < pages and go(page + 1) or nil }),
-    } })
+    return Pager.build({ page = page, pages = pages }, nil, show, false)
 end
 
 -- One choice of a list as a button: the label (and a small line), a tick when it is
@@ -163,14 +162,14 @@ function Dialog.choose(o, close, screen_w, screen_h)
     return floating(kids, screen_w)
 end
 
--- Content docked to the top or bottom edge, the whole width, with an accent
--- line on its inner edge: the look of the drop-down menu (`pad` is the room
+-- Content docked to the top or bottom edge, the whole width, with the
+-- garden's runner along its inner edge: the look of the drop-down menu (`pad` is the room
 -- around the content, a roomy default).
 function Dialog.docked(kids, dock, screen_w, pad)
     local th = Theme.get()
     local body = Panel:new({ shape = "none", fill = "bg", pad = pad or th.space.xl,
         child = Layout.Column:new({ gap = th.space.s, children = kids }) })
-    local line = Deco.Divider:new({ color = "accent", height = Theme.px(3) })
+    local line = ArtView:new({ name = "root", fill = "bg", height = Theme.px(16) })
     local panel = Layout.Column:new({ width = screen_w, children = dock == "bottom" and { line, body } or { body, line } })
     panel.dock = dock
     return panel
@@ -216,7 +215,7 @@ end
 -- A short notice shown near the bottom of the screen.
 function Dialog.toast(text)
     local th = Theme.get()
-    return Panel:new({ shape = "chamfer", corners = "trbl", cut = "cut_small", fill = "ink", line = "ink",
+    return Panel:new({ shape = "chamfer", corners = "trbl", cut = "cut", fill = "ink", line = "ink",
         pad = { th.space.s, th.space.xl },
         child = Label:new({ text = text, kind = "mono", color = "on_ink" }) })
 end
