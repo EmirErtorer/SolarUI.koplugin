@@ -9,7 +9,7 @@ local Theme = require("solarui/theme")
 local Charts = {}
 
 -- The theme roles used for heatmap levels 0 (nothing) to 4 (most).
-local LEVELS = { "bg", "soft", "line", "muted", "ink" }
+local LEVELS = { "soft", "sage", "leaf", "bloom2", "bloom" }
 
 -- The heatmap level 0..4 for `seconds` read against a daily goal in minutes.
 function Charts.level(seconds, goal)
@@ -21,15 +21,30 @@ end
 ---------------------------------------------------------------- Bar
 local Bar = Element:extend({})
 
--- One bar: outlined, filled when selected, sitting on the baseline.
+-- One bar as a flower: a stalk from the baseline up to its head, a leaf on
+-- the way, and a bud when nothing was read; the chosen one is in bloom.
 function Bar:draw(bb, x, y)
     local th = Theme.get()
     local bh = math.floor(self.h * self.frac + 0.5)
-    local bw = math.floor(self.w * 0.6)
-    local bx = x + math.floor((self.w - bw) / 2)
-    if bh <= 0 then return end
-    if self.selected then Paint.fill(bb, bx, y + self.h - bh, bw, bh, th.c.ink)
-    else Paint.frame(bb, bx, y + self.h - bh, bw, bh, th.size.stroke, th.c.ink) end
+    local head = math.max(Theme.px(8), math.floor(self.w * 0.26))
+    local cx = x + math.floor(self.w / 2)
+    local base = y + self.h
+    local stalk = math.max(th.size.stroke, Theme.px(3))
+    if bh <= 0 then
+        Paint.disc(bb, cx - math.floor(head / 3), base - math.floor(head * .66), math.floor(head * .66), th.c.sage)
+        return
+    end
+    local top = base - math.max(bh, head)
+    Paint.fill(bb, cx - math.floor(stalk / 2), top + math.floor(head / 2), stalk, base - top - math.floor(head / 2), th.c.stem)
+    local mid = base - math.floor((base - top) * .45)
+    Paint.round(bb, cx + stalk, mid - Theme.px(5), math.floor(head * .8), Theme.px(8), Theme.px(4), "tb", th.c.leaf)
+    Paint.round(bb, cx - stalk - math.floor(head * .8), mid + Theme.px(3), math.floor(head * .8), Theme.px(8), Theme.px(4), "tb", th.c.sage)
+    local petals = self.selected and th.c.bloom or th.c.bloom2
+    local pr = math.floor(head / 2)
+    for _i, d in ipairs({ { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } }) do
+        Paint.disc(bb, cx + d[1] * math.floor(head * .38) - math.floor(head * .32), top + pr + d[2] * math.floor(head * .38) - math.floor(head * .32), math.floor(head * .64), petals)
+    end
+    Paint.disc(bb, cx - math.floor(head * .22), top + pr - math.floor(head * .22), math.floor(head * .44), th.c.gold)
 end
 
 ---------------------------------------------------------------- Bars
@@ -101,8 +116,8 @@ function Heatmap:draw(bb, x, y)
         local day = (i - 1) % self.rows
         local cx, cy = x + week * (cell_w + gap), y + day * (cell_h + gap)
         if level >= 0 then
-            Paint.fill(bb, cx, cy, cell_w, cell_h, th.c[LEVELS[level + 1]])
-            Paint.frame(bb, cx, cy, cell_w, cell_h, th.size.hair, th.c.line)
+            Paint.round(bb, cx, cy, cell_w, cell_h, math.floor(cell_h / 2), "trbl", th.c[LEVELS[level + 1]])
+            if level >= 3 then Paint.disc(bb, cx + math.floor((cell_w - cell_h / 2) / 2), cy + math.floor(cell_h / 4), math.floor(cell_h / 2), th.c.gold) end
         end
     end
     local label_y = y + self.rows * (cell_h + gap) + Theme.px(1)
@@ -134,10 +149,12 @@ function Month:draw(bb, x, y)
         local slot = self.first - 1 + d - 1
         local cx, cy = x + (slot % 7) * (cell_w + gap), y + math.floor(slot / 7) * (cell_h + gap)
         local level = self.levels[d] or 0
-        Paint.fill(bb, cx, cy, cell_w, cell_h, th.c[LEVELS[level + 1]])
-        Paint.frame(bb, cx, cy, cell_w, cell_h, d == self.today and th.size.stroke or th.size.hair, d == self.today and th.c.ink or th.c.line)
+        local radius = math.floor(cell_h / 3)
+        Paint.round(bb, cx, cy, cell_w, cell_h, radius, "trbl", th.c[LEVELS[level + 1]])
+        if d == self.today then Paint.roundFrame(bb, cx, cy, cell_w, cell_h, radius, "trbl", th.size.stroke, th.c.ink)
+        else Paint.roundFrame(bb, cx, cy, cell_w, cell_h, radius, "trbl", th.size.hair, th.c.line) end
         local s = tostring(d)
-        Text.draw(bb, cx + Theme.px(4), cy + Theme.px(2), "micro", s, level >= 3 and th.c.on_ink or th.c.ink)
+        Text.draw(bb, cx + Theme.px(4), cy + Theme.px(2), "micro", s, level >= 4 and th.c.on_ink or th.c.ink)
     end
 end
 
