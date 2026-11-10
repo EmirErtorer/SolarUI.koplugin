@@ -377,6 +377,24 @@ do
     Settings.set("cover_style", style)
 end
 
+-- a cover is cut to its arched window, and painted once however often it is drawn
+do
+    local Blitbuffer = require("ffi/blitbuffer")
+    local Cover = require("solarui/ui/cover")
+    local bb = Blitbuffer.new(200, 240, Blitbuffer.TYPE_BBRGB32)
+    bb:paintRectRGB32(0, 0, 200, 240, Blitbuffer.ColorRGB32(1, 2, 3, 0xFF))
+    local c = Cover:new({ w = 120, h = 180, title = "A cut cover" })
+    local painted, compose = 0, c.compose
+    c.compose = function(...) painted = painted + 1; return compose(...) end
+    c:draw(bb, 10, 10)
+    c:draw(bb, 10, 10)
+    local corner, middle = bb:getPixel(12, 12), bb:getPixel(70, 100)
+    Kit.ok(corner:getR() == 1 and corner:getG() == 2 and corner:getB() == 3, "what lies behind shows beside a cover's arch: " .. corner:getR() .. " " .. corner:getG() .. " " .. corner:getB())
+    Kit.ok(not (middle:getR() == 1 and middle:getG() == 2 and middle:getB() == 3), "the cover fills its window")
+    Kit.ok(painted == 1, "a cover is painted once and then kept (painted " .. painted .. " times)")
+    bb:free()
+end
+
 -- the library walk skips linked folders and Android's data folder
 do
     local Library = require("solarui/data/library")

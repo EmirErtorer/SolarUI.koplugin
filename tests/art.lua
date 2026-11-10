@@ -25,7 +25,7 @@ local SHEET = {
     { "plant_library", 80, 80 }, { "plant_collections", 80, 80 }, { "plant_history", 80, 80 }, { "plant_search", 80, 80 },
     { "plant_settings", 80, 80 }, { "plant_details", 80, 80 }, { "plant_highlights", 80, 80 }, { "plant_bookmarks", 80, 80 },
     { "plant_notes", 80, 80 }, { "plant_sprout", 80, 80 }, { "section_curl", 100, 24 }, { "crest", 300, 40 },
-    { "page_rule", 992, 28 }, { "plant_collections", 220, 220 },
+    { "page_rule", 992, 28 }, { "cover_border", 296, 444 }, { "cover_border", 88, 132 }, { "cover_sheet", 120, 180 }, { "cover_shape", 60, 90 }, { "plant_collections", 220, 220 },
     { "wifi", 90, 90, 1 }, { "wifi", 90, 90, 0 }, { "lamp", 80, 100, 1 }, { "lamp", 80, 100, 0 }, { "battery", 100, 50, 7 }, { "battery", 100, 50, 2 },
 }
 

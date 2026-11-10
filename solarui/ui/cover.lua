@@ -2,12 +2,17 @@
 -- typeset card with the title, author and a pattern, which is also what a
 -- book without a cover gets. Can carry a small badge (New, 64%, Done). A
 -- folder shows its first book's cover stacked on two sheets with a strip
--- along the bottom; an empty one a card with a folder icon.
+-- along the bottom; an empty one a card with a folder icon. Every tile is
+-- cut to an arched window with a fine border (art/frames.lua), painted once
+-- and kept (gfx/cutout.lua).
 
+local Art = require("solarui/gfx/art")
 local Blitbuffer = require("ffi/blitbuffer")
+local Cutout = require("solarui/gfx/cutout")
 local Element = require("solarui/ui/element")
 local Books = require("solarui/data/books")
 local Covers = require("solarui/data/covers")
+local Frames = require("solarui/art/frames")
 local Icons = require("solarui/gfx/icons")
 local Paint = require("solarui/gfx/paint")
 local Settings = require("solarui/settings")
@@ -82,24 +87,54 @@ function Cover.style()
     return Settings.get("cover_style") == "card" and "card" or "image"
 end
 
--- Draw the tile. A folder (stack = true) is its first book's cover with two
--- sheets peeking out behind it and a strip along the bottom.
+-- Everything the tile's picture depends on, as one text.
+function Cover:key()
+    local has = self.path and Cover.style() ~= "card" and Covers.get(self.path, self:imageSize()) and 1 or 0
+    return table.concat({ self.path or "", self.title or "", self.author or "", self.w, self.h, Cover.style(), tostring(self.badge),
+        tostring(self.badge_on), tostring(self.folder), tostring(self.stack), tostring(self.count), has, Covers.generation(),
+        tostring(Covers.stretch()) }, "|")
+end
+
+-- The room a cover image has inside the tile's border.
+function Cover:imageSize()
+    local stroke = Theme.get().size.stroke
+    return self.w - 2 * stroke, self.h - 2 * stroke
+end
+
+-- Draw the tile from its kept picture.
 function Cover:draw(bb, x, y)
-    if not self.stack then return self:drawFace(bb, x, y) end
+    if self.w < 4 or self.h < 4 then return end
+    Art.blend(bb, Cutout.get(self:key(), self.w, self.h, "cover_shape", function(buf) return self:compose(buf) end), x, y)
+end
+
+-- Draw the border over a face w x h at (x, y).
+local function border(bb, name, x, y, w, h)
+    local k = Cutout.unit()
+    Art.draw(bb, name, x, y, w, h, w / k, h / k)
+end
+
+-- Paint the whole tile into its own buffer and say where it shows. A folder
+-- (stack = true) is its first book's cover with two sheets peeking out
+-- behind it and a strip along the bottom.
+function Cover:compose(buf)
     local th = Theme.get()
     local w, h = self.w, self.h
+    if not self.stack then
+        self:drawFace(buf, 0, 0)
+        return { { 0, 0, w, h } }
+    end
     local off = math.max(Theme.px(4), math.floor(w / 24))
-    local stroke = th.size.stroke
-    Paint.fill(bb, x, y, w, h, th.c.bg)
+    local fw, fh = w - 2 * off, h - 2 * off
+    Paint.fill(buf, 0, 0, w, h, th.c.bg)
     -- the sheets behind, offset up and to the right
-    Paint.frame(bb, x + 2 * off, y, w - 2 * off, h - 2 * off, stroke, th.c.muted)
-    Paint.fill(bb, x + off, y + off, w - 2 * off, h - 2 * off, th.c.bg)
-    Paint.frame(bb, x + off, y + off, w - 2 * off, h - 2 * off, stroke, th.c.ink)
+    border(buf, "cover_sheet", 2 * off, 0, fw, fh)
+    border(buf, "cover_sheet", off, off, fw, fh)
     -- the front cover
-    self.w, self.h = w - 2 * off, h - 2 * off
-    self:drawFace(bb, x, y + 2 * off)
-    self:drawFolderStrip(bb, x, y + 2 * off, th)
+    self.w, self.h = fw, fh
+    self:drawFace(buf, 0, 2 * off)
+    self:drawFolderStrip(buf, 0, 2 * off, th)
     self.w, self.h = w, h
+    return { { 2 * off, 0, fw, fh }, { off, off, fw, fh }, { 0, 2 * off, fw, fh } }
 end
 
 -- The strip along a folder's bottom edge: a folder icon and how many it holds.
@@ -114,17 +149,16 @@ function Cover:drawFolderStrip(bb, x, y, th)
     Text.draw(bb, x + Theme.px(8) + isz, sy + Theme.px(3), kind, Text.fit(kind, text, self.w - isz - Theme.px(12)), th.c.on_ink)
 end
 
--- Draw a cover face: image or data card (an empty slot is just its frame),
--- then badge and folder icon, then the frame over all of it.
+-- Draw a cover face: image or data card (an empty slot is just its border),
+-- then badge and folder icon, then the window's border over all of it.
 function Cover:drawFace(bb, x, y)
     local th = Theme.get()
     local w, h = self.w, self.h
-    local stroke = th.size.stroke
     Paint.fill(bb, x, y, w, h, th.c.bg)
     local drawn = false
     local style = Cover.style()
     if self.path and style ~= "card" then
-        local img = Covers.get(self.path, w - 2 * stroke, h - 2 * stroke)
+        local img = Covers.get(self.path, self:imageSize())
         if img then
             local iw, ih = img:getWidth(), img:getHeight()
             local ix, iy = x + math.floor((w - iw) / 2), y + math.floor((h - ih) / 2)
@@ -137,7 +171,7 @@ function Cover:drawFace(bb, x, y)
     if not drawn and (self.path or self.title) then self:drawCard(bb, x, y, th) end
     if self.folder and not self.path then self:drawFolderTab(bb, x, y, th) end
     if self.badge then self:drawBadge(bb, x, y, th) end
-    Paint.frame(bb, x, y, w, h, stroke, th.c.ink)
+    border(bb, "cover_border", x, y, w, h)
 end
 
 -- The typeset card: pattern, then a box with title and author at the bottom.
@@ -166,7 +200,7 @@ function Cover:drawCard(bb, x, y, th)
     end
 end
 
--- A small label in the top-right corner.
+-- A small label on the right edge, just under the arch.
 function Cover:drawBadge(bb, x, y, th)
     local s = Text.fit("micro", self.badge)
     local pad = Theme.px(4)
@@ -174,8 +208,9 @@ function Cover:drawBadge(bb, x, y, th)
     local bh = Text.height("micro") + Theme.px(2)
     local fill = self.badge_on and th.c.accent or th.c.ink
     local fg = self.badge_on and th.c.on_accent or th.c.on_ink
-    Paint.fill(bb, x + self.w - bw, y, bw, bh, fill)
-    Text.draw(bb, x + self.w - bw + pad, y + Theme.px(1), "micro", s, fg)
+    local by = y + math.floor(Frames.rise(self.w, self.h))
+    Paint.round(bb, x + self.w - bw - pad, by, bw + pad, bh, math.floor(bh / 2), "tl", fill)
+    Text.draw(bb, x + self.w - bw, by + Theme.px(1), "micro", s, fg)
 end
 
 -- An empty folder's card: a large folder icon in the middle.

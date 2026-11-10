@@ -11,6 +11,7 @@ local MAX = 36
 local cache = {}   -- key -> { bb, used }
 local count = 0
 local tick = 0
+local generation = 0   -- goes up whenever covers are forgotten
 
 -- CoverBrowser's book info cache, or nil.
 local function bim()
@@ -62,8 +63,15 @@ function Covers.get(path, w, h)
     return bb
 end
 
+-- A number that changes whenever covers were forgotten, for whoever keeps
+-- pictures made from them.
+function Covers.generation()
+    return generation
+end
+
 -- Forget the covers of one book, or all of them.
 function Covers.forget(path)
+    generation = generation + 1
     for k, e in pairs(cache) do
         if not path or k:sub(1, #path + 1) == path .. "|" then
             if e.bb then e.bb:free() end
