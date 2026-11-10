@@ -6,6 +6,7 @@
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
 local Insects = require("solarui/art/insects")
+local Season = require("solarui/art/season")
 local Svg = require("solarui/art/svg")
 
 local n, group, vary = Svg.n, Svg.group, Svg.vary
@@ -61,7 +62,8 @@ end
 -- The climbing rose up the left edge: it rises from the bottom of the canvas,
 -- sways unevenly, thickens at its joints and curls over into a crozier at
 -- the top.
-function Home.vine_left(c, vw, vh)
+function Home.vine_left(c, vw, vh, season)
+    c = Season.palette(c, tonumber(season) or 2)
     local way = { { vw * .36, vh } }
     local y, side, i = vh - 150, 1, 0
     while y > 150 do
@@ -82,7 +84,8 @@ end
 
 -- The shorter vine up the right edge, leaning left, ending in a bud: ivy
 -- leaves of several sizes, some doubled, and a tendril now and then.
-function Home.vine_right(c, vw, vh)
+function Home.vine_right(c, vw, vh, season)
+    c = Season.palette(c, tonumber(season) or 2)
     local stem = Svg.spline({ { vw * .7, vh }, { vw * .82, vh * .72 }, { vw * .6, vh * .44 }, { vw * .74, vh * .2 }, { vw * .5, 34 } }, 12)
     local out = {}
     local d, k = 46, 0

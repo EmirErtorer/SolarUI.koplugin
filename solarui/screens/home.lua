@@ -20,6 +20,7 @@ local Layout = require("solarui/ui/layout")
 local ArtView = require("solarui/ui/artview")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
+local Season = require("solarui/art/season")
 local Settings = require("solarui/settings")
 local StatusBar = require("solarui/ui/statusbar")
 local Strip = require("solarui/ui/readingstrip")
@@ -57,8 +58,8 @@ function Home:status(scene)
     scene:backdrop("clock_wing", 172, 63, fx - 176, 84, "l")
     scene:backdrop("clock_wing", fx + fw + 4, 85, 1030 - fx - fw - 4, 84, "r")
     local clock = Label:new({ item = StatusBar.item("clock"), kind = "clock", align = "center", text = DeviceInfo.clock() })
-    local date = Label:new({ item = { live = true, read = function() return Format.date("%A, %d %B") end }, kind = "small", color = "muted",
-        align = "center", text = Format.date("%A, %d %B") })
+    local date = Label:new({ item = { live = true, read = function() return Format.date("%a, %d %B") end }, kind = "small", color = "muted",
+        align = "center", text = Format.date("%a, %d %B") })
     self.clock = scene:place(Layout.Column:new({ children = { clock, Layout.Spacer:new({ grow = true }), date }, labels = { clock, date } }),
         fx + 24, fy + 12, fw - 48, fh - 23)
 
@@ -89,6 +90,7 @@ end
 
 -- The hero: the book in front of its halo, and all about it to the right.
 function Home:hero(scene, y, cur)
+    scene:backdrop("peacock_fan", 20, y - 65, 600, 600)
     scene:backdrop("halo", 85, y, 470, 470)
     scene:backdrop("sprig", 486, y + 10, 120, 138)
     local x0, w = 612, RIGHT - 612
@@ -149,6 +151,7 @@ function Home:shelf(scene, y, cur)
     local step = (RIGHT - x0 - 88) / 5
     scene:backdrop("sprouts", x0 + 44, y + 122, step * 5, 64, 5)
     scene:backdrop("shelf", 30, y + 180, 1012, 40)
+    scene:backdrop("snail", 770, y - 6, 56, 38)
     if #books == 0 then
         scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), HEAD + 20, y + 90, 700)
     end
@@ -178,6 +181,23 @@ function Home:dock(scene, y)
     end
 end
 
+-- The ornaments of the border (a curl at each corner, a bud at the foot),
+-- the sun or moon of the hour and a butterfly.
+function Home:ornaments(scene)
+    local left, right = -scene.ox / scene.k, (scene.width - scene.ox) / scene.k - 90
+    local bottom = scene.vh - 90
+    scene:backdrop("frame_corner", left, 0, 90, 90, 0)
+    scene:backdrop("frame_corner", right, 0, 90, 90, 1)
+    scene:backdrop("frame_corner", right, bottom, 90, 90, 2)
+    scene:backdrop("frame_corner", left, bottom, 90, 90, 3)
+    scene:backdrop("frame_bud", (scene.width / 2 - scene.ox) / scene.k - 30, scene.vh - 52, 60, 30)
+    scene:sprite("dayphase", 262, 12, 92, 72, nil, function()
+        local h = tonumber(os.date("%H")) or 12
+        return (h >= 5 and h < 8) and 1 or (h >= 8 and h < 17) and 2 or (h >= 17 and h < 20) and 3 or 0
+    end)
+    scene:backdrop("butterfly", 548, 700, 64, 56)
+end
+
 -- Build the home screen.
 function Home:build(ctx)
     local stats, shelf = Settings.get("home_stats", true), Settings.get("home_shelf", true)
@@ -198,8 +218,10 @@ function Home:build(ctx)
     if shelf then y = y + SHELF_H + gap end
     local dock_y = math.max(y, scene.vh - FOOT - DOCK_H)
 
-    scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34)
-    scene:backdrop("vine_right", 990, dock_y - 270, 78, 400)
+    local season = Settings.get("home_season", true) and Season.current() or 2
+    scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34, season)
+    scene:backdrop("vine_right", 990, dock_y - 270, 78, 400, season)
+    self:ornaments(scene)
     self:status(scene)
     self:hero(scene, hero_y, cur)
     if stats then Strip.place(scene, stats_y, Strip.data(), function() App.go("history") end) end
