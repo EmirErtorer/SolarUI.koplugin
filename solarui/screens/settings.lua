@@ -78,9 +78,9 @@ function SettingsScreen:look()
         scheme_rows[#scheme_rows + 1] = Layout.Row:new({ gap = th.space.m, children = kids })
     end
     local kids = {
-        Section.title(_("Colour scheme")),
+        Section.title(_("Colour scheme"), nil, "pansy"),
         Layout.Column:new({ gap = th.space.s, children = scheme_rows }),
-        Section.title(_("Mode")),
+        Section.title(_("Mode"), nil, "lily"),
         Controls.Segmented({ options = { { _("Light"), "light" }, { _("Dark"), "dark" }, { _("System"), "system" } },
             value = Theme.mode(), kind = "small", on_change = function(v) Theme.set("mode", v) end }),
     }
@@ -100,16 +100,16 @@ end
 -- The Covers section: style and size in the library.
 function SettingsScreen:covers()
     return {
-        Section.title(_("Style")),
+        Section.title(_("Style"), nil, "narcissus"),
         Controls.Segmented({ options = { { _("Image"), "image" }, { _("Card"), "card" } },
             value = Cover.style(), kind = "small", on_change = function(v) save("cover_style", v) end }),
-        Section.title(_("Cover pictures")),
+        Section.title(_("Cover pictures"), nil, "tulip"),
         Controls.Segmented({ options = { { _("As they are"), "none" }, { _("Glass"), "glass" }, { _("Scales"), "scales" }, { _("Blossom"), "blossom" } },
             value = Cover.effect(), kind = "small", on_change = function(v) save("cover_effect", v) end }),
-        Section.title(_("Art on a card")),
+        Section.title(_("Art on a card"), nil, "rose"),
         Controls.Segmented({ options = { { _("Glass"), "glass" }, { _("Garden"), "garden" }, { _("Halo"), "halo" }, { _("Scales"), "scales" }, { _("Lines"), "lines" } },
             value = Cover.cardArt(), kind = "small", on_change = function(v) save("card_art", v) end }),
-        Section.title(_("Size in the library")),
+        Section.title(_("Size in the library"), nil, "daisy"),
         Controls.Segmented({ options = { { "S", "s" }, { "M", "m" }, { "L", "l" }, { "XL", "xl" } },
             value = Settings.get("cover_size", "m"), kind = "small", on_change = function(v) save("cover_size", v) end }),
         row(_("Stretch covers"), _("Fill each cover frame, even if the proportions change"),

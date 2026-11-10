@@ -35,9 +35,9 @@ function Header.pageHeader(title, plant, o)
     if o.sub then titles[2] = Label:new({ text = o.sub, kind = "small", color = "muted" }) end
     kids[#kids + 1] = Layout.Column:new({ grow = true, children = titles })
     for _i, b in ipairs(o.actions or {}) do kids[#kids + 1] = b end
-    return Layout.Column:new({ gap = th.space.xs, children = {
+    return Layout.Column:new({ gap = th.space.s, children = {
         Layout.Row:new({ gap = th.space.m, children = kids }),
-        ArtView:new({ name = "page_rule", height = Theme.px(14) }),
+        ArtView:new({ name = "page_rule", param = Header.PLANTS[plant] and plant or nil, height = Theme.px(24) }),
     } })
 end
 
