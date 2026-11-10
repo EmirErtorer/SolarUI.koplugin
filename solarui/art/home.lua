@@ -15,34 +15,29 @@ local sin = math.sin
 local Home = {}
 
 -- What grows at stop `k` of the climbing rose, at (x, y) where the stem
--- heads `ang`: leaves in overlapping pairs, thorns, side shoots, buds and
--- blooms by turns. `reach` is how far it may spread, `size` and `lean` make
--- no two stops alike.
+-- heads `ang`: stops alternate sides and each carries one thing (a leaf of
+-- five or three leaflets, a budding shoot, a tendril with a leaf, a rose on a
+-- stalk), so neighbours never lie on one another. `reach` is how far it may
+-- spread, `size` and `lean` make no two stops alike.
 local function growth(c, k, x, y, ang, reach, size, lean)
-    local right, left = ang + 60 + lean, ang - 60 + lean
-    local kind = k % 6
+    local side = k % 2 == 0 and 1 or -1
+    if side < 0 then reach = math.min(reach, (x - 6) / .95) end
+    local out = ang + side * (62 + lean * .4)
+    local kind = k % 5
     if kind == 0 then
-        return Flora.roseLeaf(c, x, y, right + 34, reach * .5 * size, 3, c.sage)
-            .. Flora.roseLeaf(c, x, y, right, reach * .78 * size, 5)
+        return Flora.roseLeaf(c, x, y, out, reach * .85 * size, 5)
     elseif kind == 1 then
-        return Flora.thorn(c, x, y, ang + 180, 9) .. Flora.tendril(c, x, y, ang + 30, reach * .26, true)
-            .. Flora.roseLeaf(c, x, y, left, reach * .44 * size, 3)
+        return Flora.shoot(c, x, y, out - side * 10, reach * .8 * size, "bud")
     elseif kind == 2 then
-        return Flora.roseLeaf(c, x, y, left - 20, reach * .34 * size, 3, c.sage)
-            .. Flora.shoot(c, x, y, right - 20, reach * .62 * size, "bud")
+        return Flora.roseLeaf(c, x, y, out, reach * .62 * size, 3, c.sage)
+            .. Flora.tendril(c, x, y, ang - side * 70, reach * .26, side > 0)
     elseif kind == 3 then
-        return Flora.roseLeaf(c, x, y, left, reach * .42 * size, 3)
-            .. Flora.roseLeaf(c, x, y, right + 18, reach * .6 * size, 3)
-    elseif kind == 4 then
-        local sx, sy = x + reach * .5, y - reach * .2
-        local warm = k % 12 == 4
-        return Svg.stem(Svg.spline({ { x, y }, { x + reach * .22, y + reach * .02 }, { sx, sy } }, 6), Svg.taper(4.4, 2.8), c.stem, c.ink, 1.3)
-            .. Flora.roseLeaf(c, x + reach * .2, y, ang + 128, reach * .42, 3)
-            .. Flora.roseLeaf(c, x + reach * .24, y - reach * .04, ang + 20, reach * .36, 3, c.sage)
-            .. Flora.rose(c, sx, sy, reach * .33, k * 23, warm and c.bloom or c.bloom2, warm and c.bloom2 or c.bloom)
+        local warm = k % 10 == 3
+        local sx, sy = x + side * reach * .5, y - reach * .2
+        return Svg.stem(Svg.spline({ { x, y }, { x + side * reach * .22, y + reach * .02 }, { sx, sy } }, 6), Svg.taper(4.4, 2.8), c.stem, c.ink, 1.3)
+            .. Flora.rose(c, sx, sy, reach * .3, k * 23, warm and c.bloom or c.bloom2, warm and c.bloom2 or c.bloom)
     end
-    return Flora.thorn(c, x, y, ang, 9) .. Flora.roseLeaf(c, x, y, left, reach * .46 * size, 3)
-        .. Flora.shoot(c, x, y, right, reach * .44 * size, "tendril", c.sage)
+    return Flora.shoot(c, x, y, out - side * 10, reach * .7 * size, "tendril", c.sage)
 end
 
 -- The climbing stem dressed from `from` to `to` along it: a stop about every
@@ -52,8 +47,8 @@ local function dress(c, pts, from, to, step, reach)
     local k, d = 0, from
     while d < to do
         local x, y, ang = Svg.along(pts, d)
-        out[#out + 1] = growth(c, k, x, y, ang, reach, .82 + .3 * vary(k, 1), (vary(k, 2) - .5) * 26)
-        d = d + step * (.78 + .44 * vary(k, 3))
+        out[#out + 1] = growth(c, k, x, y, ang, reach, .82 + .2 * vary(k, 1), (vary(k, 2) - .5) * 20)
+        d = d + step * (.9 + .3 * vary(k, 3))
         k = k + 1
     end
     return table.concat(out)
@@ -78,7 +73,7 @@ function Home.vine_left(c, vw, vh, season)
     local pts = Svg.join(stem, Svg.spiral(top[1] + r, top[2], r, 1.7, -90))
     local len = Svg.length(stem)
     local function width(t) return (11 - 6.5 * t) * (1 + .09 * sin(t * 46)) end
-    return dress(c, stem, 70, len - 60, 62, vw * .52)
+    return dress(c, stem, 70, len - 60, 64, vw * .52)
         .. Svg.stem(pts, width, c.stem, c.ink, 1.7)
 end
 
@@ -92,12 +87,16 @@ function Home.vine_right(c, vw, vh, season)
     local len = Svg.length(stem)
     while d < len - 30 do
         local x, y, ang = Svg.along(stem, d)
-        local turn = ang + (k % 2 == 0 and -60 or 60) + (vary(k, 6) - .5) * 30
-        local s = vw * (.22 + .12 * vary(k, 7))
-        if k % 3 == 0 then out[#out + 1] = Flora.vineLeaf(c, x, y, turn + (k % 2 == 0 and -40 or 40), s * .7, c.sage) end
-        out[#out + 1] = Flora.vineLeaf(c, x, y, turn, s, k % 4 == 3 and c.sage or c.leaf)
-        if k % 3 == 1 then out[#out + 1] = Flora.tendril(c, x, y, ang - 60, vw * .26, k % 2 == 0) end
-        d, k = d + 58 + 30 * vary(k, 8), k + 1
+        local side = (k % 2 == 0 or x > vw * .6) and -1 or 1
+        local turn = ang + side * (62 + (vary(k, 6) - .5) * 24)
+        local s = vw * (.2 + .08 * vary(k, 7))
+        local reach = s * .4
+        local px, py = Svg.pol(reach, turn + 90, x, y)
+        out[#out + 1] = Svg.line(string.format("M%s %s L%s %s", n(x), n(y), n(px), n(py)), c.ink, 3.2)
+            .. Svg.line(string.format("M%s %s L%s %s", n(x), n(y), n(px), n(py)), c.stem, 1.6)
+            .. Flora.vineLeaf(c, px, py, turn + 90, s, k % 3 == 2 and c.sage or c.leaf)
+        if k % 3 == 1 then out[#out + 1] = Flora.tendril(c, x, y, ang - side * 70, vw * .22, side > 0) end
+        d, k = d + 62 + 30 * vary(k, 8), k + 1
     end
     local tx, ty = stem[#stem][1], stem[#stem][2]
     return table.concat(out) .. Svg.stem(stem, Svg.taper(8, 3.5), c.stem, c.ink, 1.6) .. Flora.rosebud(c, tx, ty, -28, vw * .2)
@@ -213,10 +212,13 @@ end
 -- A budding shoot beside the halo.
 function Home.sprig(c, vw, vh)
     local pts = Svg.spline({ { vw * .06, vh * .94 }, { vw * .3, vh * .62 }, { vw * .52, vh * .4 }, { vw * .8, vh * .2 } }, 8)
-    local x, y = Svg.along(pts, Svg.length(pts) * .45)
-    return Flora.roseLeaf(c, x, y, -80, vw * .5, 3)
-        .. Flora.roseLeaf(c, vw * .3, vh * .62, 30, vw * .44, 3)
-        .. Flora.tendril(c, vw * .5, vh * .42, 70, vw * .22)
+    local len = Svg.length(pts)
+    local x1, y1, a1 = Svg.along(pts, len * .3)
+    local x2, y2, a2 = Svg.along(pts, len * .55)
+    local x3, y3, a3 = Svg.along(pts, len * .72)
+    return Flora.roseLeaf(c, x1, y1, a1 + 58, vw * .36, 3)
+        .. Flora.roseLeaf(c, x2, y2, a2 - 62, vw * .4, 3)
+        .. Flora.tendril(c, x3, y3, a3 + 60, vw * .2)
         .. Svg.stem(pts, Svg.taper(5, 2.6), c.stem, c.ink, 1.4)
         .. Flora.rosebud(c, vw * .8, vh * .2, 50, vw * .15)
 end

@@ -63,7 +63,7 @@ function GoalTab.build(screen)
                     on_change = function(v) Goal.setTarget(v); App.update() end }),
             } }),
         } }),
-        ArtView:new({ name = "goal_tree", param = math.floor(math.min(#shelf / target, 1) * 100 + .5), height = Theme.px(110) }),
+        ArtView:new({ name = "goal_tree", param = math.floor(math.min(#shelf / target, 1) * 100 + .5), height = Theme.px(170) }),
     } })
     local body = { nav, goal }
     for _i, l in ipairs(ladders) do body[#body + 1] = ladder(l) end

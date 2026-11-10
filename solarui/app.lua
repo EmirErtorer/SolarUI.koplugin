@@ -36,6 +36,7 @@ local stack = {}  -- screen instances, the current one last
 local views = 0   -- screens shown since the last full refresh
 local prepainted = false   -- home shown before the book it left closed
 local prewarmed = false    -- the reader's code is loaded
+local listening = false   -- is App watching for books read in the background?
 local update_started = false  -- the daily update check was set off this session
 local clock_timer
 local toast_timer
@@ -296,10 +297,13 @@ function App.afterShow()
             local s = App.current()
             if s and s.onIndexed then s:onIndexed() end
         end
-        Books.whenExtracted(function(paths)
-            for _i, p in ipairs(paths) do Covers.forget(p) end
-            if App.isOpen() then App.update() end
-        end)
+        if not listening then
+            listening = true
+            Books.listen(function(paths)
+                for _i, p in ipairs(paths) do Covers.forget(p) end
+                if App.isOpen() then App.update() end
+            end)
+        end
     end)
 end
 

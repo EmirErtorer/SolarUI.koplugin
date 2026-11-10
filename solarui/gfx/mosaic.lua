@@ -67,7 +67,7 @@ local function paintGlass(bb, w, h, at)
     Paint.fill(bb, 0, 0, w, h, ink)
     local dw = w / ACROSS.glass
     local dh = dw * 1.3
-    local lead = max(1, floor(dw / 10))
+    local lead = max(1, floor(dw / 20))
     local gw, gh = floor(w / (dw / 2) + .5), floor(h / (dh / 2) + .5)
     for i = -1, floor(h / (dh / 2)) + 1 do
         for j = -1, ACROSS.glass + 1 do
@@ -89,7 +89,7 @@ local function paintScales(bb, w, h, at)
     Paint.fill(bb, 0, 0, w, h, ink)
     local s = w / ACROSS.scales
     local R = s * .62
-    local lead = max(1, floor(s / 16))
+    local lead = max(1, floor(s / 24))
     local gw, gh = floor(w / (s / 2) + .5), floor(h / (s / 2) + .5)
     for i = -1, floor(h / (s * .5)) + 1 do
         for j = -1, ACROSS.scales + 1 do

@@ -38,4 +38,24 @@ function Insects.trail(c, pts, size)
     return table.concat(out)
 end
 
+-- A ladybird seen from above, head up: red shell split down the middle with
+-- three spots on each side, a dark head, antennae and six legs.
+function Insects.ladybug(c, x, y, rot, s)
+    local legs = {}
+    for _i, d in ipairs({ -.35, 0, .35 }) do
+        legs[#legs + 1] = string.format("M%s %s L%s %s M%s %s L%s %s", n(-s * .5), n(s * d), n(-s * .85), n(s * (d + .15)), n(s * .5), n(s * d), n(s * .85), n(s * (d + .15)))
+    end
+    local spots = ""
+    for _i, p in ipairs({ { -.3, -.3, .14 }, { .3, -.3, .14 }, { -.34, .12, .15 }, { .34, .12, .15 }, { -.2, .5, .11 }, { .2, .5, .11 } }) do
+        spots = spots .. Svg.circle(s * p[1], s * p[2], s * p[3], c.ink)
+    end
+    local body = Svg.line(table.concat(legs, " "), c.ink, 1.4)
+        .. Svg.ellipse(0, -s * .72, s * .3, s * .24, 0, c.ink)
+        .. Svg.line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-s * .1), n(-s * .9), n(-s * .2), n(-s * 1.2), n(-s * .45), n(-s * 1.25),
+            n(s * .1), n(-s * .9), n(s * .2), n(-s * 1.2), n(s * .45), n(-s * 1.25)), c.ink, 1.2)
+        .. Svg.ellipse(0, s * .1, s * .62, s * .82, 0, c.bloom, c.ink, 1.6)
+        .. Svg.line(string.format("M0 %s L0 %s", n(-s * .7), n(s * .9)), c.ink, 1.3) .. spots
+    return group(x, y, rot, body)
+end
+
 return Insects

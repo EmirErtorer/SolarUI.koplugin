@@ -4,6 +4,7 @@
 
 local DayFlowers = require("solarui/art/dayflowers")
 local Flora = require("solarui/art/flora")
+local Insects = require("solarui/art/insects")
 local Svg = require("solarui/art/svg")
 
 local n, vary = Svg.n, Svg.vary
@@ -70,8 +71,11 @@ end
 function Reading.lily(c, vw, vh, books)
     books = math.max(0, math.min(28, tonumber(books) or 0))
     local pad = Flora.lilypad(c, vw * .53, vh * .55, vw * .4, 118)
+    -- a ladybird walking on the pad's edge
+    local bx, by = Svg.pol(vw * .31, 232, vw * .53, vh * .55)
+    local bug = Insects.ladybug(c, bx, by, 232 - 90 + 180, vw * .06)
     if books == 0 then
-        return pad .. Flora.rosebud(c, vw * .47, vh * .6, 0, vw * .1, c.cream)
+        return pad .. Flora.rosebud(c, vw * .47, vh * .6, 0, vw * .1, c.cream) .. bug
     end
     local first = math.min(16, books)
     local outer = math.max(1, math.ceil(first * .6))
@@ -80,7 +84,7 @@ function Reading.lily(c, vw, vh, books)
         local more = books - 16
         out = out .. Flora.lily(c, vw * .8, vh * .78, vw * .13, math.max(3, math.ceil(more * .6)), math.floor(more * .4))
     end
-    return out
+    return out .. bug
 end
 
 return Reading

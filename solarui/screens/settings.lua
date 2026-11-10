@@ -97,24 +97,51 @@ function SettingsScreen:look()
     return kids
 end
 
--- The Covers section: style and size in the library.
+-- The ways a book's cover can be shown: id, name, what it does, the saved
+-- style ("image" or "card") and picture effect ("none", "glass", ...).
+local COVER_WAYS = {
+    { "original", _("Original covers"), _("The cover picture of each book, as it is"), "image", "none" },
+    { "glass", _("Stained glass"), _("Each cover remade as coloured glass panes"), "image", "glass" },
+    { "scales", _("Peacock scales"), _("Each cover remade as overlapping scales"), "image", "scales" },
+    { "blossom", _("Blossom field"), _("Each cover remade as a field of small flowers"), "image", "blossom" },
+    { "card", _("Drawn card"), _("No picture: the title on a card with art behind it"), "card", "none" },
+}
+
+-- Which way the saved settings add up to.
+local function coverWay()
+    if Cover.style() == "card" then return "card" end
+    local e = Cover.effect()
+    return e == "none" and "original" or e
+end
+
+-- The Covers section: how covers look (one choice), the art of a drawn card,
+-- and their size in the library.
 function SettingsScreen:covers()
-    return {
-        Section.title(_("Style"), nil, "narcissus"),
-        Controls.Segmented({ options = { { _("Image"), "image" }, { _("Card"), "card" } },
-            value = Cover.style(), kind = "small", on_change = function(v) save("cover_style", v) end }),
-        Section.title(_("Cover pictures"), nil, "tulip"),
-        Controls.Segmented({ options = { { _("As they are"), "none" }, { _("Glass"), "glass" }, { _("Scales"), "scales" }, { _("Blossom"), "blossom" } },
-            value = Cover.effect(), kind = "small", on_change = function(v) save("cover_effect", v) end }),
-        Section.title(_("Art on a card"), nil, "rose"),
-        Controls.Segmented({ options = { { _("Glass"), "glass" }, { _("Garden"), "garden" }, { _("Halo"), "halo" }, { _("Scales"), "scales" }, { _("Lines"), "lines" } },
-            value = Cover.cardArt(), kind = "small", on_change = function(v) save("card_art", v) end }),
-        Section.title(_("Size in the library"), nil, "daisy"),
-        Controls.Segmented({ options = { { "S", "s" }, { "M", "m" }, { "L", "l" }, { "XL", "xl" } },
-            value = Settings.get("cover_size", "m"), kind = "small", on_change = function(v) save("cover_size", v) end }),
-        row(_("Stretch covers"), _("Fill each cover frame, even if the proportions change"),
-            Controls.Toggle:new({ on = Covers.stretch(), on_change = function(on) save("cover_stretch", on) end })),
-    }
+    local way = coverWay()
+    local kids = { Section.title(_("How book covers look"), nil, "narcissus") }
+    for _i, w in ipairs(COVER_WAYS) do
+        kids[#kids + 1] = Button:new({ label = w[2], sub = w[3], align = "left", height = Theme.px(58),
+            icon = w[1] == way and "check" or nil, variant = w[1] == way and "chip_on" or "soft",
+            on_tap = function()
+                Settings.set("cover_style", w[4])
+                Settings.set("cover_effect", w[5])
+                Settings.flush()
+                App.update()
+            end })
+    end
+    if way == "card" then
+        kids[#kids + 1] = Section.title(_("Art on the card"), nil, "rose")
+        kids[#kids + 1] = Controls.Segmented({ options = { { _("Glass"), "glass" }, { _("Garden"), "garden" }, { _("Halo"), "halo" }, { _("Scales"), "scales" }, { _("Lines"), "lines" } },
+            value = Cover.cardArt(), kind = "small", on_change = function(v) save("card_art", v) end })
+    end
+    kids[#kids + 1] = Section.title(_("Size in the library"), nil, "daisy")
+    kids[#kids + 1] = Controls.Segmented({ options = { { "S", "s" }, { "M", "m" }, { "L", "l" }, { "XL", "xl" } },
+        value = Settings.get("cover_size", "m"), kind = "small", on_change = function(v) save("cover_size", v) end })
+    if way ~= "card" then
+        kids[#kids + 1] = row(_("Stretch covers"), _("Fill each cover frame, even if the proportions change"),
+            Controls.Toggle:new({ on = Covers.stretch(), on_change = function(on) save("cover_stretch", on) end }))
+    end
+    return kids
 end
 
 -- The Fonts section: the font in use, the way to every font, and text size.

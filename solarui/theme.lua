@@ -146,8 +146,16 @@ function Theme.text(kind, set_id)
     local scale = own * Settings.get("text_scale", 1)
     local size = math.floor(spec[2] * scale + 0.5)
     -- KOReader's own face if the file cannot be read, rather than no text
-    local face = Font:getFace(fontPath(set[role] or (role == "clock" and set.display) or set.body), size) or Font:getFace("cfont", size)
-    local height, ascent = face.ftsize:getHeightAndAscender()
+    local ok, face = pcall(function()
+        return Font:getFace(fontPath(set[role] or (role == "clock" and set.display) or set.body), size)
+    end)
+    local height, ascent
+    if ok and face then ok, height, ascent = pcall(function() return face.ftsize:getHeightAndAscender() end) end
+    if not (ok and face and height) then
+        -- a face that cannot be loaded or measured must never take KOReader down
+        face = Font:getFace("cfont", size)
+        height, ascent = face.ftsize:getHeightAndAscender()
+    end
     f = {
         face = face,
         tracking = Screen:scaleBySize(t.style.tracking[kind] or 0),

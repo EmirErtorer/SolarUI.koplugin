@@ -82,12 +82,15 @@ Flora.leaflet = leaflet
 -- A rose leaf: three or five saw-edged leaflets on a stalk `L` long, pointing
 -- right from (x, y).
 function Flora.roseLeaf(c, x, y, rot, L, count, fill)
-    local body = Svg.line(string.format("M0 0 Q%s %s %s 0", n(L * .3), n(-L * .04), n(L * .58)), c.ink, 1.6)
-    local pairs_at = count == 5 and { .2, .42 } or { .3 }
+    -- the stalk starts a little behind the origin, so it runs into whatever it grows from
+    local stalk = string.format("M-2 0 Q%s %s %s 0", n(L * .3), n(-L * .03), n(L * (count == 5 and .56 or .5)))
+    local body = Svg.line(stalk, c.ink, 3.4) .. Svg.line(stalk, c.stem, 1.7)
+    local pairs_at = count == 5 and { .2, .38 } or { .3 }
+    local side = L * (count == 5 and .34 or .38)
     for _i, t in ipairs(pairs_at) do
-        body = body .. leaflet(c, L * t, 0, -52, L * .36, fill) .. leaflet(c, L * t, 0, 52, L * .36, fill)
+        body = body .. leaflet(c, L * t, 0, -58, side, fill) .. leaflet(c, L * t, 0, 58, side, fill)
     end
-    body = body .. leaflet(c, L * .56, 0, 0, L * .46, fill)
+    body = body .. leaflet(c, L * (count == 5 and .54 or .48), 0, 0, L * .46, fill)
     return group(x, y, rot, body)
 end
 
@@ -333,7 +336,7 @@ end
 -- small leaflets by turns above and below it, and at its tip a bud ("bud"),
 -- a tendril ("tendril") or a last leaflet.
 function Flora.shoot(c, x, y, rot, L, tip, fill)
-    local pts = Svg.spline({ { 0, 0 }, { L * .4, -L * .16 }, { L * .78, -L * .18 }, { L, -L * .36 } }, 6)
+    local pts = Svg.spline({ { -2, 1 }, { 0, 0 }, { L * .4, -L * .16 }, { L * .78, -L * .18 }, { L, -L * .36 } }, 6)
     local len = Svg.length(pts)
     local body = ""
     for i, f in ipairs({ .3, .52, .74 }) do

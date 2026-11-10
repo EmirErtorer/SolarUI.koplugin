@@ -18,6 +18,7 @@ Books.revision = 0
 local info_cache = {}     -- path -> facts
 local waiting = {}        -- path -> true while queued for extraction
 local on_extracted = {}   -- callbacks for when background extraction ends
+local listeners = {}      -- callbacks for every end of background extraction
 local polling = false
 
 -- CoverBrowser's book info cache, or nil when that plugin is off.
@@ -153,6 +154,7 @@ local function poll()
     local callbacks = on_extracted
     on_extracted = {}
     for _i, fn in ipairs(callbacks) do fn(done) end
+    for _i, fn in ipairs(listeners) do fn(done) end
 end
 
 -- Ask CoverBrowser to read a book's details in the background (batched to
@@ -172,6 +174,12 @@ function Books.queue(path)
         m:extractInBackground(files)
         UIManager:scheduleIn(1, poll)
     end)
+end
+
+-- Call fn(paths) every time background reading of books ends, whenever the
+-- books were queued (covers that appear later must show up too).
+function Books.listen(fn)
+    listeners[#listeners + 1] = fn
 end
 
 -- Call fn(paths) once the books queued now have been read.

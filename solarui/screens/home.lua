@@ -184,7 +184,7 @@ end
 -- The ornaments of the border, the sun or moon of the hour and a butterfly.
 function Home:ornaments(scene)
     scene:frameOrnaments()
-    scene:sprite("dayphase", 262, 12, 92, 72, nil, function()
+    scene:sprite("dayphase", 262, 4, 72, 54, nil, function()
         local h = tonumber(os.date("%H")) or 12
         return (h >= 5 and h < 8) and 1 or (h >= 8 and h < 17) and 2 or (h >= 17 and h < 20) and 3 or 0
     end)
