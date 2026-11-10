@@ -28,7 +28,7 @@ do
     local Blitbuffer = require("ffi/blitbuffer")
     local Mosaic = require("solarui/gfx/mosaic")
     local pic = Blitbuffer.new(120, 180, Blitbuffer.TYPE_BBRGB32)
-    pic:fill(Blitbuffer.ColorRGB32(200, 60, 40, 255))
+    pic:paintRectRGB32(0, 0, 120, 180, Blitbuffer.ColorRGB32(200, 60, 40, 255))
     local out = Blitbuffer.new(120, 180, Blitbuffer.TYPE_BBRGB32)
     for _i, effect in ipairs(Mosaic.EFFECTS) do
         Mosaic.paint(out, pic, 0, 0, 120, 180, effect)
