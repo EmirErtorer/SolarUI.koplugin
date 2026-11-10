@@ -5,6 +5,7 @@
 
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
+local Insects = require("solarui/art/insects")
 local Svg = require("solarui/art/svg")
 
 local n, group, vary = Svg.n, Svg.group, Svg.vary
@@ -153,6 +154,14 @@ function Home.clock_wing(c, vw, vh, side)
     end
     local body = table.concat(out) .. line
     return Svg.group(up and vw or 0, up and vh * .34 or vh * .1, 0, body, up and -1 or 1, 1)
+end
+
+-- A bee flying below the branch, a dotted loop behind it.
+function Home.bee(c, vw, vh)
+    local way = Svg.spline({ { vw * .04, vh * .3 }, { vw * .2, vh * .68 }, { vw * .36, vh * .42 }, { vw * .3, vh * .2 }, { vw * .46, vh * .35 }, { vw * .64, vh * .55 } }, 3)
+    local dots = {}
+    for i = 1, #way, 4 do dots[#dots + 1] = way[i] end
+    return Insects.trail(c, dots, 3) .. Insects.bee(c, vw * .78, vh * .6, -12, vh * .46)
 end
 
 -- The halo behind the cover: a golden ring of tiles round a pale disc.

@@ -62,6 +62,7 @@ function Home:status(scene)
     self.clock = scene:place(Layout.Column:new({ children = { clock, Layout.Spacer:new({ grow = true }), date }, labels = { clock, date } }),
         fx + 24, fy + 12, fw - 48, fh - 23)
 
+    scene:backdrop("bee", 750, 132, 130, 70)
     local Device = require("device")
     scene:sprite("wifi", 716, 10, 110, 110, nil, function() return DeviceInfo.wifi() and 1 or 0 end)
     scene:touch(712, 8, 110, 112, function() require("dispatcher"):execute({ toggle_wifi = true }) end)
@@ -74,7 +75,7 @@ function Home:status(scene)
     end
     local level = DeviceInfo.battery()
     if level then
-        scene:sprite("battery", 912, 85, 100, 50, nil, function() return math.floor((DeviceInfo.battery() or 0) / 10 + 0.5) end)
+        scene:sprite("battery", 912, 74, 100, 50, nil, function() return math.floor((DeviceInfo.battery() or 0) / 10 + 0.5) end)
         scene:caption(level .. "%", 912, 50, 100, "small")
     end
 end

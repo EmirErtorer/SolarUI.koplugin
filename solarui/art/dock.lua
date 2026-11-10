@@ -135,11 +135,13 @@ function Dock.lamp(c, vw, vh, on)
         .. Flora.rosebud(c, vw * .72, vh * .3, 180, vw * .27, lit and c.gold or c.cream)
 end
 
--- The battery: a leaf coloured in as far as it is charged (`level` 0 to 10).
+-- The battery: a leaf coloured in as far as it is charged (`level` 0 to 10),
+-- on a curved stalk that rises from the foot of the canvas, where the vine
+-- runs, and is tied to it by a knot.
 function Dock.battery(c, vw, vh, level)
     local f = math.max(0, math.min(10, tonumber(level) or 0)) / 10
-    local L, W, y = vw * .8, vh * .42, vh * .56
-    local x0 = vw * .12
+    local L, W, y = vw * .74, vh * .3, vh * .46
+    local x0 = vw * .2
     local top = Svg.cubic(0, 0, L * .2, -W * 1.25, L * .7, -W * .95, L, 0, 24)
     local bottom = Svg.cubic(0, 0, L * .3, W * .85, L * .7, W * .55, L, 0, 24)
     local function upTo(edge)
@@ -159,7 +161,9 @@ function Dock.battery(c, vw, vh, level)
         .. (#shape > 2 and Svg.path(Svg.poly(shape, true), c.leaf) or "")
         .. Svg.path(Svg.poly(whole, true), nil, c.ink, 2)
         .. Svg.line(string.format("M0 0 Q%s %s %s 0", n(L * .5), n(-W * .25), n(L * .92)), c.ink, 1.1)
-    return Svg.line(string.format("M%s %s L%s %s", n(vw * .02), n(y + vh * .14), n(x0), n(y)), c.ink, 2.4) .. Svg.group(x0, y, -10, body)
+    local stalk_pts = Svg.spline({ { vw * .05, vh * .97 }, { vw * .08, vh * .78 }, { vw * .13, vh * .6 }, { x0, y } }, 6)
+    return Svg.stem(stalk_pts, Svg.taper(5, 3), c.stem, c.ink, 1.3) .. Svg.group(x0, y, -10, body)
+        .. Svg.circle(vw * .05, vh * .97, 4.2, c.leaf, c.ink, 1.3)
 end
 
 return Dock
