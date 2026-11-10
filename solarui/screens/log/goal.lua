@@ -29,10 +29,10 @@ local function ladder(l)
     local th = Theme.get()
     local rows = {}
     for i = 1, #l.items, PER_ROW do
-        local kids = { Label:new({ text = i == 1 and l.name or "", kind = "micro", color = "muted", width = Theme.px(76) }) }
+        local kids = { Label:new({ text = i == 1 and l.name or "", kind = "small", color = "muted", width = Theme.px(76) }) }
         for j = i, math.min(#l.items, i + PER_ROW - 1) do
             local a = l.items[j]
-            kids[#kids + 1] = Button:new({ label = a.short, kind = "micro", variant = a.got and "chip_on" or "chip", grow = true, height = Theme.px(30) })
+            kids[#kids + 1] = Button:new({ label = a.short, kind = "small", variant = a.got and "chip_on" or "chip", grow = true, height = Theme.px(30) })
         end
         rows[#rows + 1] = Layout.Row:new({ gap = th.space.xs, children = kids })
     end
@@ -58,7 +58,7 @@ function GoalTab.build(screen)
             tile(_("Finished"), string.format("%d/%d", #shelf, target), string.format(_("%d%% of the goal"), math.floor(math.min(#shelf / target, 1) * 100))),
             tile(_("Achieved"), tostring(got), latest or _("None yet")),
             Layout.Column:new({ children = {
-                Label:new({ text = _("Year goal"), kind = "micro", color = "muted" }),
+                Label:new({ text = _("Year goal"), kind = "small", color = "muted" }),
                 Controls.Stepper({ value = target, min = 1, max = 999, step = 1, format = function(v) return tostring(v) end, value_w = 48,
                     on_change = function(v) Goal.setTarget(v); App.update() end }),
             } }),

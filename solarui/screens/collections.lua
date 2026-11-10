@@ -11,6 +11,7 @@ local Groups = require("solarui/data/libgroups")
 local Cover = require("solarui/ui/cover")
 local Frame = require("solarui/screens/frame")
 local Grid = require("solarui/ui/grid")
+local EmptyState = require("solarui/ui/emptystate")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Panel = require("solarui/ui/panel")
@@ -96,7 +97,7 @@ local function card(c, _w, h)
         mosaic(c.books, math.floor(inner_h * 0.75), inner_h),
         Layout.Column:new({ grow = true, gap = th.space.xs, children = {
             Label:new({ text = c.title, kind = "heading" }),
-            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "mono_small" }),
+            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "small", color = "muted" }),
         } }),
     } }) })
 end
@@ -109,12 +110,11 @@ local function pinned(c)
         fan[i] = Cover:new({ path = c.books[i], width = Theme.px(70), height = Theme.px(100),
             place = "tl", dx = (i - 1) * Theme.px(22), dy = (i - 1) * Theme.px(3) })
     end
-    return Panel:new({ shape = "chamfer", corners = "tb", pad = th.space.l, on_tap = open(c), on_hold = holdSheet(c), child = Layout.Row:new({ gap = th.space.l, children = {
+    return Panel:new({ shape = "frame", double = true, pad = th.space.l, on_tap = open(c), on_hold = holdSheet(c), child = Layout.Row:new({ gap = th.space.l, children = {
         Layout.Overlay:new({ width = Theme.px(140), height = Theme.px(112), children = fan }),
         Layout.Column:new({ grow = true, gap = th.space.xs, children = {
-            Label:new({ text = _("Pinned"), kind = "micro", color = "muted" }),
             Label:new({ text = c.title, kind = "display" }),
-            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "mono" }),
+            Label:new({ text = string.format(_.n("%d book", "%d books", #c.books), #c.books), kind = "body", color = "muted" }),
         } }),
     } }) })
 end
@@ -137,8 +137,8 @@ function CollectionsScreen:seriesBody()
     -- books whose details are still being read may add more: look again when done
     Books.whenExtracted(function() if App.current() == self then App.update() end end)
     if #list == 0 then
-        return Label:new({ grow = true, text = _("No series found yet. A series appears here once books with a series in their details have been read."),
-            kind = "body", color = "muted", align = "center", lines = 3 })
+        return EmptyState.build({ plant = "collections", title = _("No series yet"),
+            text = _("A series appears here once books with a series in their details have been read.") })
     end
     return Grid:new({ grow = true, items = list, page = self.page, cols = 2, cell_h = Theme.px(112),
         make = card, on_layout = function(_c, pages, page) self.pages, self.page = pages, page end })
@@ -164,8 +164,8 @@ function CollectionsScreen:build()
     local kids = { switch }
     if fav then kids[#kids + 1] = pinned(fav) end
     if #rest == 0 then
-        kids[#kids + 1] = Label:new({ grow = true, text = _("No other collections yet. Make one with + New."),
-            kind = "body", color = "muted", align = "center" })
+        kids[#kids + 1] = EmptyState.build({ plant = "collections", title = _("No other collections yet"),
+            text = _("Make one with + New.") })
     else
         kids[#kids + 1] = Grid:new({ grow = true, items = rest, page = self.page, cols = 2, cell_h = Theme.px(112),
             make = card, on_layout = function(_c, pages, page) self.pages, self.page = pages, page end })
@@ -173,7 +173,7 @@ function CollectionsScreen:build()
     kids[#kids + 1] = Frame.pager(self, _("Page"), function(p) self:setPage(p) end)
     return Frame.page({
         screen = self, title = _("Collections"), tab = "collections",
-        actions = { Button:new({ label = _("+ New"), variant = "primary", corners = "r", on_tap = create }) },
+        actions = { Button:new({ label = _("+ New"), variant = "primary", on_tap = create }) },
         body = Layout.Column:new({ gap = th.space.l, children = kids }),
     })
 end

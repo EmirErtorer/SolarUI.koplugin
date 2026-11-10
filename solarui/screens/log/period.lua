@@ -6,7 +6,7 @@ local Charts = require("solarui/ui/charts")
 local Controls = require("solarui/ui/controls")
 local Format = require("solarui/format")
 local Insights = require("solarui/data/insights")
-local Label = require("solarui/ui/label")
+local Section = require("solarui/ui/section")
 local Layout = require("solarui/ui/layout")
 local Statsdb = require("solarui/data/statsdb")
 local Theme = require("solarui/theme")
@@ -83,10 +83,7 @@ end
 -- One bar chart under its title, the picked bar's value (or the best) on the right.
 local function barChart(screen, title, detail, values, labels, pick, height)
     return Layout.Column:new({ gap = Theme.get().space.s, children = {
-        Layout.Row:new({ children = {
-            Label:new({ text = title, kind = "label", grow = true }),
-            Label:new({ text = detail, kind = "mono_small" }),
-        } }),
+        Section.title(title, detail),
         Charts.Bars:new({ values = values, labels = labels, selected = pick or 0, height = Theme.px(height),
             on_select = function(i) screen.bar = i; App.update() end }),
     } })
@@ -114,7 +111,7 @@ function Period.build(screen)
     local when = pick and Format.date("%d %b", r.start(pick) + 43200)
 
     local seg = Controls.Segmented({ options = { { _("Week"), "week" }, { _("Month"), "month" }, { _("Year"), "year" } },
-        value = kind, kind = "label", on_change = function(v) screen.period, screen.back, screen.bar = v, 0, nil; App.update() end })
+        value = kind, kind = "small", on_change = function(v) screen.period, screen.back, screen.bar = v, 0, nil; App.update() end })
     local nav = navrow({ label = r.caption, can_next = back > 0,
         on_prev = function() screen.back, screen.bar = back + 1, nil; App.update() end,
         on_next = function() screen.back, screen.bar = back - 1, nil; App.update() end })

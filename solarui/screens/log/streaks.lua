@@ -4,6 +4,7 @@
 
 local Format = require("solarui/format")
 local Insights = require("solarui/data/insights")
+local Section = require("solarui/ui/section")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Panel = require("solarui/ui/panel")
@@ -17,8 +18,8 @@ local Streaks = {}
 -- A label and its value on one line.
 local function fact(k, v)
     return Layout.Row:new({ children = {
-        Label:new({ text = k, kind = "mono_small", color = "muted", grow = true }),
-        Label:new({ text = v, kind = "mono_small" }),
+        Label:new({ text = k, kind = "small", color = "muted", grow = true }),
+        Label:new({ text = v, kind = "small" }),
     } })
 end
 
@@ -43,7 +44,7 @@ function Streaks.build()
         tile(_("Hours"), string.format("%d", math.floor(hours)), string.format(_.n("%d page", "%d pages", all.pages), all.pages)),
     } })
     local records = Panel:new({ shape = "frame", pad = th.space.m, child = Layout.Column:new({ gap = th.space.xs, children = {
-        Label:new({ text = _("Records"), kind = "micro", color = "muted" }),
+        Section.title(_("Records")),
         fact(_("Longest day"), string.format("%s · %s", Format.duration(rec.time.seconds), date(rec.time))),
         fact(_("Most pages"), string.format("%d · %s", rec.pages.pages or 0, date(rec.pages))),
         fact(_("Days read"), tostring(all.days)),
@@ -51,9 +52,9 @@ function Streaks.build()
     } }) })
     local level = Layout.Column:new({ gap = th.space.s, children = {
         Layout.Row:new({ children = {
-            Label:new({ text = string.format(_("Hours level %02d"), c.level), kind = "label", grow = true }),
+            Label:new({ text = string.format(_("Hours level %d"), c.level), kind = "heading", grow = true }),
             Label:new({ text = c.next and string.format(_("Next %dh, %dh left"), c.next, math.ceil(c.next - hours)) or _("Maxed"),
-                kind = "mono_small", color = "muted" }),
+                kind = "small", color = "muted" }),
         } }),
         Progress:new({ value = math.max(0, math.min(frac, 1)) }),
     } })

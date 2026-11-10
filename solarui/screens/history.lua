@@ -47,7 +47,7 @@ function History:build()
         options[i] = { t[1], t[2] }
         if t[2] == self.tab then module = t[3] end
     end
-    local tabs = Controls.Segmented({ options = options, value = self.tab, kind = "label",
+    local tabs = Controls.Segmented({ options = options, value = self.tab, kind = "small",
         on_change = function(v) self.tab, self.page = v, 1; App.update() end })
     local scope = Button:new({ icon = "folder", variant = Scope.active() and "icon_on" or "icon", width = th.size.touch,
         on_tap = ScopeSheet.open })

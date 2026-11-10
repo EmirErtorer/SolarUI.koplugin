@@ -4,6 +4,7 @@
 local App = require("solarui/app")
 local Charts = require("solarui/ui/charts")
 local Format = require("solarui/format")
+local Section = require("solarui/ui/section")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local ListRow = require("solarui/ui/listrow")
@@ -59,19 +60,16 @@ function Week.build(screen)
     local shown = Charts.Bars:new({ values = values, labels = labels, goal = Metric.goal(goal), selected = screen.day, height = Theme.px(130),
             on_select = function(i) screen.day = i; App.update() end })
     local chart = Layout.Column:new({ gap = th.space.s, children = {
-        Layout.Row:new({ children = {
-            Label:new({ text = Metric.title("week"), kind = "label", grow = true }),
-            Label:new({ text = detail, kind = "mono_small" }),
-        } }),
+        Section.title(Metric.title("week"), detail),
         shown,
     } })
 
     local heat = Layout.Column:new({ gap = th.space.s, children = {
-        Label:new({ text = Metric.title("weeks"), kind = "label" }),
+        Section.title(Metric.title("weeks")),
         Charts.Heatmap:new({ levels = activity(goal) }),
     } })
 
-    local log = { Label:new({ text = _("Recent reading"), kind = "label" }) }
+    local log = { Section.title(_("Recent reading")) }
     for _i, s in ipairs(Stats.sessions(6)) do
         log[#log + 1] = ListRow.build({ thumb = false, title = s.title or "?", title_kind = "body",
             meta = Format.date("%a %d %b %H:%M", s.time), value = string.format(_("%d min · %d pages"), Format.minutes(s.seconds), s.pages),

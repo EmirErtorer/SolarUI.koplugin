@@ -5,6 +5,7 @@ local App = require("solarui/app")
 local Charts = require("solarui/ui/charts")
 local Format = require("solarui/format")
 local Insights = require("solarui/data/insights")
+local Section = require("solarui/ui/section")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Metric = require("solarui/data/metric")
@@ -22,7 +23,7 @@ local function weekdays()
     for i = 1, 7 do
         -- 1 January 2001 was a Monday
         local initial = Format.chars(Format.date("%a", os.time({ year = 2001, month = 1, day = i, hour = 12 })), 1)
-        kids[i] = Label:new({ text = initial, kind = "micro", color = "muted", align = "center", grow = true })
+        kids[i] = Label:new({ text = initial, kind = "small", color = "muted", align = "center", grow = true })
     end
     return Layout.Row:new({ children = kids })
 end
@@ -68,12 +69,12 @@ function Calendar.build(screen)
         end
     end
     local pattern = Layout.Column:new({ gap = th.space.s, children = {
-        Label:new({ text = string.format(_("When you read, by hour: %s"), Metric.pages() and _("Pages") or _("Time")), kind = "label" }),
+        Section.title(string.format(_("When you read, by hour: %s"), Metric.pages() and _("Pages") or _("Time"))),
         Charts.Heatmap:new({ levels = lv, weeks = 24, rows = 7, col_labels = { [1] = "00", [7] = "06", [13] = "12", [19] = "18", [24] = "23" } }),
     } })
     local note = string.format(_.n("%s · %d page this month", "%s · %d pages this month", month_pages), Format.duration(month_seconds), month_pages)
     local kids = { nav, weekdays(), month }
-    kids[#kids + 1] = Label:new({ text = note, kind = "mono_small", color = "muted" })
+    kids[#kids + 1] = Label:new({ text = note, kind = "small", color = "muted" })
     kids[#kids + 1] = pattern
     return Layout.Column:new({ grow = true, gap = th.space.m, children = kids })
 end
