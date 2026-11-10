@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run SolarUI's tests: lint, luacheck and the headless suites (widgets, screens,
-# install, features, stats, art) on KOReader's real drawing code, and with --e2e
+# install, features, stats, art, strip) on KOReader's real drawing code, and with --e2e
 # also the scenarios in the visible emulator.
 # KO_DIR points at the KOReader checkout with the emulator built (default ~/koreader-emulator).
 set -uo pipefail
@@ -15,9 +15,9 @@ if command -v luacheck >/dev/null; then
     run luacheck bash -c "cd '$repo' && luacheck -q solarui main.lua _meta.lua"
 fi
 if [ -x "$emu/luajit" ]; then
-    for suite in widgets screens install features stats art; do
+    for suite in widgets screens install features stats art strip; do
         extra=""
-        [ "$suite" = "art" ] && extra="${TMPDIR:-/tmp}/solarui-art.png"
+        case "$suite" in art|strip) extra="${TMPDIR:-/tmp}/solarui-$suite.png" ;; esac
         run "$suite" bash -c "cd '$emu' && SDL_VIDEODRIVER=offscreen ./luajit '$repo/tests/$suite.lua' '$repo' $extra 2>&1 | { $(declare -f filter); filter; }; exit \${PIPESTATUS[0]}"
     done
 else

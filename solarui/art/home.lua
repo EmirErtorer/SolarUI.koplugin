@@ -1,6 +1,6 @@
 -- The drawings of the home screen's garden: the climbing rose up the left
 -- edge, the halo behind the cover with its roses, the Continue plaque, the
--- progress vine, the three reading flowers and the shelf. Each is
+-- progress vine and the shelf. Each is
 -- function(c, vw, vh, param) returning SVG for a vw x vh canvas.
 
 local Flora = require("solarui/art/flora")
@@ -237,52 +237,6 @@ function Home.btn_bookmarks(c, vw, vh)
 end
 function Home.btn_highlights(c, vw, vh)
     return Flora.peacock(c, vw * .54, vh * .38, 14, vh * .3)
-end
-
--- Today's reading: a sunflower with `filled` of its twenty petals golden.
-function Home.sunflower(c, vw, vh, filled)
-    return Flora.sunflower(c, vw / 2, vh / 2, vw * .2, vw * .27, 20, tonumber(filled) or 0)
-end
-
--- Where the seven days sit along the week's stem: { {x, y}, ... }.
-function Home.weekSpots(vw, vh)
-    local stem = Svg.spline({ { vw * .03, vh * .8 }, { vw * .26, vh * .88 }, { vw * .5, vh * .66 }, { vw * .76, vh * .64 }, { vw * .97, vh * .42 } }, 12)
-    local len = Svg.length(stem)
-    local spots = {}
-    for i = 0, 6 do
-        local x, y = Svg.along(stem, len * (.05 + i * .15))
-        spots[#spots + 1] = { x, y }
-    end
-    return spots, stem
-end
-
--- The week: a rose in bloom for each day read ("1"), a closed bud for the
--- others, on one stem; `days` is seven characters, oldest first.
-function Home.week(c, vw, vh, days)
-    days = tostring(days or "0000000")
-    local spots, stem = Home.weekSpots(vw, vh)
-    local out = {}
-    for i, s in ipairs(spots) do
-        local top_x, top_y = s[1] + (i % 2) * 6 - 3, s[2] - vh * (.3 + (i % 3) * .04)
-        out[#out + 1] = Svg.line(string.format("M%s %s Q%s %s %s %s", n(s[1]), n(s[2]), n(s[1] - 6), n(s[2] - vh * .16), n(top_x), n(top_y)), c.stem, 2.6)
-        if days:sub(i, i) == "1" then
-            out[#out + 1] = Flora.roseGlyph(c, top_x, top_y, vh * (i == 7 and .16 or .13), i * 40, i % 2 == 0 and c.bloom2 or c.bloom)
-        else
-            out[#out + 1] = Flora.rosebud(c, top_x, top_y + vh * .06, -8, vh * .09, c.cream)
-        end
-    end
-    return Svg.stem(stem, Svg.taper(6, 3.5), c.leaf, c.ink, 1.5) .. table.concat(out)
-end
-
--- The year: a water lily on its pad, a petal for each book finished.
-function Home.lily(c, vw, vh, books)
-    books = math.max(0, math.min(16, tonumber(books) or 0))
-    local pad = Flora.lilypad(c, vw * .53, vh * .55, vw * .4, 118)
-    if books == 0 then
-        return pad .. Flora.rosebud(c, vw * .47, vh * .6, 0, vw * .1, c.cream)
-    end
-    local outer = math.max(1, math.ceil(books * .6))
-    return pad .. Flora.lily(c, vw * .47, vh * .49, vw * .24, outer, books - outer)
 end
 
 -- The shelf: a rail with curled ends and ironwork curves beneath it.

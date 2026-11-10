@@ -12,7 +12,6 @@ local DeviceInfo = require("solarui/data/device")
 local Files = require("solarui/data/files")
 local Format = require("solarui/format")
 local History = require("solarui/data/history")
-local HomeArt = require("solarui/art/home")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
 local Launcher = require("solarui/ui/launcher")
@@ -22,16 +21,16 @@ local ArtView = require("solarui/ui/artview")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
 local Settings = require("solarui/settings")
-local Stats = require("solarui/data/stats")
 local StatusBar = require("solarui/ui/statusbar")
+local Strip = require("solarui/ui/readingstrip")
 local _ = require("solarui/gettext")
 
 local Home = Screen:extend()
 
 -- Heights of the blocks, in the scene's units.
-local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 140, 624, 212, 200, 190, 26
+local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 200, 190, 26
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
-local HEAD = 158              -- where headings start, clear of the climbing rose
+local HEAD = 158              -- where headings start, clear of the climbing rose (the scene's own default)
 
 -- Shown again after a book: the book just read is back in front.
 function Home:onRaise()
@@ -45,19 +44,6 @@ function Home:shown()
         return { path = self.picked, time = History.lastOpened(self.picked) }
     end
     return History.current()
-end
-
--- A heading with a whiplash rule running off to the right.
-local function heading(scene, text, y)
-    scene:place(Layout.Row:new({ gap = scene:px(16), children = {
-        Label:new({ text = text, kind = "title" }),
-        ArtView:new({ name = "whiplash", unit = scene.k, grow = true, height = scene:px(24) }),
-    } }), HEAD, y, RIGHT - HEAD, 46)
-end
-
--- A caption centred under a drawing.
-local function caption(scene, text, x, y, w, kind)
-    scene:place(Label:new({ text = text, kind = kind or "label", align = "center" }), x, y, w)
 end
 
 -- The status row: the time and date, and three living things that are the
@@ -83,14 +69,14 @@ function Home:status(scene)
     local level = DeviceInfo.battery()
     if level then
         scene:sprite("battery", 912, 58, 100, 50, nil, function() return math.floor((DeviceInfo.battery() or 0) / 10 + 0.5) end)
-        caption(scene, level .. "%", 912, 26, 100, "small")
+        scene:caption(level .. "%", 912, 26, 100, "small")
     end
 end
 
 -- One of the three plant buttons beside the cover.
 local function bookButton(scene, art, text, cx, y, on_tap)
     scene:backdrop(art, cx - 54, y, 108, 108)
-    caption(scene, text, cx - 71, y + 112, 142, "small")
+    scene:caption(text, cx - 71, y + 112, 142, "small")
     scene:touch(cx - 68, y - 4, 136, 150, on_tap)
 end
 
@@ -144,42 +130,10 @@ function Home:hero(scene, y, cur)
     bookButton(scene, "btn_highlights", _("Highlights"), 952, by, function() App.push("annotations", { path = path, kind = "highlights" }) end)
 end
 
--- The reading block: today as a sunflower filling toward the goal, the week
--- as a stem of roses and the year as a water lily. A tap opens the reading log.
-function Home:reading(scene, y)
-    heading(scene, _("Your reading"), y)
-    local goal = Settings.get("daily_goal", 30)
-    local minutes = Format.minutes(Stats.today())
-    local week = Stats.daily(7)
-    local days, letters = {}, {}
-    for i, d in ipairs(week) do
-        days[i] = d.seconds > 0 and "1" or "0"
-        letters[i] = Format.chars(Format.date("%a", d.time + 43200), 1)
-    end
-    local streak, books = Stats.streak(), Stats.booksThisYear()
-    local function log() App.go("history") end
-
-    scene:sprite("sunflower", 150, y + 44, 130, 130, math.floor(math.min(1, minutes / goal) * 20 + 0.5))
-    caption(scene, string.format(_("%d min today"), minutes), 100, y + 176, 230)
-    scene:touch(100, y + 44, 230, 166, log)
-
-    local wx, wy, ww, wh = 392, y + 40, 350, 124
-    scene:sprite("week", wx, wy, ww, wh, table.concat(days))
-    for i, s in ipairs(HomeArt.weekSpots(ww, wh)) do
-        caption(scene, letters[i], wx + s[1] - 20, wy + s[2] + 6, 40, "micro")
-    end
-    caption(scene, string.format(_.n("%d day in a row", "%d days in a row", streak), streak), wx, y + 176, ww)
-    scene:touch(wx, y + 44, ww, 166, log)
-
-    scene:sprite("lily", 818, y + 40, 146, 136, books)
-    caption(scene, string.format(_.n("%d book this year", "%d books this year", books), books), 770, y + 176, 240)
-    scene:touch(770, y + 44, 236, 166, log)
-end
-
 -- The shelf: the books opened last, standing in a row. Tapping one brings
 -- it to the front; holding it opens its details.
 function Home:shelf(scene, y, cur)
-    heading(scene, _("On the shelf"), y)
+    scene:heading(_("On the shelf"), y)
     local books = {}
     for _i, item in ipairs(History.recent(8)) do
         if not (cur and item.path == cur.path) and #books < 6 then books[#books + 1] = item.path end
@@ -212,7 +166,7 @@ function Home:dock(scene, y)
         if art == "dock_medallion" then
             scene:place(Icon:new({ name = icon, size = math.floor(size * .3 / 1.787) }), cx - size * .22, top + tall * .4 - size * .22, size * .44, size * .44)
         end
-        caption(scene, label, cx - slot / 2, y + 144, slot, #entries > 6 and "small" or "heading")
+        scene:caption(label, cx - slot / 2, y + 144, slot, #entries > 6 and "small" or "heading")
         scene:touch(cx - slot / 2 + 4, y - 4, slot - 8, DOCK_H, action, function() Launcher.askRemove(entry, App.update) end)
     end
 end
@@ -241,7 +195,7 @@ function Home:build(ctx)
     scene:backdrop("vine_right", 990, dock_y - 270, 78, 400)
     self:status(scene)
     self:hero(scene, hero_y, cur)
-    if stats then self:reading(scene, stats_y) end
+    if stats then Strip.place(scene, stats_y, Strip.data(), function() App.go("history") end) end
     if shelf then self:shelf(scene, shelf_y, cur) end
     self:dock(scene, dock_y)
     return scene

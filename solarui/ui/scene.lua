@@ -7,6 +7,8 @@
 local Art = require("solarui/gfx/art")
 local ArtView = require("solarui/ui/artview")
 local Element = require("solarui/ui/element")
+local Label = require("solarui/ui/label")
+local Layout = require("solarui/ui/layout")
 
 local Scene = Element:extend({ design_w = 1072 })
 
@@ -52,6 +54,20 @@ end
 -- other elements).
 function Scene:sprite(name, vx, vy, vw, vh, param, param_fn)
     return self:place(ArtView:new({ name = name, param = param, param_fn = param_fn, unit = self.k }), vx, vy, vw, vh)
+end
+
+-- A line of text centred in a column `vw` units wide.
+function Scene:caption(text, vx, vy, vw, kind, color)
+    return self:place(Label:new({ text = text, kind = kind or "label", color = color, align = "center" }), vx, vy, vw)
+end
+
+-- A heading with a whiplash rule running off to the right edge of the columns.
+function Scene:heading(text, vy)
+    local x0, x1 = self.head_x or 158, self.head_end or 1006
+    return self:place(Layout.Row:new({ gap = self:px(16), children = {
+        Label:new({ text = text, kind = "title" }),
+        ArtView:new({ name = "whiplash", unit = self.k, grow = true, height = self:px(24) }),
+    } }), x0, vy, x1 - x0, 46)
 end
 
 -- Make a box in units answer a tap and a hold.
