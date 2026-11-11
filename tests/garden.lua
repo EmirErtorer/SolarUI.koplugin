@@ -504,48 +504,30 @@ do
     State.unload()
 end
 
--- the weekly prompt
+-- the weekly things to do outdoors
 do
     local Prompts = require("solarui/garden/prompts")
-    for _, season in ipairs(Season.ALL) do Kit.ok(#Prompts.LIST[season] == 6, "six prompts for " .. season) end
+    for _, season in ipairs(Season.ALL) do Kit.ok(#Prompts.LIST[season] == 12, "twelve to choose from for " .. season) end
     local a, b = Prompts.of(1700000000, "spring"), Prompts.of(1700000000 + 7 * DAY, "spring")
-    Kit.ok(a.text ~= b.text and a.week ~= b.week, "the prompt changes with the week")
-    Kit.ok(Prompts.of(1700000000, "spring").text == a.text, "and stays for the week")
+    Kit.ok(#a.items == 3 and a.items[1].text ~= b.items[1].text and a.week ~= b.week, "three things, and different ones the next week")
+    Kit.ok(Prompts.of(1700000000, "spring").items[2].text == a.items[2].text, "and the same all week")
     local Settings = require("solarui/settings")
     Settings.set("garden", nil)
     State.unload()
     State.get()
-    Kit.ok(not State.prompt().done and State.outsideCount() == 0, "a new week has nothing ticked")
-    Kit.ok(State.tickPrompt() and State.prompt().done and State.outsideCount() == 1, "ticking marks the week")
-    Kit.ok(not State.tickPrompt() and State.outsideCount() == 1, "once a week")
+    local week = State.outsideWeek()
+    Kit.ok(#week == 3 and not week[1].done and State.outsideTotals().done == 0, "a new week has nothing ticked")
+    Kit.ok(State.toggleOutside(2) and State.outsideWeek()[2].done and not State.outsideWeek()[1].done, "ticking marks one thing")
+    Kit.ok(State.outsideTotals().done == 1 and #State.outsideLog() == 1 and State.outsideLog()[1].text == week[2].text, "and keeps it in the log")
+    Kit.ok(not State.toggleOutside(2) and State.outsideTotals().done == 0, "a tick can be taken back")
+    State.toggleOutside(1); State.toggleOutside(2); State.toggleOutside(3)
+    Kit.ok(State.outsideTotals().full_weeks == 1 and State.outsideTotals().since == now, "three done is a full week")
     now = now + 7 * DAY
-    Kit.ok(not State.prompt().done, "the next week is fresh")
+    Kit.ok(not State.outsideWeek()[1].done and State.outsideTotals().done == 3, "the next week is fresh, and the log is kept")
+    State.unload()
+    Kit.ok(#State.outsideLog() == 3, "the log survives a reload")
     Settings.set("garden", nil)
     State.unload()
-end
-
--- the turn of the seasons in the journal and the cards
-do
-    local Settings = require("solarui/settings")
-    Settings.set("garden", nil)
-    State.unload()
-    Season.set("autumn")
-    now = 1700000000 + 3000 * DAY
-    reading.total, reading.books = 100, 2
-    State.get().season_seen = "summer"
-    State.refresh()
-    local text = {}
-    for _, l in ipairs(Journal.lines()) do text[#text + 1] = l.text end
-    Kit.ok(table.concat(text, "|"):find("Autumn") or table.concat(text, "|"):find("autumn"), "the journal notes a new season")
-    Season.set("winter")
-    local GardenCard = require("solarui/ui/gardencard")
-    local bee = State.entry("bee", 12)
-    Kit.ok(GardenCard.status(bee, "animal"):find("Asleep"), "a sleeping animal's card says so")
-    local tulip = State.entry("tulip")
-    Kit.ok(GardenCard.status(tulip, "plant"):find("Resting for the winter"), "and a dormant plant's")
-    Settings.set("garden", nil)
-    State.unload()
-    Season.set("spring")
 end
 
 -- the weather

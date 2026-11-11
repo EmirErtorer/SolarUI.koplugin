@@ -147,12 +147,14 @@ end
 -- the almanac: every tab, and the page of someone met, of a friend and of a stranger
 do
     local Notes, Page = require("solarui/screens/gardennotes"), require("solarui/screens/gardenpage")
-    for _, tab in ipairs({ "meet", "calendar", "links", "about" }) do
+    for _, tab in ipairs({ "meet", "calendar", "links", "outside", "about" }) do
         local n = Notes:new({})
         n.tab = tab
         local ok, err = pcall(function() paint(n):free() end)
         Kit.ok(ok, "the field notes draw their " .. tab .. " tab: " .. tostring(err))
         if tab == "meet" then Kit.png(paint(n), OUT .. "-notes.png") end
+        if tab == "outside" then State.toggleOutside(1); State.toggleOutside(3); Kit.png(paint(n), OUT .. "-outside.png") end
+        if tab == "about" then Kit.png(paint(n), OUT .. "-about.png") end
     end
     State.rename("rose", "Rosie")
     State.get().created = State.clock() - 60 * 86400
@@ -161,6 +163,49 @@ do
         Kit.ok(ok, "the almanac page of " .. id .. " draws: " .. tostring(err))
     end
     Kit.png(paint(Page:new({ id = "rose" })), OUT .. "-page.png")
+end
+
+-- the field notes under every state: each tab, every page of it, every page of the almanac, in each season and hemisphere
+do
+    local Notes, Page = require("solarui/screens/gardennotes"), require("solarui/screens/gardenpage")
+    local Season = require("solarui/garden/season")
+    local failures = 0
+    local function try(what, f)
+        local ok, err = pcall(f)
+        if not ok then failures = failures + 1; print("FAIL: " .. what .. ": " .. tostring(err)) end
+    end
+    for _, a in ipairs(Cast.ANIMALS) do State.get().animals[a.id] = State.get().animals[a.id] or { found = State.clock() - 40 * 86400, fed = State.clock() }; State.get().animals[a.id].fed = State.clock() end
+    for _, p in ipairs(Cast.PLANTS) do State.get().plants[p.id] = State.get().plants[p.id] or { stage = 1, grown = 0, at = State.clock(), watered = State.clock(), gen = 1 } end
+    for _, south in ipairs({ false, true }) do
+        Season.setSouth(south)
+        for _, season in ipairs(Season.ALL) do
+            Season.set(season)
+            for _, age in ipairs({ 0, 3, 10, 40 }) do
+                State.get().created = State.clock() - age * 86400
+                for _, a in pairs(State.get().animals) do a.found = State.clock() - age * 86400 end
+                for _, tab in ipairs({ "meet", "calendar", "links", "outside", "about" }) do
+                    local n = Notes:new({})
+                    n.tab = tab
+                    try("notes " .. tab, function() paint(n):free() end)
+                    for pg = 2, (n.pages or 1) do
+                        n.page = pg
+                        try("notes " .. tab .. " page " .. pg, function() paint(n):free() end)
+                    end
+                end
+                for _, id in ipairs(Cast.ids()) do
+                    for _, nick in ipairs({ false, true }) do
+                        State.rec(id).nick = nick and "Pet" or nil
+                        local pg = Page:new({ id = id })
+                        try("page " .. id .. " " .. season .. " age " .. age, function() paint(pg):free() end)
+                        for k = 2, (pg.pages or 1) do pg.page = k; try("page " .. id .. " p" .. k, function() paint(pg):free() end) end
+                    end
+                end
+            end
+        end
+    end
+    Season.setSouth(false)
+    Season.set("spring")
+    Kit.ok(failures == 0, "the field notes never fail under any state (" .. failures .. ")")
 end
 
 -- the cut-back choice and the question after a book

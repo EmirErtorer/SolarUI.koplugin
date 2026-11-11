@@ -208,29 +208,61 @@ function State.claimPeek()
     return who
 end
 
--- This week's thing to do outdoors: { text, done }.
-function State.prompt()
+-- This week's things to do outdoors: a list of { i, season, text, done }.
+function State.outsideWeek()
     local p = Prompts.of(State.clock())
-    return { text = p.text, done = (State.get().outside or {})[tostring(p.week)] == true }
+    local log, out = State.get().outside_log or {}, {}
+    for _i, item in ipairs(p.items) do
+        local done = false
+        for _j, e in ipairs(log) do
+            if e.w == p.week and e.s == p.season and e.i == item.i then done = true; break end
+        end
+        out[#out + 1] = { i = item.i, season = p.season, text = item.text, done = done }
+    end
+    return out
 end
 
--- Tick this week's prompt. Returns false when it was ticked already.
-function State.tickPrompt()
+-- Tick or untick the `k`th of this week's things (1 to PER_WEEK). A tick is
+-- kept in the log with its date; unticking takes it out again. Returns true
+-- when it is now ticked.
+function State.toggleOutside(k)
     local d = State.get()
     local p = Prompts.of(State.clock())
-    d.outside = d.outside or {}
-    if d.outside[tostring(p.week)] then return false end
-    d.outside[tostring(p.week)] = true
+    local item = p.items[k]
+    if not item then return false end
+    d.outside_log = d.outside_log or {}
+    for j, e in ipairs(d.outside_log) do
+        if e.w == p.week and e.s == p.season and e.i == item.i then
+            table.remove(d.outside_log, j)
+            State.save()
+            return false
+        end
+    end
+    d.outside_log[#d.outside_log + 1] = { t = State.clock(), w = p.week, s = p.season, i = item.i }
     note("outside", "water_lily")
     State.save()
     return true
 end
 
--- How many weeks the reader has been outside.
-function State.outsideCount()
-    local n = 0
-    for _k in pairs(State.get().outside or {}) do n = n + 1 end
-    return n
+-- Everything ever ticked, newest first: { t, text }.
+function State.outsideLog()
+    local out, log = {}, State.get().outside_log or {}
+    for j = #log, 1, -1 do
+        out[#out + 1] = { t = log[j].t, text = Prompts.text(log[j].s, log[j].i) or "" }
+    end
+    return out
+end
+
+-- How many things have been done outdoors, and in how many weeks all of that
+-- week's things were done: { done, full_weeks, since (time of the first, or nil) }.
+function State.outsideTotals()
+    local log, weeks = State.get().outside_log or {}, {}
+    for _j, e in ipairs(log) do weeks[e.w] = (weeks[e.w] or 0) + 1 end
+    local full = 0
+    for _w, n in pairs(weeks) do
+        if n >= Prompts.PER_WEEK then full = full + 1 end
+    end
+    return { done = #log, full_weeks = full, since = log[1] and log[1].t or nil }
 end
 
 -- What reading has grown: { vine = (see Progress.vine), year = (see Progress.year) }.

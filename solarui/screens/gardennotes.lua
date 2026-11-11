@@ -79,21 +79,55 @@ local function links()
     return items
 end
 
--- The Outside tab: this week's thing to do outdoors, with a button to tick it
--- off, and how many weeks have been ticked.
-local function outside(screen)
+-- A line for how many things have been done outdoors: the highest milestone passed.
+local function milestone(done)
+    local lines = { { 100, _("A hundred. The outdoors knows you by now.") }, { 50, _("Fifty things noticed and done. That is a lot of looking.") },
+        { 25, _("Twenty-five. You are really looking now.") }, { 10, _("Ten things done outside. That is a habit starting.") }, { 1, _("The first one is in the log.") } }
+    for _i, m in ipairs(lines) do
+        if done >= m[1] then return m[2] end
+    end
+end
+
+-- One thing to do this week: a round box to tick and the words beside it.
+local function thing(k, item)
     local th = Theme.get()
-    local p = State.prompt()
-    return {
-        Layout.Column:new({ gap = th.space.s, pad = { th.space.xs, 0, th.space.s, 0 }, children = {
-            Label:new({ text = _("This week"), kind = "heading" }),
-            Label:new({ text = p.text, kind = "body", lines = 5 }),
-            Button:new({ label = p.done and _("Done this week") or _("I did this"), variant = "primary", disabled = p.done,
-                on_tap = function() State.tickPrompt(); App.toast(_("Ticked off.")); screen:setPage(1) end }),
-        } }),
-        Label:new({ text = string.format(_.n("%d week outside so far. Nothing is earned by it; it is only a reason to go and look.", "%d weeks outside so far. Nothing is earned by it; it is only a reason to go and look.", State.outsideCount()), State.outsideCount()),
-            kind = "small", color = "muted", lines = 3 }),
-    }
+    return Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
+        Button:new({ variant = "icon", icon = item.done and "check" or nil, label = item.done and nil or " ", width = th.size.touch,
+            on_tap = function()
+                local on = State.toggleOutside(k)
+                App.toast(on and _("Ticked off, and kept in your log.") or _("Unticked."))
+                App.update()
+            end }),
+        Label:new({ text = item.text, kind = "body", lines = 4, grow = true, color = item.done and "muted" or nil }),
+    } })
+end
+
+-- The Outside tab: this week's three things with a box to tick each, then
+-- the log of everything ever done outdoors, kept for good.
+local function outside()
+    local th = Theme.get()
+    local items = { Layout.Column:new({ gap = th.space.xs, pad = { 0, 0, th.space.s, 0 }, children = {
+        Label:new({ text = _("This week"), kind = "heading" }),
+        Label:new({ text = _("Three small things to do outdoors: one to look at, one to listen to and one to do. Tick each one when done. Nothing is earned, and nothing is lost if you skip a week."), kind = "small", color = "muted", lines = 4 }),
+    } }) }
+    for k, item in ipairs(State.outsideWeek()) do items[#items + 1] = thing(k, item) end
+    local totals, log = State.outsideTotals(), State.outsideLog()
+    local head = { Label:new({ text = _("Your log"), kind = "heading" }) }
+    if totals.done == 0 then
+        head[#head + 1] = Label:new({ text = _("Nothing here yet. Everything you tick off this week is kept here, so you can look back on everything."), kind = "small", color = "muted", lines = 3 })
+    else
+        head[#head + 1] = Label:new({ text = string.format(_.n("%d thing done outdoors since %s.", "%d things done outdoors since %s.", totals.done), totals.done, os.date("%d %b %Y", totals.since))
+            .. (totals.full_weeks > 0 and (" " .. string.format(_.n("%d week with all three done.", "%d weeks with all three done.", totals.full_weeks), totals.full_weeks)) or ""), kind = "small", lines = 3 })
+        head[#head + 1] = Label:new({ text = milestone(totals.done), kind = "small", color = "muted", lines = 2 })
+    end
+    items[#items + 1] = Layout.Column:new({ gap = th.space.xs, pad = { th.space.m, 0, th.space.xs, 0 }, children = head })
+    for _i, e in ipairs(log) do
+        items[#items + 1] = Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
+            Label:new({ text = os.date("%d %b", e.t), kind = "small", color = "muted", width = Theme.px(64) }),
+            Label:new({ text = e.text, kind = "body", lines = 3, grow = true }),
+        } })
+    end
+    return items
 end
 
 -- The About tab: seeds given back, why "they", and a book to read.
@@ -102,14 +136,23 @@ local function about()
     local function block(title, text)
         return Layout.Column:new({ gap = 0, pad = { th.space.xs, 0, th.space.s, 0 }, children = {
             Label:new({ text = title, kind = "heading" }),
-            Label:new({ text = text, kind = "body", lines = 8 }),
+            Label:new({ text = text, kind = "body", lines = 10 }),
         } })
     end
     return {
         block(_("Given back"), string.format(_.n("%d seed left in the wild edge.", "%d seeds left in the wild edge.", State.given()), State.given())),
-        block(_("Why \"they\""), _("Nobody in this garden is called \"it\". Plants and animals are \"they\" and \"who\", because they are living neighbours, not objects. The botanist Robin Wall Kimmerer makes this point in Braiding Sweetgrass.")),
-        block(_("A book to read"), _("Braiding Sweetgrass, by Robin Wall Kimmerer (Milkweed Editions, 2013): a botanist and a member of the Citizen Potawatomi Nation writes about plants, gratitude and what we owe the living world.")),
+        block(_("Why \"they\""), _("Plants and animals here are \"they\" and \"who\", never \"it\". Words steer attention. Call a robin a thing and the robin turns into scenery; call the robin someone and you start to notice where they are going and what they want. The garden speaks about the neighbours the way you would speak about people you are fond of.")),
+        block(_("A book to read"), _("Braiding Sweetgrass, by Robin Wall Kimmerer. She is a botanist and a member of the Citizen Potawatomi Nation, and she writes about strawberries, maples, sweetgrass, black ash, beans and squash with a scientist's eye and the warmth of someone who has loved these plants all her life. The book is about gratitude, about taking only what you need and giving something back, and about the living world as a gift and not a stockpile. Read a chapter by a window with something green in sight, and the lawn outside will never look quite the same.")),
     }
+end
+
+-- The items of a tab. A tab that fails to build shows a plain note instead of
+-- taking the screen down, and the error goes to the log.
+local function safely(tab, build)
+    local ok, items = pcall(build)
+    if ok then return items end
+    require("logger").warn("SolarUI field notes, tab " .. tab .. ": " .. tostring(items))
+    return { Label:new({ text = _("Something went wrong showing this page. Please try another tab."), kind = "body", color = "muted", lines = 3 }) }
 end
 
 -- Build the page.
@@ -121,7 +164,8 @@ function GardenNotes:build()
         chips[#chips + 1] = Button:new({ label = t[2], variant = self.tab == t[1] and "chip_on" or "chip", grow = true,
             on_tap = function() self.tab, self.page = t[1], 1; App.update() end })
     end
-    local items = ({ meet = meet, calendar = calendar, links = links, outside = function() return outside(self) end, about = about })[self.tab]()
+    local build = ({ meet = meet, calendar = calendar, links = links, outside = outside, about = about })[self.tab]
+    local items = safely(self.tab, build)
     local body = Layout.Column:new({ gap = th.space.s, children = { Layout.Row:new({ gap = th.space.s, children = chips }), Frame.paged(self, items, _("Page")) } })
     return Frame.page({ screen = self, title = _("Field notes"), plant = "highlights", body = body })
 end
