@@ -4,6 +4,8 @@
 local Annotations = require("solarui/data/annotations")
 local Books = require("solarui/data/books")
 local History = require("solarui/data/history")
+local Nature = require("solarui/garden/nature")
+local Season = require("solarui/garden/season")
 
 local Plaque = {}
 
@@ -31,17 +33,32 @@ function Plaque.candidates()
     return out
 end
 
--- The passages in an order shuffled by `seed` (the same seed, the same
--- order), so each visit to the garden starts at a different one.
-function Plaque.deal(seed)
-    local list = Plaque.candidates()
-    local s = math.floor(seed or 1) % 2147483646 + 1
+-- A list shuffled by `s` (the same seed, the same order); returns the list.
+local function shuffled(list, s)
+    s = math.floor(s or 1) % 2147483646 + 1
     for i = #list, 2, -1 do
         s = s * 48271 % 2147483647
         local j = 1 + math.floor(s / 2147483647 * i)
         list[i], list[j] = list[j], list[i]
     end
     return list
+end
+
+-- The passages in an order shuffled by `seed` (the same seed, the same
+-- order), so each visit to the garden starts at a different one. Every third
+-- one is a line about the season, written for the garden (see garden/nature.lua);
+-- with no highlights the lines go on alone.
+function Plaque.deal(seed)
+    local own = shuffled(Plaque.candidates(), seed)
+    local lines = shuffled(Nature.passages(Season.now(), Season.NAMES[Season.now()]), (seed or 1) + 7)
+    local out, a, b = {}, 1, 1
+    while a <= #own or b <= #lines do
+        for _i = 1, 2 do
+            if own[a] then out[#out + 1] = own[a]; a = a + 1 end
+        end
+        if lines[b] then out[#out + 1] = lines[b]; b = b + 1 end
+    end
+    return out
 end
 
 return Plaque

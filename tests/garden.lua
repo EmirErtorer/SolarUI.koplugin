@@ -404,6 +404,27 @@ do
     State.unload()
 end
 
+-- the lines about the seasons in the book
+do
+    local Nature, Plaque = require("solarui/garden/nature"), require("solarui/garden/plaque")
+    for _, season in ipairs(Season.ALL) do
+        Kit.ok(#Nature.LINES[season] == 12, "twelve lines for " .. season)
+        for _, text in ipairs(Nature.LINES[season]) do
+            local n = select(2, text:gsub("[^\128-\191]", ""))
+            Kit.ok(n >= 30 and n <= 220 and Plaque.readable(text), "a line that fits the book: " .. text:sub(1, 30))
+        end
+    end
+    local candidates = Plaque.candidates
+    Plaque.candidates = function() return { { text = "One", title = "T", author = "A" }, { text = "Two", title = "T", author = "A" }, { text = "Three", title = "T", author = "A" } } end
+    Season.set("autumn")
+    local dealt = Plaque.deal(5)
+    Kit.ok(#dealt == 3 + 12 and dealt[3].title == "From the garden" and dealt[1].title == "T", "every third passage is a line about the season")
+    Plaque.candidates = function() return {} end
+    Kit.ok(#Plaque.deal(5) == 12, "with no highlights the lines go on alone")
+    Plaque.candidates = candidates
+    Season.set("spring")
+end
+
 -- what reading grows
 do
     local Progress = require("solarui/garden/progress")
