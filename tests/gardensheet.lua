@@ -108,6 +108,11 @@ for _, v in ipairs({ { "0:0", 1430 }, { "12:0", 1430 }, { "30:2", 1430 }, { "7:5
     Art.draw(bb, "garden_vine", x, y, vw, vh, Layout.WIDTH, v[2], v[1])
     x, row_h = x + vw + 16, math.max(row_h, vh)
 end
+-- the face peeking from the grass in the light of every phase, in winter and faded
+x, y, row_h = 20, y + row_h + 16, 0
+for _, phase in ipairs(Sky.PHASES) do put("garden_peek", Layout.PEEK.w, Layout.PEEK.h, phase .. ":summer") end
+for _, param in ipairs({ "day:spring", "golden:autumn", "night:snow:winter", "wash:day" }) do put("garden_peek", Layout.PEEK.w, Layout.PEEK.h, param) end
+put("garden_peek", Layout.PEEK.w * 2, Layout.PEEK.h * 2, "day")
 Kit.png(bb, OUT)
 print("garden sheet: " .. OUT)
 Kit.finish("gardensheet")
