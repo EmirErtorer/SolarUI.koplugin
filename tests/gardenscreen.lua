@@ -29,6 +29,9 @@ local bb = paint(s)
 Kit.png(bb, OUT .. "-poster.png")
 bb:free()
 
+local offset = 40 * 3600   -- two days on, so the plants are due a drink
+State.clock = function() return os.time() + offset end
+
 -- every plant and animal in the garden, shown large
 State.get().animals.fox = { found = State.clock(), fed = State.clock() }
 State.get().plants.rose = { stage = 4, grown = 0, at = State.clock(), watered = State.clock(), gen = 1 }

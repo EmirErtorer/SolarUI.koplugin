@@ -137,6 +137,8 @@ do
     Kit.ok(d.animals.bee and d.animals.snail and not d.animals.fox, "and three animals")
     Kit.ok(State.dew() == State.GIFT_DEW and State.seeds() == State.GIFT_SEEDS, "a gift of dew and seeds to begin with")
     reading.total = 130
+    Kit.ok(not State.water("tulip") and select(2, State.water("tulip")) == "fresh", "a plant just watered is not watered again")
+    now = now + 30 * HOUR
     Kit.ok(State.dew() == State.GIFT_DEW + 30, "each page read is a drop of dew")
     Kit.ok(State.water("tulip") and State.dew() == State.GIFT_DEW + 30 - State.WATER, "watering costs dew")
     local ok, why = State.water("water_lily")

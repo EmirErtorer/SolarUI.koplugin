@@ -179,12 +179,13 @@ function State.rec(id)
     return d.plants[id] or d.animals[id]
 end
 
--- Water a plant; returns false (and why: "none", "dry" or "dew") when it
--- cannot be done.
+-- Water a plant; returns false (and why: "none", "dry", "fresh" for a drink
+-- taken less than half an interval ago, or "dew") when it cannot be done.
 function State.water(id)
     local rec, def = State.get().plants[id], Cast.plant(id)
     if not rec then return false, "none" end
     if not def.interval then return false, "dry" end
+    if State.clock() - rec.watered < def.interval / 2 then return false, "fresh" end
     if not spend(State.WATER) then return false, "dew" end
     Care.water(rec, State.clock())
     rec.noted = nil
@@ -192,10 +193,12 @@ function State.water(id)
     return true
 end
 
--- Feed an animal; false and why ("none" or "dew") when it cannot be done.
+-- Feed an animal; false and why ("none", "full" for a meal eaten less than
+-- half an interval ago, or "dew") when it cannot be done.
 function State.feed(id)
     local rec = State.get().animals[id]
     if not rec then return false, "none" end
+    if State.clock() - rec.fed < Cast.animal(id).interval / 2 then return false, "full" end
     if not spend(State.FEED) then return false, "dew" end
     local was = rec.noted
     Care.feed(rec, State.clock())

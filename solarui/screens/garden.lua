@@ -100,13 +100,14 @@ end
 local function say(ok, why, done)
     if ok then return App.toast(done) end
     App.toast(({ dew = _("Not enough dew. It comes from the pages you read."), dry = _("This one needs no watering."),
+        fresh = _("It has only just had a drink."), full = _("It has only just eaten."),
         seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), bloom = _("It is in bloom already."), none = _("Not in the garden.") })[why] or "")
 end
 
 -- The actions of the card for the picture `id`.
 function Garden:actions(id)
     return {
-        on_water = function() say(State.water(id)); App.update() end,
+        on_water = function() local ok, why = State.water(id); say(ok, why, string.format(_("%s has had a drink."), State.name(id))); App.update() end,
         on_feed = function() local ok, why = State.feed(id); say(ok, why, string.format(_("%s has eaten."), State.name(id))); App.update() end,
         on_collect = function() State.collect(id); App.toast(_("Cut back. You have a seed.")); App.update() end,
         on_rename = function() App.input(_("A name for it"), State.rec(id).nick or "", function(text) State.rename(id, text); App.update() end, _("Save")) end,
