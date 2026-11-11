@@ -113,6 +113,20 @@ x, y, row_h = 20, y + row_h + 16, 0
 for _, phase in ipairs(Sky.PHASES) do put("garden_peek", Layout.PEEK.w, Layout.PEEK.h, phase .. ":summer") end
 for _, param in ipairs({ "day:spring", "golden:autumn", "night:snow:winter", "wash:day" }) do put("garden_peek", Layout.PEEK.w, Layout.PEEK.h, param) end
 put("garden_peek", Layout.PEEK.w * 2, Layout.PEEK.h * 2, "day")
+-- the season wheel and its button for each season, at night and faded
+x, y, row_h = 20, y + row_h + 16, 0
+for _, param in ipairs({ "spring", "summer", "autumn", "winter", "", "winter:night", "summer:wash" }) do
+    for _, size in ipairs({ 30, 40, 112 }) do put("garden_season_icon", size, size, param) end
+end
+x, y, row_h = 20, y + row_h + 16, 0
+for _, param in ipairs({ "spring", "summer", "autumn", "winter" }) do
+    local wheel, _dx, _dy, cut = Art.sprite("garden_season_wheel", 320, 320, 1072, 1072, param)
+    Kit.ok(wheel ~= nil, "the season wheel draws at " .. param)
+    Kit.ok(not cut, "the season wheel at " .. param .. " is not cut by its canvas")
+    if x + 320 > W - 20 then x, y, row_h = 20, y + row_h + 16, 0 end
+    Art.draw(bb, "garden_season_wheel", x, y, 320, 320, 1072, 1072, param)
+    x, row_h = x + 336, math.max(row_h, 320)
+end
 Kit.png(bb, OUT)
 print("garden sheet: " .. OUT)
 Kit.finish("gardensheet")

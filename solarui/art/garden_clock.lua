@@ -11,6 +11,7 @@
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
+local Weave = require("solarui/art/weave")
 
 local n, group, path, line, circle = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle
 local mix = Wash.mix
@@ -25,11 +26,6 @@ local function tokens(param)
         if first == nil then first = tonumber(t) end
     end
     return set, first
-end
-
--- A band `w` wide along `pts`, filled and edged in ink `o` wide, with no seam where two pieces of it meet.
-local function inked(c, pts, w, fill, o)
-    return path(Svg.ribbon(pts, w + 2 * o), c.ink) .. path(Svg.ribbon(pts, w), fill)
 end
 
 -- A whiplash bar of wrought iron through `way` that ends in a scroll { cx, cy, r, turns, from, ccw }.
@@ -78,27 +74,6 @@ function Clock.garden_clock_icon(c, vw, _vh, param)
         .. group(50, 58, minute * 6, hand(c, 21.5, 3.2)) .. group(50, 58, hour * 30, hand(c, 16, 4.4))
         .. circle(50, 58, 3.2, c.gold, c.ink, 1.8)
     return group(0, 0, 0, body, vw / 100)
-end
-
--- Two vines woven round a ring of radius `r`, crossing `2k` times over and under in turn, a berry in each loop.
-local function vines(c, cx, cy, r, a, k, w)
-    -- One vine from angle `from` to `to`, on the outer side of the ring first when `s` is 1.
-    local function vine(s, from, to)
-        local pts = {}
-        for d = from, to, .5 do
-            local x, y = Svg.pol(r + s * a * math.sin(math.rad(d * k)), d, cx, cy)
-            pts[#pts + 1] = { x, y }
-        end
-        return inked(c, pts, w, c.leaf, w * .32)
-    end
-    local out = vine(-1, 0, 360) .. vine(1, 0, 360)
-    local step = 180 / k
-    for m = 1, 2 * k, 2 do out = out .. vine(-1, m * step - step * .35, m * step + step * .35) end
-    for m = 0, 2 * k - 1 do
-        local x, y = Svg.pol(r, (m + .5) * step, cx, cy)
-        out = out .. circle(x, y, w * .62, m % 2 == 0 and c.bloom or c.gold, c.ink, w * .3)
-    end
-    return out
 end
 
 -- The medallion at the top of the dial: a sun for "am", a moon and star for "pm".
@@ -152,7 +127,7 @@ function Clock.garden_clock_face(c, vw, _vh, param)
     local face = mix(c.cream, c.bg, .25)
     local faint = mix(face, c.line, .4)
     local out = circle(cx, cy, u * .497, c.gold, c.ink, u * .006)
-        .. vines(c, cx, cy, u * .4795, u * .0085, 20, u * .0105)
+        .. Weave.ring(c, cx, cy, u * .4795, u * .0085, 20, u * .0105)
         .. circle(cx, cy, u * .461, c.pale, c.ink, u * .005) .. circle(cx, cy, u * .419, face, c.ink, u * .004)
         .. garland(c, cx, cy, u * .44, u * .03)
     for i = 0, 11 do
