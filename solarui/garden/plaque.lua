@@ -7,7 +7,15 @@ local History = require("solarui/data/history")
 
 local Plaque = {}
 
-local MIN, MAX = 20, 140   -- letters a passage may have to fit the plaque
+local MIN, MAX = 30, 140   -- letters a passage may have to fit the plaque
+
+-- Is this a passage rather than a heading? It has lower-case letters, and
+-- they are most of its letters.
+function Plaque.readable(text)
+    local lower = select(2, text:gsub("%l", ""))
+    local upper = select(2, text:gsub("%u", ""))
+    return lower >= 15 and lower > upper * 2
+end
 
 -- The highlights short enough for the plaque from the last books read:
 -- { text, title }.
@@ -17,7 +25,7 @@ function Plaque.candidates()
         local path = item.path
         for _j, a in ipairs(Annotations.kinds(path).highlights) do
             local n = select(2, a.text:gsub("[^\128-\191]", ""))   -- letters, not bytes
-            if n >= MIN and n <= MAX then out[#out + 1] = { text = a.text, title = Books.info(path).title } end
+            if n >= MIN and n <= MAX and Plaque.readable(a.text) then out[#out + 1] = { text = a.text, title = Books.info(path).title } end
         end
     end
     return out

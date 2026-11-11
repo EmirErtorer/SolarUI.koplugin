@@ -7,7 +7,7 @@ local Wash = {}
 local STRENGTH = .72   -- how far each colour is moved towards the page's
 
 -- A hex colour moved `t` of the way towards another.
-local function mix(a, b, t)
+function Wash.mix(a, b, t)
     local function parts(h) return tonumber(h:sub(2, 3), 16), tonumber(h:sub(4, 5), 16), tonumber(h:sub(6, 7), 16) end
     local ar, ag, ab = parts(a)
     local br, bg, bb = parts(b)
@@ -18,7 +18,7 @@ end
 function Wash.palette(c)
     local out = {}
     for role, hex in pairs(c) do
-        out[role] = (type(hex) == "string" and hex:match("^#%x%x%x%x%x%x$")) and mix(hex, c.bg or "#ffffff", STRENGTH) or hex
+        out[role] = (type(hex) == "string" and hex:match("^#%x%x%x%x%x%x$")) and Wash.mix(hex, c.bg or "#ffffff", STRENGTH) or hex
     end
     return out
 end

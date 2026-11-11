@@ -31,8 +31,7 @@ function GardenNotes:build()
     State.refresh()
     local items = {}
     for _i, def in ipairs(Cast.PLANTS) do
-        local rec = State.get().plants[def.id]
-        items[#items + 1] = entry(def, rec and string.format(_("In the garden, generation %d."), rec.gen or 1) or _("Not planted yet. Plant a seed in its bed."))
+        items[#items + 1] = entry(def, string.format(_("In the garden, generation %d."), State.get().plants[def.id].gen or 1))
     end
     for _i, def in ipairs(Cast.ANIMALS) do
         items[#items + 1] = entry(def, State.get().animals[def.id] and _("Has found the garden.") or Visitors.hint(def))

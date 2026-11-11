@@ -64,6 +64,4 @@ Kit.ok(s.focus == nil, "close returns to the garden")
 Kit.ok(s:onBack() == false, "back from the garden leaves it")
 s.focus = "tulip"
 Kit.ok(s:onBack() == true and s.focus == nil, "back from a picture closes it")
-local bare = Cast.plant("poppy")
-Kit.ok(State.get().plants.poppy == nil and bare ~= nil, "a bed is bare until planted")
 Kit.finish("gardenscreen")

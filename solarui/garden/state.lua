@@ -12,9 +12,9 @@ local Visitors = require("solarui/garden/visitors")
 
 local State = {}
 
-State.WATER = 3          -- dew a drink costs
-State.FEED = 5           -- dew a meal costs
-State.GIFT_DEW = 12
+State.WATER = 2          -- dew a drink costs
+State.FEED = 3           -- dew a meal costs
+State.GIFT_DEW = 30
 State.GIFT_SEEDS = 2
 State.NICK_MAX = 14      -- letters in a nickname
 State.JOURNAL_MAX = 80   -- lines the journal keeps
@@ -36,14 +36,16 @@ end
 
 local data
 
--- A new garden: the starting plants as sprouts and the three animals that
--- are always there, counting reading from now.
+-- A new garden: every plant in bloom, some a little further on than others,
+-- and the three animals that are always there, counting reading from now.
 local function fresh()
     local now, reading = State.clock(), State.source()
-    local d = { v = 1, created = now, base_pages = reading.total, base_books = reading.books, spent = 0, seeds_used = 0,
+    local d = { v = 2, created = now, base_pages = reading.total, base_books = reading.books, spent = 0, seeds_used = 0,
         collected = 0, plants = {}, animals = {}, journal = {} }
     for _i, p in ipairs(Cast.PLANTS) do
-        if p.start then d.plants[p.id] = { stage = 2, grown = 0, at = now, watered = now, gen = 1 } end
+        local spread = 0
+        for i = 1, #p.id do spread = (spread * 31 + p.id:byte(i)) % 50 end
+        d.plants[p.id] = { stage = 4, grown = p.need[4] * spread / 100, at = now, watered = now, gen = 1 }
     end
     for _i, a in ipairs(Cast.ANIMALS) do
         if a.find.kind == "start" then d.animals[a.id] = { found = now, fed = now } end
@@ -55,7 +57,7 @@ end
 function State.get()
     if not data then
         data = Settings.get("garden", nil)
-        if type(data) ~= "table" or data.v ~= 1 then data = fresh(); Settings.save("garden", data) end
+        if type(data) ~= "table" or data.v ~= 2 then data = fresh(); Settings.save("garden", data) end
     end
     return data
 end
@@ -70,7 +72,7 @@ function State.save()
     Settings.save("garden", State.get())
 end
 
--- Add a line to the journal: what happened ("planted", "sprout", "bud", "bloom",
+-- Add a line to the journal: what happened ("sown", "sprout", "bud", "bloom",
 -- "seedhead", "wilt", "back", "hide", "found") to whom.
 local function note(kind, id)
     local j = State.get().journal
@@ -85,7 +87,7 @@ function State.dew()
 end
 
 -- Seeds in hand: a gift, a seed for each book finished since and for each
--- seed head cut back, less the ones planted.
+-- seed head cut back, less the ones used.
 function State.seeds()
     local d = State.get()
     return State.GIFT_SEEDS + math.max(0, State.source().books - d.base_books) + d.collected - d.seeds_used
@@ -203,17 +205,18 @@ function State.feed(id)
     return true
 end
 
--- Plant a seed of a species not yet in the garden; false and why ("have",
--- "none" or "seed") when it cannot be done.
-function State.plant(id)
-    local d, def = State.get(), Cast.plant(id)
-    if not def then return false, "none" end
-    if d.plants[id] then return false, "have" end
+-- Use a seed to bring a plant that is still growing into bloom at once;
+-- false and why ("none", "bloom" or "seed") when it cannot be done.
+function State.sow(id)
+    local d = State.get()
+    local rec = d.plants[id]
+    if not rec then return false, "none" end
+    if rec.stage >= 4 then return false, "bloom" end
     if State.seeds() < 1 then return false, "seed" end
     local now = State.clock()
-    d.plants[id] = { stage = 1, grown = 0, at = now, watered = now, gen = 1 }
+    rec.stage, rec.grown, rec.at, rec.watered = 4, 0, now, now
     d.seeds_used = d.seeds_used + 1
-    note("planted", id)
+    note("sown", id)
     State.save()
     return true
 end

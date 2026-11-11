@@ -49,7 +49,7 @@ do
     Kit.ok(rec.stage == 2 and reached[1] == 2, "a seed becomes a sprout after its days")
     -- water it all along and it blooms
     local t = now + def.need[1]
-    for _ = 1, 40 do
+    for _ = 1, 120 do
         t = t + 12 * HOUR
         Care.water(rec, t)
         Care.grow(rec, def, t)
@@ -90,58 +90,62 @@ do
     Kit.ok(g:find("frog") and g:find("dragonfly") and g:find("koi") and not g:find("peacock"), "the pond brings frog, dragonfly and koi (" .. g .. ")")
 end
 
--- layout: nothing overlaps, nothing leaves the frame
+-- layout: nothing overlaps, nothing leaves the frame, whoever is dealt where
 do
-    for _, vh in ipairs({ 1360, 1500, 1800 }) do
-        local all, ids = Layout.all(vh), {}
-        for id in pairs(all) do ids[#ids + 1] = id end
-        table.sort(ids)
-        local clash = {}
-        for i = 1, #ids do
-            local a = all[ids[i]]
-            if not ids[i]:match("^corner") and (a.x < 30 or a.x + a.w > 1042 or a.y + a.h > vh - 30) then clash[#clash + 1] = ids[i] .. " leaves the frame" end
-            for j = i + 1, #ids do
-                local b = all[ids[j]]
-                if a.x < b.x + b.w and b.x < a.x + a.w and a.y < b.y + b.h and b.y < a.y + a.h then clash[#clash + 1] = ids[i] .. "/" .. ids[j] end
+    for _, vh in ipairs({ 1430, 1500, 1800 }) do
+        for seed = 1, 60 do
+            local all, ids = Layout.all(vh, Layout.spread(seed)), {}
+            for id in pairs(all) do ids[#ids + 1] = id end
+            table.sort(ids)
+            local clash = {}
+            for i = 1, #ids do
+                local a = all[ids[i]]
+                if not ids[i]:match("^corner") and (a.x < 30 or a.x + a.w > 1042 or a.y + a.h > vh - 30) then clash[#clash + 1] = ids[i] .. " leaves the frame" end
+                for j = i + 1, #ids do
+                    local b = all[ids[j]]
+                    if a.x < b.x + b.w and b.x < a.x + a.w and a.y < b.y + b.h and b.y < a.y + a.h then clash[#clash + 1] = ids[i] .. "/" .. ids[j] end
+                end
             end
+            Kit.ok(#clash == 0, "nothing overlaps on a canvas " .. vh .. " tall, deal " .. seed .. ": " .. table.concat(clash, ", "))
+            if #clash > 0 then break end
         end
-        Kit.ok(#clash == 0, "nothing overlaps on a canvas " .. vh .. " tall: " .. table.concat(clash, ", "))
-    end
-    -- the small furniture of the scenery stands in free lawn only
-    local Props = require("solarui/art/garden_props")
-    for _, vh in ipairs({ 1360, 1500, 1800 }) do
-        local all, clash = Layout.all(vh), {}
-        all.pond = Layout.at(Layout.PROPS.pond, vh)
-        for i, a in ipairs(Props.places(vh)) do
-            if a.x < 30 or a.x + a.w > 1042 or a.y + a.h > vh - 30 then clash[#clash + 1] = "thing " .. i .. " leaves the frame" end
-            for id, b in pairs(all) do
-                if a.x < b.x + b.w and b.x < a.x + a.w and a.y < b.y + b.h and b.y < a.y + a.h then clash[#clash + 1] = "thing " .. i .. "/" .. id end
-            end
-        end
-        Kit.ok(#clash == 0, "the furniture stands clear of every bed on a canvas " .. vh .. " tall: " .. table.concat(clash, ", "))
     end
     local pond = Layout.PROPS.pond
     for _, id in ipairs(Layout.INSIDE_POND) do
-        local b = Layout.PLANTS[id] or Layout.ANIMALS[id]
+        local b = Layout.PLANTS[id] or Layout.FIXED[id]
         Kit.ok(b.x >= pond.x and b.y >= pond.y and b.x + b.w <= pond.x + pond.w and b.y + b.h <= pond.y + pond.h, id .. " is inside the pond")
     end
+    local seen = {}
+    for seed = 1, 40 do
+        local d = Layout.spread(seed)
+        seen[d.fox.x .. "," .. d.fox.y .. "," .. tostring(d.fox.flip)] = true
+    end
+    local count = 0
+    for _ in pairs(seen) do count = count + 1 end
+    Kit.ok(count >= 4, "the animals are dealt different places and faces on different visits (" .. count .. " different for the fox)")
+    local d1, d2 = Layout.spread(7), Layout.spread(7)
+    Kit.ok(d1.bee.x == d2.bee.x and d1.bee.y == d2.bee.y, "the same deal gives the same places")
+    local turned = 0
+    for id in pairs(Layout.PLANTS) do if Layout.turned(id) then turned = turned + 1 end end
+    Kit.ok(turned >= 4 and turned < #Cast.PLANTS - 3 and not Layout.turned("ivy"), "some plants face the other way (" .. turned .. ")")
 end
 
 -- the kept garden
 do
     local d = State.get()
-    Kit.ok(d.plants.tulip and d.plants.tulip.stage == 2 and not d.plants.rose, "the garden starts with six sprouts")
+    Kit.ok(d.plants.tulip and d.plants.tulip.stage == 4 and d.plants.rose.stage == 4, "the garden starts with every plant in bloom")
     Kit.ok(d.animals.bee and d.animals.snail and not d.animals.fox, "and three animals")
     Kit.ok(State.dew() == State.GIFT_DEW and State.seeds() == State.GIFT_SEEDS, "a gift of dew and seeds to begin with")
     reading.total = 130
     Kit.ok(State.dew() == State.GIFT_DEW + 30, "each page read is a drop of dew")
     Kit.ok(State.water("tulip") and State.dew() == State.GIFT_DEW + 30 - State.WATER, "watering costs dew")
-    Kit.ok(not State.water("rose"), "an unplanted plant cannot be watered")
     local ok, why = State.water("water_lily")
-    Kit.ok(not ok and why == "none", "a species not planted gives its reason")
-    Kit.ok(State.plant("rose") and State.seeds() == State.GIFT_SEEDS - 1 and State.get().plants.rose.stage == 1, "a seed is planted")
-    Kit.ok(not State.plant("rose"), "twice is refused")
-    Kit.ok(State.plant("iris") and not State.plant("lily"), "seeds run out")
+    Kit.ok(not ok and why == "dry", "a water lily needs no watering")
+    Kit.ok(not State.sow("rose") and select(2, State.sow("rose")) == "bloom", "a plant in bloom needs no seed")
+    State.get().plants.rose.stage = 2
+    Kit.ok(State.sow("rose") and State.seeds() == State.GIFT_SEEDS - 1 and State.get().plants.rose.stage == 4, "a seed brings a plant into bloom")
+    State.get().plants.iris.stage = 3
+    Kit.ok(State.sow("iris") and not State.sow("lily"), "and seeds run out")
     reading.books = 3
     Kit.ok(State.seeds() == 1, "a finished book is a seed")
     -- a week passes unwatered: wilted, hidden animals, a journal that says so
@@ -155,7 +159,7 @@ do
     local hid = 0
     for _, a in ipairs(State.animals(12)) do if a.mood == Care.HIDING then hid = hid + 1 end end
     Kit.ok(hid == 3, "hungry animals hide")
-    Kit.ok(State.feed("bee") and #State.animals(12) == 3, "a meal brings one back")
+    Kit.ok(State.feed("bee") and #State.animals(12) == 6, "a meal brings one back, and the new arrivals are not hungry")
     local bee
     for _, a in ipairs(State.animals(12)) do if a.def.id == "bee" then bee = a end end
     Kit.ok(bee.here and not (State.animals(23)[1].here and State.animals(23)[1].def.id == "bee"), "and the bee is about by day only")

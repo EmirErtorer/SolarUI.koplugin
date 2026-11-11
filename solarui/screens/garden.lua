@@ -1,6 +1,6 @@
 -- The garden: a poster of everything growing and visiting, with the dew and
 -- seeds earned by reading at the top. Tap a plant or an animal and it shows
--- large over a faded garden with its card; tap a bare bed to plant a seed.
+-- large over a faded garden with its card.
 -- The journal and the field notes are pages of their own.
 
 local App = require("solarui/app")
@@ -10,14 +10,15 @@ local GardenCard = require("solarui/ui/gardencard")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
+local LayoutUI = require("solarui/ui/layout")
 local Plaque = require("solarui/garden/plaque")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
 local State = require("solarui/garden/state")
 local Text = require("solarui/gfx/text")
+local TabBar = require("solarui/ui/tabbar")
 local Theme = require("solarui/theme")
 local UIManager = require("ui/uimanager")
-local Cast = require("solarui/garden/cast")
 local _ = require("solarui/gettext")
 
 local Garden = Screen:extend()
@@ -34,6 +35,7 @@ function Garden:init()
     self.pose = {}
     self.sprites = {}
     self.ticks = 0
+    self.seed = os.time()   -- deals the animals a new place on every visit
 end
 
 -- Flip an animal between its two poses and repaint just its own patch.
@@ -98,7 +100,7 @@ end
 local function say(ok, why, done)
     if ok then return App.toast(done) end
     App.toast(({ dew = _("Not enough dew. It comes from the pages you read."), dry = _("This one needs no watering."),
-        seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), have = _("Already in the garden."), none = _("Not in the garden yet.") })[why] or "")
+        seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), bloom = _("It is in bloom already."), none = _("Not in the garden.") })[why] or "")
 end
 
 -- The actions of the card for the picture `id`.
@@ -108,17 +110,10 @@ function Garden:actions(id)
         on_feed = function() local ok, why = State.feed(id); say(ok, why, string.format(_("%s has eaten."), State.name(id))); App.update() end,
         on_collect = function() State.collect(id); App.toast(_("Cut back. You have a seed.")); App.update() end,
         on_rename = function() App.input(_("A name for it"), State.rec(id).nick or "", function(text) State.rename(id, text); App.update() end, _("Save")) end,
+        on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); App.update() end,
         on_prev = function() self:step(-1) end, on_next = function() self:step(1) end,
         on_close = function() self.focus = nil; App.update() end,
     }
-end
-
--- Offer a seed for a bare bed.
-function Garden:askPlant(id)
-    local def = Cast.plant(id)
-    if State.seeds() < 1 then return say(false, "seed") end
-    App.confirm({ title = _("Plant a seed?"), text = def.en .. " · " .. def.latin, ok = _("Plant"),
-        on_ok = function() say(State.plant(id)); App.update() end })
 end
 
 -- The heading row: the title, what is in hand and the two pages.
@@ -147,12 +142,13 @@ function Garden:focused(scene)
     local e, kind = State.entry(self.focus)
     local fit = { x = ARCH.x + 40, y = ARCH.y + oy + 60, w = ARCH.w - 80, h = ARCH.h - 90 }
     if kind == "plant" then
-        scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, e.rec.stage .. (e.thirst == Care.WILTED and ":wilt" or ""))
+        scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, GardenView.plantParam(e))
     else
         local b = Layout.ANIMALS[self.focus]
+        local flip = Layout.spread(self.seed)[self.focus].flip
         local k = math.min(fit.w / b.w, fit.h / b.h)
         local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
-            function() return self.pose[self.focus] or "1" end)
+            function() return GardenView.animalParam(self.pose[self.focus] or "1", flip) end)
         self.sprites[self.focus] = pic
         scene:touch(fit.x, fit.y, fit.w, fit.h, function() self:move(self.focus) end)
     end
@@ -163,15 +159,16 @@ end
 function Garden:build(ctx)
     State.refresh()
     if self.focus and not State.entry(self.focus) then self.focus = nil end
-    local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h, Layout.HEIGHT)
+    local tabs = TabBar.build(App.TABS, nil, function(id) App.go(id) end)
+    local bar = Theme.get().size.tabbar + Theme.px(16)
+    local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
     self.sprites = {}
-    GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites,
-        on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil,
-        on_bed = not self.focus and function(id) self:askPlant(id) end or nil })
+    GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed,
+        on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil })
     self:heading(scene)
     if self.focus then self:focused(scene) else self:plaque(scene) end
     self:schedule()
-    return scene
+    return LayoutUI.Column:new({ children = { scene, tabs } })
 end
 
 return Garden

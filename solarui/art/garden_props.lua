@@ -2,10 +2,9 @@
 -- origin of its own box: the pond, the bistro table with two wrought-iron
 -- chairs, the stone plaque, and the smaller things that stand in the free
 -- lawn (a bee skep, stepping stones, a birdbath, a lantern, a watering can
--- and flower pots). Props.places(vh) says where the small things stand.
+-- and flower pots). Props.small(id) gives each one.
 
 local Flora = require("solarui/art/flora")
-local Layout = require("solarui/garden/layout")
 local Svg = require("solarui/art/svg")
 
 local n, group, path, line, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse
@@ -126,22 +125,15 @@ local function pots(c)
     return group(22, 53, 0, pot) .. group(54, 52, 78, pot, .9) .. Flora.leaf(c, 22, 23, -110, 16, 5, c.leaf, true) .. Flora.leaf(c, 22, 23, -60, 18, 5, c.leaf, true)
 end
 
--- The small things: where each stands on a poster 1360 tall (x, the row
--- whose foot it shares as a y to stretch, its offset from that, w, h).
+-- The small things by id, each with its drawing and the size it is drawn at.
 local SMALL = {
-    { draw = skep, x = 342, row = 452, dy = 4, w = 80, h = 84 },
-    { draw = stones, x = 452, row = 452, dy = 8, w = 150, h = 80 },
-    { draw = birdbath, x = 646, row = 452, dy = 2, w = 90, h = 86 },
-    { draw = lantern, x = 582, row = 880, dy = -84, w = 44, h = 76 },
-    { draw = can, x = 590, row = 1248, dy = 12, w = 104, h = 64 },
-    { draw = pots, x = 716, row = 1248, dy = 22, w = 84, h = 54 },
+    skep = { draw = skep, w = 80, h = 84 }, stones = { draw = stones, w = 150, h = 80 }, birdbath = { draw = birdbath, w = 90, h = 86 },
+    lantern = { draw = lantern, w = 44, h = 76 }, can = { draw = can, w = 104, h = 64 }, pots = { draw = pots, w = 84, h = 54 },
 }
 
--- The boxes of the small things on a poster `vh` tall, each with its drawing.
-function Props.places(vh)
-    local out = {}
-    for i, s in ipairs(SMALL) do out[i] = { x = s.x, y = Layout.at({ y = s.row }, vh).y + s.dy, w = s.w, h = s.h, draw = s.draw } end
-    return out
+-- A small thing: { draw(c), w, h }.
+function Props.small(id)
+    return SMALL[id]
 end
 
 return Props

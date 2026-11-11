@@ -55,6 +55,9 @@ local function actions(e, kind, o)
     else
         add(Button:new({ label = _("Feed"), sub = string.format(_("%d dew"), State.FEED), variant = "primary", grow = true, on_tap = o.on_feed }))
     end
+    if kind == "plant" and e.rec.stage < 4 then
+        add(Button:new({ label = _("Grow now"), sub = _("1 seed"), grow = true, on_tap = o.on_sow }))
+    end
     add(Button:new({ label = _("Name"), icon = "edit", icon_size = 18, grow = true, on_tap = o.on_rename }))
     return Layout.Row:new(row)
 end

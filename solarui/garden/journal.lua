@@ -9,7 +9,7 @@ local Journal = {}
 
 -- The ways to say each event; %s is the name of the plant or animal.
 local LINES = {
-    planted = { _("%s was planted. Nothing to see yet."), _("%s went into the ground."), _("A seed of %s was buried with some ceremony.") },
+    sown = { _("%s was coaxed into bloom with a seed."), _("A seed was spent on %s, and it flowered at once."), _("%s took the hint and bloomed.") },
     sprout = { _("%s came up."), _("%s put out its first leaves."), _("%s sprouted, with no fuss.") },
     bud = { _("%s made a bud."), _("%s is thinking about flowering."), _("%s has a bud and a plan.") },
     bloom = { _("%s bloomed."), _("%s opened, and looked pleased about it."), _("%s is in flower.") },
