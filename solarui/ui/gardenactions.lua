@@ -1,5 +1,5 @@
 -- What the buttons of a plant's or animal's card do: water, feed, cut back,
--- bring into bloom, rename. Shared by the garden screen and the popup over
+-- bring into bloom, rename (cutting back opens its own choice, ui/gardencut.lua). Shared by the garden screen and the popup over
 -- home. Each says what happened (or why it could not be done) in a notice,
 -- then calls `after` so the screen shows the new state.
 
@@ -25,7 +25,7 @@ function GardenActions.of(id, after)
     return {
         on_water = function() local ok, why = State.water(id); say(ok, why, string.format(_("%s has had a drink."), State.name(id))); after() end,
         on_feed = function() local ok, why = State.feed(id); say(ok, why, string.format(_("%s has eaten."), State.name(id))); after() end,
-        on_collect = function() State.collect(id); App.toast(_("Cut back. You have a seed.")); after() end,
+        on_collect = function() require("solarui/ui/gardencut").open(id, after) end,
         on_rename = function() App.input(_("Choose a name"), State.rec(id).nick or "", function(text) State.rename(id, text); after() end, _("Save")) end,
         on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); after() end,
     }

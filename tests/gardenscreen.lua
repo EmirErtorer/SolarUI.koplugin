@@ -119,6 +119,18 @@ do
     Kit.ok(Season.following(), "and the calendar can be followed again")
 end
 
+-- the cut-back choice and the question after a book
+do
+    local function draws(card)
+        local ok, err = pcall(function() card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); b:free() end)
+        return ok, err
+    end
+    local ok, err = draws(require("solarui/ui/gardencut").card(W, "rose", function() end))
+    Kit.ok(ok, "the cut-back choice draws: " .. tostring(err))
+    ok, err = draws(require("solarui/ui/gardengive").card(W, function() end))
+    Kit.ok(ok, "the question after a book draws: " .. tostring(err))
+end
+
 -- the open book: a passage on its page, another on request, and a view with none
 do
     local Plaque = require("solarui/garden/plaque")

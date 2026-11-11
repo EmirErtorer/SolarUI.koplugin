@@ -10,6 +10,7 @@ local Care = require("solarui/garden/care")
 local GardenActions = require("solarui/ui/gardenactions")
 local GardenCard = require("solarui/ui/gardencard")
 local GardenClock = require("solarui/ui/gardenclock")
+local GardenGive = require("solarui/ui/gardengive")
 local GardenGuide = require("solarui/ui/gardenguide")
 local GardenSeason = require("solarui/ui/gardenseason")
 local Season = require("solarui/garden/season")
@@ -158,6 +159,15 @@ function Garden:waitForGuide()
     end)
 end
 
+-- Once a visit, after the guide is out of the way, ask about a finished book.
+function Garden:askAboutBooks()
+    if self.asked or self.showcase or self.focus or State.owed() < 1 then return end
+    self.asked = true
+    UIManager:scheduleIn(.5, function()
+        if App.isOpen() and App.current() == self then GardenGive.ask(function() App.update() end) end
+    end)
+end
+
 -- The heading row: the title, what is in hand and the buttons, from the right:
 -- field notes, journal, the clock, the seasons and the guide.
 function Garden:heading(scene)
@@ -249,6 +259,7 @@ function Garden:build(ctx)
     if self.focus == "book" then self:book(scene) elseif self.focus then self:focused(scene) end
     self:schedule()
     self:waitForGuide()
+    self:askAboutBooks()
     return LayoutUI.Column:new({ children = { scene, tabs } })
 end
 
