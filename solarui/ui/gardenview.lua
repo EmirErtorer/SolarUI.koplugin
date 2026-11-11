@@ -15,9 +15,16 @@ local GardenView = {}
 
 -- The param of a plant's drawing: its stage, wilting, turning, fading and
 -- the light of the sky phase and the season.
-function GardenView.plantParam(entry, faded, phase, season)
+function GardenView.plantParam(entry, faded, phase, season, year)
     return entry.rec.stage .. (entry.thirst == "wilted" and ":wilt" or "") .. (Layout.turned(entry.def.id) and ":flip" or "")
         .. (faded and ":wash" or "") .. (phase and (":" .. phase) or "") .. GardenView.seasonToken(entry, season)
+        .. (year and entry.def.id == "maple" and (":" .. GardenView.yearToken(year)) or "")
+end
+
+-- The token of the year on the maple: "y" and the golden leaves, then "f"
+-- when the year's goal is met (see garden/progress.lua).
+function GardenView.yearToken(year)
+    return "y" .. year.leaves .. (year.ripe and "f" or "")
 end
 
 -- The season token of a plant's param: the season (the garden's when none is
@@ -54,9 +61,12 @@ function GardenView.compose(scene, o)
     scene:border(14, 2.5)
     scene:border(21, 1.2)
     scene:frameOrnaments()
+    local progress = State.progress()
+    local vine = progress.vine
+    if vine.days > 0 and not o.faded then scene:backdrop("garden_vine", 0, 0, Layout.WIDTH, vh, vine.leaves .. ":" .. vine.flowers) end
     for _i, e in ipairs(State.plants()) do
         local b = Layout.place(e.def.id, vh)
-        scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season))
+        scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season, progress.year))
         if o.on_tap then scene:touch(b.x, b.y, b.w, b.h, function() o.on_tap(e.def.id, "plant") end) end
     end
     if o.on_book then

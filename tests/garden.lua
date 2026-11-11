@@ -404,6 +404,28 @@ do
     State.unload()
 end
 
+-- what reading grows
+do
+    local Progress = require("solarui/garden/progress")
+    local created = os.time({ year = 2026, month = 3, day = 10, hour = 12 })
+    local v = Progress.vine(created, { "2026-03-09", "2026-03-10", "2026-03-12" })
+    Kit.ok(v.days == 2 and v.leaves == 2 and v.flowers == 0, "the vine counts days read since the garden began")
+    local many = {}
+    for i = 1, 65 do many[i] = string.format("2026-%02d-%02d", 4 + math.floor((i - 1) / 28), (i - 1) % 28 + 1) end
+    v = Progress.vine(created, many)
+    Kit.ok(v.days == 65 and v.flowers == 2 and v.leaves == 5, "it flowers after every thirty")
+    Kit.ok(Progress.vine(created, nil).days == 0, "no reading, no leaves")
+    local y = Progress.year(3, 12)
+    Kit.ok(y.leaves == 3 and not y.ripe, "the maple wears a leaf for each book of the year")
+    Kit.ok(Progress.year(20, 12).leaves == Progress.MAPLE_LEAVES and Progress.year(12, 12).ripe, "up to a number, and the goal ripens the fruit")
+    Kit.ok(not Progress.year(5, nil).ripe, "with no goal there is no fruit")
+    local saved = reading.days
+    reading.days, reading.year_books, reading.goal = { os.date("%Y-%m-%d", State.get().created + DAY) }, 4, 10
+    local p = State.progress()
+    Kit.ok(p.vine.days == 1 and p.year.books == 4 and p.year.goal == 10, "the garden reports it")
+    reading.days = saved
+end
+
 -- the weather
 do
     local Weather = require("solarui/garden/weather")

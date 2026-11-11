@@ -7,6 +7,7 @@
 
 local Cast = require("solarui/garden/cast")
 local Care = require("solarui/garden/care")
+local Progress = require("solarui/garden/progress")
 local Season = require("solarui/garden/season")
 local Settings = require("solarui/settings")
 local Sky = require("solarui/garden/sky")
@@ -28,15 +29,19 @@ State.RIPEN = 2 * 86400  -- seconds a seed head wants before it is cut back for 
 State.clock = os.time
 
 -- The reading numbers { total (pages ever), pages (weekly grid), streak
--- (longest), books (finished) }; replaced in tests.
+-- (longest), books (finished), days (dates with reading), year_books (finished
+-- this year), goal (books a year, or nil) }; replaced in tests.
 function State.source()
     local ok, r = pcall(function()
         local Goal = require("solarui/data/goal")
         local Insights = require("solarui/data/insights")
         local pattern = Insights.pattern()
-        return { total = Insights.allTime().pages, pages = pattern and pattern.pages or {}, streak = Insights.streaks().day_best, books = #Goal.finished() }
+        local days = {}
+        for _i, day in ipairs(Insights.days()) do days[#days + 1] = day.date end
+        return { total = Insights.allTime().pages, pages = pattern and pattern.pages or {}, streak = Insights.streaks().day_best, books = #Goal.finished(),
+            days = days, year_books = #Goal.finishedIn(tonumber(os.date("%Y"))), goal = Goal.target() }
     end)
-    return ok and r or { total = 0, pages = {}, streak = 0, books = 0 }
+    return ok and r or { total = 0, pages = {}, streak = 0, books = 0, days = {}, year_books = 0 }
 end
 
 local data
@@ -168,6 +173,12 @@ function State.refresh()
     end
     if dirty then State.save() end
     return dirty
+end
+
+-- What reading has grown: { vine = (see Progress.vine), year = (see Progress.year) }.
+function State.progress()
+    local reading = State.source()
+    return { vine = Progress.vine(State.get().created, reading.days), year = Progress.year(reading.year_books, reading.goal) }
 end
 
 -- The garden's weather today (see garden/weather.lua).
