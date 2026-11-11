@@ -35,20 +35,20 @@ local PLANTS = {
     { id = "water_lily", days = { 1, 3, 3, 40 } },
 }
 
--- Every animal: id, names, the hours it is about ("day", "night" or "any"),
+-- Every animal: id, names, the season it sleeps through (rests), the hours it is about ("day", "night" or "any"),
 -- hours between meals, what it eats and the rule that finds it (see
 -- garden/visitors.lua). The first three are in the garden from the start.
 local ANIMALS = {
-    { id = "bee", en = _("Honey bee"), latin = "Apis mellifera", about = "day", hours = 36, eats = _("nectar"), find = { kind = "start" } },
-    { id = "ladybug", en = _("Seven-spot ladybird"), latin = "Coccinella septempunctata", about = "day", hours = 72, eats = _("aphids"), find = { kind = "start" } },
+    { id = "bee", en = _("Honey bee"), latin = "Apis mellifera", about = "day", hours = 36, eats = _("nectar"), rests = { "winter" }, find = { kind = "start" } },
+    { id = "ladybug", en = _("Seven-spot ladybird"), latin = "Coccinella septempunctata", about = "day", hours = 72, eats = _("aphids"), rests = { "winter" }, find = { kind = "start" } },
     { id = "snail", en = _("Garden snail"), latin = "Cornu aspersum", about = "any", hours = 72, eats = _("tender leaves"), find = { kind = "start" } },
-    { id = "butterfly", en = _("Swallowtail"), latin = "Papilio machaon", about = "day", hours = 36, eats = _("nectar"), find = { kind = "bloom", n = 3 } },
+    { id = "butterfly", en = _("Swallowtail"), latin = "Papilio machaon", about = "day", hours = 36, eats = _("nectar"), rests = { "winter" }, find = { kind = "bloom", n = 3 } },
     { id = "robin", en = _("European robin"), latin = "Erithacus rubecula", about = "day", hours = 36, eats = _("worms and seeds"), find = { kind = "morning", n = 20 } },
-    { id = "dragonfly", en = _("Emperor dragonfly"), latin = "Anax imperator", about = "day", hours = 36, eats = _("midges"), find = { kind = "plant", id = "water_lily", stage = 4 } },
-    { id = "frog", en = _("Marsh frog"), latin = "Pelophylax ridibundus", about = "any", hours = 72, eats = _("flies"), find = { kind = "plant", id = "water_lily", stage = 3 } },
+    { id = "dragonfly", en = _("Emperor dragonfly"), latin = "Anax imperator", about = "day", hours = 36, eats = _("midges"), rests = { "winter" }, find = { kind = "plant", id = "water_lily", stage = 4 } },
+    { id = "frog", en = _("Marsh frog"), latin = "Pelophylax ridibundus", about = "any", hours = 72, eats = _("flies"), rests = { "winter" }, find = { kind = "plant", id = "water_lily", stage = 3 } },
     { id = "koi", en = _("Koi carp"), latin = "Cyprinus carpio", about = "any", hours = 72, eats = _("pond weed"), find = { kind = "streak", n = 7, id = "water_lily", stage = 4 } },
-    { id = "hedgehog", en = _("European hedgehog"), latin = "Erinaceus europaeus", about = "night", hours = 72, eats = _("beetles and slugs"), find = { kind = "night", n = 20 } },
-    { id = "moth", en = _("Elephant hawk-moth"), latin = "Deilephila elpenor", about = "night", hours = 36, eats = _("nectar"), find = { kind = "night", n = 60 } },
+    { id = "hedgehog", en = _("European hedgehog"), latin = "Erinaceus europaeus", about = "night", hours = 72, eats = _("beetles and slugs"), rests = { "winter" }, find = { kind = "night", n = 20 } },
+    { id = "moth", en = _("Elephant hawk-moth"), latin = "Deilephila elpenor", about = "night", hours = 36, eats = _("nectar"), rests = { "winter" }, find = { kind = "night", n = 60 } },
     { id = "fox", en = _("Red fox"), latin = "Vulpes vulpes", about = "night", hours = 72, eats = _("field mice"), find = { kind = "books", n = 5 } },
     { id = "peacock", en = _("Indian peafowl"), latin = "Pavo cristatus", about = "any", hours = 96, eats = _("seeds and berries"), find = { kind = "streak", n = 14 } },
 }

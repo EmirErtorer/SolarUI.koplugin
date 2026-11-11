@@ -15,6 +15,9 @@ local State = require("solarui/garden/state")
 local Visitors = require("solarui/garden/visitors")
 local Journal = require("solarui/garden/journal")
 
+local Season = require("solarui/garden/season")
+Season.set("spring")   -- the suite does not depend on the month it runs in
+
 local DAY, HOUR = 86400, 3600
 local now = 1700000000
 State.clock = function() return now end
@@ -248,6 +251,26 @@ do
     Kit.ok(Companion.choose({}, "auto", 0) == nil, "an empty garden has no companion")
     local picked = Companion.pick("auto", 3, 12)
     Kit.ok(picked and picked.id and picked.need ~= nil, "a real garden gives a companion")
+end
+
+-- the seasons
+do
+    Kit.ok(Season.ofMonth(1) == "winter" and Season.ofMonth(4) == "spring" and Season.ofMonth(7) == "summer" and Season.ofMonth(10) == "autumn", "months fall in the northern seasons")
+    Kit.ok(Season.ofMonth(1, true) == "summer" and Season.ofMonth(7, true) == "winter", "and the other way round in the south")
+    Kit.ok(not Season.following() and Season.now() == "spring", "a picked season is the garden's season")
+    Season.set(nil)
+    Kit.ok(Season.following() and Season.now() == Season.calendar(), "with none picked the calendar rules")
+    local tulip, ivy = Cast.plant("tulip"), Cast.plant("ivy")
+    Kit.ok(Season.adjust(tulip, "winter").interval == tulip.interval * 2 and Season.adjust(tulip, "summer").interval < tulip.interval, "winter stretches the hours between drinks, summer shortens them")
+    Kit.ok(Season.adjust(tulip, "winter").need[1] > tulip.need[1] and Season.adjust(tulip, "winter").latin == tulip.latin, "winter slows growth and the rest reads through")
+    Kit.ok(Season.dormant(tulip, "winter") and not Season.dormant(ivy, "winter") and not Season.dormant(tulip, "summer"), "perennials die back in winter, ivy does not")
+    Kit.ok(Season.rests(Cast.animal("hedgehog"), "winter") and not Season.rests(Cast.animal("hedgehog"), "summer") and not Season.rests(Cast.animal("robin"), "winter"), "some animals sleep through winter")
+    Season.set("winter")
+    local seen = {}
+    for _, e in ipairs(State.animals(12)) do seen[e.def.id] = e end
+    Kit.ok(seen.bee and seen.bee.resting and not seen.bee.here and seen.bee.mood == Care.CONTENT, "a sleeping animal is not about and never hungry")
+    Kit.ok(State.plants()[1].dormant, "winter plants are dormant")
+    Season.set("spring")
 end
 
 Kit.finish("garden")

@@ -7,6 +7,7 @@
 
 local Cast = require("solarui/garden/cast")
 local Care = require("solarui/garden/care")
+local Season = require("solarui/garden/season")
 local Settings = require("solarui/settings")
 local Sky = require("solarui/garden/sky")
 local Visitors = require("solarui/garden/visitors")
@@ -108,7 +109,7 @@ function State.refresh()
     local d, now = State.get(), State.clock()
     local dirty = false
     for id, rec in pairs(d.plants) do
-        local def = Cast.plant(id)
+        local def = Season.adjust(Cast.plant(id))
         for _i, stage in ipairs(Care.grow(rec, def, now)) do
             note(({ "", "sprout", "bud", "bloom", "seedhead" })[stage], id)
             dirty = true
@@ -120,6 +121,7 @@ function State.refresh()
         end
     end
     for id, rec in pairs(d.animals) do
+        if Season.rests(Cast.animal(id), Season.calendar()) then rec.fed, dirty = math.max(rec.fed or 0, now), true end
         local hiding = Care.hunger(rec, Cast.animal(id), now) == Care.HIDING
         if hiding ~= (rec.noted == "hide") then
             if hiding then note("hide", id) end
@@ -141,23 +143,30 @@ end
 -- Every plant that is planted, in the cast's order: { def, rec, thirst, until }.
 function State.plants()
     local out, now = {}, State.clock()
+    local season = Season.now()
     for _i, def in ipairs(Cast.PLANTS) do
         local rec = State.get().plants[def.id]
-        if rec then out[#out + 1] = { def = def, rec = rec, thirst = Care.thirst(rec, def, now), thirsty_in = Care.untilThirsty(rec, def, now) } end
+        local eff = Season.adjust(def, season)
+        if rec then out[#out + 1] = { def = def, rec = rec, thirst = Care.thirst(rec, eff, now), thirsty_in = Care.untilThirsty(rec, eff, now),
+            dormant = Season.dormant(def, season), season = season } end
     end
     return out
 end
 
--- Every animal that has found the garden: { def, rec, mood, here } where
--- `here` says it is about now (the right hour and not hiding).
+-- Every animal that has found the garden: { def, rec, mood, here, resting }
+-- where `here` says it is about now (the right hour, not hiding and not
+-- asleep for the season) and `resting` that it sleeps through this season.
 function State.animals(hour)
     local out, now = {}, State.clock()
     hour = hour or Sky.hour()
+    local season = Season.now()
     for _i, def in ipairs(Cast.ANIMALS) do
         local rec = State.get().animals[def.id]
         if rec then
-            local mood = Care.hunger(rec, def, now)
-            out[#out + 1] = { def = def, rec = rec, mood = mood, here = mood ~= Care.HIDING and Visitors.about(def, hour) }
+            local resting = Season.rests(def, season)
+            local mood = resting and Care.CONTENT or Care.hunger(rec, def, now)
+            out[#out + 1] = { def = def, rec = rec, mood = mood, resting = resting, season = season,
+                here = not resting and mood ~= Care.HIDING and Visitors.about(def, hour) }
         end
     end
     return out
@@ -197,8 +206,9 @@ end
 function State.water(id)
     local rec, def = State.get().plants[id], Cast.plant(id)
     if not rec then return false, "none" end
-    if not def.interval then return false, "dry" end
-    if State.clock() - rec.watered < def.interval / 2 then return false, "fresh" end
+    local eff = Season.adjust(def)
+    if not eff.interval then return false, "dry" end
+    if State.clock() - rec.watered < eff.interval / 2 then return false, "fresh" end
     if not spend(State.WATER) then return false, "dew" end
     Care.water(rec, State.clock())
     rec.noted = nil
