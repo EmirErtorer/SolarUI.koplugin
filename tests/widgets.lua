@@ -243,4 +243,24 @@ do
     bw:free()
 end
 
+-- the library grid fills its box evenly at every cover size and screen shape
+do
+    local Grid = require("solarui/ui/grid")
+    local bad = {}
+    for _, box in ipairs({ { 540, 430 }, { 1100, 900 }, { 1000, 300 }, { 540, 700 } }) do
+        for _, min in ipairs({ 90, 120, 170, 240 }) do
+            local f = Grid.fit(box[1], box[2], 12, 18, min, 1.72)
+            local ok = f ~= nil or (box[2] < 400 and min > 170)   -- huge covers on a short box fall back to the old way
+            if f then
+                local across = f.cols * f.cell_w + (f.cols - 1) * 12
+                local down = f.rows * f.cell_h + (f.rows - 1) * (18 + f.space) + 2 * f.space
+                ok = across <= box[1] and down <= box[2] and box[2] - down <= f.rows + 2
+                    and f.cell_h <= f.cell_w * 1.72 * 1.2 + 1 and f.cell_h >= f.cell_w * 1.72 * .8 - 1
+            end
+            if not ok then bad[#bad + 1] = box[1] .. "x" .. box[2] .. " at " .. min end
+        end
+    end
+    Kit.ok(#bad == 0, "the grid fits its box evenly: " .. table.concat(bad, ", "))
+end
+
 Kit.finish("widgets")
