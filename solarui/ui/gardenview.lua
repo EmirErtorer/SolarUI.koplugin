@@ -10,6 +10,10 @@ local State = require("solarui/garden/state")
 
 local GardenView = {}
 
+-- Beds that are not plain earth: a seed on the pond or at the foot of the
+-- trellis is drawn as the plant's own first stage.
+local OWN_SEED = { water_lily = true, ivy = true }
+
 -- The param of a plant's drawing: its stage, wilting and fading.
 local function plantParam(entry, faded)
     return entry.rec.stage .. (entry.thirst == "wilted" and ":wilt" or "") .. (faded and ":wash" or "")
@@ -36,7 +40,8 @@ function GardenView.compose(scene, o)
     for _i, def in ipairs(Cast.PLANTS) do
         if not planted[def.id] then
             local b = Layout.place(def.id, vh)
-            scene:backdrop("garden_plot", b.x, b.y + b.h - 70, b.w, 70, wash)
+            if OWN_SEED[def.id] then scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1" .. (o.faded and ":wash" or ""))
+            else scene:backdrop("garden_plot", b.x, b.y + b.h - 70, b.w, 70, wash) end
             if o.on_bed then scene:touch(b.x, b.y + b.h - 80, b.w, 80, function() o.on_bed(def.id) end) end
         end
     end

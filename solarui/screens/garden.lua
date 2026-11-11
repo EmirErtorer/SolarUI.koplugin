@@ -14,6 +14,7 @@ local Plaque = require("solarui/garden/plaque")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
 local State = require("solarui/garden/state")
+local Text = require("solarui/gfx/text")
 local Theme = require("solarui/theme")
 local UIManager = require("ui/uimanager")
 local Cast = require("solarui/garden/cast")
@@ -136,7 +137,7 @@ function Garden:plaque(scene)
     local q = Plaque.today()
     local b = Layout.at(Layout.PROPS.plaque, scene.vh)
     scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Highlight a passage in a book and it is carved here."), kind = "micro",
-        color = "ink", align = "center", lines = 5 }), b.x + 14, b.y + 30, b.w - 28, b.h - 36)
+        color = "ink", align = "center", lines = math.max(1, math.floor(scene:px(b.h - 36) / Text.height("micro"))) }), b.x + 14, b.y + 30, b.w - 28, b.h - 36)
 end
 
 -- The big picture and its card over the faded garden.
