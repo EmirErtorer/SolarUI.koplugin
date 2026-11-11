@@ -6,8 +6,10 @@
 
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
 local n, group, path, line, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse
+local mix = Wash.mix
 
 local Props = {}
 
@@ -56,19 +58,34 @@ local function chair(c)
         .. ellipse(67, 152, 30, 6.5, 0, c.sage, c.ink, 1.8) .. line("M44 152 Q67 158 90 152", c.ink, .9)
 end
 
--- The table with its two chairs in a box 340 x 220: a round top on a
--- scrolled iron foot, a book and a steaming cup on it.
+-- The open book on the table, inside Layout.BOOK: gold-cornered cover, ruled pages and a ribbon.
+local function book(c)
+    local page = "M152 86 Q131 79 110 84 L103 101 Q127 98 152 103Z"
+    local side = "M103 101 Q127 98 152 103 L152 106 Q127 101.5 103 104.5Z"
+    local half = path(page, c.cream, c.ink, 1.3) .. path(side, c.cream, c.ink, 1) .. line("M104 102.6 Q127 99.6 152 104.6", c.line, .7)
+        .. line("M118 86.5 Q132 84.5 146 88 M116 90.5 Q131 88.5 146 92 M114 94.5 Q130 92.5 146 96", c.line, 1.1)
+    local corner = "M98 104 L106 104 L102 99Z"
+    return path("M106 84 L198 84 L206 104 L98 104Z", c.accent, c.ink, 1.4) .. path("M98 104 L206 104 L206 108 L98 108Z", mix(c.accent, c.ink, .35), c.ink, 1.2)
+        .. path(corner, c.gold, c.ink, .9) .. group(304, 0, 0, path(corner, c.gold, c.ink, .9), -1, 1)
+        .. half .. group(304, 0, 0, half, -1, 1) .. line("M152 86 L152 104", c.ink, 1.2)
+        .. path("M150.2 103 L153.8 103 L155.6 118 L152.6 114.6 L149.6 118.4Z", c.bloom, c.ink, 1)
+end
+
+-- The cup of tea beside the book, steaming, on its saucer.
+local function cup(c)
+    return ellipse(224, 109, 14, 3.4, 0, c.cream, c.ink, 1.2) .. path("M215 97 C215 105 218 109 224 109 C230 109 233 105 233 97Z", c.cream, c.ink, 1.4) .. ellipse(224, 97, 9, 2.2, 0, c.gold, c.ink, 1.1)
+        .. line("M233 99 C239 99 239 105 232 105", c.ink, 1.3) .. line("M222 91 C218 85 226 81 222 75 M228 89 C225 85 230 82 228 78", c.ink, 1)
+end
+
+-- The table with its two chairs in a box 340 x 220, the book and the cup on it.
 function Props.table(c)
     local foot = iron(c, { { 170, 122 }, { 168, 150 }, { 172, 176 } }, 6)
         .. iron(c, { { 171, 170 }, { 156, 184 }, { 140, 204 }, { 132, 212 } }, 4.6, { 126, 212, 5.5, .9, 90, true })
         .. iron(c, { { 171, 170 }, { 186, 184 }, { 202, 204 }, { 210, 212 } }, 4.6, { 216, 212, 5.5, .9, 270 })
         .. iron(c, { { 171, 172 }, { 170, 196 }, { 171, 214 } }, 4)
         .. iron(c, { { 168, 150 }, { 152, 142 }, { 140, 126 } }, 3, { 146, 124, 6, 1.1, 270 }) .. iron(c, { { 172, 150 }, { 188, 142 }, { 200, 126 } }, 3, { 194, 124, 6, 1.1, 90, true })
-    local top = ellipse(170, 118, 64, 10, 0, c.line, c.ink, 1.8) .. ellipse(170, 113, 64, 10, 0, c.cream, c.ink, 1.8)
-    local book = path("M126 106 L160 100 L172 106 L138 113Z", c.cream, c.ink, 1.2) .. path("M126 103 L160 97 L172 103 L138 110Z", c.bloom, c.ink, 1.4) .. line("M134 105.6 L164 100.4", c.ink, .8)
-    local cup = ellipse(202, 110, 14, 3.4, 0, c.cream, c.ink, 1.2) .. path("M193 98 C193 106 196 110 202 110 C208 110 211 106 211 98Z", c.cream, c.ink, 1.4) .. ellipse(202, 98, 9, 2.2, 0, c.gold, c.ink, 1.1)
-        .. line("M211 100 C217 100 217 106 210 106", c.ink, 1.3) .. line("M200 92 C196 86 204 82 200 76 M206 90 C203 86 208 83 206 79", c.ink, 1)
-    return chair(c) .. group(340, 0, 0, chair(c), -1, 1) .. foot .. top .. book .. cup
+    local top = ellipse(170, 118, 74, 10, 0, c.line, c.ink, 1.8) .. ellipse(170, 113, 74, 10, 0, c.cream, c.ink, 1.8)
+    return chair(c) .. group(340, 0, 0, chair(c), -1, 1) .. foot .. top .. book(c) .. cup(c)
 end
 
 -- A straw bee skep on a low stand, 80 x 84.

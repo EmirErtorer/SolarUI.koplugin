@@ -168,7 +168,7 @@ function Garden:book(scene)
     local box = { x = 156, y = 150 + oy, w = 760 }
     box.h = box.w * art.h / art.w
     local k = box.w / art.w
-    scene:backdrop("garden_book", box.x, box.y, box.w, box.h)
+    scene:backdrop("garden_book", box.x, box.y, box.w, box.h, Sky.now())
     local function page(side) local p = Layout.BOOKPAGE[side]; return box.x + p.x * k, box.y + p.y * k, p.w * k, p.h * k end
     local q = self:quote()
     local lines = function(h) return math.max(1, math.floor(scene:px(h) / Text.height("body"))) end
