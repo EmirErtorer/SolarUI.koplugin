@@ -6,7 +6,9 @@
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
 local Dialog = require("solarui/ui/dialog")
+local LayoutUI = require("solarui/ui/layout")
 local Scene = require("solarui/ui/scene")
+local Theme = require("solarui/theme")
 local Season = require("solarui/garden/season")
 local Text = require("solarui/gfx/text")
 local State = require("solarui/garden/state")
@@ -49,10 +51,12 @@ function GardenSeason.card(w, after)
             or string.format(_("Showing %s. Tap another season, or follow the calendar again."), Season.NAMES[Season.now()]:lower()))
             .. (Weather.on() and (" " .. string.format(_("Today in the garden: %s."), Weather.NAMES[State.weather()]:lower())) or ""),
         lines = 4, rows = {
-            Button:new({ label = Weather.on() and _("Weather: on") or _("Weather: off"), variant = "chip", grow = true,
+            LayoutUI.Row:new({ gap = Theme.get().space.s, children = {
+                Button:new({ label = Weather.on() and _("Weather: on") or _("Weather: off"), variant = "chip", grow = true,
                 on_tap = function() close(function() Weather.setOn(not Weather.on()) end) end }),
-            Button:new({ label = south and _("Southern hemisphere: on") or _("Southern hemisphere: off"), variant = "chip", grow = true,
+                Button:new({ label = south and _("Southern hemisphere: on") or _("Southern hemisphere: off"), variant = "chip", grow = true,
                 on_tap = function() close(function() Season.setSouth(not south) end) end }),
+            } }),
             Button:new({ label = _("Follow the calendar"), variant = "primary", disabled = following,
                 on_tap = function() close(function() Season.set(nil) end) end }),
         } }, w)

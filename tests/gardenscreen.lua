@@ -135,6 +135,7 @@ do
     local Season = require("solarui/garden/season")
     local ok, err = pcall(function() local card = SeasonUI.card(W, function() end); card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); b:free() end)
     Kit.ok(ok, "the season wheel draws: " .. tostring(err))
+    do local card = SeasonUI.card(W, function() end); card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); Kit.png(b, OUT .. "-wheel.png"); b:free() end
     Season.set("autumn")
     Kit.ok(Season.now() == "autumn" and not Season.following(), "a season picked on the wheel is the garden's season")
     local scr = Garden:new({})
