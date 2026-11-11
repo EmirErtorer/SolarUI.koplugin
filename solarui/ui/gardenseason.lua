@@ -9,6 +9,8 @@ local Dialog = require("solarui/ui/dialog")
 local Scene = require("solarui/ui/scene")
 local Season = require("solarui/garden/season")
 local Text = require("solarui/gfx/text")
+local State = require("solarui/garden/state")
+local Weather = require("solarui/garden/weather")
 local _ = require("solarui/gettext")
 
 local GardenSeason = {}
@@ -43,9 +45,12 @@ function GardenSeason.card(w, after)
     end
     local south = Season.south()
     return Dialog.card({ top = wheel(w, function(s) close(function() Season.set(s) end) end), title = _("Season in the garden"),
-        text = following and string.format(_("Following the calendar: the season is %s. Tap a season to see the garden then."), Season.NAMES[Season.now()]:lower())
-            or string.format(_("Showing %s. Tap another season, or follow the calendar again."), Season.NAMES[Season.now()]:lower()),
-        lines = 3, rows = {
+        text = (following and string.format(_("Following the calendar: the season is %s. Tap a season to see the garden then."), Season.NAMES[Season.now()]:lower())
+            or string.format(_("Showing %s. Tap another season, or follow the calendar again."), Season.NAMES[Season.now()]:lower()))
+            .. (Weather.on() and (" " .. string.format(_("Today in the garden: %s."), Weather.NAMES[State.weather()]:lower())) or ""),
+        lines = 4, rows = {
+            Button:new({ label = Weather.on() and _("Weather: on") or _("Weather: off"), variant = "chip", grow = true,
+                on_tap = function() close(function() Weather.setOn(not Weather.on()) end) end }),
             Button:new({ label = south and _("Southern hemisphere: on") or _("Southern hemisphere: off"), variant = "chip", grow = true,
                 on_tap = function() close(function() Season.setSouth(not south) end) end }),
             Button:new({ label = _("Follow the calendar"), variant = "primary", disabled = following,

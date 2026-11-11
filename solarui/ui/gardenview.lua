@@ -48,7 +48,8 @@ function GardenView.compose(scene, o)
     local vh = scene.vh
     local phase = Sky.phase(o.hour or Sky.hour())
     local season = o.season or Season.now()
-    local light = (o.faded and "wash:" or "") .. phase
+    local weather = State.weather()
+    local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "")
     scene:backdrop("garden_ground", 0, 0, Layout.WIDTH, vh, light)
     scene:border(14, 2.5)
     scene:border(21, 1.2)

@@ -11,6 +11,7 @@ local Season = require("solarui/garden/season")
 local Settings = require("solarui/settings")
 local Sky = require("solarui/garden/sky")
 local Visitors = require("solarui/garden/visitors")
+local Weather = require("solarui/garden/weather")
 local Visits = require("solarui/garden/visits")
 
 local State = {}
@@ -154,6 +155,7 @@ function State.refresh()
             rec.noted, dirty = hiding and "hide" or nil, true
         end
     end
+    if State.rain(now) then dirty = true end
     if Visits.round(d, now, note) then dirty = true end
     if Visits.thanks(d, now, State.source().total, note) then dirty = true end
     local facts = Visitors.facts(d.plants, State.source())
@@ -166,6 +168,32 @@ function State.refresh()
     end
     if dirty then State.save() end
     return dirty
+end
+
+-- The garden's weather today (see garden/weather.lua).
+function State.weather(now)
+    return Weather.of(Visits.day(now or State.clock()), Season.now())
+end
+
+-- On a day of rain, once: every plant that needs water gets half a drink (the
+-- wait for its next drink grows by half an interval), and the journal says
+-- so. Snow is only noted. Returns true when something was written.
+function State.rain(now)
+    local d = State.get()
+    local day = Visits.day(now)
+    if d.weather_day == day then return false end
+    d.weather_day = day
+    local kind = Weather.of(day, Season.now())
+    if kind == "rain" then
+        for id, rec in pairs(d.plants) do
+            local eff = Season.adjust(Cast.plant(id))
+            if eff.interval then rec.watered = math.min(now, (rec.watered or now) + eff.interval / 2); rec.noted = nil end
+        end
+        note("rain", "water_lily")
+    elseif kind == "snow" then
+        note("snow", "water_lily")
+    end
+    return true
 end
 
 -- Every plant that is planted, in the cast's order: { def, rec, thirst, until }.

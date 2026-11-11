@@ -24,6 +24,8 @@ local LINES = {
     birds = { _("The seeds of %s were left for the birds."), _("%s was left standing for the birds."), _("The birds found the seeds of %s.") },
     scatter = { _("The seeds of %s were scattered in the beds."), _("%s dropped a few seeds a little further along."), _("Some seeds of %s were thrown to the wind.") },
     gave = { _("A seed was left in the wild edge."), _("A seed went back to the wild."), _("Something was given back to the wild edge.") },
+    rain = { _("Rain came in the night, and the beds drank."), _("Rain fell, and the watering can stayed in the shed."), _("A day of rain. Everything was given half a drink.") },
+    snow = { _("Snow lay on the beds."), _("Snow came, and the garden went quiet."), _("The first snow settled on the lawn.") },
     back = { _("%s came back out for a meal."), _("%s was fed and showed up at once."), _("%s is back, and no questions asked.") },
 }
 
@@ -43,7 +45,7 @@ function Journal.line(e)
     local line
     if e.k == "visit" then line = string.format(text, State.name(e.id), Journal.who(e.with, false))
     elseif e.k == "thanks" then line = string.format(text, e.n or 0, Journal.who(e.id, text:find("^%%s") and true or false))
-    elseif e.k == "gave" then line = text
+    elseif e.k == "gave" or e.k == "rain" or e.k == "snow" then line = text
     else line = string.format(text, State.name(e.id)) end
     return { date = os.date("%d %b", e.t), text = line }
 end

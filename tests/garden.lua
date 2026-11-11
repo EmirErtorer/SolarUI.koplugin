@@ -404,6 +404,48 @@ do
     State.unload()
 end
 
+-- the weather
+do
+    local Weather = require("solarui/garden/weather")
+    local Visits = require("solarui/garden/visits")
+    local seen, counts = {}, {}
+    for day = 1, 400 do
+        local k = Weather.of(day, "summer")
+        counts[k] = (counts[k] or 0) + 1
+        seen[Weather.of(day, "winter")] = true
+        Kit.ok(Weather.of(day, "summer") == k, "a day's weather does not change")
+        Kit.ok(Weather.of(day, "summer") ~= "snow" and Weather.of(day, "winter") ~= "rain", "no snow in summer, no rain in winter")
+    end
+    Kit.ok(counts.clear > counts.rain and counts.rain > 20 and seen.snow, "summer is mostly clear, rain comes, winter brings snow")
+    Weather.setOn(false)
+    Kit.ok(Weather.of(5, "summer") == "clear", "with the weather off every day is clear")
+    Weather.setOn(true)
+    -- rain waters the beds once
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    Season.set("autumn")
+    local day = 1
+    now = 1700000000 + 1200 * DAY
+    while Weather.of(Visits.day(now), "autumn") ~= "rain" do now = now + DAY end
+    reading.total, reading.books = 100, 2
+    State.get()
+    local rec = State.get().plants.tulip
+    rec.watered = now - 30 * HOUR
+    local was = rec.watered
+    State.refresh()
+    Kit.ok(rec.watered == was + Season.adjust(Cast.plant("tulip"), "autumn").interval / 2, "rain gives half a drink")
+    local again = rec.watered
+    State.refresh()
+    Kit.ok(rec.watered == again, "but only once a day")
+    local text = {}
+    for _, l in ipairs(Journal.lines()) do text[#text + 1] = l.text end
+    Kit.ok(table.concat(text, "|"):find("[Rr]ain"), "and the journal says so")
+    Settings.set("garden", nil)
+    State.unload()
+    Season.set("spring")
+end
+
 -- the seasons
 do
     Kit.ok(Season.ofMonth(1) == "winter" and Season.ofMonth(4) == "spring" and Season.ofMonth(7) == "summer" and Season.ofMonth(10) == "autumn", "months fall in the northern seasons")
