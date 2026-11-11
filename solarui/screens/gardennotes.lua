@@ -1,7 +1,8 @@
--- The field notes: the garden's almanac in four tabs. Meet lists everyone the
--- garden can have and opens a page for each one met; Calendar goes month by
+-- The field notes: the garden's almanac in five tabs. Meet lists everyone the
+-- garden can have and opens a page for each one met; Year goes month by
 -- month through what flowers and who sleeps; Links shows who depends on
--- whom among those in the garden; About holds the count of seeds given back,
+-- whom among those in the garden; Outside gives a thing to do outdoors each
+-- week; About holds the count of seeds given back,
 -- why the garden says "they", and a book to read.
 
 local Almanac = require("solarui/garden/almanac")
@@ -20,7 +21,7 @@ local _ = require("solarui/gettext")
 
 local GardenNotes = Screen:extend()
 
-local TABS = { { "meet", _("Meet") }, { "calendar", _("Calendar") }, { "links", _("Links") }, { "about", _("About") } }
+local TABS = { { "meet", _("Meet") }, { "calendar", _("Year") }, { "links", _("Links") }, { "outside", _("Outside") }, { "about", _("About") } }
 
 -- Start on the first page of the first tab.
 function GardenNotes:init() self.page, self.tab = 1, "meet" end
@@ -78,6 +79,23 @@ local function links()
     return items
 end
 
+-- The Outside tab: this week's thing to do outdoors, with a button to tick it
+-- off, and how many weeks have been ticked.
+local function outside(screen)
+    local th = Theme.get()
+    local p = State.prompt()
+    return {
+        Layout.Column:new({ gap = th.space.s, pad = { th.space.xs, 0, th.space.s, 0 }, children = {
+            Label:new({ text = _("This week"), kind = "heading" }),
+            Label:new({ text = p.text, kind = "body", lines = 5 }),
+            Button:new({ label = p.done and _("Done this week") or _("I did this"), variant = "primary", disabled = p.done,
+                on_tap = function() State.tickPrompt(); App.toast(_("Ticked off.")); screen:setPage(1) end }),
+        } }),
+        Label:new({ text = string.format(_.n("%d week outside so far. Nothing is earned by it; it is only a reason to go and look.", "%d weeks outside so far. Nothing is earned by it; it is only a reason to go and look.", State.outsideCount()), State.outsideCount()),
+            kind = "small", color = "muted", lines = 3 }),
+    }
+end
+
 -- The About tab: seeds given back, why "they", and a book to read.
 local function about()
     local th = Theme.get()
@@ -103,7 +121,7 @@ function GardenNotes:build()
         chips[#chips + 1] = Button:new({ label = t[2], variant = self.tab == t[1] and "chip_on" or "chip", grow = true,
             on_tap = function() self.tab, self.page = t[1], 1; App.update() end })
     end
-    local items = ({ meet = meet, calendar = calendar, links = links, about = about })[self.tab]()
+    local items = ({ meet = meet, calendar = calendar, links = links, outside = function() return outside(self) end, about = about })[self.tab]()
     local body = Layout.Column:new({ gap = th.space.s, children = { Layout.Row:new({ gap = th.space.s, children = chips }), Frame.paged(self, items, _("Page")) } })
     return Frame.page({ screen = self, title = _("Field notes"), plant = "highlights", body = body })
 end

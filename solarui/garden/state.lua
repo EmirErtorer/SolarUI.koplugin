@@ -8,6 +8,7 @@
 local Cast = require("solarui/garden/cast")
 local Care = require("solarui/garden/care")
 local Progress = require("solarui/garden/progress")
+local Prompts = require("solarui/garden/prompts")
 local Season = require("solarui/garden/season")
 local Settings = require("solarui/settings")
 local Sky = require("solarui/garden/sky")
@@ -173,6 +174,31 @@ function State.refresh()
     end
     if dirty then State.save() end
     return dirty
+end
+
+-- This week's thing to do outdoors: { text, done }.
+function State.prompt()
+    local p = Prompts.of(State.clock())
+    return { text = p.text, done = (State.get().outside or {})[tostring(p.week)] == true }
+end
+
+-- Tick this week's prompt. Returns false when it was ticked already.
+function State.tickPrompt()
+    local d = State.get()
+    local p = Prompts.of(State.clock())
+    d.outside = d.outside or {}
+    if d.outside[tostring(p.week)] then return false end
+    d.outside[tostring(p.week)] = true
+    note("outside", "water_lily")
+    State.save()
+    return true
+end
+
+-- How many weeks the reader has been outside.
+function State.outsideCount()
+    local n = 0
+    for _k in pairs(State.get().outside or {}) do n = n + 1 end
+    return n
 end
 
 -- What reading has grown: { vine = (see Progress.vine), year = (see Progress.year) }.

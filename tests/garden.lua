@@ -447,6 +447,26 @@ do
     reading.days = saved
 end
 
+-- the weekly prompt
+do
+    local Prompts = require("solarui/garden/prompts")
+    for _, season in ipairs(Season.ALL) do Kit.ok(#Prompts.LIST[season] == 6, "six prompts for " .. season) end
+    local a, b = Prompts.of(1700000000, "spring"), Prompts.of(1700000000 + 7 * DAY, "spring")
+    Kit.ok(a.text ~= b.text and a.week ~= b.week, "the prompt changes with the week")
+    Kit.ok(Prompts.of(1700000000, "spring").text == a.text, "and stays for the week")
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    State.get()
+    Kit.ok(not State.prompt().done and State.outsideCount() == 0, "a new week has nothing ticked")
+    Kit.ok(State.tickPrompt() and State.prompt().done and State.outsideCount() == 1, "ticking marks the week")
+    Kit.ok(not State.tickPrompt() and State.outsideCount() == 1, "once a week")
+    now = now + 7 * DAY
+    Kit.ok(not State.prompt().done, "the next week is fresh")
+    Settings.set("garden", nil)
+    State.unload()
+end
+
 -- the weather
 do
     local Weather = require("solarui/garden/weather")
