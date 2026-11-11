@@ -67,6 +67,27 @@ Kit.ok(s.focus == nil, "close returns to the garden")
 Kit.ok(s:onBack() == false, "back from the garden leaves it")
 s.focus = "tulip"
 Kit.ok(s:onBack() == true and s.focus == nil, "back from a picture closes it")
+-- the open book: a passage on its page, another on request, and a view with none
+do
+    local Plaque = require("solarui/garden/plaque")
+    local deal = Plaque.deal
+    Plaque.deal = function() return { { text = "A first passage that is long enough to want several lines on a page of the book.", title = "A Book", author = "An Author" },
+        { text = "A second passage, shorter than the first one.", title = "Another", author = "Someone" } } end
+    local book = Garden:new({})
+    book.focus = "book"
+    local ok, err = pcall(function() local p = paint(book); Kit.png(p, OUT .. "-book.png"); p:free() end)
+    Kit.ok(ok, "the book view draws: " .. tostring(err))
+    local first = book:quote().title
+    book.quote_at = book.quote_at + 1
+    Kit.ok(book:quote().title ~= first, "another passage is another passage")
+    Plaque.deal = function() return {} end
+    local empty = Garden:new({})
+    empty.focus = "book"
+    ok, err = pcall(function() paint(empty):free() end)
+    Kit.ok(ok and empty:quote() == nil, "the book view draws with no highlights: " .. tostring(err))
+    Plaque.deal = deal
+end
+
 -- the companion's text never outgrows its card, at any text size
 do
     local Companion = require("solarui/garden/companion")

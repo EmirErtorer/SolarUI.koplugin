@@ -174,6 +174,34 @@ do
     Kit.ok(State.get().plants.rose ~= nil, "the garden is kept between visits")
 end
 
+-- the sky, the larger animals and the book
+do
+    local Sky = require("solarui/garden/sky")
+    Kit.ok(Sky.phase(4) == "night" and Sky.phase(5) == "morning" and Sky.phase(10) == "morning" and Sky.phase(11) == "day"
+        and Sky.phase(16) == "day" and Sky.phase(17) == "golden" and Sky.phase(21) == "golden" and Sky.phase(22) == "night" and Sky.phase(0) == "night",
+        "the sky changes at five, eleven, five in the afternoon and ten at night")
+    local small, sky_flyers = 0, 0
+    for seed = 1, 60 do
+        local d = Layout.spread(seed)
+        for id, b in pairs(d) do
+            local hit = b.hit or b
+            if hit.w < 90 or hit.h < 90 then small = small + 1 end
+            if b.w < Layout.ANIMALS[id].w * Layout.ANIMAL_SCALE - 1 then small = small + 1 end
+        end
+        local in_sky = 0
+        for id in pairs(Layout.FLIES) do if d[id].hit.y < Layout.LAWN_TOP then in_sky = in_sky + 1 end end
+        if in_sky == 2 then sky_flyers = sky_flyers + 1 end
+    end
+    Kit.ok(small == 0, "every animal is shown 1.3 times as big and can be tapped on at least 90 units")
+    Kit.ok(sky_flyers == 60, "two of the flying animals are dealt the sky, always")
+    local hit = Layout.bookHit(1430)
+    local t = Layout.at(Layout.PROPS.table, 1430)
+    Kit.ok(hit.x >= t.x and hit.y >= t.y and hit.x + hit.w <= t.x + t.w and hit.y + hit.h <= t.y + t.h and hit.w >= 90, "the book on the table can be tapped inside the table")
+    local Plaque = require("solarui/garden/plaque")
+    Kit.ok(Plaque.readable("It was the best of times, it was the worst of times") and not Plaque.readable("A BIOGRAPHY BASED ON THE MOST RELIABLE TEXTS VOL"),
+        "a passage is a sentence, not a heading in capitals")
+end
+
 -- the companion on home
 do
     local Companion = require("solarui/garden/companion")
