@@ -30,7 +30,7 @@ local function plantStatus(e)
     local gen = e.rec.gen or 1
     local line = STAGES[e.rec.stage] .. (gen > 1 and (" · " .. string.format(_("generation %d"), gen)) or "")
     if not e.def.interval then return line, _("Needs no watering.") end
-    if e.thirst == Care.WILTED then return line, _("Wilted. A drink will wake it up.") end
+    if e.thirst == Care.WILTED then return line, _("Wilted. A drink will bring them round.") end
     if e.thirst == Care.THIRSTY then return line, _("Thirsty.") end
     return line, string.format(_("Fine for another %s."), span(e.thirsty_in))
 end

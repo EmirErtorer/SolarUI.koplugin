@@ -12,9 +12,9 @@ local GardenActions = {}
 -- Say what an action did, or why it could not be done.
 function GardenActions.say(ok, why, done)
     if ok then return App.toast(done) end
-    App.toast(({ dew = _("Not enough dew. It comes from the pages you read."), dry = _("This one needs no watering."),
-        fresh = _("It has only just had a drink."), full = _("It has only just eaten."),
-        seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), bloom = _("It is in bloom already."),
+    App.toast(({ dew = _("Not enough dew. Dew comes from the pages you read."), dry = _("This one needs no watering."),
+        fresh = _("Only just watered."), full = _("Only just fed."),
+        seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), bloom = _("Already in bloom."),
         none = _("Not in the garden.") })[why] or "")
 end
 
@@ -26,7 +26,7 @@ function GardenActions.of(id, after)
         on_water = function() local ok, why = State.water(id); say(ok, why, string.format(_("%s has had a drink."), State.name(id))); after() end,
         on_feed = function() local ok, why = State.feed(id); say(ok, why, string.format(_("%s has eaten."), State.name(id))); after() end,
         on_collect = function() State.collect(id); App.toast(_("Cut back. You have a seed.")); after() end,
-        on_rename = function() App.input(_("A name for it"), State.rec(id).nick or "", function(text) State.rename(id, text); after() end, _("Save")) end,
+        on_rename = function() App.input(_("Choose a name"), State.rec(id).nick or "", function(text) State.rename(id, text); after() end, _("Save")) end,
         on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); after() end,
     }
 end

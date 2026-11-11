@@ -86,7 +86,7 @@ function Visitors.hint(def)
     else text = "" end
     if f.id then
         local plant = Cast.plant(f.id)
-        local until_ = f.stage == 3 and _("it has a bud") or _("it blooms")
+        local until_ = f.stage == 3 and _("a bud forms") or _("the flower opens")
         text = (text ~= "" and (text .. " ") or "") .. string.format(_("Grow the %s until %s."), plant.en, until_)
     end
     return text

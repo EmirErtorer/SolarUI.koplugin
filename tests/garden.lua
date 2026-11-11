@@ -253,6 +253,23 @@ do
     Kit.ok(picked and picked.id and picked.need ~= nil, "a real garden gives a companion")
 end
 
+-- wording: nobody in the garden is called "it"
+do
+    local Guide = require("solarui/ui/gardenguide")
+    local function clean(text, where)
+        local bad = text:match("%f[%a][Ii]t%f[%A]") or text:match("%f[%a][Ii]ts%f[%A]") or text:match("%f[%a]itself%f[%A]") or text:match("%f[%a][Ii]t's%f[%a]")
+        Kit.ok(not bad, "no \"it\" in " .. where .. (bad and (": " .. text) or ""))
+    end
+    for _, id in ipairs(Cast.ids()) do clean(Lore.get(id), "the lore of " .. id) end
+    for _, a in ipairs(Cast.ANIMALS) do clean(Visitors.hint(a), "the hint for " .. a.id) end
+    for k = 1, 3 do
+        for _, kind in ipairs({ "sown", "sprout", "bud", "bloom", "seedhead", "wilt", "found", "hide", "back" }) do
+            clean(Journal.line({ t = k, k = kind, id = "rose" }).text, "the journal line " .. kind .. k)
+        end
+    end
+    for i, p in ipairs(Guide.pages()) do if i ~= 4 then clean((p.title or "") .. " " .. (p.text or ""), "guide page " .. i) end end
+end
+
 -- the seasons
 do
     Kit.ok(Season.ofMonth(1) == "winter" and Season.ofMonth(4) == "spring" and Season.ofMonth(7) == "summer" and Season.ofMonth(10) == "autumn", "months fall in the northern seasons")

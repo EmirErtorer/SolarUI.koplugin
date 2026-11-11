@@ -29,11 +29,12 @@ local function visitors(first, last)
 end
 
 -- The pages: { title, text (or nil), rows (a function making the rows, or nil) }.
-local function pages()
+function GardenGuide.pages()
     return {
-        { title = _("Your garden"), text = _("Everything here is alive. Plants grow and bloom while they are watered, and animals visit and stay while they are fed. Tap anything to meet it.") },
+        { title = _("Your garden"), text = _("Everything here is alive. Plants grow and bloom while they are watered, and animals visit and stay while they are fed. Tap anyone to meet them.") },
         { title = _("Dew and seeds"), text = string.format(_("Dew comes from reading: every page you read adds a drop. A drink costs %d dew and a meal %d. Seeds come from finishing books and from cutting back a plant that has gone to seed. A seed makes a growing plant bloom at once."), State.WATER, State.FEED) },
-        { title = _("Looking after it"), text = _("A plant that is not watered in time wilts and stops growing. An animal that is not fed hides in the grass. Nothing ever dies, and a drink or a meal brings it back.") },
+        { title = _("Looking after the garden"), text = _("A plant that is not watered in time wilts and stops growing. An animal that is not fed hides in the grass. Nothing ever dies, and a drink or a meal brings them back.") },
+        { title = _("Who, not what"), text = _("Nobody in this garden is called \"it\". Plants and animals are \"they\" and \"who\", because they are living neighbours, not objects. The botanist Robin Wall Kimmerer makes this point in her book Braiding Sweetgrass: English has one word for people and another for everything alive that is not, and speaking of the living as someone changes how we treat them.") },
         { title = _("Who visits"), text = _("The bee, the ladybird and the snail live here from the start. The others come when you earn them:"), rows = function() return visitors(1, 5) end },
         { title = _("Who visits"), text = _("And the rest:"), rows = function() return visitors(6, 9) end },
         { title = _("Day and night"), text = _("The sky follows your clock. The hedgehog, the moth and the fox only come out in the dark, between ten at night and five in the morning, and the other animals are about by day. The clock button at the top lets you look at the garden at any other hour.") },
@@ -43,7 +44,7 @@ end
 -- The dialog's card for page `i` on a screen `w` wide.
 function GardenGuide.card(w, i, go)
     local th = Theme.get()
-    local all = pages()
+    local all = GardenGuide.pages()
     local p = all[i]
     local rows = p.rows and p.rows() or {}
     local last = i == #all

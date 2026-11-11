@@ -60,7 +60,7 @@ local function careButton(scene, item, w)
         on_tap = function()
             local ok, why = act(item.id)
             App.toast(ok and string.format(plant and _("%s has had a drink.") or _("%s has eaten."), State.name(item.id))
-                or why == "dew" and _("Not enough dew. It comes from the pages you read.") or _("It has only just been cared for."))
+                or why == "dew" and _("Not enough dew. Dew comes from the pages you read.") or _("Only just cared for."))
             App.update()
         end })
 end

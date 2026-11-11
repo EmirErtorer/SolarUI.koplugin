@@ -176,7 +176,7 @@ function SettingsScreen:home()
             Controls.Toggle:new({ on = Settings.get("home_stats", true), on_change = function(on) save("home_stats", on) end })),
         row(_("Shelf on home"), _("The books you opened last, standing on a shelf on home"),
             Controls.Toggle:new({ on = Settings.get("home_shelf", true), on_change = function(on) save("home_shelf", on) end })),
-        row(_("Garden companion"), _("Which plant or animal of the garden keeps you company on home. Left on automatic, it is whoever needs care most"),
+        row(_("Garden companion"), _("Which plant or animal of the garden keeps you company on home. Left on automatic, whoever needs care most keeps you company"),
             Button:new({ label = HomeCompanion.pinned() == "auto" and _("Automatic") or State.name(HomeCompanion.pinned()), on_tap = function()
                 local options = { { label = _("Automatic"), checked = HomeCompanion.pinned() == "auto", on_tap = function() save("home_companion", "auto") end } }
                 for _i, item in ipairs(Companion.list()) do
