@@ -29,7 +29,7 @@ end
 function GardenView.compose(scene, o)
     o = o or {}
     local vh = scene.vh
-    local phase = Sky.phase(o.hour or tonumber(os.date("%H")))
+    local phase = Sky.phase(o.hour or Sky.hour())
     local light = (o.faded and "wash:" or "") .. phase
     scene:backdrop("garden_ground", 0, 0, Layout.WIDTH, vh, light)
     scene:border(14, 2.5)
@@ -45,7 +45,7 @@ function GardenView.compose(scene, o)
         scene:touch(b.x, b.y, b.w, b.h, o.on_book)
     end
     local spread = Layout.spread(o.seed)
-    for _i, a in ipairs(State.animals(o.hour)) do
+    for _i, a in ipairs(State.animals(o.hour or Sky.hour())) do
         local id = a.def.id
         local b = Layout.at(spread[id], vh)
         if a.here then

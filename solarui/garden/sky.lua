@@ -16,9 +16,14 @@ function Sky.phase(hour)
     return "golden"
 end
 
+-- The hour now (0 to 23); tests and previews replace this.
+function Sky.hour()
+    return tonumber(os.date("%H")) or 12
+end
+
 -- The phase now.
 function Sky.now()
-    return Sky.phase(tonumber(os.date("%H")) or 12)
+    return Sky.phase(Sky.hour())
 end
 
 return Sky
