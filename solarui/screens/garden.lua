@@ -23,8 +23,8 @@ local _ = require("solarui/gettext")
 
 local Garden = Screen:extend()
 
-local ARCH = { x = 236, y = 130, w = 600, h = 560 }   -- the frame of the big picture
-local CARD = { x = 186, y = 720, w = 700, h = 520 }   -- the card under it
+local ARCH = { x = 236, y = 118, w = 600, h = 500 }   -- the frame of the big picture
+local CARD = { x = 166, y = 640, w = 740, h = 660 }   -- the card under it
 
 local TICK = 45          -- seconds between two small movements
 local FULL_EVERY = 10    -- movements between two full refreshes that clear the ghosts
@@ -140,7 +140,7 @@ function Garden:focused(scene)
     local oy = math.max(0, (scene.vh - Layout.HEIGHT) / 2)
     scene:backdrop("garden_arch", ARCH.x, ARCH.y + oy, ARCH.w, ARCH.h)
     local e, kind = State.entry(self.focus)
-    local fit = { x = ARCH.x + 40, y = ARCH.y + oy + 60, w = ARCH.w - 80, h = ARCH.h - 90 }
+    local fit = { x = ARCH.x + 60, y = ARCH.y + oy + 100, w = ARCH.w - 120, h = ARCH.h - 110 }
     if kind == "plant" then
         scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, GardenView.plantParam(e))
     else
