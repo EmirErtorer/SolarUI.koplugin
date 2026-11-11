@@ -12,6 +12,7 @@ local DeviceInfo = require("solarui/data/device")
 local Files = require("solarui/data/files")
 local Format = require("solarui/format")
 local History = require("solarui/data/history")
+local HomeCompanion = require("solarui/ui/homecompanion")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
 local Launcher = require("solarui/ui/launcher")
@@ -29,7 +30,10 @@ local _ = require("solarui/gettext")
 local Home = Screen:extend()
 
 -- Heights of the blocks, in the scene's units.
-local STATUS_H, HERO_H, STATS_H, SHELF_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 200, 190, 26
+local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 190, 26
+-- A cover on the shelf, per cover size setting (the library's): width and
+-- height in the scene's units. The two biggest sizes share one, for room.
+local SHELF_COVER = { s = { 72, 108 }, m = { 88, 132 }, l = { 104, 156 }, xl = { 104, 156 } }
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
 -- The flowers that carry a button's own icon in their heart.
 local ICON_FLOWERS = { dock_medallion = true, dock_inkaway = true }
@@ -122,22 +126,27 @@ function Home:hero(scene, y, cur)
     if info.series then who = who .. (who ~= "" and "  ·  " or "") .. info.series .. (info.series_index and (" " .. info.series_index) or "") end
     local pages = st.pages and string.format(_("page %d of %d"), math.floor(st.percent * st.pages + 0.5), st.pages) or ""
     local opened = cur.time and string.format(_("Last opened %s"), Format.ago(cur.time)) or _("Not opened yet")
+    if who ~= "" then scene:place(Label:new({ text = who, kind = "label", color = "muted" }), x0, y + 22, w) end
+    HomeCompanion.place(scene, x0, y + 58, w)
     scene:place(Layout.Column:new({ gap = scene:px(8), children = {
-        Label:new({ text = info.title, kind = "hero", lines = 2 }),
-        Label:new({ text = who, kind = "heading", color = "muted" }),
-        ArtView:new({ name = "whiplash", unit = scene.k, height = scene:px(24) }),
         Label:new({ text = opened, kind = "small", color = "muted" }),
         ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(70) }),
         Layout.Row:new({ gap = scene:px(14), valign = "center", children = {
             Label:new({ text = pct .. "%", kind = "title" }),
             Label:new({ text = pages, kind = "body", color = "muted", grow = true }),
         } }),
-    } }), x0, y + 24, w)
+    } }), x0, y + 270, w)
 
     local by = y + 462
     bookButton(scene, "btn_details", _("Details"), 668, by, function() Actions.details(path) end)
     bookButton(scene, "btn_bookmarks", _("Bookmarks"), 810, by, function() App.push("annotations", { path = path, kind = "bookmarks" }) end)
     bookButton(scene, "btn_highlights", _("Highlights"), 952, by, function() App.push("annotations", { path = path, kind = "highlights" }) end)
+end
+
+-- The size of a cover on the shelf and the height of the whole shelf.
+local function shelfSize()
+    local c = SHELF_COVER[Settings.get("cover_size", "m")] or SHELF_COVER.m
+    return c[1], c[2], 200 + c[2] - 132
 end
 
 -- The shelf: the books opened last, standing in a row. Tapping one brings
@@ -149,16 +158,17 @@ function Home:shelf(scene, y, cur)
         if not (cur and item.path == cur.path) and #books < 6 then books[#books + 1] = item.path end
     end
     local x0 = LEFT + 30
+    local cw, ch = shelfSize()
     local step = (RIGHT - x0 - 88) / 5
-    scene:backdrop("sprouts", x0 + 44, y + 122, step * 5, 64, 5)
-    scene:backdrop("shelf", 30, y + 180, 1012, 40)
+    scene:backdrop("sprouts", x0 + 44, y + ch - 10, step * 5, 64, 5)
+    scene:backdrop("shelf", 30, y + ch + 48, 1012, 40)
     scene:backdrop("snail", 780, y + 1, 46, 31)
     if #books == 0 then
         scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), HEAD + 20, y + 90, 700)
     end
     for i, p in ipairs(books) do
         scene:place(Cover:new({ path = p, on_tap = function() self.picked = p; App.update() end, on_hold = function() Actions.details(p) end }),
-            x0 + (i - 1) * step, y + 54, 88, 132)
+            x0 + (i - 1) * step + (88 - cw) / 2, y + 54, cw, ch)
     end
 end
 
@@ -195,7 +205,8 @@ end
 -- Build the home screen.
 function Home:build(ctx)
     local stats, shelf = Settings.get("home_stats", true), Settings.get("home_shelf", true)
-    local blocks = STATUS_H + HERO_H + (stats and STATS_H or 0) + (shelf and SHELF_H or 0) + DOCK_H
+    local shelf_h = select(3, shelfSize())
+    local blocks = STATUS_H + HERO_H + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H
     local scene = Scene.make("home", ctx.w, ctx.h, blocks + FOOT)
     local gaps = 2 + (stats and 1 or 0) + (shelf and 1 or 0)
     local gap = math.min(110, math.max(0, (scene.vh - blocks - FOOT) / gaps))
@@ -209,7 +220,7 @@ function Home:build(ctx)
     local stats_y = y
     if stats then y = y + STATS_H + gap end
     local shelf_y = y
-    if shelf then y = y + SHELF_H + gap end
+    if shelf then y = y + shelf_h + gap end
     local dock_y = math.max(y, scene.vh - FOOT - DOCK_H)
 
     local season = Settings.get("home_season", true) and Season.current() or 2

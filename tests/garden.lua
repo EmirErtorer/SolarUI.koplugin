@@ -174,4 +174,24 @@ do
     Kit.ok(State.get().plants.rose ~= nil, "the garden is kept between visits")
 end
 
+-- the companion on home
+do
+    local Companion = require("solarui/garden/companion")
+    local list = {
+        { id = "a", kind = "plant", entry = { thirst = "fine" } },
+        { id = "b", kind = "plant", entry = { thirst = "thirsty" } },
+        { id = "c", kind = "animal", entry = { mood = "hiding" } },
+        { id = "d", kind = "animal", entry = { mood = "hiding" } },
+    }
+    Kit.ok(Companion.need(list[2].entry, "plant") == 2 and Companion.need(list[3].entry, "animal") == 3, "needs are scored")
+    Kit.ok(Companion.choose(list, "auto", 0).id == "c" and Companion.choose(list, "auto", 1).id == "d", "the neediest is chosen, the day picks among equals")
+    Kit.ok(Companion.choose(list, "a", 0).id == "a", "a pinned one wins")
+    Kit.ok(Companion.choose(list, "gone", 0).id == "c", "a pinned one that is not about is ignored")
+    local fine = { list[1], { id = "e", kind = "plant", entry = { thirst = "fine" } } }
+    Kit.ok(Companion.choose(fine, "auto", 0).id == "a" and Companion.choose(fine, "auto", 1).id == "e", "with nothing needed, the day chooses")
+    Kit.ok(Companion.choose({}, "auto", 0) == nil, "an empty garden has no companion")
+    local picked = Companion.pick("auto", 3, 12)
+    Kit.ok(picked and picked.id and picked.need ~= nil, "a real garden gives a companion")
+end
+
 Kit.finish("garden")

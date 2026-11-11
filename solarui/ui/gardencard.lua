@@ -42,6 +42,12 @@ local function animalStatus(e)
     return mood .. " · " .. when, string.format(_("Eats %s."), e.def.eats)
 end
 
+-- How the plant or animal of this entry is doing, in a few words ("In
+-- bloom", "Hungry · out by day").
+function GardenCard.mood(e, kind)
+    return (kind == "plant" and plantStatus or animalStatus)(e)
+end
+
 -- The row of buttons that care for what is shown: o.on_water, on_feed,
 -- on_collect, on_rename.
 local function actions(e, kind, o)

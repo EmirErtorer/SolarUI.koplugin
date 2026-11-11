@@ -29,9 +29,10 @@ local CARD = { x = 166, y = 640, w = 740, h = 660 }   -- the card under it
 local TICK = 45          -- seconds between two small movements
 local FULL_EVERY = 10    -- movements between two full refreshes that clear the ghosts
 
--- Nothing is shown large to begin with, and no animal has moved yet.
-function Garden:init()
-    self.focus = nil
+-- Nothing is shown large to begin with (unless the home screen asked for one
+-- to be), and no animal has moved yet.
+function Garden:init(params)
+    self.focus = params and params.focus or nil
     self.pose = {}
     self.sprites = {}
     self.ticks = 0

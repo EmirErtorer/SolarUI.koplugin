@@ -8,7 +8,9 @@ local Actions = require("solarui/actions")
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
 local Controls = require("solarui/ui/controls")
+local Companion = require("solarui/garden/companion")
 local Cover = require("solarui/ui/cover")
+local HomeCompanion = require("solarui/ui/homecompanion")
 local Covers = require("solarui/data/covers")
 local Custom = require("solarui/themes/custom")
 local Files = require("solarui/data/files")
@@ -24,6 +26,7 @@ local Progress = require("solarui/ui/progress")
 local Registry = require("solarui/theme/registry")
 local Screen = require("solarui/screens/screen")
 local Settings = require("solarui/settings")
+local State = require("solarui/garden/state")
 local row = require("solarui/ui/settingrow")
 local Swatch = require("solarui/ui/swatch")
 local Theme = require("solarui/theme")
@@ -134,7 +137,7 @@ function SettingsScreen:covers()
         kids[#kids + 1] = Controls.Segmented({ options = { { _("Glass"), "glass" }, { _("Garden"), "garden" }, { _("Halo"), "halo" }, { _("Scales"), "scales" }, { _("Lines"), "lines" } },
             value = Cover.cardArt(), kind = "small", on_change = function(v) save("card_art", v) end })
     end
-    kids[#kids + 1] = Section.title(_("Size in the library"), nil, "daisy")
+    kids[#kids + 1] = Section.title(_("Size of covers"), nil, "daisy")
     kids[#kids + 1] = Controls.Segmented({ options = { { "S", "s" }, { "M", "m" }, { "L", "l" }, { "XL", "xl" } },
         value = Settings.get("cover_size", "m"), kind = "small", on_change = function(v) save("cover_size", v) end })
     if way ~= "card" then
@@ -173,6 +176,14 @@ function SettingsScreen:home()
             Controls.Toggle:new({ on = Settings.get("home_stats", true), on_change = function(on) save("home_stats", on) end })),
         row(_("Shelf on home"), _("The books you opened last, standing on a shelf on home"),
             Controls.Toggle:new({ on = Settings.get("home_shelf", true), on_change = function(on) save("home_shelf", on) end })),
+        row(_("Garden companion"), _("Which plant or animal of the garden keeps you company on home. Left on automatic, it is whoever needs care most"),
+            Button:new({ label = HomeCompanion.pinned() == "auto" and _("Automatic") or State.name(HomeCompanion.pinned()), on_tap = function()
+                local options = { { label = _("Automatic"), checked = HomeCompanion.pinned() == "auto", on_tap = function() save("home_companion", "auto") end } }
+                for _i, item in ipairs(Companion.list()) do
+                    options[#options + 1] = { label = State.name(item.id), checked = HomeCompanion.pinned() == item.id, on_tap = function() save("home_companion", item.id) end }
+                end
+                App.choose({ title = _("Garden companion"), options = options })
+            end })),
         row(_("Seasons on home"), _("The vines blossom in spring, turn gold in autumn and go pale in winter"),
             Controls.Toggle:new({ on = Settings.get("home_season", true), on_change = function(on) save("home_season", on) end })),
         row(_("Sleep picture"), _("Draws a picture in the garden's style to choose as KOReader's sleep screen (Settings, Screen, Sleep screen, Wallpaper, Custom image)"),
