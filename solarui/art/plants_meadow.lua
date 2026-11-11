@@ -16,21 +16,6 @@ local function wire(p, pts, w)
     return Svg.stem(pts, Svg.taper(w, w * .7), p.c.stem, p.c.ink, 1.2)
 end
 
--- A sunflower head seen from the front, the disc `rd` across its half: green
--- bracts, two rings of rays and seeds set in a Fibonacci spiral.
-local function sunHead(p, rd, rays)
-    local c = p.c
-    local seeds = {}
-    for i = 1, 60 do
-        local x, y = Svg.pol(rd * .9 * math.sqrt(i / 60), i * 137.5)
-        seeds[#seeds + 1] = circle(x, y, rd * (.035 + .03 * i / 60), i < 9 and c.pale or c.ink)
-    end
-    local ring = rays and (Flora.around(0, 0, rd * .8, 13, petal(c, rd * 1.25, rd * .3, c.pale, 1.3), 14) .. Flora.around(0, 0, rd * .8, 13, petal(c, rd * 1.3, rd * .32, c.gold, 1.5)))
-        or Flora.around(0, 0, rd * .8, 13, petal(c, rd * .5, rd * .16, c.pale, 1.1), 9)
-    return Flora.around(0, 0, rd * .7, 13, petal(c, rd * (rays and 1 or .74), rd * .3, c.leaf, 1.3), 7) .. ring
-        .. circle(0, 0, rd, c.bloom, c.ink, 1.8) .. table.concat(seeds)
-end
-
 -- Sunflower: a stout stem with heart-shaped leaves and one great head.
 local function sunflower(p)
     local c, st = p.c, p.st
@@ -48,9 +33,9 @@ local function sunflower(p)
     if st == 3 then
         head = group(x, y, ang + 90, Flora.around(0, -12, 3, 9, petal(c, 16, 6, c.leaf, 1.3)) .. circle(0, -12, 9, c.sage, c.ink, 1.4) .. Flora.around(0, -12, 0, 5, petal(c, 8, 3, c.gold, 1), 20))
     elseif st == 4 then
-        head = group(x, y, ang + 90, group(0, -8, 0, sunHead(p, 20, true), 1, p.wilt and .7 or 1))
+        head = group(x, y, ang + 90, group(0, -8, 0, Kit.sunflower(c, 20, true), 1, p.wilt and .7 or 1))
     elseif st == 5 then
-        head = group(x, y, ang + 90, group(0, -6, 0, sunHead(p, 25, false), 1, .8))
+        head = group(x, y, ang + 90, group(0, -6, 0, Kit.sunflower(c, 25, false), 1, .8))
     end
     return Kit.soil(p, 92) .. leaves .. Svg.stem(stem, Svg.taper(st == 2 and 4 or 8, st == 2 and 3 or 5.4), c.stem, c.ink, 1.6) .. head
 end

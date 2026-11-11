@@ -109,6 +109,20 @@ function Kit.heart(c, x, y, rot, L, fill)
     return group(x, y, rot, body)
 end
 
+-- A sunflower head seen from the front, the disc `rd` across its half: green
+-- bracts, two rings of rays and seeds set in a Fibonacci spiral.
+function Kit.sunflower(c, rd, rays)
+    local seeds = {}
+    for i = 1, 60 do
+        local x, y = Svg.pol(rd * .9 * math.sqrt(i / 60), i * 137.5)
+        seeds[#seeds + 1] = Svg.circle(x, y, rd * (.035 + .03 * i / 60), i < 9 and c.pale or c.ink)
+    end
+    local ring = rays and (Flora.around(0, 0, rd * .8, 13, Flora.petal(c, rd * 1.25, rd * .3, c.pale, 1.3), 14) .. Flora.around(0, 0, rd * .8, 13, Flora.petal(c, rd * 1.3, rd * .32, c.gold, 1.5)))
+        or Flora.around(0, 0, rd * .8, 13, Flora.petal(c, rd * .5, rd * .16, c.pale, 1.1), 9)
+    return Flora.around(0, 0, rd * .7, 13, Flora.petal(c, rd * (rays and 1 or .74), rd * .3, c.leaf, 1.3), 7) .. ring
+        .. Svg.circle(0, 0, rd, c.bloom, c.ink, 1.8) .. table.concat(seeds)
+end
+
 -- The mound of earth a plant stands in, `w` across.
 function Kit.soil(p, w)
     local h = w * .1

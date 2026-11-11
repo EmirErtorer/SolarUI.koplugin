@@ -107,6 +107,19 @@ do
         end
         Kit.ok(#clash == 0, "nothing overlaps on a canvas " .. vh .. " tall: " .. table.concat(clash, ", "))
     end
+    -- the small furniture of the scenery stands in free lawn only
+    local Props = require("solarui/art/garden_props")
+    for _, vh in ipairs({ 1360, 1500, 1800 }) do
+        local all, clash = Layout.all(vh), {}
+        all.pond = Layout.at(Layout.PROPS.pond, vh)
+        for i, a in ipairs(Props.places(vh)) do
+            if a.x < 30 or a.x + a.w > 1042 or a.y + a.h > vh - 30 then clash[#clash + 1] = "thing " .. i .. " leaves the frame" end
+            for id, b in pairs(all) do
+                if a.x < b.x + b.w and b.x < a.x + a.w and a.y < b.y + b.h and b.y < a.y + a.h then clash[#clash + 1] = "thing " .. i .. "/" .. id end
+            end
+        end
+        Kit.ok(#clash == 0, "the furniture stands clear of every bed on a canvas " .. vh .. " tall: " .. table.concat(clash, ", "))
+    end
     local pond = Layout.PROPS.pond
     for _, id in ipairs(Layout.INSIDE_POND) do
         local b = Layout.PLANTS[id] or Layout.ANIMALS[id]

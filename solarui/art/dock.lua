@@ -55,11 +55,10 @@ function Dock.dock_fern(c, vw, vh)
         .. Flora.crozier(c, vw * .5, vh, 0, vh * .58, vh * .27)
 end
 
--- The garden: a sunflower, the tallest flower of any garden, with a daisy at its foot.
+-- The garden: its own sunflower in full bloom, seeds in their spiral.
 function Dock.dock_garden(c, vw, vh)
-    return stalk(c, vw, vh, vw * .5, vh * .42, 6) .. foot(c, vw, vh)
-        .. Flora.sunflower(c, vw * .5, vh * .34, vh * .1, vh * .17, 14, 14)
-        .. Flora.daisy(c, vw * .24, vh * .78, vh * .12, 10)
+    return stalk(c, vw, vh, vw * .5, vh * .5, 6) .. foot(c, vw, vh)
+        .. Svg.group(vw * .5, vh * .37, 0, require("solarui/art/plantkit").sunflower(c, vh * .16, true))
 end
 
 -- A dandelion clock, a lens on its stem.
