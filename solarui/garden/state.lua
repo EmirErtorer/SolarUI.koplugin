@@ -8,6 +8,7 @@
 local Cast = require("solarui/garden/cast")
 local Care = require("solarui/garden/care")
 local Settings = require("solarui/settings")
+local Sky = require("solarui/garden/sky")
 local Visitors = require("solarui/garden/visitors")
 
 local State = {}
@@ -151,7 +152,7 @@ end
 -- `here` says it is about now (the right hour and not hiding).
 function State.animals(hour)
     local out, now = {}, State.clock()
-    hour = hour or tonumber(os.date("%H"))
+    hour = hour or Sky.hour()
     for _i, def in ipairs(Cast.ANIMALS) do
         local rec = State.get().animals[def.id]
         if rec then
@@ -160,6 +161,18 @@ function State.animals(hour)
         end
     end
     return out
+end
+
+-- Has the reader seen the guide to the garden?
+function State.guideSeen()
+    return State.get().guide_seen == true
+end
+
+-- Note that the guide has been seen.
+function State.markGuide()
+    if State.guideSeen() then return end
+    State.get().guide_seen = true
+    State.save()
 end
 
 -- The entry (see State.plants and State.animals) of a plant or an animal

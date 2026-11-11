@@ -3,6 +3,8 @@
 -- the golden hour until night. The same name lights the garden (art/light.lua)
 -- and says which animals are about.
 
+local Settings = require("solarui/settings")
+
 local Sky = {}
 
 -- The phases in the order the day goes through them.
@@ -16,8 +18,11 @@ function Sky.phase(hour)
     return "golden"
 end
 
--- The hour now (0 to 23); tests and previews replace this.
+-- The hour of the garden (0 to 23): the one the reader picked on the garden's
+-- clock, else the device's own. Tests and previews may replace this.
 function Sky.hour()
+    local picked = Settings.get("garden_hour", nil)
+    if type(picked) == "number" then return picked end
     return tonumber(os.date("%H")) or 12
 end
 

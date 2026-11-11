@@ -153,6 +153,7 @@ end
 -- it to the front; holding it opens its details.
 function Home:shelf(scene, y, cur)
     scene:heading(_("On the shelf"), y)
+    scene:sprite("snail", 780, y - 6, 46, 31)   -- on the heading's rule, over it
     local books = {}
     for _i, item in ipairs(History.recent(8)) do
         if not (cur and item.path == cur.path) and #books < 6 then books[#books + 1] = item.path end
@@ -162,7 +163,6 @@ function Home:shelf(scene, y, cur)
     local step = (RIGHT - x0 - 88) / 5
     scene:backdrop("sprouts", x0 + 44, y + ch - 10, step * 5, 64, 5)
     scene:backdrop("shelf", 30, y + ch + 48, 1012, 40)
-    scene:backdrop("snail", 780, y + 1, 46, 31)
     if #books == 0 then
         scene:place(Label:new({ text = _("Books you open show up here."), kind = "body", color = "muted" }), HEAD + 20, y + 90, 700)
     end

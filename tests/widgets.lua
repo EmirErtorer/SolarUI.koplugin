@@ -134,7 +134,7 @@ do
     -- every species has its three names, and the ones with a dock drawing have it
     local Species = require("solarui/art/species")
     for _i, sp in ipairs(Species.LIST) do
-        Kit.ok(sp.en and sp.latin and sp.tr, sp.id .. " has an English, a Latin and a Turkish name")
+        Kit.ok(sp.en and sp.latin, sp.id .. " has an English and a Latin name")
         Kit.ok(not sp.dock or Sprites[sp.dock] ~= nil, sp.id .. " has its dock drawing")
     end
     Kit.ok(Species.ofDock("dock_library").latin == "Narcissus poeticus", "a dock drawing leads to its species")

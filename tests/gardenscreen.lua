@@ -67,6 +67,35 @@ Kit.ok(s.focus == nil, "close returns to the garden")
 Kit.ok(s:onBack() == false, "back from the garden leaves it")
 s.focus = "tulip"
 Kit.ok(s:onBack() == true and s.focus == nil, "back from a picture closes it")
+-- the first visit shows everyone, and the guide has pages for it
+do
+    local Guide = require("solarui/ui/gardenguide")
+    local Settings = require("solarui/settings")
+    local Sky = require("solarui/garden/sky")
+    State.get().guide_seen = nil
+    local first = Garden:new({})
+    Kit.ok(first.showcase == true, "the first visit is a showcase")
+    paint(first):free()
+    local n = 0
+    for _ in pairs(first.sprites) do n = n + 1 end
+    Kit.ok(n == 12, "every animal is on show, foxes too (" .. n .. ")")
+    for i = 1, 6 do
+        local ok, err = pcall(function() local card = Guide.card(W, i, function() end); card:layout(nil, nil) end)
+        Kit.ok(ok, "guide page " .. i .. " builds: " .. tostring(err))
+    end
+    State.markGuide()
+    local later = Garden:new({})
+    Kit.ok(later.showcase == false and State.guideSeen(), "after the guide the garden shows only who has come")
+    paint(later):free()
+    local seen = 0
+    for _ in pairs(later.sprites) do seen = seen + 1 end
+    Kit.ok(seen < 12, "and not everyone (" .. seen .. ")")
+    Settings.set("garden_hour", 3)
+    Kit.ok(Sky.hour() == 3, "a picked hour is the garden's hour")
+    Settings.set("garden_hour", false)
+    Kit.ok(Sky.hour() == (tonumber(os.date("%H")) or 12), "and following the clock is the default")
+end
+
 -- the open book: a passage on its page, another on request, and a view with none
 do
     local Plaque = require("solarui/garden/plaque")

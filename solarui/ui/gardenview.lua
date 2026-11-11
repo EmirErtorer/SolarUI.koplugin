@@ -5,6 +5,7 @@
 -- the sleep picture. With `o.faded` it is the pale copy that stays behind a
 -- picture shown larger. Taps are added only when `o.on_tap` is given.
 
+local Cast = require("solarui/garden/cast")
 local Layout = require("solarui/garden/layout")
 local Sky = require("solarui/garden/sky")
 local State = require("solarui/garden/state")
@@ -23,7 +24,15 @@ function GardenView.animalParam(pose, flip, faded, phase)
     return pose .. (flip and ":flip" or "") .. (faded and ":wash" or "") .. (phase and (":" .. phase) or "")
 end
 
--- Put the garden on `scene`. o: { faded, seed (what deals the animals), pose
+-- Every animal there is, all about and content: the garden as shown the
+-- first time, so the reader can see everything that may come.
+local function everyone()
+    local out = {}
+    for _i, def in ipairs(Cast.ANIMALS) do out[#out + 1] = { def = def, here = true, mood = "content" } end
+    return out
+end
+
+-- Put the garden on `scene`. o: { showcase (show every animal), faded, seed (what deals the animals), pose
 -- (id -> "1" or "2"), hour, on_tap(id, kind) for a plant or animal, sprites
 -- (a table that is filled with each animal's element, to repaint it alone) }.
 function GardenView.compose(scene, o)
@@ -45,7 +54,7 @@ function GardenView.compose(scene, o)
         scene:touch(b.x, b.y, b.w, b.h, o.on_book)
     end
     local spread = Layout.spread(o.seed)
-    for _i, a in ipairs(State.animals(o.hour or Sky.hour())) do
+    for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
         local id = a.def.id
         local b = Layout.at(spread[id], vh)
         if a.here then

@@ -1,12 +1,13 @@
 -- The garden companion on the home screen: a small arch holding one plant or
 -- animal of the garden, its name, Latin name and how it is doing, and either
 -- a button to care for it (when it needs care) or a sentence about it.
--- Tapping the card opens it in the garden.
+-- Tapping the card opens it over the home screen (ui/gardenpopup.lua).
 
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
 local Companion = require("solarui/garden/companion")
 local GardenCard = require("solarui/ui/gardencard")
+local GardenPopup = require("solarui/ui/gardenpopup")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
@@ -102,7 +103,7 @@ function HomeCompanion.place(scene, x, y, w)
     picture(scene, item, x, y)
     local tx, tw = x + ARCH_W + 14, w - ARCH_W - 14
     scene:place(HomeCompanion.column(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
-    scene:touch(x, y, ARCH_W, ARCH_H, function() App.push("garden", { focus = item.id }) end)
+    scene:touch(x, y, ARCH_W, ARCH_H, function() GardenPopup.open(item.id) end)
 end
 
 return HomeCompanion

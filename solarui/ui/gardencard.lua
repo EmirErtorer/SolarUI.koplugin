@@ -1,5 +1,5 @@
 -- The card under the big picture of a tapped plant or animal: its name (the
--- nickname when it has one), Latin and Turkish names, how it is doing, a few
+-- nickname when it has one), Latin name, how it is doing, a few
 -- sentences about it and the buttons to care for it, rename it and move on to
 -- the next. All actions come in as functions; the card only shows and asks.
 
@@ -42,6 +42,12 @@ local function animalStatus(e)
     return mood .. " · " .. when, string.format(_("Eats %s."), e.def.eats)
 end
 
+-- How the plant or animal of this entry is doing, as one sentence.
+function GardenCard.status(e, kind)
+    local line, care = (kind == "plant" and plantStatus or animalStatus)(e)
+    return line .. ". " .. care
+end
+
 -- How the plant or animal of this entry is doing, in a few words ("In
 -- bloom", "Hungry · out by day").
 function GardenCard.mood(e, kind)
@@ -68,9 +74,16 @@ local function actions(e, kind, o)
     return Layout.Row:new(row)
 end
 
--- The row that moves between the garden's inhabitants.
+-- The row that moves between the garden's inhabitants, or (with o.on_open)
+-- the one that closes the card or opens the garden.
 local function moves(o)
     local th = Theme.get()
+    if o.on_open then
+        return Layout.Row:new({ gap = th.space.s, children = {
+            Button:new({ label = _("Close"), grow = true, on_tap = o.on_close }),
+            Button:new({ label = _("Open the garden"), grow = true, on_tap = o.on_open }),
+        } })
+    end
     return Layout.Row:new({ gap = th.space.s, children = {
         Button:new({ icon = "back", icon_size = 18, variant = "icon", width = th.size.touch, on_tap = o.on_prev }),
         Button:new({ label = _("Back to the garden"), variant = "secondary", grow = true, on_tap = o.on_close }),
@@ -85,7 +98,7 @@ function GardenCard.build(id, o)
     local e, kind = State.entry(id)
     local def, rec = e.def, State.rec(id)
     local status, care = (kind == "plant" and plantStatus or animalStatus)(e)
-    local names = (rec.nick and (def.en .. " · ") or "") .. def.latin .. " · " .. def.tr
+    local names = (rec.nick and (def.en .. " · ") or "") .. def.latin
     return Panel:new({ shape = "frame", double = true, fill = "bg", pad = th.space.m, child = Layout.Column:new({ gap = th.space.s, children = {
         Label:new({ text = State.name(id), kind = "title" }),
         Label:new({ text = names, kind = "small", color = "muted" }),
@@ -95,6 +108,13 @@ function GardenCard.build(id, o)
         actions(e, kind, o),
         moves(o),
     } }) })
+end
+
+-- The care and moving buttons alone, for a card that is not this panel (the
+-- popup over home): { actions row, moves row }.
+function GardenCard.rows(id, o)
+    local e, kind = State.entry(id)
+    return { actions(e, kind, o), moves(o) }
 end
 
 return GardenCard

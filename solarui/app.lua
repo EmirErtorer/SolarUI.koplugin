@@ -388,13 +388,15 @@ function App.overlay()
     return host and host.overlay
 end
 
--- Close the dialog and repaint what it covered.
+-- Close the dialog and repaint what it covered (the dialog's `on_closed`, when
+-- it has one, runs after).
 function App.closeDialog()
     if not (host and host.overlay) then return end
-    local box = host:overlayBox()
+    local box, closed = host:overlayBox(), host.overlay
     host.overlay = nil
     host:markRepainted()
     UIManager:setDirty(host, "ui", box)
+    if closed.on_closed then closed.on_closed() end
 end
 
 -- Ask before doing something (see Dialog.confirm for the fields).

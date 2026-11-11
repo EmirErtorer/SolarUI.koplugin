@@ -25,7 +25,7 @@ State.source = function() return reading end
 do
     for _, p in ipairs(Cast.PLANTS) do
         Kit.ok(Lore.get(p.id) ~= "", "lore for the plant " .. p.id)
-        Kit.ok(p.latin and p.tr and p.en and #p.need == 4, "names and stages for " .. p.id)
+        Kit.ok(p.latin and p.en and #p.need == 4, "names and stages for " .. p.id)
         Kit.ok(Layout.PLANTS[p.id] ~= nil, "a place for the plant " .. p.id)
     end
     for _, a in ipairs(Cast.ANIMALS) do

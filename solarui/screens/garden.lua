@@ -7,7 +7,10 @@
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
 local Care = require("solarui/garden/care")
+local GardenActions = require("solarui/ui/gardenactions")
 local GardenCard = require("solarui/ui/gardencard")
+local GardenClock = require("solarui/ui/gardenclock")
+local GardenGuide = require("solarui/ui/gardenguide")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
@@ -31,10 +34,10 @@ local CARD = { x = 166, y = 640, w = 740, h = 660 }   -- the card under it
 local TICK = 45          -- seconds between two small movements
 local FULL_EVERY = 10    -- movements between two full refreshes that clear the ghosts
 
--- Nothing is shown large to begin with (unless the home screen asked for one
--- to be), and no animal has moved yet.
-function Garden:init(params)
-    self.focus = params and params.focus or nil
+-- Nothing is shown large to begin with, and no animal has moved yet.
+function Garden:init()
+    self.focus = nil
+    self.showcase = not State.guideSeen()   -- the first time, every animal shows and the guide follows
     self.pose = {}
     self.sprites = {}
     self.ticks = 0
@@ -107,36 +110,56 @@ function Garden:step(delta)
     App.update()
 end
 
--- Say what an action did, or why it could not be done.
-local function say(ok, why, done)
-    if ok then return App.toast(done) end
-    App.toast(({ dew = _("Not enough dew. It comes from the pages you read."), dry = _("This one needs no watering."),
-        fresh = _("It has only just had a drink."), full = _("It has only just eaten."),
-        seed = _("No seeds. Finish a book, or cut back a plant that has gone to seed."), bloom = _("It is in bloom already."), none = _("Not in the garden.") })[why] or "")
-end
-
 -- The actions of the card for the picture `id`.
 function Garden:actions(id)
-    return {
-        on_water = function() local ok, why = State.water(id); say(ok, why, string.format(_("%s has had a drink."), State.name(id))); App.update() end,
-        on_feed = function() local ok, why = State.feed(id); say(ok, why, string.format(_("%s has eaten."), State.name(id))); App.update() end,
-        on_collect = function() State.collect(id); App.toast(_("Cut back. You have a seed.")); App.update() end,
-        on_rename = function() App.input(_("A name for it"), State.rec(id).nick or "", function(text) State.rename(id, text); App.update() end, _("Save")) end,
-        on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); App.update() end,
-        on_prev = function() self:step(-1) end, on_next = function() self:step(1) end,
-        on_close = function() self.focus = nil; App.update() end,
-    }
+    local a = GardenActions.of(id, function() App.update() end)
+    a.on_prev = function() self:step(-1) end
+    a.on_next = function() self:step(1) end
+    a.on_close = function() self.focus = nil; App.update() end
+    return a
 end
 
--- The heading row: the title, what is in hand and the two pages.
+-- Open the guide; when it closes it has been seen, and the garden shows only
+-- who has really come.
+function Garden:guide()
+    if App.overlay() then return end
+    GardenGuide.open(function()
+        State.markGuide()
+        self.showcase = false
+        App.update()
+    end)
+end
+
+-- On the first visit, open the guide after ten seconds of looking around.
+function Garden:waitForGuide()
+    if not self.showcase or self.guide_timer then return end
+    self.guide_timer = true
+    UIManager:scheduleIn(10, function()
+        self.guide_timer = false
+        if self.showcase and App.isOpen() and App.current() == self then self:guide() end
+    end)
+end
+
+-- The heading row: the title, what is in hand and the buttons, from the right:
+-- field notes, journal, the clock and the guide.
 function Garden:heading(scene)
     local th = Theme.get()
     local unit = th.size.touch / scene.k
-    scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 380)
-    local x0 = 962 - 2 * unit - 12
-    scene:place(Label:new({ text = string.format(_("Dew %d · Seeds %d"), State.dew(), State.seeds()), kind = "small", color = "muted", align = "right" }), x0 - 330, 52, 318)
-    scene:place(Button:new({ icon = "notes", variant = "icon", width = th.size.touch, on_tap = function() App.push("gardenjournal") end }), x0, 34, unit, unit)
-    scene:place(Button:new({ icon = "book", variant = "icon", width = th.size.touch, on_tap = function() App.push("gardennotes") end }), 962 - unit, 34, unit, unit)
+    local gap = 12
+    local function button(spec, x, on_tap)
+        spec.variant, spec.width, spec.on_tap = "icon", th.size.touch, on_tap
+        scene:place(Button:new(spec), x, 34, unit, unit)
+        return x - unit - gap
+    end
+    local x = 962 - unit
+    x = button({ icon = "book" }, x, function() App.push("gardennotes") end)
+    x = button({ icon = "notes" }, x, function() App.push("gardenjournal") end)
+    x = button({ icon = "history" }, x, function() GardenClock.open(nil, function() App.update() end) end)
+    x = button({ label = "?" }, x, function() self:guide() end)
+    scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260)
+    local line = Text.height("small") / scene.k
+    scene:place(Label:new({ text = string.format(_("Dew %d"), State.dew()), kind = "small", color = "muted", align = "right" }), x - 60, 56 - line / 2, 100 + 60 - 12)
+    scene:place(Label:new({ text = string.format(_("Seeds %d"), State.seeds()), kind = "small", color = "muted", align = "right" }), x - 60, 56 + line / 2, 100 + 60 - 12)
 end
 
 -- The big picture and its card over the faded garden.
@@ -198,12 +221,14 @@ function Garden:build(ctx)
     local bar = Theme.get().size.tabbar + Theme.px(16)
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
     self.sprites = {}
-    GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed,
-        on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil,
-        on_book = not self.focus and function() self.focus = "book"; App.update() end or nil })
+    local show = self.showcase
+    GardenView.compose(scene, { showcase = show, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed,
+        on_tap = not self.focus and function(id) if show then self:guide() else self.focus = id; App.update() end end or nil,
+        on_book = not self.focus and function() if show then self:guide() else self.focus = "book"; App.update() end end or nil })
     self:heading(scene)
     if self.focus == "book" then self:book(scene) elseif self.focus then self:focused(scene) end
     self:schedule()
+    self:waitForGuide()
     return LayoutUI.Column:new({ children = { scene, tabs } })
 end
 

@@ -44,10 +44,12 @@ end
 -- there is one, or the warning look), a title, a boxed detail, the text and
 -- rows of buttons (elements). `dock` ("top" or "bottom") makes it a drop-down
 -- from that edge instead of a floating card.
--- o: { tag, icon, title, text, detail, rows, danger, lines, dock, wide }
+-- o: { top (an element over everything), tag, icon, title, text, detail, rows,
+-- danger, lines, dock, wide }
 function Dialog.card(o, screen_w)
     local th = Theme.get()
     local kids = {}
+    if o.top then kids[#kids + 1] = o.top end
     local centred = (o.danger or o.icon) and not o.dock
     if o.tag then
         kids[#kids + 1] = Label:new({ text = o.tag, kind = "micro", color = o.danger and "accent" or "muted", align = centred and "center" or "left" })

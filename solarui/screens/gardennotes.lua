@@ -16,12 +16,12 @@ local GardenNotes = Screen:extend()
 -- Start on the first page.
 function GardenNotes:init() self.page = 1 end
 
--- One entry: the common name, the Latin and Turkish names, and its state.
+-- One entry: the common name, the Latin name, and its state.
 local function entry(def, state)
     local th = Theme.get()
     return Layout.Column:new({ gap = 0, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
         Label:new({ text = def.en, kind = "heading" }),
-        Label:new({ text = def.latin .. " · " .. def.tr, kind = "small", color = "muted" }),
+        Label:new({ text = def.latin, kind = "small", color = "muted" }),
         Label:new({ text = state, kind = "small", lines = 2 }),
     } })
 end

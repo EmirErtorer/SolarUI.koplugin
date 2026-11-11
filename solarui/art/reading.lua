@@ -36,9 +36,11 @@ end
 -- One day's plant growing from (x, y): its flower open on a tall stalk with
 -- a leaf when the day was read, a closed bud on a short sprout when not.
 local function dayPlant(c, wday, x, y, vh, r, read)
-    local lean = (vary(wday, 22) - .5) * r * .9
+    local lean = (vary(wday, 22) - .5) * r * .4
     local hx = x + lean
-    local hy = read and vh * (.3 + .1 * vary(wday, 23)) or vh * (.6 + .06 * vary(wday, 24))
+    -- neighbouring days alternate high and low so their flowers never meet
+    local stagger = wday % 2 == 0 and vh * .12 or 0
+    local hy = read and vh * (.28 + .06 * vary(wday, 23)) + stagger or vh * (.6 + .06 * vary(wday, 24))
     local side = wday % 2 == 0 and 1 or -1
     local stalk = Svg.line(string.format("M%s %s Q%s %s %s %s", n(x), n(y), n(x - lean), n((y + hy) / 2), n(hx), n(hy)), c.stem, 3)
     if not read then
@@ -56,7 +58,7 @@ function Reading.week(c, vw, vh, days)
     local marks, first = tostring(days or ""):match("^([01]*)|?(%d*)$")
     marks, first = marks or "", tonumber(first) or 2
     local spots = Reading.weekSpots(vw, vh)
-    local r = math.min(vw / 7 * .42, vh * .2)
+    local r = math.min(vw / 7 * .36, vh * .19)
     local way, out = { { 3, vh * .87 } }, {}
     for i, s in ipairs(spots) do
         way[#way + 1] = s

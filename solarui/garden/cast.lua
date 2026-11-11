@@ -39,18 +39,18 @@ local PLANTS = {
 -- hours between meals, what it eats and the rule that finds it (see
 -- garden/visitors.lua). The first three are in the garden from the start.
 local ANIMALS = {
-    { id = "bee", en = _("Honey bee"), latin = "Apis mellifera", tr = "Bal arısı", about = "day", hours = 36, eats = _("nectar"), find = { kind = "start" } },
-    { id = "ladybug", en = _("Seven-spot ladybird"), latin = "Coccinella septempunctata", tr = "Uğur böceği", about = "day", hours = 72, eats = _("aphids"), find = { kind = "start" } },
-    { id = "snail", en = _("Garden snail"), latin = "Cornu aspersum", tr = "Bahçe salyangozu", about = "any", hours = 72, eats = _("tender leaves"), find = { kind = "start" } },
-    { id = "butterfly", en = _("Swallowtail"), latin = "Papilio machaon", tr = "Kırlangıçkuyruk", about = "day", hours = 36, eats = _("nectar"), find = { kind = "bloom", n = 3 } },
-    { id = "robin", en = _("European robin"), latin = "Erithacus rubecula", tr = "Kızılgerdan", about = "day", hours = 36, eats = _("worms and seeds"), find = { kind = "morning", n = 20 } },
-    { id = "dragonfly", en = _("Emperor dragonfly"), latin = "Anax imperator", tr = "Yusufçuk", about = "day", hours = 36, eats = _("midges"), find = { kind = "plant", id = "water_lily", stage = 4 } },
-    { id = "frog", en = _("Marsh frog"), latin = "Pelophylax ridibundus", tr = "Ova kurbağası", about = "any", hours = 72, eats = _("flies"), find = { kind = "plant", id = "water_lily", stage = 3 } },
-    { id = "koi", en = _("Koi carp"), latin = "Cyprinus carpio", tr = "Koi balığı", about = "any", hours = 72, eats = _("pond weed"), find = { kind = "streak", n = 7, id = "water_lily", stage = 4 } },
-    { id = "hedgehog", en = _("European hedgehog"), latin = "Erinaceus europaeus", tr = "Kirpi", about = "night", hours = 72, eats = _("beetles and slugs"), find = { kind = "night", n = 20 } },
-    { id = "moth", en = _("Elephant hawk-moth"), latin = "Deilephila elpenor", tr = "Şahin güvesi", about = "night", hours = 36, eats = _("nectar"), find = { kind = "night", n = 60 } },
-    { id = "fox", en = _("Red fox"), latin = "Vulpes vulpes", tr = "Kızıl tilki", about = "night", hours = 72, eats = _("field mice"), find = { kind = "books", n = 5 } },
-    { id = "peacock", en = _("Indian peafowl"), latin = "Pavo cristatus", tr = "Tavus kuşu", about = "any", hours = 96, eats = _("seeds and berries"), find = { kind = "streak", n = 14 } },
+    { id = "bee", en = _("Honey bee"), latin = "Apis mellifera", about = "day", hours = 36, eats = _("nectar"), find = { kind = "start" } },
+    { id = "ladybug", en = _("Seven-spot ladybird"), latin = "Coccinella septempunctata", about = "day", hours = 72, eats = _("aphids"), find = { kind = "start" } },
+    { id = "snail", en = _("Garden snail"), latin = "Cornu aspersum", about = "any", hours = 72, eats = _("tender leaves"), find = { kind = "start" } },
+    { id = "butterfly", en = _("Swallowtail"), latin = "Papilio machaon", about = "day", hours = 36, eats = _("nectar"), find = { kind = "bloom", n = 3 } },
+    { id = "robin", en = _("European robin"), latin = "Erithacus rubecula", about = "day", hours = 36, eats = _("worms and seeds"), find = { kind = "morning", n = 20 } },
+    { id = "dragonfly", en = _("Emperor dragonfly"), latin = "Anax imperator", about = "day", hours = 36, eats = _("midges"), find = { kind = "plant", id = "water_lily", stage = 4 } },
+    { id = "frog", en = _("Marsh frog"), latin = "Pelophylax ridibundus", about = "any", hours = 72, eats = _("flies"), find = { kind = "plant", id = "water_lily", stage = 3 } },
+    { id = "koi", en = _("Koi carp"), latin = "Cyprinus carpio", about = "any", hours = 72, eats = _("pond weed"), find = { kind = "streak", n = 7, id = "water_lily", stage = 4 } },
+    { id = "hedgehog", en = _("European hedgehog"), latin = "Erinaceus europaeus", about = "night", hours = 72, eats = _("beetles and slugs"), find = { kind = "night", n = 20 } },
+    { id = "moth", en = _("Elephant hawk-moth"), latin = "Deilephila elpenor", about = "night", hours = 36, eats = _("nectar"), find = { kind = "night", n = 60 } },
+    { id = "fox", en = _("Red fox"), latin = "Vulpes vulpes", about = "night", hours = 72, eats = _("field mice"), find = { kind = "books", n = 5 } },
+    { id = "peacock", en = _("Indian peafowl"), latin = "Pavo cristatus", about = "any", hours = 96, eats = _("seeds and berries"), find = { kind = "streak", n = 14 } },
 }
 
 local plant_by_id, animal_by_id = {}, {}
@@ -58,7 +58,7 @@ local plant_by_id, animal_by_id = {}, {}
 -- Join the plants to the names of the species registry.
 for _i, p in ipairs(PLANTS) do
     local s = Species.get(p.id)
-    p.en, p.latin, p.tr = s.en, s.latin, s.tr
+    p.en, p.latin = s.en, s.latin
     p.interval = p.hours and p.hours * 3600 or nil
     p.need = {}
     for i, d in ipairs(p.days) do p.need[i] = d * DAY end
