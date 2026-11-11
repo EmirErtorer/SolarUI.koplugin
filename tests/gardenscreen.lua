@@ -105,6 +105,20 @@ do
     Kit.ok(Sky.hour() == (tonumber(os.date("%H")) or 12), "and following the clock is the default")
 end
 
+-- the season wheel
+do
+    local SeasonUI = require("solarui/ui/gardenseason")
+    local Season = require("solarui/garden/season")
+    local ok, err = pcall(function() local card = SeasonUI.card(W, function() end); card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); b:free() end)
+    Kit.ok(ok, "the season wheel draws: " .. tostring(err))
+    Season.set("autumn")
+    Kit.ok(Season.now() == "autumn" and not Season.following(), "a season picked on the wheel is the garden's season")
+    local scr = Garden:new({})
+    paint(scr):free()
+    Season.set(nil)
+    Kit.ok(Season.following(), "and the calendar can be followed again")
+end
+
 -- the open book: a passage on its page, another on request, and a view with none
 do
     local Plaque = require("solarui/garden/plaque")

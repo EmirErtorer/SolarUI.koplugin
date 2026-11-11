@@ -7,16 +7,24 @@
 
 local Cast = require("solarui/garden/cast")
 local Layout = require("solarui/garden/layout")
+local Season = require("solarui/garden/season")
 local Sky = require("solarui/garden/sky")
 local State = require("solarui/garden/state")
 
 local GardenView = {}
 
 -- The param of a plant's drawing: its stage, wilting, turning, fading and
--- the light of the sky phase.
-function GardenView.plantParam(entry, faded, phase)
+-- the light of the sky phase and the season.
+function GardenView.plantParam(entry, faded, phase, season)
     return entry.rec.stage .. (entry.thirst == "wilted" and ":wilt" or "") .. (Layout.turned(entry.def.id) and ":flip" or "")
-        .. (faded and ":wash" or "") .. (phase and (":" .. phase) or "")
+        .. (faded and ":wash" or "") .. (phase and (":" .. phase) or "") .. GardenView.seasonToken(entry, season)
+end
+
+-- The season token of a plant's param: the season (the garden's when none is
+-- given), or "dormant" when the plant has died back for the winter.
+function GardenView.seasonToken(entry, season)
+    season = season or Season.now()
+    return ":" .. (entry.dormant and season == "winter" and "dormant" or season)
 end
 
 -- The pose param of an animal's drawing: pose, turning, fading and light.
@@ -32,13 +40,14 @@ local function everyone()
     return out
 end
 
--- Put the garden on `scene`. o: { showcase (show every animal), faded, seed (what deals the animals), pose
+-- Put the garden on `scene`. o: { showcase (show every animal), season (else the garden's), faded, seed (what deals the animals), pose
 -- (id -> "1" or "2"), at (id -> which place of its path a pond animal is at), hour, on_tap(id, kind) for a plant or animal, sprites
 -- (a table that is filled with each animal's element, to repaint it alone) }.
 function GardenView.compose(scene, o)
     o = o or {}
     local vh = scene.vh
     local phase = Sky.phase(o.hour or Sky.hour())
+    local season = o.season or Season.now()
     local light = (o.faded and "wash:" or "") .. phase
     scene:backdrop("garden_ground", 0, 0, Layout.WIDTH, vh, light)
     scene:border(14, 2.5)
@@ -46,7 +55,7 @@ function GardenView.compose(scene, o)
     scene:frameOrnaments()
     for _i, e in ipairs(State.plants()) do
         local b = Layout.place(e.def.id, vh)
-        scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase))
+        scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season))
         if o.on_tap then scene:touch(b.x, b.y, b.w, b.h, function() o.on_tap(e.def.id, "plant") end) end
     end
     if o.on_book then
@@ -69,11 +78,11 @@ function GardenView.compose(scene, o)
                 local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
                 if o.sprites then o.sprites[id] = el end
             end
-        elseif a.mood == "hiding" then
+        elseif a.mood == "hiding" or a.resting then
             scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light)
         end
         local hit = b.hit or b
-        if o.on_tap and (a.here or a.mood == "hiding") then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
+        if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
     end
 end
 

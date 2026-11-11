@@ -11,6 +11,8 @@ local GardenActions = require("solarui/ui/gardenactions")
 local GardenCard = require("solarui/ui/gardencard")
 local GardenClock = require("solarui/ui/gardenclock")
 local GardenGuide = require("solarui/ui/gardenguide")
+local GardenSeason = require("solarui/ui/gardenseason")
+local Season = require("solarui/garden/season")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
@@ -157,7 +159,7 @@ function Garden:waitForGuide()
 end
 
 -- The heading row: the title, what is in hand and the buttons, from the right:
--- field notes, journal, the clock and the guide.
+-- field notes, journal, the clock, the seasons and the guide.
 function Garden:heading(scene)
     local th = Theme.get()
     local unit = th.size.touch / scene.k
@@ -171,6 +173,7 @@ function Garden:heading(scene)
     x = button({ icon = "book" }, x, function() App.push("gardennotes") end)
     x = button({ icon = "notes" }, x, function() App.push("gardenjournal") end)
     x = button({ art = { "garden_clock_icon", tostring(Sky.hour()) }, icon_size = 30 }, x, function() GardenClock.open(nil, function() App.update() end) end)
+    x = button({ art = { "garden_season_icon", Season.now() }, icon_size = 30 }, x, function() GardenSeason.open(function() App.update() end) end)
     x = button({ label = "?" }, x, function() self:guide() end)
     scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260)
     local line = Text.height("small") / scene.k
@@ -239,7 +242,7 @@ function Garden:build(ctx)
     self.sprites = {}
     local show = self.showcase
     self.scene = scene
-    GardenView.compose(scene, { showcase = show, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed, at = self.at,
+    GardenView.compose(scene, { showcase = show, season = show and "summer" or nil, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed, at = self.at,
         on_tap = not self.focus and function(id) if show then self:guide() else self.focus = id; App.update() end end or nil,
         on_book = not self.focus and function() if show then self:guide() else self.focus = "book"; App.update() end end or nil })
     self:heading(scene)
