@@ -13,6 +13,7 @@ local Layout = require("solarui/garden/layout")
 local LayoutUI = require("solarui/ui/layout")
 local Lore = require("solarui/garden/lore")
 local Settings = require("solarui/settings")
+local Text = require("solarui/gfx/text")
 local State = require("solarui/garden/state")
 local Theme = require("solarui/theme")
 local _ = require("solarui/gettext")
@@ -48,10 +49,9 @@ local function mood(item)
     return GardenCard.mood(item.entry, item.kind)
 end
 
--- What is under the names: a care button when it needs care, else a sentence.
-local function lower(scene, item, w)
+-- The care button for a companion that needs care.
+local function careButton(scene, item, w)
     local th = Theme.get()
-    if item.need == 0 then return Label:new({ text = Lore.get(item.id), kind = "micro", lines = 3 }) end
     local plant = item.kind == "plant"
     local act = plant and State.water or State.feed
     return Button:new({ label = plant and _("Water") or _("Feed"), sub = string.format(_("%d dew"), plant and State.WATER or State.FEED),
@@ -64,6 +64,35 @@ local function lower(scene, item, w)
         end })
 end
 
+-- The text beside the arch: the name and how it is doing, then a care button
+-- or a sentence about it, and the Latin name when there is room. Whatever
+-- the text size, it is built to stay within `budget` pixels of height: the
+-- sentence takes as many lines as are left, and the Latin name goes first
+-- when room is short. Returns the column and the height it uses.
+function HomeCompanion.column(scene, item, w, budget)
+    local gap = scene:px(6)
+    local name_h, line_h = Text.height("heading"), Text.height("micro")
+    local button = item.need > 0 and careButton(scene, item, w) or nil
+    -- the name and the mood always show; the rest as room allows
+    local used = name_h + gap + line_h
+    local lower_h = button and button:naturalHeight() or line_h
+    local latin = used + gap + line_h + gap + lower_h <= budget
+    if latin then used = used + gap + line_h end
+    local kids = { Label:new({ text = State.name(item.id), kind = "heading" }) }
+    if latin then kids[#kids + 1] = Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" }) end
+    kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro" })
+    if button then
+        if used + gap + lower_h <= budget then kids[#kids + 1] = button; used = used + gap + lower_h end
+    else
+        local lines = math.min(3, math.floor((budget - used - gap) / line_h))
+        if lines >= 1 then
+            kids[#kids + 1] = Label:new({ text = Lore.get(item.id), kind = "micro", lines = lines })
+            used = used + gap + lines * line_h
+        end
+    end
+    return LayoutUI.Column:new({ gap = gap, children = kids }), used
+end
+
 -- Put the card on `scene` with its top-left at (x, y), `w` units wide.
 function HomeCompanion.place(scene, x, y, w)
     State.refresh()
@@ -72,12 +101,7 @@ function HomeCompanion.place(scene, x, y, w)
     scene:backdrop("garden_arch", x, y, ARCH_W, ARCH_H)
     picture(scene, item, x, y)
     local tx, tw = x + ARCH_W + 14, w - ARCH_W - 14
-    scene:place(LayoutUI.Column:new({ gap = scene:px(6), children = {
-        Label:new({ text = State.name(item.id), kind = "heading" }),
-        Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" }),
-        Label:new({ text = mood(item), kind = "micro" }),
-        lower(scene, item, tw),
-    } }), tx, y, tw, ARCH_H)
+    scene:place(HomeCompanion.column(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
     scene:touch(x, y, ARCH_W, ARCH_H, function() App.push("garden", { focus = item.id }) end)
 end
 

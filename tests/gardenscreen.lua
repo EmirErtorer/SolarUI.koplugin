@@ -67,4 +67,39 @@ Kit.ok(s.focus == nil, "close returns to the garden")
 Kit.ok(s:onBack() == false, "back from the garden leaves it")
 s.focus = "tulip"
 Kit.ok(s:onBack() == true and s.focus == nil, "back from a picture closes it")
+-- the companion's text never outgrows its card, at any text size
+do
+    local Companion = require("solarui/garden/companion")
+    local HomeCompanion = require("solarui/ui/homecompanion")
+    local Scene = require("solarui/ui/scene")
+    local Settings = require("solarui/settings")
+    State.get().plants.rose.watered = State.clock() - 10 * 86400
+    State.get().animals.bee.fed = State.clock() - 10 * 86400
+    State.rename("tulip", "fourteen letter")
+    local picks = {}
+    for _, item in ipairs(Companion.list(12)) do
+        if item.id == "rose" or item.id == "bee" or item.id == "tulip" then
+            item.need = Companion.need(item.entry, item.kind)
+            picks[#picks + 1] = item
+        end
+    end
+    Kit.ok(#picks == 3, "a wilted plant, a hiding animal and a fine one to try (" .. #picks .. ")")
+    for _, scale in ipairs({ 80, 100, 120, 140 }) do
+        Settings.set("text_scale", scale / 100)
+        Theme.refresh()
+        local scene = Scene.make("t", W, H, 1430)
+        for _, item in ipairs(picks) do
+            local budget = scene:px(196)
+            local col, used = HomeCompanion.column(scene, item, 270, budget)
+            col:layout(scene:px(270), budget)
+            local total = 0
+            for _, c in ipairs(col.children) do total = total + c.h + col.gap end
+            total = total - col.gap
+            Kit.ok(used <= budget and total <= budget, item.id .. " fits its card at text size " .. scale .. "% (" .. total .. " of " .. budget .. ")")
+        end
+    end
+    Settings.set("text_scale", 1)
+    Theme.refresh()
+end
+
 Kit.finish("gardenscreen")
