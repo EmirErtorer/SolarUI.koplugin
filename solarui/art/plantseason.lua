@@ -36,6 +36,11 @@ function Season.of(param)
     return "summer"
 end
 
+-- The dry colours of a palette: straw (dead stems), dead and rust (dead leaves).
+function Season.dried(c)
+    return mix(c.muted, c.pale, .38), mix(c.gold, c.muted, .5), mix(c.bloom, c.muted, .42)
+end
+
 -- The palette `c` in `season`: the greens moved, and for winter the roles
 -- `frost` (hoarfrost), `straw` (dead stems), `dead` and `rust` (dead leaves).
 function Season.palette(c, season)
@@ -49,9 +54,7 @@ function Season.palette(c, season)
     for _i, s in ipairs(shift) do out[s[1]] = mix(out[s[1]], s[2]:sub(1, 1) == "#" and Light.paint(s[2]) or c[s[2]], s[3]) end
     if season == "winter" or season == "dormant" then
         out.frost = Light.paint(FROST)
-        out.straw = mix(c.muted, c.pale, .38)
-        out.dead = mix(c.gold, c.muted, .5)
-        out.rust = mix(c.bloom, c.muted, .42)
+        out.straw, out.dead, out.rust = Season.dried(c)
     end
     made[c][season] = out
     return out

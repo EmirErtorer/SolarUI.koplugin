@@ -199,6 +199,14 @@ local SEEDS = {
             .. line(string.format("M%s %s q%s %s %s %s M%s %s q%s %s %s %s", n(-s * .45), n(-s * .42), n(s * .08), n(s * .2), n(-s * .02), n(s * .42), n(s * .1), n(-s * .34), n(s * .1), n(s * .16), n(s * .02), n(s * .36)), p.c.ink, .9)
             .. path(string.format("M%s %s q%s %s %s %s q%s %s %s %sZ", n(s * .5), n(-s * .46), n(s * .02), n(-s * .4), n(s * .26), n(-s * .5), n(s * .04), n(s * .3), n(-s * .08), n(s * .46)), p.c.leaf, p.c.ink, 1.2)
     end,
+    sisters = function(p, s)
+        local c = p.c
+        return path(string.format("M%s %s Q%s %s %s %s Q%s %s %s %s Q%s %s %s %s Q%s %s %s %sZ", n(-s * .66), n(-s * .04), n(-s * .8), n(-s * .26), n(-s * .76), n(-s * .44), n(-s * .6), n(-s * .5), n(-s * .44), n(-s * .42),
+            n(-s * .38), n(-s * .22), n(-s * .5), n(-s * .02), n(-s * .58), n(s * .02), n(-s * .66), n(-s * .04)), c.gold, c.ink, 1.2)
+            .. Svg.ellipse(-s * .58, -s * .3, s * .06, s * .11, 14, c.pale)
+            .. Svg.ellipse(-s * .02, -s * .22, s * .27, s * .15, -8, c.bloom2, c.ink, 1.2) .. Svg.ellipse(-s * .02, -s * .1, s * .08, s * .035, -8, c.cream, c.ink, .8)
+            .. Svg.ellipse(s * .6, -s * .2, s * .25, s * .14, 22, c.cream, c.ink, 1.2) .. Svg.ellipse(s * .6, -s * .2, s * .17, s * .08, 22, nil, c.ink, .7)
+    end,
     disc = function(p, s)
         return Svg.ellipse(-s * .3, -s * .18, s * .34, s * .2, -10, p.c.muted, p.c.ink, 1.2) .. Svg.ellipse(s * .4, -s * .2, s * .32, s * .19, 14, p.c.muted, p.c.ink, 1.2)
     end,
