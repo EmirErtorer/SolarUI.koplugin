@@ -161,6 +161,10 @@ function State.refresh()
             rec.noted, dirty = hiding and "hide" or nil, true
         end
     end
+    if d.season_seen ~= Season.calendar() then
+        if d.season_seen then note("season", "water_lily", Season.calendar()) end
+        d.season_seen, dirty = Season.calendar(), true
+    end
     if State.rain(now) then dirty = true end
     for _i, p in ipairs(Cast.PLANTS) do
         if p.find and not d.plants[p.id] and Visitors.found(p, Visitors.facts(d.plants, State.source())) then

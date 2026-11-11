@@ -524,6 +524,30 @@ do
     State.unload()
 end
 
+-- the turn of the seasons in the journal and the cards
+do
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    Season.set("autumn")
+    now = 1700000000 + 3000 * DAY
+    reading.total, reading.books = 100, 2
+    State.get().season_seen = "summer"
+    State.refresh()
+    local text = {}
+    for _, l in ipairs(Journal.lines()) do text[#text + 1] = l.text end
+    Kit.ok(table.concat(text, "|"):find("Autumn") or table.concat(text, "|"):find("autumn"), "the journal notes a new season")
+    Season.set("winter")
+    local GardenCard = require("solarui/ui/gardencard")
+    local bee = State.entry("bee", 12)
+    Kit.ok(GardenCard.status(bee, "animal"):find("Asleep"), "a sleeping animal's card says so")
+    local tulip = State.entry("tulip")
+    Kit.ok(GardenCard.status(tulip, "plant"):find("Resting for the winter"), "and a dormant plant's")
+    Settings.set("garden", nil)
+    State.unload()
+    Season.set("spring")
+end
+
 -- the weather
 do
     local Weather = require("solarui/garden/weather")

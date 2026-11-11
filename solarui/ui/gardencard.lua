@@ -9,6 +9,7 @@ local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Lore = require("solarui/garden/lore")
 local Panel = require("solarui/ui/panel")
+local Season = require("solarui/garden/season")
 local State = require("solarui/garden/state")
 local Theme = require("solarui/theme")
 local _ = require("solarui/gettext")
@@ -29,6 +30,7 @@ end
 local function plantStatus(e)
     local gen = e.rec.gen or 1
     local line = STAGES[e.rec.stage] .. (gen > 1 and (" · " .. string.format(_("generation %d"), gen)) or "")
+    if e.dormant then return line, _("Resting for the winter. The plant wakes in spring.") end
     if not e.def.interval then return line, _("Needs no watering.") end
     if e.thirst == Care.WILTED then return line, _("Wilted. A drink will bring them round.") end
     if e.thirst == Care.THIRSTY then return line, _("Thirsty.") end
@@ -37,6 +39,7 @@ end
 
 -- How an animal is doing, in one line.
 local function animalStatus(e)
+    if e.resting then return _("Asleep"), Season.wakes(e.def) or _("Resting until the season turns.") end
     local mood = ({ content = _("Content"), hungry = _("Hungry"), hiding = _("Hiding, hungry") })[e.mood]
     local when = ({ day = _("out by day"), night = _("out at night"), any = _("out day and night") })[e.def.about]
     return mood .. " · " .. when, string.format(_("Eats %s."), e.def.eats)
@@ -65,7 +68,7 @@ local function actions(e, kind, o)
     elseif kind == "plant" then
         add(Button:new({ label = _("Water"), sub = string.format(_("%d dew"), State.WATER), variant = "primary", grow = true, disabled = not e.def.interval, on_tap = o.on_water }))
     else
-        add(Button:new({ label = _("Feed"), sub = string.format(_("%d dew"), State.FEED), variant = "primary", grow = true, on_tap = o.on_feed }))
+        add(Button:new({ label = _("Feed"), sub = string.format(_("%d dew"), State.FEED), variant = "primary", grow = true, disabled = e.resting, on_tap = o.on_feed }))
     end
     if kind == "plant" and e.rec.stage < 4 then
         add(Button:new({ label = _("Grow now"), sub = _("1 seed"), grow = true, on_tap = o.on_sow }))

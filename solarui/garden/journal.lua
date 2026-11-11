@@ -3,6 +3,7 @@
 -- it chosen by the event's time so the page does not repeat itself.
 
 local Cast = require("solarui/garden/cast")
+local Season = require("solarui/garden/season")
 local State = require("solarui/garden/state")
 local _ = require("solarui/gettext")
 
@@ -30,6 +31,7 @@ local LINES = {
     peek = { _("%s peeked out of the grass, and you saw."), _("You spotted %s watching from the grass."), _("%s was hiding in plain sight, and you found the spot.") },
     planted = { _("A new bed was laid out: %s."), _("%s was planted in the corner of the lawn."), _("The ground was ready, and %s went in.") },
     share = { _("The harvest of %s was shared round the garden."), _("%s was picked, and nobody went hungry."), _("The harvest from %s fed the garden's visitors.") },
+    season = { _("%s began."), _("The garden turned to %s."), _("%s came round again, on time.") },
     back = { _("%s came back out for a meal."), _("%s was fed and showed up at once."), _("%s is back, and no questions asked.") },
 }
 
@@ -49,6 +51,7 @@ function Journal.line(e)
     local line
     if e.k == "visit" then line = string.format(text, State.name(e.id), Journal.who(e.with, false))
     elseif e.k == "thanks" then line = string.format(text, e.n or 0, Journal.who(e.id, text:find("^%%s") and true or false))
+    elseif e.k == "season" then line = string.format(text, Season.NAMES[e.with])
     elseif e.k == "gave" or e.k == "rain" or e.k == "snow" or e.k == "outside" then line = text
     else line = string.format(text, State.name(e.id)) end
     return { date = os.date("%d %b", e.t), text = line }
