@@ -11,6 +11,7 @@ local Season = require("solarui/garden/season")
 local Settings = require("solarui/settings")
 local Sky = require("solarui/garden/sky")
 local Visitors = require("solarui/garden/visitors")
+local Visits = require("solarui/garden/visits")
 
 local State = {}
 
@@ -20,6 +21,7 @@ State.GIFT_DEW = 30
 State.GIFT_SEEDS = 2
 State.NICK_MAX = 14      -- letters in a nickname
 State.JOURNAL_MAX = 80   -- lines the journal keeps
+State.RIPEN = 2 * 86400  -- seconds a seed head wants before it is cut back for a full harvest
 
 -- The time now; replaced in tests.
 State.clock = os.time
@@ -76,9 +78,9 @@ end
 
 -- Add a line to the journal: what happened ("sown", "sprout", "bud", "bloom",
 -- "seedhead", "wilt", "back", "hide", "found") to whom.
-local function note(kind, id)
+local function note(kind, id, with, n)
     local j = State.get().journal
-    j[#j + 1] = { t = State.clock(), k = kind, id = id }
+    j[#j + 1] = { t = State.clock(), k = kind, id = id, with = with, n = n }
     while #j > State.JOURNAL_MAX do table.remove(j, 1) end
 end
 
@@ -92,7 +94,30 @@ end
 -- seed head cut back, less the ones used.
 function State.seeds()
     local d = State.get()
-    return State.GIFT_SEEDS + math.max(0, State.source().books - d.base_books) + d.collected - d.seeds_used
+    return math.floor(State.GIFT_SEEDS + math.max(0, State.source().books - d.base_books) + d.collected - d.seeds_used + 1e-6)
+end
+
+-- Books finished since the garden began that have not yet been answered with
+-- a gift to the wild edge (see State.giveBack).
+function State.owed()
+    local d = State.get()
+    return math.max(0, State.source().books - d.base_books - (d.given or 0) - (d.passed or 0))
+end
+
+-- Answer a finished book: with `yes` leave a seed in the wild edge, which
+-- costs nothing and unlocks nothing, only counts as given; otherwise let the
+-- moment pass. Does nothing when no finished book is waiting.
+function State.giveBack(yes)
+    local d = State.get()
+    if State.owed() < 1 then return false end
+    if yes then d.given = (d.given or 0) + 1; note("gave", "bee") else d.passed = (d.passed or 0) + 1 end
+    State.save()
+    return true
+end
+
+-- How many seeds have been left in the wild edge.
+function State.given()
+    return State.get().given or 0
 end
 
 -- Spend dew; false when there is not enough.
@@ -112,6 +137,7 @@ function State.refresh()
         local def = Season.adjust(Cast.plant(id))
         for _i, stage in ipairs(Care.grow(rec, def, now)) do
             note(({ "", "sprout", "bud", "bloom", "seedhead" })[stage], id)
+            if stage == 5 then rec.seeded = now end
             dirty = true
         end
         local wilted = Care.thirst(rec, def, now) == Care.WILTED
@@ -128,6 +154,8 @@ function State.refresh()
             rec.noted, dirty = hiding and "hide" or nil, true
         end
     end
+    if Visits.round(d, now, note) then dirty = true end
+    if Visits.thanks(d, now, State.source().total, note) then dirty = true end
     local facts = Visitors.facts(d.plants, State.source())
     for _i, id in ipairs(Visitors.foundAll(facts)) do
         if not d.animals[id] then
@@ -248,15 +276,41 @@ function State.sow(id)
 end
 
 -- Cut back a plant that has gone to seed: it keeps its name and starts
--- another generation, and the seeds it dropped are yours. False when it has
--- not gone to seed.
-function State.collect(id)
+-- another generation. `how` says what becomes of the seed heads: "keep" (the
+-- default) the seeds are yours, "birds" they are left for the birds, who feed
+-- the hungriest animal for free, and "scatter" half a seed is yours and the
+-- rest falls in the beds. Seed heads cut before they have ripened for
+-- RIPEN seconds give only half, and a plant the bees and butterflies visited
+-- gives one more. Returns true and the seeds gained; false when the plant
+-- has not gone to seed.
+function State.collect(id, how)
     local d, def = State.get(), Cast.plant(id)
     local rec = d.plants[id]
-    if not rec or not Care.collect(rec, def, State.clock()) then return false end
-    d.collected = d.collected + 1
+    local now = State.clock()
+    local ripe = not rec or not rec.seeded or now - rec.seeded >= State.RIPEN
+    local pollinated = rec and rec.pollinated
+    if not rec or not Care.collect(rec, def, now) then return false end
+    how = how or "keep"
+    local gain = how == "keep" and 1 or how == "scatter" and .5 or 0
+    if not ripe then gain = gain / 2 end
+    if pollinated and how ~= "birds" then gain = gain + 1 end
+    rec.seeded, rec.pollinated = nil, nil
+    d.collected = d.collected + gain
+    if how == "birds" then State.feedHungriest() end
+    note(how == "keep" and "back_seeds" or how, id)
     State.save()
-    return true
+    return true, gain
+end
+
+-- Feed the animal that has gone longest without a meal, free; returns its id.
+function State.feedHungriest()
+    local worst, at = nil, math.huge
+    local now = State.clock()
+    for id, rec in pairs(State.get().animals) do
+        if not Season.rests(Cast.animal(id), Season.now()) and (rec.fed or now) < at then worst, at = id, rec.fed or now end
+    end
+    if worst then Care.feed(State.get().animals[worst], now); State.get().animals[worst].noted = nil end
+    return worst
 end
 
 -- Give a plant or an animal a nickname (blank clears it). Returns the name

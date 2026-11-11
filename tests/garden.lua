@@ -177,6 +177,67 @@ do
     Kit.ok(State.get().plants.rose ~= nil, "the garden is kept between visits")
 end
 
+-- visits, thanks, cutting back and giving back, on a fresh garden
+do
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    now = 1700000000 + 400 * DAY
+    reading.total, reading.books = 100, 2
+    State.get()
+    now = now + 3600
+    State.refresh()
+    local d = State.get()
+    local function text() local t = {}; for _, l in ipairs(Journal.lines()) do t[#t + 1] = l.text end; return table.concat(t, "|") end
+    Kit.ok(text():find("visited") or text():find("afternoon at") or text():find("called on"), "the bee visits a flower the first day")
+    local marked = 0
+    for _, rec in pairs(d.plants) do if rec.pollinated then marked = marked + 1 end end
+    Kit.ok(marked == 1, "and the flower is marked pollinated (" .. marked .. ")")
+    local before = #State.journal()
+    State.refresh()
+    Kit.ok(#State.journal() == before, "visits happen once a day")
+    now = now + DAY
+    reading.total = 140
+    State.refresh()
+    Kit.ok(text():find("40 pages"), "pages read are thanked for")
+    local lines = #State.journal()
+    reading.total = 150
+    State.refresh()
+    Kit.ok(not text():find("10 pages"), "but only once a day")
+    -- cutting back
+    local rec = d.plants.tulip
+    rec.stage, rec.seeded, rec.pollinated = 5, now, nil
+    local seeds = State.seeds()
+    local ok, gain = State.collect("tulip")
+    Kit.ok(ok and gain == .5, "seed heads cut back too early give half")
+    rec.stage, rec.seeded = 5, now - 3 * DAY
+    ok, gain = State.collect("tulip")
+    Kit.ok(ok and gain == 1 and State.seeds() == seeds + 1, "ripe ones give a seed")
+    rec.stage, rec.seeded, rec.pollinated = 5, now - 3 * DAY, true
+    ok, gain = State.collect("tulip")
+    Kit.ok(gain == 2, "and a visited flower gives one more")
+    rec.stage, rec.seeded = 5, now - 3 * DAY
+    d.animals.bee.fed = now - 10 * HOUR
+    d.animals.ladybug.fed = now - 60 * HOUR
+    ok, gain = State.collect("tulip", "birds")
+    Kit.ok(ok and gain == 0 and d.animals.ladybug.fed == now and d.animals.bee.fed < now, "seed heads left for the birds feed the hungriest animal")
+    rec.stage, rec.seeded = 5, now - 3 * DAY
+    ok, gain = State.collect("tulip", "scatter")
+    Kit.ok(gain == .5, "scattered seeds give half a seed")
+    Kit.ok(not State.collect("tulip"), "a sprout cannot be cut back")
+    -- giving back
+    Kit.ok(State.owed() == 0 and not State.giveBack(true), "nothing to give back before a book is finished")
+    reading.books = 3
+    Kit.ok(State.owed() == 1, "a finished book asks for a gift to the wild edge")
+    Kit.ok(State.giveBack(true) and State.given() == 1 and State.owed() == 0, "giving counts and answers the book")
+    reading.books = 4
+    State.giveBack(false)
+    Kit.ok(State.given() == 1 and State.owed() == 0, "a gift can be passed over")
+    Kit.ok(text():find("wild edge"), "the journal remembers it")
+    Settings.set("garden", nil)
+    State.unload()
+end
+
 -- the sky, the larger animals and the book
 do
     local Sky = require("solarui/garden/sky")
