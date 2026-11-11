@@ -56,7 +56,7 @@ function GardenView.compose(scene, o)
     local phase = Sky.phase(o.hour or Sky.hour())
     local season = o.season or Season.now()
     local weather = State.weather()
-    local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "")
+    local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "") .. ":" .. season
     scene:backdrop("garden_ground", 0, 0, Layout.WIDTH, vh, light)
     scene:border(14, 2.5)
     scene:border(21, 1.2)
@@ -83,7 +83,7 @@ function GardenView.compose(scene, o)
     local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
     if peek then
         local b = Layout.at(peek, vh)
-        scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light)
+        scene:backdrop("garden_peek", b.x, b.y, b.w, b.h, light)
         scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
     end
     for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
@@ -102,7 +102,7 @@ function GardenView.compose(scene, o)
                 if o.sprites then o.sprites[id] = el end
             end
         elseif a.mood == "hiding" or a.resting then
-            scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light)
+            scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))
         end
         local hit = b.hit or b
         if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
