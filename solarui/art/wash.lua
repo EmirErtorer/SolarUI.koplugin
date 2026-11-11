@@ -2,6 +2,8 @@
 -- every colour of the palette moved most of the way towards the page's own.
 -- A drawing asks for it by having "wash" in its param.
 
+local Light = require("solarui/art/light")
+
 local Wash = {}
 
 local STRENGTH = .72   -- how far each colour is moved towards the page's
@@ -23,8 +25,10 @@ function Wash.palette(c)
     return out
 end
 
--- The palette for a drawing whose param may ask for the wash.
+-- The palette for a drawing whose param may ask for the hour's light and
+-- for the wash.
 function Wash.apply(c, param)
+    c = Light.tint(c, param)
     if tostring(param or ""):find("wash") then return Wash.palette(c) end
     return c
 end

@@ -1,6 +1,6 @@
 -- The garden's ground and scenery, painted once as one backdrop: a green
 -- lawn bristling with blades of grass, a clipped hedge with a gateway under
--- the trellis arch, the pond, the table, the plaque and the small furniture
+-- the trellis arch, the pond, the table and the small furniture
 -- of garden_props. garden_ground(c, vw, vh, mode) takes the canvas size
 -- (units of the poster, vh as tall as the screen asks) and mode "wash" for
 -- the faded copy. The places come from garden/layout.lua, so the plants and
@@ -107,12 +107,11 @@ end
 -- The whole backdrop for a canvas vw x vh.
 function Garden.garden_ground(c, _vw, vh, mode)
     c = Wash.apply(c, mode)
-    local ivy, pond, tab, plaque = box("ivy", vh), box("pond", vh), box("table", vh), box("plaque", vh)
+    local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)
     local base = ivy.y + ivy.h
     local out = lawn(c, vh, base) .. hedge(c, 34, ivy.x + 46, base) .. hedge(c, ivy.x + ivy.w - 46, 1038, base)
         .. group(ivy.x + ivy.w / 2, base, 0, Trellis.frame(c))
-    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. group(tab.x, tab.y, 0, Props.table(c))
-        .. group(plaque.x, plaque.y, 0, Props.plaque(c, plaque.w, plaque.h))
+    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
     for id, b in pairs(Layout.EXTRAS) do
         local at, small = Layout.at(b, vh), Props.small(id)
         out = out .. group(at.x, at.y, 0, small.draw(c), at.w / small.w, at.h / small.h)

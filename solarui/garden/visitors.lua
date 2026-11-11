@@ -5,6 +5,7 @@
 -- Everything is a plain function of a facts table so it can be tested.
 
 local Cast = require("solarui/garden/cast")
+local Sky = require("solarui/garden/sky")
 local _ = require("solarui/gettext")
 
 local Visitors = {}
@@ -63,11 +64,12 @@ function Visitors.foundAll(facts)
     return out
 end
 
--- Is the animal about at this hour (0..23)? Day animals from seven to
--- seven, night ones from seven in the evening to five in the morning.
+-- Is the animal about at this hour (0..23)? Day animals whenever the sky is
+-- not dark, night ones only in the dark (see garden/sky.lua).
 function Visitors.about(def, hour)
-    if def.about == "day" then return hour >= 7 and hour < 19 end
-    if def.about == "night" then return hour >= 19 or hour < 5 end
+    local night = Sky.phase(hour) == "night"
+    if def.about == "day" then return not night end
+    if def.about == "night" then return night end
     return true
 end
 

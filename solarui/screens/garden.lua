@@ -1,7 +1,8 @@
 -- The garden: a poster of everything growing and visiting, with the dew and
 -- seeds earned by reading at the top. Tap a plant or an animal and it shows
--- large over a faded garden with its card.
--- The journal and the field notes are pages of their own.
+-- large over a faded garden with its card; tap the book on the table and it
+-- opens large with a passage from your own books written in it. The journal
+-- and the field notes are pages of their own.
 
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
@@ -10,10 +11,11 @@ local GardenCard = require("solarui/ui/gardencard")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
-local LayoutUI = require("solarui/ui/layout")
 local Plaque = require("solarui/garden/plaque")
+local LayoutUI = require("solarui/ui/layout")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
+local Sky = require("solarui/garden/sky")
 local State = require("solarui/garden/state")
 local Text = require("solarui/gfx/text")
 local TabBar = require("solarui/ui/tabbar")
@@ -36,7 +38,15 @@ function Garden:init(params)
     self.pose = {}
     self.sprites = {}
     self.ticks = 0
-    self.seed = os.time()   -- deals the animals a new place on every visit
+    self.seed = os.time()   -- deals the animals a new place and the book a new passage on every visit
+    self.quote_at = 1
+end
+
+-- The passage shown in the book now, or nil when there are none: the first
+-- of this visit's order, or the one the reader moved on to.
+function Garden:quote()
+    self.quotes = self.quotes or Plaque.deal(self.seed)
+    return self.quotes[(self.quote_at - 1) % math.max(1, #self.quotes) + 1]
 end
 
 -- Flip an animal between its two poses and repaint just its own patch.
@@ -129,14 +139,6 @@ function Garden:heading(scene)
     scene:place(Button:new({ icon = "book", variant = "icon", width = th.size.touch, on_tap = function() App.push("gardennotes") end }), 962 - unit, 34, unit, unit)
 end
 
--- The favourite passage on the plaque.
-function Garden:plaque(scene)
-    local q = Plaque.today()
-    local b = Layout.at(Layout.PROPS.plaque, scene.vh)
-    scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Highlight a passage in a book and it is carved here."), kind = "micro",
-        color = "ink", align = "center", lines = math.max(1, math.floor(scene:px(b.h - 36) / Text.height("micro"))) }), b.x + 14, b.y + 30, b.w - 28, b.h - 36)
-end
-
 -- The big picture and its card over the faded garden.
 function Garden:focused(scene)
     local oy = math.max(0, (scene.vh - Layout.HEIGHT) / 2)
@@ -144,31 +146,63 @@ function Garden:focused(scene)
     local e, kind = State.entry(self.focus)
     local fit = { x = ARCH.x + 60, y = ARCH.y + oy + 100, w = ARCH.w - 120, h = ARCH.h - 110 }
     if kind == "plant" then
-        scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, GardenView.plantParam(e))
+        scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, GardenView.plantParam(e, false, Sky.now()))
     else
         local b = Layout.ANIMALS[self.focus]
         local flip = Layout.spread(self.seed)[self.focus].flip
         local k = math.min(fit.w / b.w, fit.h / b.h)
         local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
-            function() return GardenView.animalParam(self.pose[self.focus] or "1", flip) end)
+            function() return GardenView.animalParam(self.pose[self.focus] or "1", flip, false, Sky.now()) end)
         self.sprites[self.focus] = pic
         scene:touch(fit.x, fit.y, fit.w, fit.h, function() self:move(self.focus) end)
     end
     scene:place(GardenCard.build(self.focus, self:actions(self.focus)), CARD.x, CARD.y + oy, CARD.w, CARD.h)
 end
 
+-- The open book over the faded garden: a passage from the reader's books on
+-- its right page and where it comes from on its left, and a button for
+-- another one.
+function Garden:book(scene)
+    local oy = math.max(0, (scene.vh - Layout.HEIGHT) / 2)
+    local art = Layout.BOOK_ART
+    local box = { x = 156, y = 150 + oy, w = 760 }
+    box.h = box.w * art.h / art.w
+    local k = box.w / art.w
+    scene:backdrop("garden_book", box.x, box.y, box.w, box.h)
+    local function page(side) local p = Layout.BOOKPAGE[side]; return box.x + p.x * k, box.y + p.y * k, p.w * k, p.h * k end
+    local q = self:quote()
+    local lines = function(h) return math.max(1, math.floor(scene:px(h) / Text.height("body"))) end
+    local rx, ry, rw, rh = page("right")
+    scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Nothing is written in this book yet. Highlight a passage in one of your books and it will appear here."),
+        kind = "body", lines = lines(rh) }), rx, ry, rw, rh)
+    if q then
+        local lx, ly, lw, lh = page("left")
+        scene:place(LayoutUI.Column:new({ gap = scene:px(8), children = {
+            Label:new({ text = q.title or "", kind = "heading", lines = 3 }),
+            Label:new({ text = q.author or "", kind = "small", color = "muted", lines = 2 }),
+        } }), lx, ly, lw, lh)
+    end
+    local th = Theme.get()
+    scene:place(LayoutUI.Row:new({ gap = th.space.s, children = {
+        Button:new({ label = _("Another passage"), variant = "primary", grow = true, disabled = not q,
+            on_tap = function() self.quote_at = self.quote_at + 1; App.update() end }),
+        Button:new({ label = _("Back to the garden"), grow = true, on_tap = function() self.focus = nil; App.update() end }),
+    } }), 166, box.y + box.h + 30, 740)
+end
+
 -- Build the garden.
 function Garden:build(ctx)
     State.refresh()
-    if self.focus and not State.entry(self.focus) then self.focus = nil end
+    if self.focus and self.focus ~= "book" and not State.entry(self.focus) then self.focus = nil end
     local tabs = TabBar.build(App.TABS, nil, function(id) App.go(id) end)
     local bar = Theme.get().size.tabbar + Theme.px(16)
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
     self.sprites = {}
     GardenView.compose(scene, { faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed,
-        on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil })
+        on_tap = not self.focus and function(id) self.focus = id; App.update() end or nil,
+        on_book = not self.focus and function() self.focus = "book"; App.update() end or nil })
     self:heading(scene)
-    if self.focus then self:focused(scene) else self:plaque(scene) end
+    if self.focus == "book" then self:book(scene) elseif self.focus then self:focused(scene) end
     self:schedule()
     return LayoutUI.Column:new({ children = { scene, tabs } })
 end

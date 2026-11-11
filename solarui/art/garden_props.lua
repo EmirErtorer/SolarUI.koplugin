@@ -1,6 +1,6 @@
 -- The garden's furniture, each piece drawn with its top-left corner at the
 -- origin of its own box: the pond, the bistro table with two wrought-iron
--- chairs, the stone plaque, and the smaller things that stand in the free
+-- chairs, and the smaller things that stand in the free
 -- lawn (a bee skep, stepping stones, a birdbath, a lantern, a watering can
 -- and flower pots). Props.small(id) gives each one.
 
@@ -69,19 +69,6 @@ function Props.table(c)
     local cup = ellipse(202, 110, 14, 3.4, 0, c.cream, c.ink, 1.2) .. path("M193 98 C193 106 196 110 202 110 C208 110 211 106 211 98Z", c.cream, c.ink, 1.4) .. ellipse(202, 98, 9, 2.2, 0, c.gold, c.ink, 1.1)
         .. line("M211 100 C217 100 217 106 210 106", c.ink, 1.3) .. line("M200 92 C196 86 204 82 200 76 M206 90 C203 86 208 83 206 79", c.ink, 1)
     return chair(c) .. group(340, 0, 0, chair(c), -1, 1) .. foot .. top .. book .. cup
-end
-
--- The plaque in a box w x h: an arched stone with a carved sprig, on two
--- short posts. The words are written over it by the screen.
-function Props.plaque(c, w, h)
-    -- the outline of the stone, `d` units in from its edge
-    local function stone(d)
-        return string.format("M%s %s L%s %s C%s %s %s %s %s %s C%s %s %s %s %s %s L%s %sZ", n(6 + d), n(h - 6 - d), n(6 + d), n(34 + d * .4), n(6 + d), n(18 + d), n(w * .3), n(22 + d), n(w / 2), n(2 + d),
-            n(w * .7), n(22 + d), n(w - 6 - d), n(18 + d), n(w - 6 - d), n(34 + d * .4), n(w - 6 - d), n(h - 6 - d))
-    end
-    return path(string.format("M20 %s L20 %s L30 %s L30 %sZ M%s %s L%s %s L%s %s L%s %sZ", n(h - 8), n(h - 1), n(h - 1), n(h - 8), n(w - 30), n(h - 8), n(w - 30), n(h - 1), n(w - 20), n(h - 1), n(w - 20), n(h - 8)), c.muted, c.ink, 1.4)
-        .. path(stone(0), c.cream, c.ink, 2.2) .. path(stone(5), nil, c.line, 1.2)
-        .. Flora.leaf(c, w / 2, 21, -160, 15, 4, c.sage, true) .. Flora.leaf(c, w / 2, 21, -20, 15, 4, c.sage, true) .. circle(w / 2, 17, 3, c.gold, c.ink, 1.1)
 end
 
 -- A straw bee skep on a low stand, 80 x 84.
