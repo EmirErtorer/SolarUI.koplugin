@@ -105,6 +105,30 @@ do
     Kit.ok(Sky.hour() == (tonumber(os.date("%H")) or 12), "and following the clock is the default")
 end
 
+-- the guide's longest pages fit on the screen
+do
+    local Guide = require("solarui/ui/gardenguide")
+    for _, i in ipairs({ 4, 5, 10 }) do
+        local card = Guide.card(W, i, function() end, function() end)
+        card:layout(nil, nil)
+        local b = Kit.canvas()
+        card:paint(b, 0, 0)
+        Kit.png(b, OUT .. "-guide" .. i .. ".png")
+        b:free()
+    end
+end
+
+-- sitting in the garden: only the garden, then a question
+do
+    local sit = Garden:new({})
+    sit.sitting = true
+    local ok, err = pcall(function() paint(sit):free() end)
+    Kit.ok(ok, "the garden alone draws: " .. tostring(err))
+    local card = require("solarui/ui/gardensit").card(W, function() end)
+    ok, err = pcall(function() card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); b:free() end)
+    Kit.ok(ok, "the question after sitting draws: " .. tostring(err))
+end
+
 -- the season wheel
 do
     local SeasonUI = require("solarui/ui/gardenseason")

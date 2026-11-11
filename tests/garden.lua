@@ -328,7 +328,7 @@ do
             clean(Journal.line({ t = k, k = kind, id = "rose" }).text, "the journal line " .. kind .. k)
         end
     end
-    for i, p in ipairs(Guide.pages()) do if i ~= 4 then clean((p.title or "") .. " " .. (p.text or ""), "guide page " .. i) end end
+    for i, p in ipairs(Guide.pages()) do if p.title ~= "Who, not what" then clean((p.title or "") .. " " .. (p.text or ""), "guide page " .. i) end end
 end
 
 -- wording in the code: no "it" in any text of the garden's modules

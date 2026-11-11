@@ -13,6 +13,7 @@ local GardenClock = require("solarui/ui/gardenclock")
 local GardenGive = require("solarui/ui/gardengive")
 local GardenGuide = require("solarui/ui/gardenguide")
 local GardenSeason = require("solarui/ui/gardenseason")
+local GardenSit = require("solarui/ui/gardensit")
 local Season = require("solarui/garden/season")
 local GardenView = require("solarui/ui/gardenview")
 local Label = require("solarui/ui/label")
@@ -86,7 +87,7 @@ function Garden:tick()
     self.timer = false
     if not (App.isOpen() and App.current() == self) then return end
     self.ticks = self.ticks + 1
-    if self.focus then return self:schedule() end
+    if self.focus or self.sitting then return self:schedule() end
     local ids = {}
     for id in pairs(self.sprites) do ids[#ids + 1] = id end
     table.sort(ids)
@@ -146,7 +147,7 @@ function Garden:guide()
         State.markGuide()
         self.showcase = false
         App.update()
-    end)
+    end, function() self:sit() end)
 end
 
 -- On the first visit, open the guide after ten seconds of looking around.
@@ -157,6 +158,25 @@ function Garden:waitForGuide()
         self.guide_timer = false
         if self.showcase and App.isOpen() and App.current() == self then self:guide() end
     end)
+end
+
+-- Sit in the garden: only the garden shows, nothing moves, for a few minutes.
+-- A tap ends it early; at the end the reader is asked what next.
+function Garden:sit()
+    self.sitting = true
+    self.sit_id = (self.sit_id or 0) + 1
+    local id = self.sit_id
+    UIManager:scheduleIn(GardenSit.SECONDS, function()
+        if self.sitting and self.sit_id == id then self:endSit(true) end
+    end)
+    App.update()
+end
+
+-- Stop sitting; when the time was up (`done`) ask what next.
+function Garden:endSit(done)
+    self.sitting = false
+    App.update()
+    if done and App.isOpen() and App.current() == self then GardenSit.ask(function() self:sit() end) end
 end
 
 -- The face in the grass was tapped: say who it was, and what it was worth.
@@ -249,10 +269,21 @@ function Garden:book(scene)
     } }), 166, box.y + box.h + 30, 740)
 end
 
+-- The garden alone, filling the screen: no heading, no tab bar, nothing
+-- animated, and a tap anywhere ends it.
+function Garden:stillness(ctx)
+    local scene = Scene.make("gardenstill", ctx.w, ctx.h, Layout.HEIGHT)
+    self.scene, self.sprites = scene, {}
+    GardenView.compose(scene, { seed = self.seed, at = self.at, pose = self.pose })
+    scene:touch(0, 0, Layout.WIDTH, scene.vh, function() self:endSit(false) end)
+    return scene
+end
+
 -- Build the garden.
 function Garden:build(ctx)
     State.refresh()
     if self.focus and self.focus ~= "book" and not State.entry(self.focus) then self.focus = nil end
+    if self.sitting then return self:stillness(ctx) end
     local tabs = TabBar.build(App.TABS, nil, function(id) App.go(id) end)
     local bar = Theme.get().size.tabbar + Theme.px(16)
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
