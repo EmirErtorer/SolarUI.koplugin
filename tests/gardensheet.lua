@@ -83,6 +83,12 @@ for _, mode in ipairs({ "morning", "day", "golden", "night", "wash:night", "day:
     x, row_h = x + gw + 16, math.max(row_h, gh)
 end
 x, y, row_h = 20, y + row_h + 16, 0
+-- the tuft a hiding animal lies in, and the nest of one asleep for the winter, at two animals' sizes
+for _, id in ipairs({ "hedgehog", "ladybug" }) do
+    local box = Layout.ANIMALS[id]
+    for _, param in ipairs({ "day:summer", "day:winter:sleep", "night:snow:winter:sleep", "wash:golden:winter:sleep" }) do put("garden_tuft", box.w, box.h, param) end
+end
+x, y, row_h = 20, y + row_h + 16, 0
 for _, phase in ipairs({ "day", "night" }) do put("garden_book", Layout.BOOK_ART.w / 2, Layout.BOOK_ART.h / 2, phase) end
 -- the clock on the top bar's button at three sizes, and the big dial for picking an hour
 x, y, row_h = 20, y + row_h + 16, 0

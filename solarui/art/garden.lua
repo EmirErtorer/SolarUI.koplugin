@@ -6,8 +6,9 @@
 -- (units of the poster, vh as tall as the screen asks) and a mode of colon
 -- parted tokens: the sky phase, the weather, the season and "wash" for the
 -- faded copy. The places come from garden/layout.lua, so the plants and
--- animals stand on it without overlap. Also here: the tuft an animal hides in
--- and the arch a picture is shown in.
+-- animals stand on it without overlap. Also here: the tuft an animal hides
+-- in, the nest one sleeps in through the winter and the arch a picture is
+-- shown in.
 
 local Flora = require("solarui/art/flora")
 local GardenSky = require("solarui/art/garden_sky")
@@ -87,10 +88,35 @@ local function lawn(c, vh, top, season, weather)
         .. (weather == "snow" and GardenWeather.drifts(c, 34, 1038, top, floor) or "")
 end
 
--- A clump of leaves and grass where an animal is hiding, its eyes showing.
+-- A nest of fallen leaves `s` large on the ground at (m, base) where an
+-- animal sleeps through the winter: curled round with its tail wrapped
+-- under its chin and its eyes shut, a breath rising from it.
+local function nest(c, m, base, s)
+    local leaves = { Wash.mix(c.gold, c.muted, .35), Wash.mix(c.bloom, c.muted, .3), Wash.mix(c.muted, c.pale, .4), c.gold }
+    local fur, light, out = Wash.mix(c.muted, c.bloom, .28), Wash.mix(c.muted, c.pale, .45), ""
+    for i, a in ipairs({ -176, -158, -140, -40, -22, -4 }) do
+        out = out .. Flora.leaf(c, m + (i < 4 and -s * .1 or s * .1), base - s * .1, a, s * (.4 + .1 * Svg.vary(i, 3)), s * .1, leaves[i % 4 + 1], true)
+    end
+    local bx, by, hx, hy = m + s * .06, base - s * .28, m - s * .26, base - s * .26
+    local tail = Svg.spline({ { bx + s * .38, by + s * .02 }, { bx + s * .3, by + s * .2 }, { bx - s * .02, by + s * .24 }, { hx + s * .02, hy + s * .16 }, { hx - s * .16, hy + s * .12 } }, 6)
+    out = out .. Svg.ellipse(bx, by, s * .4, s * .24, -4, fur, c.ink, 1.5)
+        .. line(string.format("M%s %s q%s %s %s %s M%s %s q%s %s %s %s", n(bx - s * .06), n(by - s * .14), n(s * .1), n(-s * .06), n(s * .2), n(-s * .02), n(bx + s * .04), n(by - s * .04), n(s * .1), n(-s * .05), n(s * .18), n(0)), c.ink, 1)
+        .. path(string.format("M%s %s q%s %s %s %s", n(hx + s * .04), n(hy - s * .15), n(s * .02), n(-s * .1), n(s * .1), n(-s * .08)), fur, c.ink, 1.2)
+        .. Svg.circle(hx, hy, s * .17, fur, c.ink, 1.4)
+        .. line(string.format("M%s %s q%s %s %s 0 M%s %s q%s %s %s 0", n(hx - s * .1), n(hy - s * .02), n(s * .04), n(s * .045), n(s * .08), n(hx + s * .01), n(hy - s * .03), n(s * .04), n(s * .045), n(s * .08)), c.ink, 1.1)
+        .. Svg.stem(tail, Svg.swell(s * .13, s * .03), light, c.ink, 1.3) .. Svg.circle(hx - s * .15, hy + s * .03, s * .025, c.ink)
+    for i, a in ipairs({ 176, 190, 6, -8, 184 }) do
+        out = out .. Flora.leaf(c, m + (i - 3) * s * .17, base - s * .03, a, s * (.28 + .08 * Svg.vary(i, 5)), s * .08, leaves[(i + 1) % 4 + 1], true)
+    end
+    return out .. Svg.circle(hx - s * .1, hy - s * .28, s * .03, nil, c.ink, .9) .. Svg.circle(hx - s * .17, hy - s * .4, s * .045, nil, c.ink, .9)
+end
+
+-- A clump of leaves and grass where an animal is hiding, its eyes showing,
+-- or with ":sleep" in the param a nest where an animal sleeps for the winter.
 function Garden.garden_tuft(c, vw, vh, param)
     c = Wash.apply(c, param)
     local m, s = vw / 2, math.min(vw * .5, vh * .9)
+    if tostring(param or ""):find("sleep") then return nest(c, m, vh - 2, math.min(vw * .66, vh * 1.05)) end
     local out = tuft(c, m - s * .5, vh - 2, s * .5)
     for i, a in ipairs({ -52, 46, -24, 22, -2 }) do
         out = out .. Kit.blade({ c = c }, m + a * s * .002, vh - 2, a, s * (i < 3 and .72 or .92), s * .2, a * .5, i % 2 == 0 and c.leaf or c.sage)
