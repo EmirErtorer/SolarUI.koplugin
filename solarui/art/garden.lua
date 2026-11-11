@@ -1,16 +1,20 @@
 -- The garden's ground and scenery, painted once as one backdrop: a green
 -- lawn bristling with blades of grass, a clipped hedge with a gateway under
 -- the trellis arch, the pond, the table and the small furniture
--- of garden_props. garden_ground(c, vw, vh, mode) takes the canvas size
--- (units of the poster, vh as tall as the screen asks) and mode "wash" for
--- the faded copy. The places come from garden/layout.lua, so the plants and
+-- of garden_props, in the colours of the season and under the weather of
+-- garden_weather. garden_ground(c, vw, vh, mode) takes the canvas size
+-- (units of the poster, vh as tall as the screen asks) and a mode of colon
+-- parted tokens: the sky phase, the weather, the season and "wash" for the
+-- faded copy. The places come from garden/layout.lua, so the plants and
 -- animals stand on it without overlap. Also here: the tuft an animal hides in
 -- and the arch a picture is shown in.
 
 local Flora = require("solarui/art/flora")
 local GardenSky = require("solarui/art/garden_sky")
+local GardenWeather = require("solarui/art/garden_weather")
 local Kit = require("solarui/art/plantkit")
 local Layout = require("solarui/garden/layout")
+local PlantSeason = require("solarui/art/plantseason")
 local Props = require("solarui/art/garden_props")
 local Svg = require("solarui/art/svg")
 local Trellis = require("solarui/art/trellis")
@@ -37,26 +41,29 @@ end
 
 -- A stretch of clipped hedge from x0 to x1 standing on `base`, its top in
 -- scallops and small leaves marked on it.
-local function hedge(c, x0, x1, base)
-    local d, marks = { string.format("M%s %s L%s %s", n(x0), n(base), n(x0), n(base - 44)) }, {}
+local function hedge(c, x0, x1, base, snow)
+    local d, marks, caps = { string.format("M%s %s L%s %s", n(x0), n(base), n(x0), n(base - 44)) }, {}, {}
     local count = math.floor((x1 - x0) / 54 + .5)
     local step = (x1 - x0) / count
     for i = 1, count do
         local x = x0 + (i - 1) * step
-        d[#d + 1] = string.format("Q%s %s %s %s", n(x + step / 2), n(base - 74 - 8 * Svg.vary(i, x0)), n(x + step), n(base - 44))
+        local peak = base - 74 - 8 * Svg.vary(i, x0)
+        d[#d + 1] = string.format("Q%s %s %s %s", n(x + step / 2), n(peak), n(x + step), n(base - 44))
+        if snow then caps[#caps + 1] = GardenWeather.cap(c, x, base - 44, step, (peak + base - 44) / 2) end
         for k = 1, 3 do
             local mx, my = x + step * (.2 + .3 * k - .15 * (i % 2)), base - 14 - 14 * ((k + i) % 3)
             if mx + 12 < x1 then marks[#marks + 1] = string.format("M%s %s q3 -5 7 -1 M%s %s q-1 -5 4 -6", n(mx), n(my), n(mx + 6), n(my - 1)) end
         end
     end
     d[#d + 1] = string.format("L%s %sZ", n(x1), n(base))
-    return path(table.concat(d, " "), c.sage, c.ink, 1.8) .. line(table.concat(marks, " "), c.ink, .8)
+    return path(table.concat(d, " "), c.sage, c.ink, 1.8) .. line(table.concat(marks, " "), c.ink, .8) .. table.concat(caps)
 end
 
 -- The lawn: a green ground under the hedge with its top edge running along
 -- the hedge's foot, then blades of grass over it, three to a tuft, all of
--- similar height and leaning this way and that.
-local function lawn(c, vh, top)
+-- similar height and leaning this way and that, and what the season and
+-- the weather leave on it.
+local function lawn(c, vh, top, season, weather)
     local fill = Wash.mix(c.sage, c.bg, .5)
     local floor = vh - 30
     local ground = path(string.format("M34 %s C300 %s 700 %s 1038 %s L1038 %s L34 %s Z", n(top), n(top - 5), n(top + 5), n(top), n(floor), n(floor)), fill)
@@ -76,7 +83,8 @@ local function lawn(c, vh, top)
             end
         end
     end
-    return ground .. path(table.concat(dark, " "), c.leaf) .. path(table.concat(light, " "), c.sage)
+    return ground .. GardenWeather.lawn(c, season, 34, 1038, top, floor) .. path(table.concat(dark, " "), c.leaf) .. path(table.concat(light, " "), c.sage)
+        .. (weather == "snow" and GardenWeather.drifts(c, 34, 1038, top, floor) or "")
 end
 
 -- A clump of leaves and grass where an animal is hiding, its eyes showing.
@@ -110,15 +118,19 @@ function Garden.garden_ground(c, _vw, vh, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)
     local base = ivy.y + ivy.h
     local sky = GardenSky.draw(c, mode, Layout.SKY.x, Layout.SKY.y, Layout.SKY.x + Layout.SKY.w, base, ivy.x + ivy.w / 2)
-    c = Wash.apply(c, mode)
-    local out = sky .. lawn(c, vh, base) .. hedge(c, 34, ivy.x + 46, base) .. hedge(c, ivy.x + ivy.w - 46, 1038, base)
+    local season, weather = PlantSeason.of(mode), GardenWeather.of(mode)
+    c = Wash.apply(GardenWeather.palette(PlantSeason.palette(c, season), weather), mode)
+    local snow = weather == "snow"
+    local out = sky .. lawn(c, vh, base, season, weather) .. hedge(c, 34, ivy.x + 46, base, snow) .. hedge(c, ivy.x + ivy.w - 46, 1038, base, snow)
         .. group(ivy.x + ivy.w / 2, base, 0, Trellis.frame(c))
-    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
+    if weather == "mist" then out = out .. GardenWeather.mist(c, 34, 1038, base) end
+    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. (snow and GardenWeather.rim(c, pond) or "")
+        .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
     for id, b in pairs(Layout.EXTRAS) do
         local at, small = Layout.at(b, vh), Props.small(id)
         out = out .. group(at.x, at.y, 0, small.draw(c), at.w / small.w, at.h / small.h)
     end
-    return out
+    return out .. GardenWeather.fall(c, weather, Layout.SKY.x, Layout.SKY.x + Layout.SKY.w, Layout.SKY.y + 30, vh - 34)
 end
 
 return Garden

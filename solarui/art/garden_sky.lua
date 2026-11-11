@@ -2,9 +2,11 @@
 -- and the hedge: flat bands of colour parted by long waving edges, far hills
 -- at the horizon, and the sun, moon, stars, clouds and birds of sky_bodies.
 -- Its colours come from the palette as it is (the sky is the light, so it is
--- not lit itself), mixed with a few colours of the hour.
+-- not lit itself), mixed with a few colours of the hour, and dimmed under a
+-- bank of cloud by the weather of garden_weather.
 
 local Bodies = require("solarui/art/sky_bodies")
+local GardenWeather = require("solarui/art/garden_weather")
 local Light = require("solarui/art/light")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
@@ -90,10 +92,10 @@ local function top(k, x0, y0, x1)
     return path(arch(0) .. string.format(" L%s %s L%s %sZ", n(x1), n(y0 + 26), n(x0), n(y0 + 26)), k.band1) .. line(arch(0), k.ink, 1.8) .. line(arch(6), mix(k.band1, k.ink, .35), .9)
 end
 
--- The sun or moon, clouds, stars and birds of a phase, placed round the arch whose foot is (ax, base).
+-- The sun or moon, clouds, stars (hidden under a bank of cloud) and birds of a phase, placed round the arch whose foot is (ax, base).
 local function bodies(k, phase, x0, y0, x1, ax, base)
     if phase == "night" then
-        return Svg.group(x0, y0 + 28, 0, Bodies.stars(k, x1 - x0, base - y0 - 64, { x = ax + 62 - x0, y = base - 252 - y0, r = 60 }))
+        return (k.bank and "" or Svg.group(x0, y0 + 28, 0, Bodies.stars(k, x1 - x0, base - y0 - 64, { x = ax + 62 - x0, y = base - 252 - y0, r = 60 })))
             .. Bodies.wisp(k, ax - 260, base - 290, 150) .. Bodies.wisp(k, ax + 150, base - 300, 170) .. Bodies.wisp(k, ax - 120, base - 120, 96, k.shade)
             .. Bodies.moon(k, ax + 62, base - 224, 24)
     elseif phase == "golden" then
@@ -107,12 +109,13 @@ local function bodies(k, phase, x0, y0, x1, ax, base)
         .. Bodies.cloud(k, ax - 150, base - 70, 80, true)
 end
 
--- The whole sky from (x0, y0) to (x1, base) for the phase in `mode`, faded when it has "wash".
+-- The whole sky from (x0, y0) to (x1, base) for the phase and weather in `mode`, faded when it has "wash".
 function GardenSky.draw(c, mode, x0, y0, x1, base, ax)
     local phase = Light.phase(mode) or "day"
-    local k = colours(c, phase)
+    local weather = GardenWeather.of(mode)
+    local k = GardenWeather.sky(colours(c, phase), weather, phase)
     if tostring(mode or ""):find("wash") then k = Wash.palette(k, c.bg) end
-    return bands(k, x0, y0, x1, base + 8) .. bodies(k, phase, x0, y0, x1, ax, base) .. hills(k, x0, x1, base + 8) .. top(k, x0, y0, x1)
+    return bands(k, x0, y0, x1, base + 8) .. bodies(k, phase, x0, y0, x1, ax, base) .. GardenWeather.cover(k, weather, x0, y0 + 20, x1) .. hills(k, x0, x1, base + 8) .. top(k, x0, y0, x1)
 end
 
 return GardenSky

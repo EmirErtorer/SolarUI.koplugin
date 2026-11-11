@@ -2,7 +2,8 @@
 -- each stage (and wilted), each plant in every season and died back for the
 -- winter, the maple with the leaves and fruit of the reader's year, the
 -- trees in the light of every phase, each animal
--- in both poses, the ground at every phase and faded, the open book and the
+-- in both poses, the ground at every phase, season and weather and faded,
+-- the tuft a hiding or sleeping animal lies in, the open book and the
 -- clock (its button and its dial),
 -- laid out on one sheet saved as a PNG. Checks every drawing draws and none is cut by
 -- its canvas.
@@ -69,12 +70,15 @@ for _, id in ipairs({ "maple", "ginkgo" }) do
         put("plant_" .. id, w, h, "5:wilt:flip:" .. phase)
     end
 end
--- the ground in every phase and faded, and the open book
+-- the ground in every phase, season and weather and faded, and the open book
 x, y, row_h = 20, y + row_h + 16, 0
 local gw, gh = 268, 340
-for _, mode in ipairs({ "morning", "day", "golden", "night", "wash:night" }) do
+for _, mode in ipairs({ "morning", "day", "golden", "night", "wash:night", "day:spring", "day:summer", "day:autumn", "day:winter", "day:cloudy:summer",
+    "day:rain:autumn", "night:rain:spring", "day:snow:winter", "night:snow:winter", "morning:mist:autumn", "golden:mist:spring", "night:cloudy:winter", "wash:day:rain:autumn" }) do
     if x + gw > W - 20 then x, y, row_h = 20, y + row_h + 16, 0 end
-    Kit.ok(Art.sprite("garden_ground", gw, gh, Layout.WIDTH, Layout.HEIGHT, mode) ~= nil, "the ground draws at " .. mode)
+    local ground, _dx, _dy, cut = Art.sprite("garden_ground", gw, gh, Layout.WIDTH, Layout.HEIGHT, mode)
+    Kit.ok(ground ~= nil, "the ground draws at " .. mode)
+    Kit.ok(not cut, "the ground at " .. mode .. " is not cut by its canvas")
     Art.draw(bb, "garden_ground", x, y, gw, gh, Layout.WIDTH, Layout.HEIGHT, mode)
     x, row_h = x + gw + 16, math.max(row_h, gh)
 end
