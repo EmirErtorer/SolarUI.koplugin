@@ -90,6 +90,15 @@ do
     local seen = 0
     for _ in pairs(later.sprites) do seen = seen + 1 end
     Kit.ok(seen < 12, "and not everyone (" .. seen .. ")")
+    local Clock = require("solarui/ui/gardenclock")
+    for _, pm in ipairs({ false, true }) do
+        local ok, err = pcall(function() local card = Clock.card(W, pm, function() end); card:layout(nil, nil); local b = Kit.canvas(); card:paint(b, 0, 0); b:free() end)
+        Kit.ok(ok, "the clock dialog draws" .. (pm and " in the afternoon" or " in the morning") .. ": " .. tostring(err))
+    end
+    Clock.set(15)
+    Kit.ok(Sky.hour() == 15 and not Clock.following(), "an hour picked on the clock is the garden's hour")
+    Clock.set(nil)
+    Kit.ok(Clock.following(), "and the clock can follow the device again")
     Settings.set("garden_hour", 3)
     Kit.ok(Sky.hour() == 3, "a picked hour is the garden's hour")
     Settings.set("garden_hour", false)

@@ -154,7 +154,7 @@ function Garden:heading(scene)
     local x = 962 - unit
     x = button({ icon = "book" }, x, function() App.push("gardennotes") end)
     x = button({ icon = "notes" }, x, function() App.push("gardenjournal") end)
-    x = button({ icon = "history" }, x, function() GardenClock.open(nil, function() App.update() end) end)
+    x = button({ art = { "garden_clock_icon", tostring(Sky.hour()) }, icon_size = 30 }, x, function() GardenClock.open(nil, function() App.update() end) end)
     x = button({ label = "?" }, x, function() self:guide() end)
     scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260)
     local line = Text.height("small") / scene.k
