@@ -16,21 +16,21 @@ function Wash.mix(a, b, t)
     return string.format("#%02x%02x%02x", math.floor(ar + (br - ar) * t + .5), math.floor(ag + (bg - ag) * t + .5), math.floor(ab + (bb - ab) * t + .5))
 end
 
--- The palette `c` faded.
-function Wash.palette(c)
+-- The palette `c` faded towards the page colour `page` (its own bg if none).
+function Wash.palette(c, page)
     local out = {}
+    page = page or c.bg or "#ffffff"
     for role, hex in pairs(c) do
-        out[role] = (type(hex) == "string" and hex:match("^#%x%x%x%x%x%x$")) and Wash.mix(hex, c.bg or "#ffffff", STRENGTH) or hex
+        out[role] = (type(hex) == "string" and hex:match("^#%x%x%x%x%x%x$")) and Wash.mix(hex, page, STRENGTH) or hex
     end
     return out
 end
 
--- The palette for a drawing whose param may ask for the hour's light and
--- for the wash.
+-- The palette lit for the hour in `param` and faded towards the page when it asks for the wash.
 function Wash.apply(c, param)
-    c = Light.tint(c, param)
-    if tostring(param or ""):find("wash") then return Wash.palette(c) end
-    return c
+    local lit = Light.tint(c, param)
+    if tostring(param or ""):find("wash") then return Wash.palette(lit, c.bg) end
+    return lit
 end
 
 return Wash

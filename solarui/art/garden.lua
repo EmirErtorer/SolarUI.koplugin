@@ -8,6 +8,7 @@
 -- and the arch a picture is shown in.
 
 local Flora = require("solarui/art/flora")
+local GardenSky = require("solarui/art/garden_sky")
 local Kit = require("solarui/art/plantkit")
 local Layout = require("solarui/garden/layout")
 local Props = require("solarui/art/garden_props")
@@ -45,7 +46,7 @@ local function hedge(c, x0, x1, base)
         d[#d + 1] = string.format("Q%s %s %s %s", n(x + step / 2), n(base - 74 - 8 * Svg.vary(i, x0)), n(x + step), n(base - 44))
         for k = 1, 3 do
             local mx, my = x + step * (.2 + .3 * k - .15 * (i % 2)), base - 14 - 14 * ((k + i) % 3)
-            marks[#marks + 1] = string.format("M%s %s q3 -5 7 -1 M%s %s q-1 -5 4 -6", n(mx), n(my), n(mx + 6), n(my - 1))
+            if mx + 12 < x1 then marks[#marks + 1] = string.format("M%s %s q3 -5 7 -1 M%s %s q-1 -5 4 -6", n(mx), n(my), n(mx + 6), n(my - 1)) end
         end
     end
     d[#d + 1] = string.format("L%s %sZ", n(x1), n(base))
@@ -106,10 +107,11 @@ end
 
 -- The whole backdrop for a canvas vw x vh.
 function Garden.garden_ground(c, _vw, vh, mode)
-    c = Wash.apply(c, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)
     local base = ivy.y + ivy.h
-    local out = lawn(c, vh, base) .. hedge(c, 34, ivy.x + 46, base) .. hedge(c, ivy.x + ivy.w - 46, 1038, base)
+    local sky = GardenSky.draw(c, mode, Layout.SKY.x, Layout.SKY.y, Layout.SKY.x + Layout.SKY.w, base, ivy.x + ivy.w / 2)
+    c = Wash.apply(c, mode)
+    local out = sky .. lawn(c, vh, base) .. hedge(c, 34, ivy.x + 46, base) .. hedge(c, ivy.x + ivy.w - 46, 1038, base)
         .. group(ivy.x + ivy.w / 2, base, 0, Trellis.frame(c))
     out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
     for id, b in pairs(Layout.EXTRAS) do
