@@ -55,23 +55,27 @@ Layout.EXTRAS = {
 }
 
 -- The size each animal is drawn at (its art's own units); it is shown
--- ANIMAL_SCALE times as big, so the small ones can be seen and tapped. Their
--- places are dealt on each visit; the two in the pond stay there. The ones
--- that fly may be dealt a place in the sky.
+-- SCALES[id] (else ANIMAL_SCALE) times as big, so the small ones can be seen
+-- and tapped. Their places are dealt on each visit, and the ones that fly may
+-- be dealt any free place in the garden or the sky; the two that live in the
+-- pond keep to their paths there (PATHS, top-left corners to hop or swim to).
 Layout.ANIMAL_SCALE = 1.3
+Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85 }
 Layout.ANIMALS = {
     bee = box(0, 0, 110, 70), butterfly = box(0, 0, 80, 70), moth = box(0, 0, 80, 70), robin = box(0, 0, 110, 80),
     dragonfly = box(0, 0, 100, 64), ladybug = box(0, 0, 60, 50), snail = box(0, 0, 80, 56), hedgehog = box(0, 0, 110, 64),
     fox = box(0, 0, 130, 76), peacock = box(0, 0, 150, 86), frog = box(0, 0, 70, 60), koi = box(0, 0, 100, 56),
 }
 Layout.FLIES = { bee = true, butterfly = true, moth = true, dragonfly = true }
-Layout.FIXED = { frog = box(594, 1035, 91, 78), koi = box(568, 1145, 130, 73) }
+Layout.PATHS = {
+    frog = { { 560, 1048 }, { 586, 1058 }, { 610, 1070 } },
+    koi = { { 526, 1150 }, { 504, 1142 }, { 550, 1142 }, { 538, 1146 } },
+}
+Layout.HIT = 90   -- the least a box to tap may be on a side
 
--- The free spots animals are dealt: in the sky (inside the trellis arch)
--- and on the lawn, large, medium and small, so any animal fits at least one
--- kind. Tapping a spot taps the animal in it.
+-- The free spots the animals that walk are dealt: large, medium and small,
+-- so any of them fits at least one kind. Tapping a spot taps the animal in it.
 Layout.SPOTS = {
-    { x = 415, y = 215, w = 150, h = 105, air = true }, { x = 480, y = 338, w = 150, h = 105, air = true },
     { x = 827, y = 1087, w = 200, h = 120 }, { x = 95, y = 1098, w = 200, h = 120 },
     { x = 537, y = 484, w = 150, h = 105 }, { x = 444, y = 879, w = 150, h = 105 },
     { x = 767, y = 1243, w = 150, h = 105 }, { x = 297, y = 1246, w = 150, h = 105 },
@@ -120,50 +124,110 @@ end
 
 -- The size an animal is shown at.
 function Layout.shown(id)
-    local size = Layout.ANIMALS[id]
-    return { w = math.floor(size.w * Layout.ANIMAL_SCALE + .5), h = math.floor(size.h * Layout.ANIMAL_SCALE + .5) }
+    local size, k = Layout.ANIMALS[id], Layout.SCALES[id] or Layout.ANIMAL_SCALE
+    return { w = math.floor(size.w * k + .5), h = math.floor(size.h * k + .5) }
+end
+
+-- A box to tap that is at least HIT on a side, centred on `b`.
+local function hitOf(b)
+    local hw, hh = math.max(b.w, Layout.HIT), math.max(b.h, Layout.HIT)
+    return box(b.x + (b.w - hw) / 2, b.y + (b.h - hh) / 2, hw, hh)
+end
+
+-- The animal of a pond path at its `i`th place: a box with `hit`.
+function Layout.waypoint(id, i)
+    local path, size = Layout.PATHS[id], Layout.shown(id)
+    local p = path[(i - 1) % #path + 1]
+    local b = box(p[1], p[2], size.w, size.h)
+    b.hit = hitOf(b)
+    return b
+end
+
+-- Do two boxes overlap?
+local function overlap(a, b)
+    return a.x < b.x + b.w and b.x < a.x + a.w and a.y < b.y + b.h and b.y < a.y + a.h
+end
+
+-- The boxes that stay where they are (everything but the animals), for a
+-- canvas `vh` tall, by name: plants, props, extras, the heading and the
+-- corners. The pond and its lily are left out, its dwellers stand in for them, and the
+-- trellis counts only as its two posts and its top: the sky shows through
+-- the arch.
+function Layout.static(vh)
+    local out = {}
+    for _kind, set in ipairs({ Layout.PLANTS, Layout.PROPS, Layout.EXTRAS }) do
+        for id, b in pairs(set) do out[id] = Layout.at(b, vh) end
+    end
+    out.pond, out.ivy, out.water_lily = nil, nil, nil
+    local ivy = Layout.PLANTS.ivy
+    out.ivy_left = Layout.at(box(ivy.x, ivy.y + 80, 70, ivy.h - 80), vh)
+    out.ivy_right = Layout.at(box(ivy.x + ivy.w - 70, ivy.y + 80, 70, ivy.h - 80), vh)
+    out.ivy_top = Layout.at(box(ivy.x, ivy.y, ivy.w, 80), vh)
+    for id, b in pairs(Layout.RESERVED) do out[id] = b end
+    for i, b in ipairs(Layout.CORNERS_BELOW) do out["corner_b" .. i] = box(b.x, vh + b.y, b.w, b.h) end
+    return out
+end
+
+-- A free place for an animal that flies: anywhere in the garden or the sky
+-- that overlaps nothing in `taken` (a list of boxes), or nil.
+local function sky(rand, size, taken)
+    local hit = hitOf(box(0, 0, size.w, size.h))
+    for _try = 1, 400 do
+        local x, y = 44 + rand() * (984 - hit.w), 128 + rand() * (1340 - hit.h - 128)
+        local b = box(math.floor(x), math.floor(y), hit.w, hit.h)
+        local clear = true
+        for _i, t in ipairs(taken) do
+            if overlap(b, { x = t.x - 6, y = t.y - 6, w = t.w + 12, h = t.h + 12 }) then clear = false; break end
+        end
+        if clear then return b end
+    end
 end
 
 -- Where each animal stands on one visit: { id = box with `flip` and `hit` (the
--- box to tap) }. The two in the pond stay there; the others are dealt a spot
--- each, the biggest first, and a place inside it, and face either way. The
--- ones that fly are dealt a spot in the sky while there is one.
+-- box to tap) }. The two in the pond start on their paths. The ones that walk
+-- are dealt a spot each, the biggest first, and a place inside it. The ones
+-- that fly go anywhere free. Each faces either way.
 function Layout.spread(seed)
     local rand = rng(seed or 1)
-    local out = {}
-    local roaming = {}
+    local out, walkers, flyers = {}, {}, {}
     for id in pairs(Layout.ANIMALS) do
-        local size = Layout.shown(id)
-        if Layout.FIXED[id] then
-            local f = Layout.FIXED[id]
-            out[id] = box(f.x, f.y, f.w, f.h)
-            local hw, hh = math.max(f.w, 96), math.max(f.h, 96)
-            out[id].hit = box(f.x + (f.w - hw) / 2, f.y + (f.h - hh) / 2, hw, hh)
+        if Layout.PATHS[id] then
+            out[id] = Layout.waypoint(id, 1)
             out[id].flip = rand() < .5
+        elseif Layout.FLIES[id] then
+            flyers[#flyers + 1] = id
         else
-            roaming[#roaming + 1] = { id = id, size = size }
+            walkers[#walkers + 1] = { id = id, size = Layout.shown(id) }
         end
     end
-    table.sort(roaming, function(a, b)
+    table.sort(walkers, function(a, b)
         local sa, sb = a.size.w * a.size.h, b.size.w * b.size.h
         if sa ~= sb then return sa > sb end
         return a.id < b.id
     end)
+    table.sort(flyers)
     local free = {}
     for i, s in ipairs(Layout.SPOTS) do free[i] = s end
-    for _i, r in ipairs(roaming) do
-        local options, sky = {}, {}
+    local taken = { box(Layout.PROPS.pond.x, Layout.PROPS.pond.y, Layout.PROPS.pond.w, Layout.PROPS.pond.h) }
+    for _id, b in pairs(Layout.static(Layout.HEIGHT)) do taken[#taken + 1] = b end
+    for _i, r in ipairs(walkers) do
+        local options = {}
         for j, s in ipairs(free) do
-            if fits(s, r.size) and (Layout.FLIES[r.id] or not s.air) then
-                options[#options + 1] = j
-                if s.air then sky[#sky + 1] = j end
-            end
+            if fits(s, r.size) then options[#options + 1] = j end
         end
-        local pool = #sky > 0 and sky or options
-        local s = table.remove(free, pool[1 + math.floor(rand() * #pool)])
+        local s = table.remove(free, options[1 + math.floor(rand() * #options)])
         out[r.id] = box(s.x + math.floor((s.w - r.size.w) * rand()), s.y + math.floor((s.h - r.size.h) * rand()), r.size.w, r.size.h)
         out[r.id].hit = box(s.x, s.y, s.w, s.h)
         out[r.id].flip = rand() < .5
+        taken[#taken + 1] = out[r.id].hit
+    end
+    for _i, id in ipairs(flyers) do
+        local size = Layout.shown(id)
+        local hit = sky(rand, size, taken) or table.remove(free, 1) or box(44, 128, Layout.HIT, Layout.HIT)
+        out[id] = box(hit.x + math.floor((hit.w - size.w) / 2), hit.y + math.floor((hit.h - size.h) / 2), size.w, size.h)
+        out[id].hit = box(hit.x, hit.y, hit.w, hit.h)
+        out[id].flip = rand() < .5
+        taken[#taken + 1] = out[id].hit
     end
     return out
 end
@@ -184,24 +248,12 @@ function Layout.place(id, vh)
     return b and Layout.at(b, vh) or nil
 end
 
--- Every box with a name, for checks: plants, props, extras, the animals as
--- dealt by `spread` (the place they are tapped at counts too), the heading and
--- the corners, laid out for a canvas `vh` tall. The pond is left out (see
--- INSIDE_POND), its dwellers stand in for it, and the trellis counts only as
--- its two posts and its top: the sky shows through the arch.
+-- Every box with a name, for checks: everything of Layout.static and the
+-- animals as dealt by `spread` (the place they are tapped at counts too),
+-- laid out for a canvas `vh` tall.
 function Layout.all(vh, spread)
-    local out = {}
-    spread = spread or Layout.spread(1)
-    for _kind, set in ipairs({ Layout.PLANTS, Layout.PROPS, Layout.EXTRAS, spread }) do
-        for id, b in pairs(set) do out[id] = Layout.at(b.hit or b, vh) end
-    end
-    out.pond, out.ivy = nil, nil
-    local ivy = Layout.PLANTS.ivy
-    out.ivy_left = Layout.at(box(ivy.x, ivy.y + 80, 70, ivy.h - 80), vh)
-    out.ivy_right = Layout.at(box(ivy.x + ivy.w - 70, ivy.y + 80, 70, ivy.h - 80), vh)
-    out.ivy_top = Layout.at(box(ivy.x, ivy.y, ivy.w, 80), vh)
-    for id, b in pairs(Layout.RESERVED) do out[id] = b end
-    for i, b in ipairs(Layout.CORNERS_BELOW) do out["corner_b" .. i] = box(b.x, vh + b.y, b.w, b.h) end
+    local out = Layout.static(vh)
+    for id, b in pairs(spread or Layout.spread(1)) do out[id] = Layout.at(b.hit or b, vh) end
     return out
 end
 

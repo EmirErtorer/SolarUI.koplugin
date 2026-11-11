@@ -115,6 +115,16 @@ function App.repaint(el, mode)
     UIManager:setDirty(host, mode or (Theme.isDark() and "ui" or "fast"), Host.box(el))
 end
 
+-- Move an element `dx`, `dy` pixels (it must have been painted) and repaint the
+-- place it left and the place it went to, and nothing else.
+function App.repaintMoved(el, dx, dy, mode)
+    if not (host and el.x) then return end
+    local old = Host.box(el)
+    el.sx, el.sy = el.sx + dx, el.sy + dy
+    local new = Geom:new({ x = old.x + dx, y = old.y + dy, w = old.w, h = old.h })
+    UIManager:setDirty(host, mode or "fast", old:combine(new))
+end
+
 -- Show the clock change once a minute while SolarUI is on top.
 local function scheduleClock()
     if clock_timer then UIManager:unschedule(clock_timer) end

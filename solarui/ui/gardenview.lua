@@ -33,7 +33,7 @@ local function everyone()
 end
 
 -- Put the garden on `scene`. o: { showcase (show every animal), faded, seed (what deals the animals), pose
--- (id -> "1" or "2"), hour, on_tap(id, kind) for a plant or animal, sprites
+-- (id -> "1" or "2"), at (id -> which place of its path a pond animal is at), hour, on_tap(id, kind) for a plant or animal, sprites
 -- (a table that is filled with each animal's element, to repaint it alone) }.
 function GardenView.compose(scene, o)
     o = o or {}
@@ -56,7 +56,12 @@ function GardenView.compose(scene, o)
     local spread = Layout.spread(o.seed)
     for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
         local id = a.def.id
-        local b = Layout.at(spread[id], vh)
+        local base = spread[id]
+        if o.at and o.at[id] then
+            base = Layout.waypoint(id, o.at[id])
+            base.flip = spread[id].flip
+        end
+        local b = Layout.at(base, vh)
         if a.here then
             local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, o.faded, phase) end
             if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())

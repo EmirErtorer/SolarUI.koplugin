@@ -40,6 +40,7 @@ function Garden:init()
     self.showcase = not State.guideSeen()   -- the first time, every animal shows and the guide follows
     self.pose = {}
     self.sprites = {}
+    self.at = {}   -- where on its path each pond animal is
     self.ticks = 0
     self.seed = os.time()   -- deals the animals a new place and the book a new passage on every visit
     self.quote_at = 1
@@ -52,8 +53,23 @@ function Garden:quote()
     return self.quotes[(self.quote_at - 1) % math.max(1, #self.quotes) + 1]
 end
 
--- Flip an animal between its two poses and repaint just its own patch.
+-- Move the frog or the koi on to the next place of its path in the pond,
+-- and change its pose, repainting only the two places.
+function Garden:hop(id)
+    local el, scene = self.sprites[id], self.scene
+    if not (el and scene) then return end
+    local from = self.at[id] or 1
+    local to = from % #Layout.PATHS[id] + 1
+    self.at[id] = to
+    self.pose[id] = self.pose[id] == "2" and "1" or "2"
+    local was, now = Layout.at(Layout.waypoint(id, from), scene.vh), Layout.at(Layout.waypoint(id, to), scene.vh)
+    App.repaintMoved(el, scene:px(now.x) - scene:px(was.x), scene:px(now.y) - scene:px(was.y), "fast")
+end
+
+-- Make a small movement: flip an animal between its two poses and repaint
+-- just its own patch, or (in the pond) swim or hop it on.
 function Garden:move(id)
+    if Layout.PATHS[id] then return self:hop(id) end
     local el = self.sprites[id]
     if not el then return end
     self.pose[id] = self.pose[id] == "2" and "1" or "2"
@@ -222,7 +238,8 @@ function Garden:build(ctx)
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
     self.sprites = {}
     local show = self.showcase
-    GardenView.compose(scene, { showcase = show, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed,
+    self.scene = scene
+    GardenView.compose(scene, { showcase = show, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed, at = self.at,
         on_tap = not self.focus and function(id) if show then self:guide() else self.focus = id; App.update() end end or nil,
         on_book = not self.focus and function() if show then self:guide() else self.focus = "book"; App.update() end end or nil })
     self:heading(scene)

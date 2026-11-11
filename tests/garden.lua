@@ -112,7 +112,7 @@ do
     end
     local pond = Layout.PROPS.pond
     for _, id in ipairs(Layout.INSIDE_POND) do
-        local b = Layout.PLANTS[id] or Layout.FIXED[id]
+        local b = Layout.PLANTS[id] or Layout.waypoint(id, 1)
         Kit.ok(b.x >= pond.x and b.y >= pond.y and b.x + b.w <= pond.x + pond.w and b.y + b.h <= pond.y + pond.h, id .. " is inside the pond")
     end
     local seen = {}
@@ -180,20 +180,48 @@ do
     Kit.ok(Sky.phase(4) == "night" and Sky.phase(5) == "morning" and Sky.phase(10) == "morning" and Sky.phase(11) == "day"
         and Sky.phase(16) == "day" and Sky.phase(17) == "golden" and Sky.phase(21) == "golden" and Sky.phase(22) == "night" and Sky.phase(0) == "night",
         "the sky changes at five, eleven, five in the afternoon and ten at night")
-    local small, sky_flyers = 0, 0
+    local small, places = 0, {}
     for seed = 1, 60 do
         local d = Layout.spread(seed)
         for id, b in pairs(d) do
             local hit = b.hit or b
-            if hit.w < 90 or hit.h < 90 then small = small + 1 end
-            if b.w < Layout.ANIMALS[id].w * Layout.ANIMAL_SCALE - 1 then small = small + 1 end
+            if hit.w < Layout.HIT or hit.h < Layout.HIT then small = small + 1 end
+            local shown = Layout.shown(id)
+            if b.w ~= shown.w or b.h ~= shown.h then small = small + 1 end
         end
-        local in_sky = 0
-        for id in pairs(Layout.FLIES) do if d[id].hit.y < Layout.LAWN_TOP then in_sky = in_sky + 1 end end
-        if in_sky == 2 then sky_flyers = sky_flyers + 1 end
+        places[d.bee.x .. "," .. d.bee.y] = true
     end
-    Kit.ok(small == 0, "every animal is shown 1.3 times as big and can be tapped on at least 90 units")
-    Kit.ok(sky_flyers == 60, "two of the flying animals are dealt the sky, always")
+    local n = 0
+    for _ in pairs(places) do n = n + 1 end
+    Kit.ok(small == 0, "every animal is shown at its own size and can be tapped on at least " .. Layout.HIT .. " units")
+    Kit.ok(Layout.shown("bee").w <= 110 and Layout.shown("dragonfly").w <= 100 and Layout.shown("fox").w > 130, "the bee and the dragonfly are not enlarged, the others are")
+    Kit.ok(n >= 25, "the bee is dealt a different place almost every visit (" .. n .. " in 60)")
+    -- the frog and the koi stay in the water on every place of their paths and never meet
+    local cx, cy, ax, by = Layout.PROPS.pond.x + 150, Layout.PROPS.pond.y + 107.5, 133, 93.5
+    local lily = Layout.PLANTS.water_lily
+    local function inWater(b)
+        for _, px in ipairs({ b.x, b.x + b.w }) do
+            for _, py in ipairs({ b.y, b.y + b.h }) do
+                if ((px - cx) / ax) ^ 2 + ((py - cy) / by) ^ 2 > 1 then return false end
+            end
+        end
+        return true
+    end
+    local function meets(a, c) return a.x < c.x + c.w and c.x < a.x + a.w and a.y < c.y + c.h and c.y < a.y + a.h end
+    local out, met = {}, {}
+    for _, id in ipairs({ "frog", "koi" }) do
+        for i = 1, #Layout.PATHS[id] do
+            local b = Layout.waypoint(id, i)
+            if not inWater(b) or meets(b, lily) then out[#out + 1] = id .. i end
+        end
+    end
+    for i = 1, #Layout.PATHS.frog do
+        for j = 1, #Layout.PATHS.koi do
+            if meets(Layout.waypoint("frog", i), Layout.waypoint("koi", j)) then met[#met + 1] = i .. "/" .. j end
+        end
+    end
+    Kit.ok(#out == 0, "every place of the frog's and the koi's paths is in the water, clear of the lily: " .. table.concat(out, ", "))
+    Kit.ok(#met == 0, "the frog and the koi never meet: " .. table.concat(met, ", "))
     local hit = Layout.bookHit(1430)
     local t = Layout.at(Layout.PROPS.table, 1430)
     Kit.ok(hit.x >= t.x and hit.y >= t.y and hit.x + hit.w <= t.x + t.w and hit.y + hit.h <= t.y + t.h and hit.w >= 90, "the book on the table can be tapped inside the table")
