@@ -1,6 +1,7 @@
 -- Every drawing of the garden on KOReader's real SVG renderer: each plant in
 -- each stage (and wilted), the trees in the light of every phase, each animal
--- in both poses, the ground at every phase and faded, and the open book,
+-- in both poses, the ground at every phase and faded, the open book and the
+-- clock (its button and its dial),
 -- laid out on one sheet saved as a PNG. Checks every drawing draws and none is cut by
 -- its canvas.
 -- Run: cd <emulator>/koreader && ./luajit <repo>/tests/gardensheet.lua <repo> <out.png>
@@ -14,7 +15,7 @@ local Sky = require("solarui/garden/sky")
 local Theme = require("solarui/theme")
 
 local W = 1400
-local bb = Kit.canvas(W, 4400)
+local bb = Kit.canvas(W, 5400)
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 20, 20, 0
 
@@ -61,6 +62,13 @@ for _, mode in ipairs({ "morning", "day", "golden", "night", "wash:night" }) do
 end
 x, y, row_h = 20, y + row_h + 16, 0
 for _, phase in ipairs({ "day", "night" }) do put("garden_book", Layout.BOOK_ART.w / 2, Layout.BOOK_ART.h / 2, phase) end
+-- the clock on the top bar's button at three sizes, and the big dial for picking an hour
+x, y, row_h = 20, y + row_h + 16, 0
+for _, param in ipairs({ "", "3", "14", "3:am", "9:pm", "6:wash", "23:night" }) do
+    for _, size in ipairs({ 40, 56, 112 }) do put("garden_clock_icon", size, size, param) end
+end
+x, y, row_h = 20, y + row_h + 16, 0
+for _, param in ipairs({ "3", "14", "3:am", "9:pm", "6:wash", "0:am:night" }) do put("garden_clock_face", 300, 300, param) end
 Kit.png(bb, OUT)
 print("garden sheet: " .. OUT)
 Kit.finish("gardensheet")
