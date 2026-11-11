@@ -3,7 +3,8 @@
 -- of earth, limbs that grow from the trunk or from each other and droop when
 -- the tree is thirsty, and a crown of overlapping masses of foliage, each a
 -- dark body with a lighter one over it lit from the upper left, their edges
--- made of leaf tips (maple) or leaf fans (ginkgo).
+-- made of leaf tips (maple) or leaf fans (ginkgo); in winter the bare
+-- twigs that fork out from the limbs, and leaves fallen at the foot.
 
 local Kit = require("solarui/art/plantkit")
 local Svg = require("solarui/art/svg")
@@ -150,6 +151,62 @@ end
 function Tree.at(pts, f)
     local x, y, ang = Kit.on(pts, f)
     return x, y, ang + 90
+end
+
+-- Bare twigs forking out from (x, y) heading `deg` (0 is up): each `L`
+-- long, splitting in two `depth` more times, the last ones fine ink lines.
+-- `spread` is how far each fork opens, `lift` how far forks turn upwards.
+function Tree.fork(p, x, y, deg, L, w, depth, spread, lift, seed)
+    local pts = Tree.twig(x, y, deg, L, (Svg.vary(seed, 3) - .5) * L * .3)
+    local tx, ty = pts[#pts][1], pts[#pts][2]
+    local out = depth > 0 and Tree.drawTwig(p, pts, w) or line(Svg.poly(pts), p.c.ink, 1.3)
+    if depth > 0 then
+        local up = -((deg + 180) % 360 - 180) * (lift or .15)
+        for k, side in ipairs({ -1, 1 }) do
+            local turn = deg + up + side * spread * (.75 + .5 * Svg.vary(seed * 2 + k, 5))
+            out = out .. Tree.fork(p, tx, ty, turn, L * (.62 + .12 * Svg.vary(seed + k, 7)), w * .72, depth - 1, spread, lift, seed * 2 + k)
+        end
+    end
+    return out
+end
+
+-- Bare twigs at the tip of each limb and one off the side of each long one.
+function Tree.bare(p, limbs, specs, L, depth, spread, lift)
+    local out = ""
+    for i = 1, #specs do
+        local x, y, deg = Tree.at(limbs[i], 1)
+        deg = deg - 90
+        out = out .. Tree.fork(p, x, y, deg, L, specs[i].w[2] * .9, depth, spread, lift, i)
+        if Svg.length(limbs[i]) > 60 then
+            local sx, sy, sd = Tree.at(limbs[i], .62)
+            local side = i % 2 == 0 and 1 or -1
+            out = out .. Tree.fork(p, sx, sy, sd - 90 + side * 42, L * .7, specs[i].w[2] * .8, depth - 1, spread, lift, i + 20)
+        end
+    end
+    return out
+end
+
+-- Leaves fallen round the foot of a tree, `reach` to either side: `draw(x, y, rot, i)` draws one.
+function Tree.litter(reach, count, draw)
+    local out = ""
+    for i = 1, count do
+        local side = i % 2 == 0 and 1 or -1
+        local x = side * reach * (.3 + .7 * Svg.vary(i, 31))
+        out = out .. draw(x, -1 - 4 * Svg.vary(i, 32), (side > 0 and 70 or -110) + 60 * Svg.vary(i, 33), i)
+    end
+    return out
+end
+
+-- `count` points spread evenly over an ellipse round (cx, cy), rx by ry (a
+-- sunflower's spiral), for things scattered through a crown.
+function Tree.scatter(cx, cy, rx, ry, count)
+    local out = {}
+    for i = 1, count do
+        local r = math.sqrt((i - .4) / count)
+        local a = i * 137.5 * pi / 180
+        out[i] = { cx + rx * r * sin(a), cy - ry * r * cos(a) }
+    end
+    return out
 end
 
 -- A number between a and b, fixed for index `i` and `salt`.

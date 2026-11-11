@@ -1,9 +1,11 @@
 -- The garden's bulbs and their kin through the stages of their life: tulip,
--- poet's narcissus, spring crocus, Madonna lily and bearded iris. Each is
--- drawn in its own bed with plantkit and returned by name for gardenplants.
+-- poet's narcissus, spring crocus, Madonna lily and bearded iris, and how
+-- each rests through the winter. Each is drawn in its own bed with plantkit
+-- and returned by name for gardenplants.
 
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
+local Rest = require("solarui/art/plantrest")
 local Svg = require("solarui/art/svg")
 
 local n, group, path, line, petal = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal
@@ -204,10 +206,23 @@ local function iris(p)
         .. Kit.blade(p, 5, -3, 12, 96, 14, 6, c.leaf) .. group(x, y, ang + 90, head)
 end
 
-Bulbs.tulip = Kit.sprite("tulip", "bulb", tulip)
-Bulbs.narcissus = Kit.sprite("narcissus", "bulb", narcissus)
-Bulbs.crocus = Kit.sprite("crocus", "bulb", crocus)
-Bulbs.lily = Kit.sprite("lily", "bulb", lily)
-Bulbs.iris = Kit.sprite("iris", "rhizome", iris)
+-- The iris in winter: the fans cut back to short squared stubs over the rhizome.
+local function irisRest(p, dry)
+    local out = ""
+    for i, f in ipairs({ { -16, 30, -9 }, { -8, 40, -3 }, { 0, 36, 4 }, { 8, 26, 10 } }) do
+        local x, h, lean = f[1], f[2] * (p.st == 2 and .6 or 1), f[3]
+        out = out .. path(string.format("M%s -4 L%s %s L%s %s L%s -4Z", n(x - 4), n(x - 3.4 + lean), n(-h), n(x + 3.4 + lean), n(-h - 4), n(x + 4)), i % 2 == 0 and dry.c.dead or dry.c.straw, p.c.ink, 1.4)
+            .. line(string.format("M%s -6 L%s %s", n(x + 1), n(x + 1 + lean * .9), n(-h + 4)), p.c.ink, .8)
+    end
+    return out .. group(18, -1, 0, Kit.seed(p, "rhizome", 20))
+end
+
+Bulbs.tulip = Kit.sprite("tulip", "bulb", tulip, false, Rest.form({ w = 84, straps = { { -70, 50, 14 }, { 64, 44, 13 }, { -40, 30, 11 } }, stubs = { { 2, 34, 3, 4 } }, heads = { 1 },
+    head = function(dry) return capsule(dry, 26) end }))
+Bulbs.narcissus = Kit.sprite("narcissus", "bulb", narcissus, false, Rest.form({ w = 78, straps = { { -74, 56, 8 }, { 70, 50, 8 }, { -50, 40, 7 }, { 46, 34, 7 } } }))
+Bulbs.crocus = Kit.sprite("crocus", "bulb", crocus, false, Rest.form({ w = 62, straps = { { -66, 34, 4.6 }, { 62, 30, 4.6 }, { 0, 10, 4 } }, litter = 2 }))
+Bulbs.lily = Kit.sprite("lily", "bulb", lily, false, Rest.form({ w = 80, stubs = { { 0, 62, -4, 5 } }, heads = { 1 }, litter = 4,
+    head = function(dry) return capsule(dry, 26) end, heap = { 52, 5 } }))
+Bulbs.iris = Kit.sprite("iris", "rhizome", iris, false, Rest.form({ w = 84, litter = 2, extra = irisRest }))
 
 return Bulbs

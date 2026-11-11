@@ -2,7 +2,10 @@
 -- whose spur shoots are breaking into leaf, the full tree with a leader
 -- running up through a narrow open crown of rising limbs, its fan leaves in
 -- tufts on short spurs, and the tree turned butter yellow with its pale
--- orange seeds hanging in pairs. Drawn with treekit, for plants_trees.
+-- orange seeds hanging in pairs. Through the year the fans are fresh and
+-- light in spring, clear yellow in autumn with a carpet of them fallen at
+-- the foot, and in winter the tree stands bare, its limbs knobbed with the
+-- short spurs the fans grow from. Drawn with treekit, for plants_trees.
 
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
@@ -10,7 +13,7 @@ local Svg = require("solarui/art/svg")
 local Tree = require("solarui/art/treekit")
 local Wash = require("solarui/art/wash")
 
-local circle = Svg.circle
+local circle, group = Svg.circle, Svg.group
 local mix = Wash.mix
 
 local Ginkgo = {}
@@ -35,10 +38,12 @@ local SPRAYS = {
 }
 local FAR = { { .5, -26, 0, 38, 26 }, { .64, 30, 0, 36, 24 }, { .8, -18, -4, 30, 22 }, { .86, 22, -6, 28, 20 } }
 
--- The colours of the tree: { dark, lit, fans } in summer or in autumn.
+-- The colours of the tree: { dark, lit, fans } in summer, in autumn (clear
+-- yellow, as when it is in seed) and fresh in spring.
 local function tones(p)
     local c = p.c
-    if p.st == 5 then return { mix(c.gold, c.muted, .2), c.pale, mix(c.pale, c.cream, .45) } end
+    if p.st == 5 or p.season == "autumn" then return { mix(c.gold, c.muted, .2), c.pale, mix(c.pale, c.cream, .45) } end
+    if p.season == "spring" then return { mix(c.stem, c.leaf, .6), mix(c.leaf, c.pale, .3), mix(c.sage, c.pale, .45) } end
     return { mix(c.stem, c.leaf, .45), mix(c.leaf, c.sage, .35), mix(c.sage, c.pale, .3) }
 end
 
@@ -78,11 +83,37 @@ local function seeds(p, x, y)
     return out
 end
 
--- The full tree, in summer (stage 4) or in autumn (stage 5).
+-- The short spurs along a bare limb, knobs that the fans of spring will grow from.
+local function spurs(p, pts, count, seed)
+    local out = ""
+    for k = 1, count do
+        local x, y, ang = Tree.at(pts, .25 + .7 * (k - .5) / count)
+        local side = (k + seed) % 2 == 0 and 1 or -1
+        local ex, ey = Svg.pol(5, ang - 90 + side * 55, x, y)
+        out = out .. Tree.stalk(p, x, y, ex, ey, 2.6) .. circle(ex, ey, 2, p.c.muted, p.c.ink, .8)
+    end
+    return out
+end
+
+-- The bare tree in winter: the leader and limbs with their spurs, and fine twigs rising from the tips.
+local function bare(p, trunk, limbs, specs)
+    local out = Tree.bare(p, limbs, specs, 22, 1, 16, .5)
+    for i = 1, #specs do out = out .. spurs(p, limbs[i], 4, i) end
+    local tx, ty = trunk[#trunk][1], trunk[#trunk][2]
+    return out .. Tree.fork(p, tx, ty, 0, 18, 3, 1, 14, .5, 9) .. spurs(p, Svg.head(trunk, Svg.length(trunk)), 6, 3)
+end
+
+-- Fans fallen round the foot in autumn, a yellow carpet.
+local function fallen(p, tone)
+    return Tree.litter(112, 12, function(x, y, rot, i) return group(x, y, 0, Flora.ginkgo(p.c, 0, 0, rot, 9, tone[i % 2 + 2], true), 1, .6) end)
+end
+
+-- The full tree, in summer (stage 4) or in autumn (stage 5), or bare in winter.
 local function full(p)
     local c, tone = p.c, tones(p)
     local trunk = Svg.spline(TRUNK, 8)
     local limbs = Tree.limbs(p, trunk, LIMBS)
+    if p.season == "dormant" then return Tree.roots(p, 128, 48) .. Tree.wood(p, trunk, 40, 5, limbs, LIMBS) .. bare(p, trunk, limbs, LIMBS) end
     local far, near, extra = "", "", ""
     local shade = { mix(tone[1], c.ink, .22), tone[1], tone[2] }
     for i, f in ipairs(FAR) do
@@ -100,6 +131,7 @@ local function full(p)
         if p.st == 5 then extra = extra .. seeds(p, Kit.on(limbs[i], .64)) end
     end
     if p.st == 5 then extra = extra .. Flora.ginkgo(c, -50, -5, -100, 11, c.pale) .. Flora.ginkgo(c, 44, -3, 96, 10, c.gold) .. fan(p, -62, -100, 200, 11, c.pale) end
+    if p.season == "autumn" then extra = extra .. fallen(p, tone) end
     return Tree.roots(p, 128, 48) .. far .. Tree.wood(p, trunk, 40, 5, limbs, LIMBS) .. near .. extra
 end
 
@@ -114,22 +146,30 @@ local function young(p)
         { at = .78, way = { { 16, -18 }, { 28, -34 } }, w = { 4, 2 } },
     }
     local limbs = Tree.limbs(p, trunk, specs)
+    local tx, ty = trunk[#trunk][1], trunk[#trunk][2]
+    if p.season == "dormant" then
+        return Tree.roots(p, 96, 30) .. Tree.wood(p, trunk, 20, 4.5, limbs, specs) .. bare(p, trunk, limbs, specs) .. Svg.ellipse(tx, ty - 2, 2.6, 4, 0, c.bloom, c.ink, .9)
+    end
+    local tone = p.season == "autumn" and tones(p) or { nil, mix(c.leaf, c.sage, .4), mix(c.sage, c.pale, .35) }
     local out = ""
     for i = 1, #limbs do
         for k, f in ipairs({ .5, 1 }) do
             local x, y, ang = Tree.at(limbs[i], f)
-            out = out .. tuft(p, x, y, ang - 90, 9, k == 1 and mix(c.leaf, c.sage, .4) or mix(c.sage, c.pale, .35), i * 2 + k)
+            out = out .. tuft(p, x, y, ang - 90, 9, tone[k + 1], i * 2 + k)
         end
     end
-    local tx, ty = trunk[#trunk][1], trunk[#trunk][2]
-    out = out .. tuft(p, tx, ty, 0, 10, mix(c.sage, c.pale, .35), 9) .. Svg.ellipse(tx, ty - 2, 2.6, 4, 0, c.bloom, c.ink, .9)
+    out = out .. tuft(p, tx, ty, 0, 10, tone[3], 9) .. Svg.ellipse(tx, ty - 2, 2.6, 4, 0, c.bloom, c.ink, .9)
     return Tree.roots(p, 96, 30) .. Tree.wood(p, trunk, 20, 4.5, limbs, specs) .. out
 end
 
--- The seedling: a thin stem with its first fans.
+-- The seedling: a thin stem with its first fans, or a bare stem and a bud in winter.
 local function seedling(p)
+    if p.season == "dormant" then
+        return Tree.sapling(p, 50, { { 1, 0, 5 } }, function(x, y, rot, R) return Svg.ellipse(x, y - R * .6, R * .55, R, rot, p.c.muted, p.c.ink, .9) end)
+    end
+    local fill = p.season == "autumn" and p.c.pale or p.c.leaf
     return Tree.sapling(p, 50, { { .66, -74, 15 }, { .7, 70, 15 }, { 1, -30, 16 }, { 1, 30, 16 } },
-        function(x, y, rot, R) return Tree.fine(x, y, .6, Flora.ginkgo(p.c, 0, 0, rot, R / .6, p.c.leaf)) end)
+        function(x, y, rot, R) return Tree.fine(x, y, .6, Flora.ginkgo(p.c, 0, 0, rot, R / .6, fill)) end)
 end
 
 -- The ginkgo at stage 2 to 5.

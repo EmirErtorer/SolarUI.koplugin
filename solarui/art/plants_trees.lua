@@ -6,6 +6,7 @@
 local Ginkgo = require("solarui/art/tree_ginkgo")
 local Kit = require("solarui/art/plantkit")
 local Maple = require("solarui/art/tree_maple")
+local Season = require("solarui/art/plantseason")
 local Svg = require("solarui/art/svg")
 local Tree = require("solarui/art/treekit")
 local Trellis = require("solarui/art/trellis")
@@ -25,8 +26,17 @@ local function ivyLeaf(c, x, y, rot, s, fill)
     local d, veins = { "M0 0 Q" .. n(-s * .3) .. " " .. n(s * .12) .. " " .. pt(s * tips[1][2], tips[1][1]) }, {}
     for i = 2, #tips do d[#d + 1] = "L" .. pt(s * .56, (tips[i - 1][1] + tips[i][1]) / 2) .. " L" .. pt(s * tips[i][2], tips[i][1]) end
     d[#d + 1] = "Q" .. n(s * .3) .. " " .. n(s * .12) .. " 0 0Z"
-    for _i, t in ipairs(tips) do veins[#veins + 1] = "M0 " .. n(-s * .14) .. " L" .. pt(s * t[2] * .78, t[1]) end
-    return group(x, y, rot, line("M0 3 L0 " .. n(-s * .14), c.ink, 1.6) .. path(table.concat(d, " "), fill, c.ink, 1.5) .. line(table.concat(veins, " "), c.cream, 1))
+    local rim = {}
+    for _i, t in ipairs(tips) do
+        veins[#veins + 1] = "M0 " .. n(-s * .14) .. " L" .. pt(s * t[2] * .78, t[1])
+        if math.abs(t[1]) < 100 then
+            for _k, f in ipairs({ .7, .95 }) do
+                local px, py = Svg.pol(s * t[2] * f, t[1], 0, -s * .16)
+                rim[#rim + 1] = { px, py }
+            end
+        end
+    end
+    return group(x, y, rot, line("M0 3 L0 " .. n(-s * .14), c.ink, 1.6) .. path(table.concat(d, " "), fill, c.ink, 1.5) .. line(table.concat(veins, " "), c.cream, 1) .. Season.rime(c, rim))
 end
 
 -- A vine along the first `share` of `pts`, weaving from side to side, with a

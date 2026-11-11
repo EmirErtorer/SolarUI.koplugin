@@ -1,5 +1,7 @@
 -- Every drawing of the garden on KOReader's real SVG renderer: each plant in
--- each stage (and wilted), the trees in the light of every phase, each animal
+-- each stage (and wilted), each plant in every season and died back for the
+-- winter, the maple with the leaves and fruit of the reader's year, the
+-- trees in the light of every phase, each animal
 -- in both poses, the ground at every phase and faded, the open book and the
 -- clock (its button and its dial),
 -- laid out on one sheet saved as a PNG. Checks every drawing draws and none is cut by
@@ -15,7 +17,7 @@ local Sky = require("solarui/garden/sky")
 local Theme = require("solarui/theme")
 
 local W = 1400
-local bb = Kit.canvas(W, 5400)
+local bb = Kit.canvas(W, 9000)
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 20, 20, 0
 
@@ -40,6 +42,22 @@ for _, a in ipairs(Cast.ANIMALS) do
     local box = Layout.ANIMALS[a.id]
     put("animal_" .. a.id, box.w, box.h, "1")
     put("animal_" .. a.id, box.w, box.h, "2")
+end
+-- each plant at stage 4 in every season and died back, then at stage 2 and 3 died back
+for _, p in ipairs(Cast.PLANTS) do
+    local box = Layout.PLANTS[p.id]
+    local w, h = math.floor(box.w * .45), math.floor(box.h * .45)
+    x, y, row_h = 20, y + row_h + 16, 0
+    for _, season in ipairs({ "spring", "summer", "autumn", "winter", "dormant" }) do put("plant_" .. p.id, w, h, "4:" .. season) end
+    put("plant_" .. p.id, w, h, "5:autumn")
+    put("plant_" .. p.id, w, h, "2:dormant")
+    put("plant_" .. p.id, w, h, "3:dormant:wilt:flip")
+end
+-- the maple with the golden leaves of the reader's year, and the fruit when the goal is met
+x, y, row_h = 20, y + row_h + 16, 0
+for _, param in ipairs({ "4:summer:y6", "4:dormant:y12f", "5:autumn:y12f", "3:spring:y3", "2:dormant:y12f" }) do
+    local box = Layout.PLANTS.maple
+    put("plant_maple", math.floor(box.w * .6), math.floor(box.h * .6), param)
 end
 -- the trees in the light of every phase
 for _, id in ipairs({ "maple", "ginkgo" }) do

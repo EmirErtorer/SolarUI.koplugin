@@ -1,10 +1,12 @@
 -- The garden's meadow flowers through the stages of their life: sunflower,
--- corn poppy, chamomile, dandelion, pansy and harebell. Each is drawn in its
--- own bed with plantkit and returned by name for gardenplants.
+-- corn poppy, chamomile, dandelion, pansy and harebell, and how each rests
+-- through the winter. Each is drawn in its own bed with plantkit and
+-- returned by name for gardenplants.
 
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
+local Rest = require("solarui/art/plantrest")
 local Svg = require("solarui/art/svg")
 
 local n, group, path, line, petal, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal, Svg.circle, Svg.ellipse
@@ -236,11 +238,15 @@ local function bellflower(p)
     return out .. hung
 end
 
-Meadow.sunflower = Kit.sprite("sunflower", "striped", sunflower)
-Meadow.poppy = Kit.sprite("poppy", "pips", poppy)
-Meadow.chamomile = Kit.sprite("chamomile", "pips", chamomile)
-Meadow.dandelion = Kit.sprite("dandelion", "parachute", dandelion)
-Meadow.pansy = Kit.sprite("pansy", "pips", pansy)
-Meadow.bellflower = Kit.sprite("bellflower", "pips", bellflower)
+Meadow.sunflower = Kit.sprite("sunflower", "striped", sunflower, false, Rest.form({ w = 92, stubs = { { 0, 78, 4, 7 }, { -16, 30, -6, 4 } }, heads = { 1 }, litter = 4,
+    head = function(dry) return group(0, 2, 150, group(0, -6, 0, Kit.sunflower(dry.c, 17, false), 1, .8)) end }))
+Meadow.poppy = Kit.sprite("poppy", "pips", poppy, false, Rest.form({ w = 78, stubs = { { -8, 44, -8, 2.8 }, { 3, 60, 3, 3 }, { 14, 36, 10, 2.6 } }, heads = { 1, 2, 3 }, litter = 2,
+    head = function(dry, i) return pepperpot(dry, 16 + i * 2) end }))
+Meadow.chamomile = Kit.sprite("chamomile", "pips", chamomile, false, Rest.form({ w = 76, stubs = { { -16, 30, -10, 2.2 }, { -6, 44, -4, 2.4 }, { 5, 40, 4, 2.4 }, { 15, 30, 10, 2.2 }, { 0, 20, 1, 2 } }, heads = { 1, 2, 3, 4 },
+    head = function(dry) return group(0, -2, 0, camHead(dry, 11, false)) end, heap = { 36, 4 } }))
+Meadow.dandelion = Kit.sprite("dandelion", "parachute", dandelion, false, Rest.form({ w = 64, heap = { 56, 6 } }))
+Meadow.pansy = Kit.sprite("pansy", "pips", pansy, false, Rest.form({ w = 62, heap = { 50, 5 }, stubs = { { -6, 18, -6, 2 }, { 6, 22, 5, 2 } } }))
+Meadow.bellflower = Kit.sprite("bellflower", "pips", bellflower, false, Rest.form({ w = 64, stubs = { { -8, 40, -12, 1.9 }, { 2, 52, 6, 1.9 }, { 10, 32, 14, 1.8 } }, heads = { 1, 2, 3 }, litter = 2,
+    head = function(dry, i) return group(0, 0, i % 2 == 0 and 140 or -140, bell(dry, 10, 5)) end }))
 
 return Meadow

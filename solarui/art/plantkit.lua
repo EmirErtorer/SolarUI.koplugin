@@ -1,10 +1,12 @@
 -- What the garden's plants are built with: a sprite maker that fits a plant
 -- drawn in its own bed (origin at the foot, x across, y up as negative) into
--- any canvas, stems that droop when the plant is thirsty, strap leaves, the
--- mound of earth every plant stands in and the seed each one starts from.
+-- any canvas in the colours of its season, stems that droop when the plant
+-- is thirsty, strap leaves, the mound of earth every plant stands in and the
+-- seed each one starts from.
 
 local Flora = require("solarui/art/flora")
 local Layout = require("solarui/garden/layout")
+local Season = require("solarui/art/plantseason")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
 
@@ -14,17 +16,25 @@ local sin, cos, rad = math.sin, math.cos, math.rad
 local Kit = {}
 
 -- A plant's drawing for the sprite list: `seed` is the kind of seed shown at
--- stage 1 (or a drawing of its own for it) and `draw` paints the stages 2 to 5. It takes p = { c, st, wilt,
--- W, H } and returns SVG in the bed's own units. A thirsty plant is drawn a
--- little smaller unless it is `fixed` to something that cannot shrink.
-function Kit.sprite(id, seed, draw, fixed)
+-- stage 1 (or a drawing of its own for it) and `draw` paints the stages 2 to
+-- 5; `rest` paints them when the plant has died back for the winter (the
+-- evergreens have none and are drawn by `draw` in the winter colours). Each
+-- takes p = { c, st, wilt, W, H, season, year, fruit } and returns SVG in the
+-- bed's own units; `year` is the count of the maple's golden leaves ("y<N>",
+-- with "f" when it bears fruit). A thirsty plant is drawn a little smaller
+-- unless it is `fixed` to something that cannot shrink.
+function Kit.sprite(id, seed, draw, fixed, rest)
     local box = Layout.PLANTS[id]
     return function(c, vw, vh, param)
         local s = tostring(param or "4")
         local st = math.max(1, math.min(5, tonumber(s:match("^(%d)")) or 4))
-        local p = { c = Wash.apply(c, s), st = st, wilt = s:find("wilt") ~= nil, W = box.w, H = box.h }
+        local season = Season.of(s)
+        local year, fruit = s:match(":y(%d+)(f?)")
+        local p = { c = Wash.apply(Season.palette(c, season), s), st = st, wilt = s:find("wilt") ~= nil, W = box.w, H = box.h, season = season,
+            year = year and math.min(12, tonumber(year)) or 0, fruit = fruit == "f" }
         local body
-        if st > 1 then body = draw(p) elseif type(seed) == "function" then body = seed(p) else body = Kit.seedbed(p, seed) end
+        if st > 1 then body = (season == "dormant" and rest or draw)(p)
+        elseif type(seed) == "function" then body = seed(p) else body = Kit.seedbed(p, seed) end
         return group(vw / 2, vh, 0, body, math.min(vw / box.w, vh / box.h) * ((p.wilt and not fixed) and .92 or 1))
     end
 end
@@ -80,7 +90,21 @@ function Kit.blade(p, x, y, heading, L, W, curl, fill, rib)
     local function width(t) return W * math.min(1, .5 + t * 2.6) * (1 - t ^ 2.6) ^ .8 end
     local mid = {}
     for i = 1, steps - 2 do mid[i] = pts[i] end
-    return Svg.stem(pts, width, fill or p.c.leaf, p.c.ink, 1.5) .. line(Svg.poly(mid), rib or p.c.ink, .8)
+    return Svg.stem(pts, width, fill or p.c.leaf, p.c.ink, 1.5) .. line(Svg.poly(mid), rib or p.c.ink, .8) .. Season.rime(p.c, Kit.edge(pts, width, 1, .1, .8))
+end
+
+-- The points along one side of a stroke through `pts` whose width is given
+-- as in Svg.ribbon, from `t0` to `t1` of the way along, on `side` (1 or -1).
+function Kit.edge(pts, width, side, t0, t1)
+    local out, count = {}, #pts
+    for i = math.max(1, math.floor(count * t0)), math.floor(count * t1) do
+        local a, b = pts[math.max(1, i - 1)], pts[math.min(count, i + 1)]
+        local dx, dy = b[1] - a[1], b[2] - a[2]
+        local len = math.sqrt(dx * dx + dy * dy)
+        local half = width((i - 1) / (count - 1)) / 2 * side
+        if len > 0 then out[#out + 1] = { pts[i][1] - dy / len * half, pts[i][2] + dx / len * half } end
+    end
+    return out
 end
 
 -- A leaf with a cut edge pointing right from (x, y): `lobes` teeth a side,
@@ -95,8 +119,10 @@ function Kit.lobed(c, x, y, rot, L, W, lobes, fill, back)
         top[#top + 1] = { L * t, -half }
         bottom[#bottom + 1] = { L * t, half }
     end
+    local rim = {}
+    for i = 2, #top - 1 do rim[i - 1] = top[i] end
     for i = #bottom - 1, 2, -1 do top[#top + 1] = bottom[i] end
-    return group(x, y, rot, path(Svg.poly(top, true), fill or c.leaf, c.ink, 1.3) .. line(string.format("M-2 0 L%s 0", n(L * .86)), c.ink, .9))
+    return group(x, y, rot, path(Svg.poly(top, true), fill or c.leaf, c.ink, 1.3) .. line(string.format("M-2 0 L%s 0", n(L * .86)), c.ink, .9) .. Season.rime(c, rim))
 end
 
 -- A heart-shaped leaf on its stalk, pointing right from (x, y), `L` long.

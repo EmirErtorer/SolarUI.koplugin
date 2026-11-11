@@ -1,9 +1,12 @@
 -- The garden's shrub, shade and water plants through the stages of their
--- life: damask rose, honesty, bracken and the white water lily. Each is drawn
--- in its own bed with plantkit and returned by name for gardenplants.
+-- life: damask rose, honesty, bracken and the white water lily, and how the
+-- rose and honesty rest through the winter. Each is drawn in its own bed with
+-- plantkit and returned by name for gardenplants.
 
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
+local Rest = require("solarui/art/plantrest")
+local Season = require("solarui/art/plantseason")
 local Svg = require("solarui/art/svg")
 
 local n, group, path, line, petal, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal, Svg.circle, Svg.ellipse
@@ -140,13 +143,14 @@ end
 
 -- A floating lily pad seen at a slant, its notch at `notch` degrees.
 local function pad(p, x, y, rx, ry, notch, fill)
-    local pts, veins = { { x, y } }, {}
+    local pts, veins, rim = { { x, y } }, {}, {}
     for a = notch + 14, notch + 346, 12 do
         local px, py = x + rx * math.cos(math.rad(a)), y + ry * math.sin(math.rad(a))
         pts[#pts + 1] = { px, py }
+        if py < y - ry * .3 then rim[#rim + 1] = { px, py + 1.5 } end
         if (a - notch - 14) % 48 == 24 then veins[#veins + 1] = string.format("M%s %s L%s %s", n(x), n(y), n(x + (px - x) * .8), n(y + (py - y) * .8)) end
     end
-    return path(Svg.poly(pts, true), fill or p.c.leaf, p.c.ink, 1.6) .. line(table.concat(veins, " "), p.c.ink, .8)
+    return path(Svg.poly(pts, true), fill or p.c.leaf, p.c.ink, 1.6) .. line(table.concat(veins, " "), p.c.ink, .8) .. Season.rime(p.c, rim)
 end
 
 -- Rings on the water round (x, y).
@@ -181,8 +185,30 @@ local function waterLily(p)
     return pads .. group(2, -38, 10, ellipse(0, -9, 11, 12, 0, c.sage, c.ink, 1.5) .. line("M-4 -18 Q0 -8 -3 2 M4 -18 Q8 -8 4 2", c.ink, .8) .. ellipse(0, -20, 5, 2.4, 0, c.gold, c.ink, 1))
 end
 
-Shade.rose = Kit.sprite("rose", "pips", rose)
-Shade.honesty = Kit.sprite("honesty", "disc", honesty)
+-- The canes of the rose pruned for the winter: { x, h, lean, width }.
+local ROSE_CANES = { { -10, 40, -18, 5.4 }, { 3, 52, 2, 5.6 }, { 12, 44, 16, 5.4 }, { -2, 22, -6, 4 } }
+
+-- Thorns on the cut canes and a few hips left for the birds.
+local function roseRest(p)
+    local out, k = "", p.st == 2 and .55 or (p.st == 3 and .8 or 1)
+    for i, cane in ipairs(ROSE_CANES) do
+        for j, f in ipairs({ .3, .62 }) do
+            local side = (i + j) % 2 == 0 and 1 or -1
+            out = out .. Flora.thorn(p.c, (cane[1] + cane[3] * f * f) * k + side * cane[4] * .45, -cane[2] * f * k, side > 0 and 90 or -90, 4.4)
+        end
+    end
+    for i = 1, 3, 2 do
+        local cane = ROSE_CANES[i]
+        local tx, ty = (cane[1] + cane[3] * .6) * k, -cane[2] * .78 * k
+        local hx, hy = Svg.pol(12, cane[3] > 0 and 50 or -50, tx, ty)
+        out = out .. line(string.format("M%s %s L%s %s", n(tx), n(ty), n(hx), n(hy)), p.c.ink, 1.4) .. group(hx, hy, cane[3] > 0 and 50 or -50, hip(p, 13))
+    end
+    return out
+end
+
+Shade.rose = Kit.sprite("rose", "pips", rose, false, Rest.form({ w = 100, stubs = ROSE_CANES, litter = 4, extra = roseRest }))
+Shade.honesty = Kit.sprite("honesty", "disc", honesty, false, Rest.form({ w = 66, stubs = { { -4, 72, -4, 2.6 }, { 6, 56, 10, 2.4 }, { -10, 40, -14, 2.2 } }, heads = { 1, 2, 3 },
+    head = function(_dry, i, p) return group(0, 0, i % 2 == 0 and 24 or -24, moon(p, 6.4)) .. group(0, i * 6 - 4, i % 2 == 0 and -60 or 60, moon(p, 5.6)) end, litter = 2 }))
 Shade.bracken = Kit.sprite("bracken", "rhizome", bracken)
 Shade.water_lily = Kit.sprite("water_lily", waterLily, waterLily)
 

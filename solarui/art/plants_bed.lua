@@ -1,9 +1,10 @@
 -- The Three Sisters bed through the stages of its life: a mound of earth
 -- with a tall stalk of maize, a climbing bean winding up it and a squash
--- sprawling at its foot, drawn with plantkit and returned by name for
--- gardenplants. (First version: simple shapes, to be redrawn.)
+-- sprawling at its foot, and the bed after the harvest in winter, drawn with
+-- plantkit and returned by name for gardenplants.
 
 local Kit = require("solarui/art/plantkit")
+local Rest = require("solarui/art/plantrest")
 local Svg = require("solarui/art/svg")
 
 local circle, ellipse = Svg.circle, Svg.ellipse
@@ -31,6 +32,17 @@ local function bed(p)
     return out
 end
 
-Bed.three_sisters = Kit.sprite("three_sisters", "pips", bed)
+-- The bed in winter: dry husks hanging from the cut maize stalk, a bean
+-- stub, and one last small squash left on the earth.
+local function bedRest(p, dry)
+    local c, out = p.c, ""
+    for i, h in ipairs({ { -34, 1 }, { -26, -1 }, { -44, -1 } }) do
+        out = out .. Kit.blade(dry, 2 * h[2], h[1], h[2] * 150, 26, 6, h[2] * 30, i == 2 and c.dead or c.straw, c.ink)
+    end
+    return out .. ellipse(-36, -9, 13, 8.5, -6, c.gold, c.ink, 1.4) .. Svg.line("M-42 -4 Q-46 -10 -42 -15 M-30 -4 Q-26 -10 -30 -16", c.ink, .9)
+        .. Svg.path("M-37 -16 L-36 -23 L-33 -22 L-34 -16Z", c.straw, c.ink, 1)
+end
+
+Bed.three_sisters = Kit.sprite("three_sisters", "pips", bed, false, Rest.form({ w = 120, stubs = { { 0, 62, -3, 6 }, { 30, 24, 6, 3 } }, litter = 3, extra = bedRest }))
 
 return Bed
