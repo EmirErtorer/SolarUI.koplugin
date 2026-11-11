@@ -331,6 +331,58 @@ do
     for i, p in ipairs(Guide.pages()) do if i ~= 4 then clean((p.title or "") .. " " .. (p.text or ""), "guide page " .. i) end end
 end
 
+-- the almanac
+do
+    local Almanac = require("solarui/garden/almanac")
+    local Web = require("solarui/garden/web")
+    local PlantPages, AnimalPages = require("solarui/garden/almanac_plants"), require("solarui/garden/almanac_animals")
+    for _, id in ipairs(Cast.ids()) do
+        local page = Almanac.page(id)
+        Kit.ok(page and page.name and page.habitat and page.story and page.look, "an almanac page for " .. id)
+        if page then for _, f in ipairs({ "name", "habitat", "story", "look" }) do
+            local bad = page[f]:match("%f[%a][Ii]t%f[%A]") or page[f]:match("%f[%a][Ii]ts%f[%A]") or page[f]:match("%f[%a]itself%f[%A]")
+            Kit.ok(not bad, "no \"it\" in the " .. f .. " of " .. id)
+        end end
+    end
+    for _, p in ipairs(Cast.PLANTS) do
+        local m = PlantPages[p.id].months
+        Kit.ok(m and m[1] >= 1 and m[2] <= 12, "months for " .. p.id)
+    end
+    local n = 0
+    for _ in pairs(PlantPages) do n = n + 1 end
+    for _ in pairs(AnimalPages) do n = n + 1 end
+    Kit.ok(n == #Cast.PLANTS + #Cast.ANIMALS, "no page for anyone who is not in the cast")
+    for _, l in ipairs(Web.LINKS) do
+        Kit.ok(Cast.find(l[1]) and Cast.find(l[2]) and l[3] ~= "", "a link between known members: " .. l[1] .. " " .. l[2])
+        local bad = l[3]:match("%f[%a][Ii]t%f[%A]") or l[3]:match("%f[%a][Ii]ts%f[%A]")
+        Kit.ok(not bad, "no \"it\" in the link " .. l[1] .. " " .. l[2])
+    end
+    Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    now = 1700000000 + 800 * DAY
+    reading.total, reading.books = 100, 2
+    State.get()
+    Kit.ok(Almanac.tier("rose") == 1 and Almanac.tier("fox") == 0, "a new neighbour is seen, an absent one not met")
+    now = now + 8 * DAY
+    Kit.ok(Almanac.tier("rose") == 2, "after a week they are known")
+    State.rename("rose", "Rosie")
+    Kit.ok(Almanac.tier("rose") == 2, "a nickname alone does not make a friend")
+    now = now + 25 * DAY
+    Kit.ok(Almanac.tier("rose") == 3, "a month and a nickname do")
+    Kit.ok(Almanac.waiting("tulip") == 0 and Almanac.waiting("rose") == 0, "nothing is left to wait for")
+    local flowers, asleep = Almanac.month(5)
+    Kit.ok(#flowers > 3 and #asleep == 0, "May is full of flowers and nobody sleeps")
+    flowers, asleep = Almanac.month(1)
+    local sleeping = {}
+    for _, id in ipairs(asleep) do sleeping[id] = true end
+    Kit.ok(sleeping.hedgehog and not sleeping.robin, "the hedgehog sleeps in January")
+    Kit.ok(#Almanac.web() >= 5 and #Almanac.linksOf("rose") == 1, "the web links the plants and the animals present")
+    Kit.ok(Almanac.months("tulip") == "April to May", "months are put in words (" .. tostring(Almanac.months("tulip")) .. ")")
+    Settings.set("garden", nil)
+    State.unload()
+end
+
 -- the seasons
 do
     Kit.ok(Season.ofMonth(1) == "winter" and Season.ofMonth(4) == "spring" and Season.ofMonth(7) == "summer" and Season.ofMonth(10) == "autumn", "months fall in the northern seasons")
