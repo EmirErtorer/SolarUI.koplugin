@@ -64,6 +64,12 @@ function GardenView.compose(scene, o)
     local progress = State.progress()
     local vine = progress.vine
     if vine.days > 0 and not o.faded then scene:backdrop("garden_vine", 0, 0, Layout.WIDTH, vh, vine.leaves .. ":" .. vine.flowers) end
+    for _i, def in ipairs(Cast.PLANTS) do
+        if def.find and not State.get().plants[def.id] then
+            local b = Layout.place(def.id, vh)
+            scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1" .. (o.faded and ":wash" or "") .. ":" .. phase)
+        end
+    end
     for _i, e in ipairs(State.plants()) do
         local b = Layout.place(e.def.id, vh)
         scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season, progress.year))

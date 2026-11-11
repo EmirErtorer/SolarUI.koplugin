@@ -56,7 +56,7 @@ local function fresh()
     for _i, p in ipairs(Cast.PLANTS) do
         local spread = 0
         for i = 1, #p.id do spread = (spread * 31 + p.id:byte(i)) % 50 end
-        d.plants[p.id] = { stage = 4, grown = p.need[4] * spread / 100, at = now, watered = now, gen = 1 }
+        if not p.find then d.plants[p.id] = { stage = 4, grown = p.need[4] * spread / 100, at = now, watered = now, gen = 1 } end
     end
     for _i, a in ipairs(Cast.ANIMALS) do
         if a.find.kind == "start" then d.animals[a.id] = { found = now, fed = now } end
@@ -162,6 +162,12 @@ function State.refresh()
         end
     end
     if State.rain(now) then dirty = true end
+    for _i, p in ipairs(Cast.PLANTS) do
+        if p.find and not d.plants[p.id] and Visitors.found(p, Visitors.facts(d.plants, State.source())) then
+            d.plants[p.id], dirty = { stage = 1, grown = 0, at = now, watered = now, gen = 1 }, true
+            note("planted", p.id)
+        end
+    end
     if Visits.round(d, now, note) then dirty = true end
     if Visits.thanks(d, now, State.source().total, note) then dirty = true end
     local facts = Visitors.facts(d.plants, State.source())
@@ -365,8 +371,9 @@ end
 -- Cut back a plant that has gone to seed: it keeps its name and starts
 -- another generation. `how` says what becomes of the seed heads: "keep" (the
 -- default) the seeds are yours, "birds" they are left for the birds, who feed
--- the hungriest animal for free, and "scatter" half a seed is yours and the
--- rest falls in the beds. Seed heads cut before they have ripened for
+-- the hungriest animal for free, "scatter" half a seed is yours and the
+-- rest falls in the beds, and "share" (the Three Sisters bed's harvest) a
+-- seed is yours and the three hungriest animals are fed. Seed heads cut before they have ripened for
 -- RIPEN seconds give only half, and a plant the bees and butterflies visited
 -- gives one more. Returns true and the seeds gained; false when the plant
 -- has not gone to seed.
@@ -378,12 +385,13 @@ function State.collect(id, how)
     local pollinated = rec and rec.pollinated
     if not rec or not Care.collect(rec, def, now) then return false end
     how = how or "keep"
-    local gain = how == "keep" and 1 or how == "scatter" and .5 or 0
+    local gain = (how == "keep" or how == "share") and 1 or how == "scatter" and .5 or 0
     if not ripe then gain = gain / 2 end
     if pollinated and how ~= "birds" then gain = gain + 1 end
     rec.seeded, rec.pollinated = nil, nil
     d.collected = d.collected + gain
     if how == "birds" then State.feedHungriest() end
+    if how == "share" then for _n = 1, 3 do State.feedHungriest() end end
     note(how == "keep" and "back_seeds" or how, id)
     State.save()
     return true, gain

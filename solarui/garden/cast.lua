@@ -33,6 +33,7 @@ local PLANTS = {
     { id = "ginkgo", hours = 120, days = { 2, 4, 5, 60 } },
     { id = "ivy", hours = 72, days = { 1, 3, 3, 60 } },
     { id = "water_lily", days = { 1, 3, 3, 40 } },
+    { id = "three_sisters", en = _("Three Sisters bed"), latin = "Zea mays, Phaseolus vulgaris, Cucurbita pepo", hours = 48, days = { 1, 3, 4, 35 }, find = { kind = "books", n = 3 } },
 }
 
 -- Every animal: id, names, the season it sleeps through (rests), the hours it is about ("day", "night" or "any"),
@@ -57,8 +58,8 @@ local plant_by_id, animal_by_id = {}, {}
 
 -- Join the plants to the names of the species registry.
 for _i, p in ipairs(PLANTS) do
-    local s = Species.get(p.id)
-    p.en, p.latin = s.en, s.latin
+    local s = Species.get(p.id) or {}
+    p.en, p.latin = p.en or s.en, p.latin or s.latin
     p.interval = p.hours and p.hours * 3600 or nil
     p.need = {}
     for i, d in ipairs(p.days) do p.need[i] = d * DAY end

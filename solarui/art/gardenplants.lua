@@ -16,7 +16,7 @@ local function turning(draw)
     end
 end
 
-for _i, part in ipairs({ "bulbs", "meadow", "shade", "trees" }) do
+for _i, part in ipairs({ "bulbs", "meadow", "shade", "trees", "bed" }) do
     for id, draw in pairs(require("solarui/art/plants_" .. part)) do Plants["plant_" .. id] = turning(draw) end
 end
 

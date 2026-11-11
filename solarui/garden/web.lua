@@ -22,6 +22,7 @@ Web.LINKS = {
     { "koi", "water_lily", _("Lily leaves shade the pond, which keeps the water cooler for the fish.") },
     { "hedgehog", "snail", _("Hedgehogs eat snails and slugs, and gardens with hedgehogs have fewer of them.") },
     { "robin", "ivy", _("Ivy berries ripen in late winter and feed birds when other food is scarce.") },
+    { "bee", "three_sisters", _("Squash flowers open early in the morning, and bees gather their pollen before the heat of the day.") },
     { "peacock", "sunflower", _("Peafowl eat seeds, and will take the seeds from the heads of fallen sunflowers.") },
 }
 

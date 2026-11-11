@@ -447,6 +447,34 @@ do
     reading.days = saved
 end
 
+-- the Three Sisters bed
+do
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    now = 1700000000 + 2000 * DAY
+    reading.total, reading.books = 100, 2
+    State.get()
+    State.refresh()
+    Kit.ok(State.get().plants.three_sisters == nil, "the bed is not there at the start")
+    Kit.ok(Visitors.hint(Cast.plant("three_sisters")):find("3 books"), "and the hint says what it takes")
+    reading.books = 3
+    State.refresh()
+    local rec = State.get().plants.three_sisters
+    Kit.ok(rec and rec.stage == 1, "three finished books lay out the bed, as a seed")
+    State.refresh()
+    Kit.ok(State.get().plants.three_sisters == rec, "once")
+    rec.stage, rec.seeded = 5, now - 3 * DAY
+    local d = State.get()
+    d.animals.bee.fed, d.animals.snail.fed, d.animals.ladybug.fed = now - 50 * HOUR, now - 60 * HOUR, now - 70 * HOUR
+    local seeds = State.seeds()
+    local ok, gain = State.collect("three_sisters", "share")
+    Kit.ok(ok and gain == 1 and State.seeds() == seeds + 1, "the harvest gives a seed")
+    Kit.ok(d.animals.bee.fed == now and d.animals.snail.fed == now and d.animals.ladybug.fed == now, "and sharing it feeds the three hungriest")
+    Settings.set("garden", nil)
+    State.unload()
+end
+
 -- spot the visitor
 do
     for seed = 1, 60 do

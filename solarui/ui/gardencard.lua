@@ -61,7 +61,7 @@ local function actions(e, kind, o)
     local row = { gap = th.space.s, children = {} }
     local function add(b) row.children[#row.children + 1] = b end
     if kind == "plant" and e.rec.stage == 5 then
-        add(Button:new({ label = _("Cut back"), sub = _("seeds, birds or beds"), variant = "primary", grow = true, on_tap = o.on_collect }))
+        add(Button:new({ label = e.def.id == "three_sisters" and _("Harvest") or _("Cut back"), sub = e.def.id == "three_sisters" and _("share or keep") or _("seeds, birds or beds"), variant = "primary", grow = true, on_tap = o.on_collect }))
     elseif kind == "plant" then
         add(Button:new({ label = _("Water"), sub = string.format(_("%d dew"), State.WATER), variant = "primary", grow = true, disabled = not e.def.interval, on_tap = o.on_water }))
     else

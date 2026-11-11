@@ -29,7 +29,7 @@ Layout.PLANTS = {
     chamomile = box(54, 814, 119, 170), honesty = box(629, 872, 102, 99), tulip = box(744, 881, 119, 167),
     bracken = box(899, 933, 128, 99), bellflower = box(255, 971, 110, 99), crocus = box(149, 1001, 85, 76),
     pansy = box(310, 1128, 85, 76), dandelion = box(644, 1255, 94, 85),
-    water_lily = box(434, 1031, 124, 110),
+    water_lily = box(434, 1031, 124, 110), three_sisters = box(110, 1085, 160, 140),
 }
 
 -- Scenery: the pond (which holds the water lily, the frog and the koi) and
@@ -60,7 +60,7 @@ Layout.EXTRAS = {
 -- be dealt any free place in the garden or the sky; the two that live in the
 -- pond keep to their paths there (PATHS, top-left corners to hop or swim to).
 Layout.ANIMAL_SCALE = 1.3
-Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85 }
+Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85, fox = 1.1, peacock = 1.0 }
 Layout.ANIMALS = {
     bee = box(0, 0, 110, 70), butterfly = box(0, 0, 80, 70), moth = box(0, 0, 80, 70), robin = box(0, 0, 110, 80),
     dragonfly = box(0, 0, 100, 64), ladybug = box(0, 0, 60, 50), snail = box(0, 0, 80, 56), hedgehog = box(0, 0, 110, 64),
@@ -76,7 +76,7 @@ Layout.HIT = 90   -- the least a box to tap may be on a side
 -- The free spots the animals that walk are dealt: large, medium and small,
 -- so any of them fits at least one kind. Tapping a spot taps the animal in it.
 Layout.SPOTS = {
-    { x = 827, y = 1087, w = 200, h = 120 }, { x = 95, y = 1098, w = 200, h = 120 },
+    { x = 827, y = 1087, w = 200, h = 120 },
     { x = 537, y = 484, w = 150, h = 105 }, { x = 444, y = 879, w = 150, h = 105 },
     { x = 767, y = 1243, w = 150, h = 105 }, { x = 297, y = 1246, w = 150, h = 105 },
     { x = 412, y = 527, w = 110, h = 92 }, { x = 151, y = 1243, w = 110, h = 92 }, { x = 511, y = 1245, w = 110, h = 92 },
@@ -172,7 +172,7 @@ end
 -- that overlaps nothing in `taken` (a list of boxes), or nil.
 local function sky(rand, size, taken)
     local hit = hitOf(box(0, 0, size.w, size.h))
-    for _try = 1, 400 do
+    for _try = 1, 3000 do
         local x, y = 44 + rand() * (984 - hit.w), 128 + rand() * (1340 - hit.h - 128)
         local b = box(math.floor(x), math.floor(y), hit.w, hit.h)
         local clear = true
@@ -245,23 +245,28 @@ function Layout.peek(seed, spread)
     local hit = hitOf(box(0, 0, Layout.PEEK.w, Layout.PEEK.h))
     local others = Layout.all(Layout.HEIGHT, spread)
     others.pond = Layout.PROPS.pond
-    for try = 1, 600 do
-        local b
-        if try <= 200 then
-            local s = Layout.SPOTS[1 + math.floor(rand() * #Layout.SPOTS)]
-            b = box(s.x + math.floor(rand() * math.max(0, s.w - hit.w)), s.y + math.floor(rand() * math.max(0, s.h - hit.h)), hit.w, hit.h)
-        else
-            b = box(44 + math.floor(rand() * (984 - hit.w)), Layout.LAWN_TOP + 10 + math.floor(rand() * (1330 - Layout.LAWN_TOP - 10 - hit.h)), hit.w, hit.h)
-        end
-        local clear = true
+    -- the same test for a box on the lawn; a face centred in it when it is clear
+    local function clear(b)
         for _id, o in pairs(others) do
-            if overlap(b, o) then clear = false; break end
+            if overlap(b, o) then return nil end
         end
-        if clear then
-            local face = box(b.x + math.floor((hit.w - Layout.PEEK.w) / 2), b.y + math.floor((hit.h - Layout.PEEK.h) / 2), Layout.PEEK.w, Layout.PEEK.h)
-            face.hit = box(b.x, b.y, hit.w, hit.h)
-            return face
-        end
+        local face = box(b.x + math.floor((hit.w - Layout.PEEK.w) / 2), b.y + math.floor((hit.h - Layout.PEEK.h) / 2), Layout.PEEK.w, Layout.PEEK.h)
+        face.hit = box(b.x, b.y, hit.w, hit.h)
+        return face
+    end
+    for _try = 1, 200 do
+        local s = Layout.SPOTS[1 + math.floor(rand() * #Layout.SPOTS)]
+        local face = clear(box(s.x + math.floor(rand() * math.max(0, s.w - hit.w)), s.y + math.floor(rand() * math.max(0, s.h - hit.h)), hit.w, hit.h))
+        if face then return face end
+    end
+    -- none by chance: walk the lawn in steps from a random place
+    local STEP = 10
+    local cols, rows = math.floor((984 - hit.w - 44) / STEP), math.floor((1330 - Layout.LAWN_TOP - 10 - hit.h) / STEP)
+    local start = math.floor(rand() * cols * rows)
+    for i = 0, cols * rows - 1 do
+        local k = (start + i) % (cols * rows)
+        local face = clear(box(44 + (k % cols) * STEP, Layout.LAWN_TOP + 10 + math.floor(k / cols) * STEP, hit.w, hit.h))
+        if face then return face end
     end
 end
 

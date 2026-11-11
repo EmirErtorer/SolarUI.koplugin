@@ -135,4 +135,11 @@ return {
         story = _("Painters have returned to the water lily again and again. Monet painted his own pond at Giverny for most of the last thirty years of his life."),
         look = _("Look at the floating leaf and the cut from the edge to the middle, and watch the flower open late in the morning and close by evening."),
     },
+    three_sisters = {
+        name = _("The name comes from a Haudenosaunee (Iroquois) tradition, in which maize, beans and squash are three sisters who grow and feed together."),
+        habitat = _("Fields and gardens in the Americas, where the three have been grown together for centuries."),
+        months = { 6, 9 },
+        story = _("Many Native peoples of the Americas planted maize, beans and squash together in one mound. The maize gives the bean a pole, the bean puts nitrogen in the soil, and the squash covers the ground and keeps weeds down. The botanist Robin Wall Kimmerer writes about the Three Sisters in Braiding Sweetgrass."),
+        look = _("Look at a bean plant's roots in the soil, if you can find one: the small round nodules hold bacteria that take nitrogen from the air."),
+    },
 }

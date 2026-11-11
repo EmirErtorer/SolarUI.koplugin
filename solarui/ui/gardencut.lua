@@ -33,6 +33,14 @@ function GardenCut.card(w, id, after)
     local name = State.name(id)
     local text = GardenCut.ripe(id) and string.format(_("%s has gone to seed. What becomes of the seeds?"), name)
         or string.format(_("%s has only just gone to seed. Let some seed ripen: cut back now and the harvest is smaller."), name)
+    if id == "three_sisters" then
+        return Dialog.card({ title = _("The harvest"), lines = 4,
+            text = string.format(_("%s is ready to pick. Share the harvest with the garden's visitors, or keep everything."), name), rows = {
+            Button:new({ label = _("Share the harvest"), sub = _("feeds three, and a seed for you"), variant = "primary", on_tap = choose("share", _("Shared with the garden.")) }),
+            Button:new({ label = _("Keep everything"), sub = _("a seed for you"), on_tap = choose("keep", _("Picked.")) }),
+            Button:new({ label = _("Not now"), on_tap = function() App.closeDialog() end }),
+        } }, w)
+    end
     return Dialog.card({ title = _("Cut back"), text = text, lines = 4, rows = {
         Button:new({ label = _("Keep the seeds"), sub = _("seeds for you"), variant = "primary", on_tap = choose("keep", _("Cut back.")) }),
         Button:new({ label = _("Leave them for the birds"), sub = _("feeds a hungry visitor"), on_tap = choose("birds", _("Left for the birds.")) }),

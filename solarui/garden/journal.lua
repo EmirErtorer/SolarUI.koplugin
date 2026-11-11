@@ -28,6 +28,8 @@ local LINES = {
     snow = { _("Snow lay on the beds."), _("Snow came, and the garden went quiet."), _("The first snow settled on the lawn.") },
     outside = { _("You went outside and looked, and ticked the week off."), _("A week's walk was ticked off."), _("The garden was glad to hear you went out.") },
     peek = { _("%s peeked out of the grass, and you saw."), _("You spotted %s watching from the grass."), _("%s was hiding in plain sight, and you found the spot.") },
+    planted = { _("A new bed was laid out: %s."), _("%s was planted in the corner of the lawn."), _("The ground was ready, and %s went in.") },
+    share = { _("The harvest of %s was shared round the garden."), _("%s was picked, and nobody went hungry."), _("The harvest from %s fed the garden's visitors.") },
     back = { _("%s came back out for a meal."), _("%s was fed and showed up at once."), _("%s is back, and no questions asked.") },
 }
 
