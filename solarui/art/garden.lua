@@ -89,8 +89,8 @@ local function lawn(c, vh, top, season, weather)
 end
 
 -- A nest of fallen leaves `s` large on the ground at (m, base) where an
--- animal sleeps through the winter: curled round with its tail wrapped
--- under its chin and its eyes shut, a breath rising from it.
+-- animal sleeps through the winter: curled round with the tail wrapped
+-- under the chin and the eyes shut, a breath rising.
 local function nest(c, m, base, s)
     local leaves = { Wash.mix(c.gold, c.muted, .35), Wash.mix(c.bloom, c.muted, .3), Wash.mix(c.muted, c.pale, .4), c.gold }
     local fur, light, out = Wash.mix(c.muted, c.bloom, .28), Wash.mix(c.muted, c.pale, .45), ""
@@ -111,7 +111,7 @@ local function nest(c, m, base, s)
     return out .. Svg.circle(hx - s * .1, hy - s * .28, s * .03, nil, c.ink, .9) .. Svg.circle(hx - s * .17, hy - s * .4, s * .045, nil, c.ink, .9)
 end
 
--- A clump of leaves and grass where an animal is hiding, its eyes showing,
+-- A clump of leaves and grass where an animal is hiding, eyes showing,
 -- or with ":sleep" in the param a nest where an animal sleeps for the winter.
 function Garden.garden_tuft(c, vw, vh, param)
     c = Wash.apply(c, param)

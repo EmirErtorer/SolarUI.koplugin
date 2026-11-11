@@ -3,7 +3,7 @@
 -- the winter); summer is the palette as drawn. Spring freshens the greens,
 -- autumn yellows them, winter dulls them towards a cold blue-green and brings
 -- a white rime that the leaf helpers draw along their upper edges. A dormant
--- plant is drawn in its own winter form (see plantrest), in the same cold
+-- plant is drawn in a winter form of the plant's own (see plantrest), in the same cold
 -- light, with the dry colours of dead stems and leaves.
 
 local Light = require("solarui/art/light")

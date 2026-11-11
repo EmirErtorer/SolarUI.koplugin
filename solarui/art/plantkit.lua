@@ -1,6 +1,6 @@
 -- What the garden's plants are built with: a sprite maker that fits a plant
 -- drawn in its own bed (origin at the foot, x across, y up as negative) into
--- any canvas in the colours of its season, stems that droop when the plant
+-- any canvas in the colours of the season, stems that droop when the plant
 -- is thirsty, strap leaves, the mound of earth every plant stands in and the
 -- seed each one starts from.
 
@@ -16,13 +16,13 @@ local sin, cos, rad = math.sin, math.cos, math.rad
 local Kit = {}
 
 -- A plant's drawing for the sprite list: `seed` is the kind of seed shown at
--- stage 1 (or a drawing of its own for it) and `draw` paints the stages 2 to
+-- stage 1 (or a drawing of the plant's own) and `draw` paints the stages 2 to
 -- 5; `rest` paints them when the plant has died back for the winter (the
 -- evergreens have none and are drawn by `draw` in the winter colours). Each
 -- takes p = { c, st, wilt, W, H, season, year, fruit } and returns SVG in the
 -- bed's own units; `year` is the count of the maple's golden leaves ("y<N>",
--- with "f" when it bears fruit). A thirsty plant is drawn a little smaller
--- unless it is `fixed` to something that cannot shrink.
+-- with "f" when the tree bears fruit). A thirsty plant is drawn a little smaller
+-- unless the plant is `fixed` to something that cannot shrink.
 function Kit.sprite(id, seed, draw, fixed, rest)
     local box = Layout.PLANTS[id]
     return function(c, vw, vh, param)

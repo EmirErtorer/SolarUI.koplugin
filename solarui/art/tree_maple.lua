@@ -1,11 +1,11 @@
 -- The Norway maple of the garden at its stages 2 to 5: a seedling, a young
 -- tree in flower before its leaves, the full tree with a broad round crown
 -- of five-lobed leaves on a short trunk forking low into ascending limbs,
--- and the tree in autumn gold with its paired winged seeds. Through the year
+-- and the tree in autumn gold with paired winged seeds. Through the year
 -- the crown is young and flecked with flowers in spring, russet and gold in
 -- autumn with leaves fallen at the foot, and bare in winter. The golden
--- leaves of the reader's year hang in the crown in every season, and its
--- fruit when the year's goal is met. Drawn in the plant bed's units with
+-- leaves of the reader's year hang in the crown in every season, and the
+-- year's fruit when the year's goal is met. Drawn in the plant bed's units with
 -- treekit, for plants_trees.
 
 local Blooms = require("solarui/art/blooms")
@@ -43,7 +43,7 @@ local MASSES = {
 }
 
 -- The colours of the tree: { dark, lit, leaves } in summer, in autumn
--- (russet and gold, as when it is in seed) and young in spring.
+-- (russet and gold, as when the tree is in seed) and young in spring.
 local function tones(p)
     local c = p.c
     if p.season == "autumn" then return { mix(c.bloom, c.gold, .3), mix(c.gold, c.bloom, .18), c.pale } end
@@ -84,7 +84,7 @@ local function blossom(p)
     return out
 end
 
--- A few of the tree's leaves fallen round its foot in autumn.
+-- A few of the tree's leaves fallen round the trunk's foot in autumn.
 local function fallen(p, tone)
     return Tree.litter(118, 7, function(x, y, rot, i) return Tree.fine(x, y, .55, group(0, 0, 0, Blooms.maple(p.c, 0, 0, rot, 14 / .55, tone[i % 3 + 1]), 1, .55)) end)
 end
@@ -180,7 +180,7 @@ local function young(p)
     return Tree.roots(p, 104, 36) .. Tree.wood(p, trunk, 24, 7, limbs, specs) .. out
 end
 
--- The seedling: a thin stem with its first pairs of leaves, or only its buds in winter.
+-- The seedling: a thin stem with the first pairs of leaves, or only buds in winter.
 local function seedling(p)
     local c = p.c
     if p.season == "dormant" then
@@ -197,7 +197,7 @@ local CROWNS = { [2] = { 0, -38, 12, 24, 6 }, [3] = { 0, -176, 70, 44, 13 }, [4]
 -- The order the year's leaves take their places in the crown, so even a few are spread through it.
 local ORDER = { 7, 2, 11, 4, 9, 1, 12, 6, 3, 10, 5, 8 }
 
--- A golden fruit hanging on its stalk from (x, y).
+-- A golden fruit hanging on a stalk from (x, y).
 local function fruit(p, x, y, s)
     local c = p.c
     return Tree.stalk(p, x, y, x + 1, y + s * .9, 1.1) .. circle(x + 1, y + s * 1.5, s * .7, mix(c.gold, c.bloom, .45), c.ink, 1.2)

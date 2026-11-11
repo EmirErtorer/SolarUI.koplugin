@@ -1,7 +1,7 @@
 -- The garden's meadow flowers through the stages of their life: sunflower,
 -- corn poppy, chamomile, dandelion, pansy and harebell, and how each rests
--- through the winter. Each is drawn in its own bed with plantkit and
--- returned by name for gardenplants.
+-- through the winter. All are drawn with plantkit, each in a bed of the
+-- plant's own size, and returned by name for gardenplants.
 
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")

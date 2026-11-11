@@ -1,9 +1,9 @@
 -- The winter form of a plant that has died back, in the plant bed's units
 -- (origin at the foot, y up as negative): stems cut to short dry stubs with
 -- a seed head left on some for the birds, dead strap leaves lying over the
--- earth, a small heap of fallen leaves, all touched with hoarfrost. A plant
--- describes its form with a spec and Rest.form turns it into its `rest`
--- drawing for plantkit's Kit.sprite.
+-- earth, a small heap of fallen leaves, all touched with hoarfrost. Each
+-- plant describes a winter form in a spec, and Rest.form turns the spec
+-- into the plant's `rest` drawing for plantkit's Kit.sprite.
 
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
@@ -15,7 +15,7 @@ local sin, cos, rad = math.sin, math.cos, math.rad
 
 local Rest = {}
 
--- The plant `p` with its colours dried: greens and flowers turned to straw
+-- The plant `p` with the colours dried: greens and flowers turned to straw
 -- and the browns of dead leaves, for seed heads left standing.
 function Rest.dry(p)
     local c = p.c
@@ -31,9 +31,9 @@ local function grown(p)
     return ({ 1, .55, .8, 1, 1 })[p.st]
 end
 
--- A stub from (x, 0) rising `h` and leaning `lean` across, `w` wide, with its
+-- A stub from (x, 0) rising `h` and leaning `lean` across, `w` wide, the
 -- cut face showing on top unless something is to sit there; gives the stub
--- and where its top is with its heading.
+-- and the point at the top with the heading there.
 function Rest.stub(p, x, h, lean, w, capped)
     local c = p.c
     local pts = Svg.spline({ { x, -2 }, { x + lean * .3, -h * .55 }, { x + lean, -h } }, 6)
@@ -43,7 +43,7 @@ function Rest.stub(p, x, h, lean, w, capped)
     return out, tx, ty, ang
 end
 
--- A dead leaf lying on the earth at (x, y), `L` long, its tip curling up.
+-- A dead leaf lying on the earth at (x, y), `L` long, the tip curling up.
 function Rest.fallen(p, x, y, rot, L, i)
     local c = p.c
     local fill = ({ c.dead, c.rust, c.straw })[i % 3 + 1]
@@ -69,15 +69,15 @@ function Rest.heap(p, w, count)
     return out .. Season.rime(p.c, rim)
 end
 
--- A dead strap leaf lying over the earth from the foot: it sets off at
--- `heading` and bends down to rest on the ground.
+-- A dead strap leaf lying over the earth from the foot: the leaf sets off
+-- at `heading` and bends down to rest on the ground.
 function Rest.strap(p, heading, L, W, i)
     local c = p.c
     local side = heading < 0 and -1 or 1
     return Kit.blade({ c = c }, side * 2, -2, heading, L, W, side * (100 - math.abs(heading)), ({ c.dead, c.straw, c.rust })[i % 3 + 1], c.ink)
 end
 
--- The `rest` drawing of a plant from its spec: { w (width of its earth),
+-- The `rest` drawing of a plant from the plant's spec: { w (width of the earth),
 -- stubs = { { x, h, lean, width }, ... }, head = function(dry plant, i, plant) drawing
 -- a dry seed head standing on the origin, heads = { indices of the stubs that
 -- keep one }, straps = { { heading, L, W }, ... }, heap = { w, count },

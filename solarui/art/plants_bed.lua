@@ -1,6 +1,6 @@
 -- The Three Sisters bed through the stages of its life: a mound of earth
 -- with a tall stalk of maize, a climbing bean winding up it and a squash
--- sprawling at its foot, and the bed after the harvest in winter, drawn with
+-- sprawling at the maize's foot, and the bed after the harvest in winter, drawn with
 -- plantkit and returned by name for gardenplants.
 
 local Kit = require("solarui/art/plantkit")

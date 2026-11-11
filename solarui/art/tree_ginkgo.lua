@@ -4,7 +4,7 @@
 -- tufts on short spurs, and the tree turned butter yellow with its pale
 -- orange seeds hanging in pairs. Through the year the fans are fresh and
 -- light in spring, clear yellow in autumn with a carpet of them fallen at
--- the foot, and in winter the tree stands bare, its limbs knobbed with the
+-- the foot, and in winter the tree stands bare, the limbs knobbed with the
 -- short spurs the fans grow from. Drawn with treekit, for plants_trees.
 
 local Flora = require("solarui/art/flora")
@@ -39,7 +39,7 @@ local SPRAYS = {
 local FAR = { { .5, -26, 0, 38, 26 }, { .64, 30, 0, 36, 24 }, { .8, -18, -4, 30, 22 }, { .86, 22, -6, 28, 20 } }
 
 -- The colours of the tree: { dark, lit, fans } in summer, in autumn (clear
--- yellow, as when it is in seed) and fresh in spring.
+-- yellow, as when the tree is in seed) and fresh in spring.
 local function tones(p)
     local c = p.c
     if p.st == 5 or p.season == "autumn" then return { mix(c.gold, c.muted, .2), c.pale, mix(c.pale, c.cream, .45) } end
@@ -162,7 +162,7 @@ local function young(p)
     return Tree.roots(p, 96, 30) .. Tree.wood(p, trunk, 20, 4.5, limbs, specs) .. out
 end
 
--- The seedling: a thin stem with its first fans, or a bare stem and a bud in winter.
+-- The seedling: a thin stem with the first fans, or a bare stem and a bud in winter.
 local function seedling(p)
     if p.season == "dormant" then
         return Tree.sapling(p, 50, { { 1, 0, 5 } }, function(x, y, rot, R) return Svg.ellipse(x, y - R * .6, R * .55, R, rot, p.c.muted, p.c.ink, .9) end)

@@ -1,7 +1,7 @@
 -- The garden's shrub, shade and water plants through the stages of their
 -- life: damask rose, honesty, bracken and the white water lily, and how the
--- rose and honesty rest through the winter. Each is drawn in its own bed with
--- plantkit and returned by name for gardenplants.
+-- rose and honesty rest through the winter. All are drawn with plantkit,
+-- each in a bed of the plant's own size, and returned by name for gardenplants.
 
 local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
