@@ -43,7 +43,7 @@ function GardenSeason.card(w, after)
     end
     local south = Season.south()
     return Dialog.card({ top = wheel(w, function(s) close(function() Season.set(s) end) end), title = _("Season in the garden"),
-        text = following and string.format(_("Following the calendar: it is %s. Tap a season to see the garden then."), Season.NAMES[Season.now()]:lower())
+        text = following and string.format(_("Following the calendar: the season is %s. Tap a season to see the garden then."), Season.NAMES[Season.now()]:lower())
             or string.format(_("Showing %s. Tap another season, or follow the calendar again."), Season.NAMES[Season.now()]:lower()),
         lines = 3, rows = {
             Button:new({ label = south and _("Southern hemisphere: on") or _("Southern hemisphere: off"), variant = "chip", grow = true,

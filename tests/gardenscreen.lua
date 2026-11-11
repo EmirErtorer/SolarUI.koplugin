@@ -119,6 +119,25 @@ do
     Kit.ok(Season.following(), "and the calendar can be followed again")
 end
 
+-- the almanac: every tab, and the page of someone met, of a friend and of a stranger
+do
+    local Notes, Page = require("solarui/screens/gardennotes"), require("solarui/screens/gardenpage")
+    for _, tab in ipairs({ "meet", "calendar", "links", "about" }) do
+        local n = Notes:new({})
+        n.tab = tab
+        local ok, err = pcall(function() paint(n):free() end)
+        Kit.ok(ok, "the field notes draw their " .. tab .. " tab: " .. tostring(err))
+        if tab == "meet" then Kit.png(paint(n), OUT .. "-notes.png") end
+    end
+    State.rename("rose", "Rosie")
+    State.get().created = State.clock() - 60 * 86400
+    for _, id in ipairs({ "rose", "bee", "fox", "water_lily" }) do
+        local ok, err = pcall(function() paint(Page:new({ id = id })):free() end)
+        Kit.ok(ok, "the almanac page of " .. id .. " draws: " .. tostring(err))
+    end
+    Kit.png(paint(Page:new({ id = "rose" })), OUT .. "-page.png")
+end
+
 -- the cut-back choice and the question after a book
 do
     local function draws(card)

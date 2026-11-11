@@ -28,7 +28,7 @@ function GardenJournal:build()
     State.refresh()
     local items = {}
     for _i, line in ipairs(Journal.lines()) do items[#items + 1] = row(line) end
-    if #items == 0 then items[1] = Label:new({ text = _("Nothing has happened yet. Give it a day or two."), kind = "body", color = "muted", lines = 2 }) end
+    if #items == 0 then items[1] = Label:new({ text = _("Nothing has happened yet. Give the garden a day or two."), kind = "body", color = "muted", lines = 2 }) end
     return Frame.page({ screen = self, title = _("Journal"), plant = "notes", body = Frame.paged(self, items, _("Page")) })
 end
 

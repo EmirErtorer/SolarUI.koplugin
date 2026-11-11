@@ -331,6 +331,27 @@ do
     for i, p in ipairs(Guide.pages()) do if i ~= 4 then clean((p.title or "") .. " " .. (p.text or ""), "guide page " .. i) end end
 end
 
+-- wording in the code: no "it" in any text of the garden's modules
+do
+    local files = {}
+    local p = io.popen("ls '" .. REPO .. "'/solarui/garden/*.lua '" .. REPO .. "'/solarui/ui/garden*.lua '" .. REPO .. "'/solarui/screens/garden*.lua '" .. REPO .. "'/solarui/ui/homecompanion.lua")
+    for f in p:lines() do files[#files + 1] = f end
+    p:close()
+    local bad = 0
+    for _, f in ipairs(files) do
+        local fh = io.open(f)
+        local src = fh:read("*a")
+        fh:close()
+        for text in src:gmatch('_%(("[^\n]-")%)') do
+            if not text:find('\\"it\\"', 1, true) then
+                local hit = text:match("%f[%a][Ii]t%f[%A]") or text:match("%f[%a][Ii]ts%f[%A]") or text:match("%f[%a]itself%f[%A]") or text:match("%f[%a][Ii]t's%f[%A]")
+                if hit then bad = bad + 1; print("FAIL: \"it\" in " .. f:match("[^/]*$") .. ": " .. text:sub(1, 90)) end
+            end
+        end
+    end
+    Kit.ok(bad == 0, "no \"it\" in any text of the garden's code (" .. bad .. ")")
+end
+
 -- the almanac
 do
     local Almanac = require("solarui/garden/almanac")

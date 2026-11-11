@@ -225,7 +225,7 @@ function Garden:book(scene)
     local q = self:quote()
     local lines = function(h) return math.max(1, math.floor(scene:px(h) / Text.height("body"))) end
     local rx, ry, rw, rh = page("right")
-    scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Nothing is written in this book yet. Highlight a passage in one of your books and it will appear here."),
+    scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Nothing is written in this book yet. Highlight a passage in one of your books and the passage will appear here."),
         kind = "body", lines = lines(rh) }), rx, ry, rw, rh)
     if q then
         local lx, ly, lw, lh = page("left")

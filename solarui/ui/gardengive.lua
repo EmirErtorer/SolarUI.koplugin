@@ -22,7 +22,7 @@ function GardenGive.card(w, after)
         end
     end
     return Dialog.card({ title = _("A book is finished"), lines = 5,
-        text = _("The garden gave you a book's worth of quiet. Leave a seed in the wild edge, where nobody tends anything? It costs nothing, and nothing is earned. It is only a way of saying thanks."),
+        text = _("The garden gave you a book's worth of quiet. Leave a seed in the wild edge, where nobody tends anything? The seed costs nothing and earns nothing: the gift is only a way of saying thanks."),
         rows = {
             Button:new({ label = _("Leave a seed"), variant = "primary", on_tap = answer(true, _("A seed went into the wild edge.")) }),
             Button:new({ label = _("Not now"), on_tap = answer(false) }),
