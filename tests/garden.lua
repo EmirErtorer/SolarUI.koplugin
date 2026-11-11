@@ -447,6 +447,35 @@ do
     reading.days = saved
 end
 
+-- spot the visitor
+do
+    for seed = 1, 60 do
+        local spread = Layout.spread(seed)
+        local peek = Layout.peek(seed, spread)
+        Kit.ok(peek and peek.hit.w >= Layout.HIT, "a place to peek for seed " .. seed)
+        if peek then
+            local others = Layout.all(Layout.HEIGHT, spread)
+            for id, o in pairs(others) do
+                local b = peek.hit
+                Kit.ok(not (b.x < o.x + o.w and o.x < b.x + b.w and b.y < o.y + o.h and o.y < b.y + b.h), "the peeking face does not overlap " .. id .. " (seed " .. seed .. ")")
+            end
+        end
+    end
+    local Settings = require("solarui/settings")
+    Settings.set("garden", nil)
+    State.unload()
+    State.get()
+    local before = State.dew()
+    local who = State.peek()
+    Kit.ok(who == "bee" or who == "ladybug" or who == "snail", "one of the animals present is peeking")
+    Kit.ok(State.claimPeek() == who and State.dew() == before + 1, "finding the face is a drop of dew")
+    Kit.ok(State.peek() == nil and State.claimPeek() == false and State.dew() == before + 1, "once a day")
+    now = now + DAY
+    Kit.ok(State.peek() ~= nil, "and again tomorrow")
+    Settings.set("garden", nil)
+    State.unload()
+end
+
 -- the weekly prompt
 do
     local Prompts = require("solarui/garden/prompts")

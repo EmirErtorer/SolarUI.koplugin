@@ -232,6 +232,39 @@ function Layout.spread(seed)
     return out
 end
 
+-- The size of the small face that peeks out of the grass in the game of
+-- spot the visitor (see State.peek).
+Layout.PEEK = { w = 64, h = 52 }
+
+-- Where the face peeks out on this visit: a free place on the lawn, away
+-- from everything else on the poster (the plants, the props and the animals
+-- as dealt by `spread`). A box with `hit` for tapping; nil when no free place
+-- is found.
+function Layout.peek(seed, spread)
+    local rand = rng((seed or 1) + 4242)
+    local hit = hitOf(box(0, 0, Layout.PEEK.w, Layout.PEEK.h))
+    local others = Layout.all(Layout.HEIGHT, spread)
+    others.pond = Layout.PROPS.pond
+    for try = 1, 600 do
+        local b
+        if try <= 200 then
+            local s = Layout.SPOTS[1 + math.floor(rand() * #Layout.SPOTS)]
+            b = box(s.x + math.floor(rand() * math.max(0, s.w - hit.w)), s.y + math.floor(rand() * math.max(0, s.h - hit.h)), hit.w, hit.h)
+        else
+            b = box(44 + math.floor(rand() * (984 - hit.w)), Layout.LAWN_TOP + 10 + math.floor(rand() * (1330 - Layout.LAWN_TOP - 10 - hit.h)), hit.w, hit.h)
+        end
+        local clear = true
+        for _id, o in pairs(others) do
+            if overlap(b, o) then clear = false; break end
+        end
+        if clear then
+            local face = box(b.x + math.floor((hit.w - Layout.PEEK.w) / 2), b.y + math.floor((hit.h - Layout.PEEK.h) / 2), Layout.PEEK.w, Layout.PEEK.h)
+            face.hit = box(b.x, b.y, hit.w, hit.h)
+            return face
+        end
+    end
+end
+
 -- Whether a plant is drawn turned the other way round: fixed for each
 -- plant, so it does not change between visits. The trellis is symmetric
 -- and shared with the ground, so the ivy never turns.

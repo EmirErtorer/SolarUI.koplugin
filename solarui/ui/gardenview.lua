@@ -47,7 +47,7 @@ local function everyone()
     return out
 end
 
--- Put the garden on `scene`. o: { showcase (show every animal), season (else the garden's), faded, seed (what deals the animals), pose
+-- Put the garden on `scene`. o: { showcase (show every animal), on_peek (the face peeking out of the grass was tapped), season (else the garden's), faded, seed (what deals the animals), pose
 -- (id -> "1" or "2"), at (id -> which place of its path a pond animal is at), hour, on_tap(id, kind) for a plant or animal, sprites
 -- (a table that is filled with each animal's element, to repaint it alone) }.
 function GardenView.compose(scene, o)
@@ -74,6 +74,12 @@ function GardenView.compose(scene, o)
         scene:touch(b.x, b.y, b.w, b.h, o.on_book)
     end
     local spread = Layout.spread(o.seed)
+    local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
+    if peek then
+        local b = Layout.at(peek, vh)
+        scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light)
+        scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
+    end
     for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
         local id = a.def.id
         local base = spread[id]

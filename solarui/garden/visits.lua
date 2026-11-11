@@ -47,6 +47,17 @@ function Visits.round(d, now, note)
     return true
 end
 
+-- Today's peeker: one of the animals that have found the garden, the same all
+-- day; nil when there are none.
+function Visits.peeker(d, now)
+    local ids = {}
+    for _i, a in ipairs(Cast.ANIMALS) do
+        if d.animals[a.id] then ids[#ids + 1] = a.id end
+    end
+    if #ids == 0 then return nil end
+    return ids[(Visits.day(now) * 7) % #ids + 1]
+end
+
 -- A line of thanks for the pages read since the last time, at most once a
 -- day: which plant was watered by them is the day's pick. `total` is every
 -- page ever read. Returns true when a line was written.

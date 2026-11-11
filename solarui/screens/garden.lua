@@ -159,6 +159,13 @@ function Garden:waitForGuide()
     end)
 end
 
+-- The face in the grass was tapped: say who it was, and what it was worth.
+function Garden:peeked()
+    local who = State.claimPeek()
+    if who then App.toast(string.format(_("%s was peeking out of the grass. A drop of dew for the sharp eyes."), State.name(who))) end
+    App.update()
+end
+
 -- Once a visit, after the guide is out of the way, ask about a finished book.
 function Garden:askAboutBooks()
     if self.asked or self.showcase or self.focus or State.owed() < 1 then return end
@@ -254,6 +261,7 @@ function Garden:build(ctx)
     self.scene = scene
     GardenView.compose(scene, { showcase = show, season = show and "summer" or nil, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed, at = self.at,
         on_tap = not self.focus and function(id) if show then self:guide() else self.focus = id; App.update() end end or nil,
+        on_peek = not (self.focus or show) and function() self:peeked() end or nil,
         on_book = not self.focus and function() if show then self:guide() else self.focus = "book"; App.update() end end or nil })
     self:heading(scene)
     if self.focus == "book" then self:book(scene) elseif self.focus then self:focused(scene) end

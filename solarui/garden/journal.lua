@@ -27,6 +27,7 @@ local LINES = {
     rain = { _("Rain came in the night, and the beds drank."), _("Rain fell, and the watering can stayed in the shed."), _("A day of rain. Everything was given half a drink.") },
     snow = { _("Snow lay on the beds."), _("Snow came, and the garden went quiet."), _("The first snow settled on the lawn.") },
     outside = { _("You went outside and looked, and ticked the week off."), _("A week's walk was ticked off."), _("The garden was glad to hear you went out.") },
+    peek = { _("%s peeked out of the grass, and you saw."), _("You spotted %s watching from the grass."), _("%s was hiding in plain sight, and you found the spot.") },
     back = { _("%s came back out for a meal."), _("%s was fed and showed up at once."), _("%s is back, and no questions asked.") },
 }
 

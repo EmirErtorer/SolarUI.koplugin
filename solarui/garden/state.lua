@@ -94,7 +94,7 @@ end
 -- Dew in hand: a gift to begin with and a drop for every page read since.
 function State.dew()
     local d = State.get()
-    return State.GIFT_DEW + math.max(0, State.source().total - d.base_pages) - d.spent
+    return State.GIFT_DEW + math.max(0, State.source().total - d.base_pages) - d.spent + (d.bonus or 0)
 end
 
 -- Seeds in hand: a gift, a seed for each book finished since and for each
@@ -174,6 +174,28 @@ function State.refresh()
     end
     if dirty then State.save() end
     return dirty
+end
+
+-- The visitor peeking out of the grass today: the id of one of the animals in
+-- the garden, or nil when it was found already today or no animal is here
+-- (see Visits.peeker).
+function State.peek()
+    local d = State.get()
+    if d.peek_day == Visits.day(State.clock()) then return nil end
+    return Visits.peeker(d, State.clock())
+end
+
+-- Spot the visitor: tapping the face in the grass is worth a drop of dew, once
+-- a day. Returns the id of the animal found, or false when there was none.
+function State.claimPeek()
+    local who = State.peek()
+    if not who then return false end
+    local d = State.get()
+    d.peek_day = Visits.day(State.clock())
+    d.bonus = (d.bonus or 0) + 1
+    note("peek", who)
+    State.save()
+    return who
 end
 
 -- This week's thing to do outdoors: { text, done }.
