@@ -4,7 +4,8 @@
 -- trees in the light of every phase, each animal
 -- in both poses, the ground at every phase, season and weather and faded,
 -- the tuft a hiding or sleeping animal lies in, the open book and the
--- clock (its button and its dial),
+-- clock (its button and its dial), the vine along the frame, the face
+-- peeking from the grass and the season wheel and its button,
 -- laid out on one sheet saved as a PNG. Checks every drawing draws and none is cut by
 -- its canvas.
 -- Run: cd <emulator>/koreader && ./luajit <repo>/tests/gardensheet.lua <repo> <out.png>
@@ -18,7 +19,7 @@ local Sky = require("solarui/garden/sky")
 local Theme = require("solarui/theme")
 
 local W = 1400
-local bb = Kit.canvas(W, 9000)
+local bb = Kit.canvas(W, 11600)
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 20, 20, 0
 
@@ -97,6 +98,16 @@ for _, param in ipairs({ "", "3", "14", "3:am", "9:pm", "6:wash", "23:night" }) 
 end
 x, y, row_h = 20, y + row_h + 16, 0
 for _, param in ipairs({ "3", "14", "3:am", "9:pm", "6:wash", "0:am:night" }) do put("garden_clock_face", 300, 300, param) end
+-- the vine along the frame: just started, part grown, grown round and flowering, and on a long poster
+x, y, row_h = 20, y + row_h + 16, 0
+for _, v in ipairs({ { "0:0", 1430 }, { "12:0", 1430 }, { "30:2", 1430 }, { "7:5", 2000 } }) do
+    local vw, vh = math.floor(Layout.WIDTH * .3), math.floor(v[2] * .3)
+    local vine, _dx, _dy, cut = Art.sprite("garden_vine", vw, vh, Layout.WIDTH, v[2], v[1])
+    Kit.ok(vine ~= nil, "the vine draws at " .. v[1])
+    Kit.ok(not cut, "the vine at " .. v[1] .. " is not cut by its canvas")
+    Art.draw(bb, "garden_vine", x, y, vw, vh, Layout.WIDTH, v[2], v[1])
+    x, row_h = x + vw + 16, math.max(row_h, vh)
+end
 Kit.png(bb, OUT)
 print("garden sheet: " .. OUT)
 Kit.finish("gardensheet")
