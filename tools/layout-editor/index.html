@@ -212,6 +212,7 @@ function setBox(p, X, Y, W, H) {
   const t = tw(p.id);
   t.sx = p.w > 0 ? Math.max(0.05, W / p.w) : 1;
   t.sy = p.h > 0 ? Math.max(0.05, H / p.h) : 1;
+  if (p.uniform) t.sy = t.sx;   // this part keeps its shape
   t.dx = X - (p.ox + (p.x - p.ox) * t.sx);
   t.dy = Y - (p.oy + (p.y - p.oy) * t.sy);
   t.dx = r1(t.dx); t.dy = r1(t.dy);
@@ -374,6 +375,13 @@ cv.addEventListener("pointermove", e => {
       if (h.l) X = b.x + b.w - nw; if (h.t) Y = b.y + b.h - nh;
       W = nw; H = nh;
     }
+    if (p.uniform && b.w && b.h) {
+      // a part that keeps its shape follows whichever side was pulled more
+      const f = (h.l || h.r) && !(h.t || h.b) ? W / b.w : (h.t || h.b) && !(h.l || h.r) ? H / b.h : Math.max(W / b.w, H / b.h);
+      W = b.w * f; H = b.h * f;
+      if (h.l) X = b.x + b.w - W; else X = b.x;
+      if (h.t) Y = b.y + b.h - H; else Y = b.y;
+    }
     if (W < 8) { if (h.l) X -= 8 - W; W = 8; }
     if (H < 8) { if (h.t) Y -= 8 - H; H = 8; }
     setBox(p, Math.round(X), Math.round(Y), Math.round(W), Math.round(H));
@@ -404,6 +412,7 @@ function select(p) { selected = p; fields(); highlight(); }
 function fields() {
   const p = selected, on = !!p;
   for (const id of ["fx", "fy", "fw", "fh", "fhide", "reset"]) $(id).disabled = !on;
+  $("fh").title = on && p.uniform ? "This part keeps its shape: height follows width" : "";
   if (!p) { $("selname").textContent = "Click a part on the screen or in the list."; for (const id of ["fx", "fy", "fw", "fh"]) $(id).value = ""; $("fhide").checked = false; return; }
   const b = box(p), t = edits[screenId][p.id] || blank();
   $("selname").innerHTML = "<b>" + p.id + "</b> — " + p.label + (p.px ? "" : " (invisible, a tap area)");
@@ -439,6 +448,7 @@ for (const id of ["fx", "fy", "fw", "fh"]) $(id).addEventListener("input", () =>
   if (!selected) return;
   const v = ["fx", "fy", "fw", "fh"].map(i => parseFloat($(i).value));
   if (v.some(isNaN) || v[2] < 1 || v[3] < 1) return;
+  if (selected.uniform && id === "fh") v[2] = v[3] * selected.w / selected.h;
   setBox(selected, v[0], v[1], v[2], v[3]);
   draw(); report(); persist(); buildList();
 });

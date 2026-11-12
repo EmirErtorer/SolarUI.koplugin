@@ -33,6 +33,7 @@ end
 function SceneEdit.apply(scene, g, o)
     if not o then return end
     local dx, dy, sx, sy = o.dx or 0, o.dy or 0, o.sx or 1, o.sy or 1
+    if g.uniform then sy = sx end
     if dx == 0 and dy == 0 and sx == 1 and sy == 1 then return end
     local gx, gy = origin(g)
     for _i, m in ipairs(g.members) do
@@ -42,7 +43,7 @@ function SceneEdit.apply(scene, g, o)
 end
 
 -- The box of every group as laid out, in units: { id, label, x, y, w, h,
--- ox, oy } where ox, oy is the corner the tweaks stretch from.
+-- ox, oy, uniform } where ox, oy is the corner the tweaks stretch from.
 function SceneEdit.boxes(scene)
     local out = {}
     local k = scene.k
@@ -57,7 +58,7 @@ function SceneEdit.boxes(scene)
             if x0 then
                 local ox, oy = origin(g)
                 out[#out + 1] = { id = g.id, label = g.label, x = (x0 - scene.ox) / k, y = y0 / k, w = (x1 - x0) / k, h = (y1 - y0) / k,
-                    ox = ox, oy = oy }
+                    ox = ox, oy = oy, uniform = g.uniform or nil }
             end
         end
     end

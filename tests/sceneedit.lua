@@ -34,7 +34,7 @@ Kit.ok(s.items[2][4] == s:px(120) and s.items[2][5] == s:px(30), "a stretched pa
 Kit.ok(s.children[1].sx == s:px(220 + 10 + 20 * 1) and s.children[1].sy == s:px(360), "text in the group moves and stretches from the group's corner")
 Kit.ok(s.children[1].sw == s:px(200), "text in the group is given the stretched width")
 Kit.ok(#s.items == 2 and #s.children == 1, "a hidden part leaves nothing behind")
-Kit.ok(#s.sig == 2, "the backdrop's signature follows the parts, so a change redraws it")
+Kit.ok(s.items[2].key:find("210", 1, true) ~= nil, "a backdrop's key follows its box, so a change redraws it")
 Kit.ok(#s.groups == 3, "every group is listed, hidden ones too")
 
 SceneEdit.raw = true

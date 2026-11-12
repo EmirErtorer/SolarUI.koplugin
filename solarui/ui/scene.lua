@@ -21,7 +21,7 @@ local floor = math.floor
 -- `slot` names its backdrop; `screen`, when set, is the name its parts are
 -- tweaked under (data/layout_overrides.lua), else the slot.
 function Scene.make(slot, w, h, min_vh)
-    local s = Scene:new({ slot = slot, children = {}, items = {}, sig = {}, groups = {} })
+    local s = Scene:new({ slot = slot, children = {}, items = {}, groups = {} })
     s.k = math.min(w / s.design_w, h / min_vh)
     s.ox = floor((w - s.design_w * s.k) / 2)
     s.vh = h / s.k
@@ -38,8 +38,7 @@ end
 function Scene:backdrop(name, vx, vy, vw, vh, param)
     local it = { name, 0, 0, 0, 0, vw, vh, param }
     self.items[#self.items + 1] = it
-    self.sig[#self.sig + 1] = ""
-    local m = { item = it, sigi = #self.sig, unit = { vx, vy, vw, vh } }
+    local m = { item = it, unit = { vx, vy, vw, vh } }
     self:refit(m, vx, vy, vw, vh)
     if self.cur then self.cur.members[#self.cur.members + 1] = m end
 end
@@ -48,8 +47,9 @@ end
 function Scene:refit(m, vx, vy, vw, vh)
     if m.item then
         local it = m.item
-        it[2], it[3], it[4], it[5], it[6], it[7] = self.ox + self:px(vx), self:px(vy), self:px(vw), self:px(vh), vw, vh
-        self.sig[m.sigi] = table.concat({ it[1], vx, vy, vw, vh, tostring(it[8]) }, ",")
+        -- the drawing keeps the space it was made for; only its box on the screen changes
+        it[2], it[3], it[4], it[5], it[6], it[7] = self.ox + self:px(vx), self:px(vy), self:px(vw), self:px(vh), m.unit[3], m.unit[4]
+        it.key = table.concat({ it[1], vx, vy, vw, vh, tostring(it[8]) }, ",")
     else
         local el = m.el
         el.sx, el.sy = self.ox + self:px(vx), self:px(vy)
@@ -67,28 +67,60 @@ end
 -- Run `add`, which adds parts to the scene, as one named part of the page
 -- (`id` like "home.cover") that the layout editor can move and stretch; its
 -- saved tweak is applied, or it is left out when hidden.
-function Scene:group(id, label, add)
-    local g = { id = id, label = label, members = {} }
-    local n_items, n_children, n_sig = #self.items, #self.children, #self.sig
+-- Options: `uniform` keeps the part's shape when stretched; `clip` leaves out
+-- the elements a tweak pushes past the top or bottom of the scene.
+function Scene:group(id, label, add, opts)
+    opts = opts or {}
+    local g = { id = id, label = label, members = {}, uniform = opts.uniform }
     self.cur = g
     add()
     self.cur = nil
     local o = SceneEdit.lookup(self.screen or self.slot, id)
     if o and o.hidden then
-        for i = #self.items, n_items + 1, -1 do self.items[i] = nil end
-        for i = #self.children, n_children + 1, -1 do self.children[i] = nil end
-        for i = #self.sig, n_sig + 1, -1 do self.sig[i] = nil end
+        local gone = {}
+        for _i, m in ipairs(g.members) do gone[m.item or m.el] = true end
+        local function keep(list)
+            local n = 0
+            for _i, v in ipairs(list) do
+                if not gone[v] then n = n + 1; list[n] = v end
+            end
+            for i = #list, n + 1, -1 do list[i] = nil end
+        end
+        keep(self.items)
+        keep(self.children)
         g.hidden = true
     else
         SceneEdit.apply(self, g, o)
+        if opts.clip and o then self:clipGroup(g) end
     end
     self.groups[#self.groups + 1] = g
 end
 
+-- Drop the elements of a group that now reach past the top or bottom of the scene.
+function Scene:clipGroup(g)
+    local out = {}
+    for _i, m in ipairs(g.members) do
+        local el = m.el
+        if el and el.sh and (el.sy < 0 or el.sy + el.sh > self.height) then out[el] = true end
+    end
+    local n = 0
+    for _i, c in ipairs(self.children) do
+        if not out[c] then n = n + 1; self.children[n] = c end
+    end
+    for i = #self.children, n + 1, -1 do self.children[i] = nil end
+end
+
+-- Run `add` with whatever it puts on the scene left out of the current group.
+function Scene:apart(add)
+    local g = self.cur
+    self.cur = nil
+    add()
+    self.cur = g
+end
+
 -- Rule a border `inset` units in from the screen's edge, `t` units thick.
 function Scene:border(inset, t)
-    self.items[#self.items + 1] = { frame = self:px(inset), t = math.max(1, self:px(t)) }
-    self.sig[#self.sig + 1] = "frame" .. inset
+    self.items[#self.items + 1] = { frame = self:px(inset), t = math.max(1, self:px(t)), key = "frame" .. inset }
 end
 
 -- Ornaments for the corners of a ruled border and the middle of its foot.
@@ -145,7 +177,9 @@ end
 -- Paint the backdrop, then the elements.
 function Scene:paint(bb, x, y)
     self.x, self.y = x, y
-    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, table.concat(self.sig, ";") .. "@" .. self.w)
+    local keys = {}
+    for i, it in ipairs(self.items) do keys[i] = it.key end
+    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, table.concat(keys, ";") .. "@" .. self.w)
     for _i, c in ipairs(self.children) do c:paint(bb, x + c.sx, y + c.sy) end
 end
 

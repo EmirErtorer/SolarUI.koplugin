@@ -21,6 +21,7 @@ local Layout = require("solarui/garden/layout")
 local Plaque = require("solarui/garden/plaque")
 local LayoutUI = require("solarui/ui/layout")
 local Scene = require("solarui/ui/scene")
+local SceneEdit = require("solarui/ui/sceneedit")
 local Screen = require("solarui/screens/screen")
 local Sky = require("solarui/garden/sky")
 local State = require("solarui/garden/state")
@@ -67,7 +68,10 @@ function Garden:hop(id)
     self.at[id] = to
     self.pose[id] = self.pose[id] == "2" and "1" or "2"
     local was, now = Layout.at(Layout.waypoint(id, from), scene.vh), Layout.at(Layout.waypoint(id, to), scene.vh)
-    App.repaintMoved(el, scene:px(now.x) - scene:px(was.x), scene:px(now.y) - scene:px(was.y), "fast")
+    -- the garden may be stretched against the screen (layout editor)
+    local tweak = SceneEdit.lookup("garden", "garden.field")
+    local k = tweak and tweak.sx or 1
+    App.repaintMoved(el, scene:px((now.x - was.x) * k), scene:px((now.y - was.y) * k), "fast")
 end
 
 -- Make a small movement: flip an animal between its two poses and repaint
@@ -279,6 +283,7 @@ end
 -- animated, and a tap anywhere ends it.
 function Garden:stillness(ctx)
     local scene = Scene.make("gardenstill", ctx.w, ctx.h, Layout.HEIGHT)
+    scene.screen = "garden"
     self.scene, self.sprites = scene, {}
     GardenView.compose(scene, { seed = self.seed, at = self.at, pose = self.pose })
     scene:touch(0, 0, Layout.WIDTH, scene.vh, function() self:endSit(false) end)
