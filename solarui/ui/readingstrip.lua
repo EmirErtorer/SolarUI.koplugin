@@ -36,15 +36,17 @@ end
 -- Put the strip on `scene` with its top at `y`, showing `d` (see Strip.data);
 -- a tap anywhere on it calls `on_tap`.
 function Strip.place(scene, y, d, on_tap)
-    scene:heading(_("Your reading"), y)
+    scene:group("home.reading_heading", "Your reading heading", function() scene:heading(_("Your reading"), y) end)
     local base = y + 184
 
     local reached = d.goal > 0 and d.minutes >= d.goal
     local petals = reached and ReadingArt.PETALS + 1 or math.floor(d.minutes / math.max(1, d.goal) * ReadingArt.PETALS)
     if d.minutes > 0 then petals = math.max(1, petals) end
-    scene:sprite("sunflower", 152, y + 46, 126, 126, petals)
-    captions(scene, 90, base, 250, string.format(_("%d min today"), d.minutes),
-        reached and _("goal reached") or string.format(_("goal %d min"), d.goal), reached and "accent" or nil)
+    scene:group("home.reading_sunflower", "Sunflower and minutes today", function()
+        scene:sprite("sunflower", 152, y + 46, 126, 126, petals)
+        captions(scene, 90, base, 250, string.format(_("%d min today"), d.minutes),
+            reached and _("goal reached") or string.format(_("goal %d min"), d.goal), reached and "accent" or nil)
+    end)
 
     local wx, wy, ww, wh = 362, y + 40, 410, 126
     local marks, read = {}, 0
@@ -52,17 +54,21 @@ function Strip.place(scene, y, d, on_tap)
         marks[i] = day.read and "1" or "0"
         if day.read then read = read + 1 end
     end
-    scene:sprite("week", wx, wy, ww, wh, table.concat(marks) .. "|" .. (d.days[1] and d.days[1].wday or 2))
-    for i, s in ipairs(ReadingArt.weekSpots(ww, wh)) do
-        local day = d.days[i]
-        if day then scene:caption(day.letter, wx + s[1] - 28, wy + s[2] + 6, 56, "micro", i == #d.days and "ink" or "muted") end
-    end
-    captions(scene, wx, base, ww, string.format(_.n("%d day in a row", "%d days in a row", d.streak), d.streak),
-        string.format(_("read on %d of the last 7 days"), read))
+    scene:group("home.reading_week", "Week of flowers and streak", function()
+        scene:sprite("week", wx, wy, ww, wh, table.concat(marks) .. "|" .. (d.days[1] and d.days[1].wday or 2))
+        for i, s in ipairs(ReadingArt.weekSpots(ww, wh)) do
+            local day = d.days[i]
+            if day then scene:caption(day.letter, wx + s[1] - 28, wy + s[2] + 6, 56, "micro", i == #d.days and "ink" or "muted") end
+        end
+        captions(scene, wx, base, ww, string.format(_.n("%d day in a row", "%d days in a row", d.streak), d.streak),
+            string.format(_("read on %d of the last 7 days"), read))
+    end)
 
-    scene:sprite("lily", 826, y + 44, 140, 130, d.books)
-    captions(scene, 770, base, 240, string.format(_.n("%d book this year", "%d books this year", d.books), d.books), _("a petal for each book"))
-    scene:touch(90, y + 40, 920, Strip.HEIGHT - 40, on_tap)
+    scene:group("home.reading_lily", "Water lily and books this year", function()
+        scene:sprite("lily", 826, y + 44, 140, 130, d.books)
+        captions(scene, 770, base, 240, string.format(_.n("%d book this year", "%d books this year", d.books), d.books), _("a petal for each book"))
+    end)
+    scene:group("home.reading_tap", "Reading strip tap area", function() scene:touch(90, y + 40, 920, Strip.HEIGHT - 40, on_tap) end)
 end
 
 return Strip
