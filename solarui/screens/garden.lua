@@ -222,13 +222,22 @@ function Garden:heading(scene)
     x = button("btn_season", "Season button", { art = { "garden_season_icon", Season.now() }, icon_size = 30 }, x,
         function() GardenSeason.open(function() App.update() end) end)
     x = button("btn_guide", "Guide button", { label = "?" }, x, function() self:guide() end)
-    scene:group("garden.title", "Garden title", function() scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260) end)
+    -- the title, and the dew and seeds beside the buttons, all on the buttons' middle line
+    local mid = (top + bottom) / 2
+    local title_h = Text.height("display") / scene.k
+    scene:group("garden.title", "Garden title", function()
+        scene:place(Label:new({ text = _("Garden"), kind = "display" }), 84, mid - title_h / 2, 260)
+    end)
     local line = Text.height("small") / scene.k
+    local label_w = 130
+    local right = x + unit   -- a gap left of the leftmost button
     scene:group("garden.dew", "Dew count", function()
-        scene:place(Label:new({ text = string.format(_("Dew %d"), State.dew()), kind = "small", color = "muted", align = "right" }), x - 60, 56 - line / 2, 100 + 60 - 12)
+        scene:place(Label:new({ text = string.format(_("Dew %d"), State.dew()), kind = "small", color = "muted", align = "right" }),
+            right - label_w, mid - line, label_w)
     end)
     scene:group("garden.seeds", "Seed count", function()
-        scene:place(Label:new({ text = string.format(_("Seeds %d"), State.seeds()), kind = "small", color = "muted", align = "right" }), x - 60, 56 + line / 2, 100 + 60 - 12)
+        scene:place(Label:new({ text = string.format(_("Seeds %d"), State.seeds()), kind = "small", color = "muted", align = "right" }),
+            right - label_w, mid, label_w)
     end)
 end
 
