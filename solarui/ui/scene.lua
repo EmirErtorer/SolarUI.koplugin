@@ -18,7 +18,8 @@ local Scene = Element:extend({ design_w = 1072 })
 local floor = math.floor
 
 -- A scene for a w x h screen that needs at least `min_vh` units of height.
--- `slot` names its backdrop.
+-- `slot` names its backdrop; `screen`, when set, is the name its parts are
+-- tweaked under (data/layout_overrides.lua), else the slot.
 function Scene.make(slot, w, h, min_vh)
     local s = Scene:new({ slot = slot, children = {}, items = {}, sig = {}, groups = {} })
     s.k = math.min(w / s.design_w, h / min_vh)
@@ -72,7 +73,7 @@ function Scene:group(id, label, add)
     self.cur = g
     add()
     self.cur = nil
-    local o = SceneEdit.lookup(self.slot, id)
+    local o = SceneEdit.lookup(self.screen or self.slot, id)
     if o and o.hidden then
         for i = #self.items, n_items + 1, -1 do self.items[i] = nil end
         for i = #self.children, n_children + 1, -1 do self.children[i] = nil end

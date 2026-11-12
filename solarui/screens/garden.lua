@@ -201,21 +201,27 @@ function Garden:heading(scene)
     local th = Theme.get()
     local unit = th.size.touch / scene.k
     local gap = 12
-    local function button(spec, x, on_tap)
+    local function button(id, label, spec, x, on_tap)
         spec.variant, spec.width, spec.on_tap = "icon", th.size.touch, on_tap
-        scene:place(Button:new(spec), x, 34, unit, unit)
+        scene:group("garden." .. id, label, function() scene:place(Button:new(spec), x, 34, unit, unit) end)
         return x - unit - gap
     end
     local x = 962 - unit
-    x = button({ icon = "book" }, x, function() App.push("gardennotes") end)
-    x = button({ icon = "notes" }, x, function() App.push("gardenjournal") end)
-    x = button({ art = { "garden_clock_icon", tostring(Sky.hour()) }, icon_size = 30 }, x, function() GardenClock.open(nil, function() App.update() end) end)
-    x = button({ art = { "garden_season_icon", Season.now() }, icon_size = 30 }, x, function() GardenSeason.open(function() App.update() end) end)
-    x = button({ label = "?" }, x, function() self:guide() end)
-    scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260)
+    x = button("btn_notes", "Field notes button", { icon = "book" }, x, function() App.push("gardennotes") end)
+    x = button("btn_journal", "Journal button", { icon = "notes" }, x, function() App.push("gardenjournal") end)
+    x = button("btn_clock", "Clock button", { art = { "garden_clock_icon", tostring(Sky.hour()) }, icon_size = 30 }, x,
+        function() GardenClock.open(nil, function() App.update() end) end)
+    x = button("btn_season", "Season button", { art = { "garden_season_icon", Season.now() }, icon_size = 30 }, x,
+        function() GardenSeason.open(function() App.update() end) end)
+    x = button("btn_guide", "Guide button", { label = "?" }, x, function() self:guide() end)
+    scene:group("garden.title", "Garden title", function() scene:place(Label:new({ text = _("Garden"), kind = "display" }), 118, 38, 260) end)
     local line = Text.height("small") / scene.k
-    scene:place(Label:new({ text = string.format(_("Dew %d"), State.dew()), kind = "small", color = "muted", align = "right" }), x - 60, 56 - line / 2, 100 + 60 - 12)
-    scene:place(Label:new({ text = string.format(_("Seeds %d"), State.seeds()), kind = "small", color = "muted", align = "right" }), x - 60, 56 + line / 2, 100 + 60 - 12)
+    scene:group("garden.dew", "Dew count", function()
+        scene:place(Label:new({ text = string.format(_("Dew %d"), State.dew()), kind = "small", color = "muted", align = "right" }), x - 60, 56 - line / 2, 100 + 60 - 12)
+    end)
+    scene:group("garden.seeds", "Seed count", function()
+        scene:place(Label:new({ text = string.format(_("Seeds %d"), State.seeds()), kind = "small", color = "muted", align = "right" }), x - 60, 56 + line / 2, 100 + 60 - 12)
+    end)
 end
 
 -- The big picture and its card over the faded garden.
@@ -287,6 +293,7 @@ function Garden:build(ctx)
     local tabs = TabBar.build(App.TABS, nil, function(id) App.go(id) end)
     local bar = Theme.get().size.tabbar + Theme.px(16)
     local scene = Scene.make(self.focus and "gardenfaded" or "garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
+    scene.screen = "garden"   -- the faded garden keeps the same tweaks
     self.sprites = {}
     local show = self.showcase
     self.scene = scene

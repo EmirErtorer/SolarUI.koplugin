@@ -22,6 +22,12 @@ log, and settings for colours, fonts and more.
   if it is not in `~/koreader-emulator`). Add `--e2e` to also run the scenarios
   in the visible emulator.
 - `tools/emulator.sh` copies the plugin into the emulator build and starts it.
+- `tools/layout-editor.sh` renders the home and garden screens in the emulator
+  at six screen sizes and opens a page where every named part (`home.cover`,
+  `garden.btn_season`...) can be dragged, stretched or hidden, or changed by
+  typing its name. The result is saved in `solarui/data/layout_overrides.lua`,
+  in the poster's units, so one tweak fits every screen size. Parts are named
+  in code with `scene:group(id, label, add)`.
 
 ## Fonts
 

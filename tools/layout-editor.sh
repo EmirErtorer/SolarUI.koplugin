@@ -2,7 +2,7 @@
 # The layout editor: renders a screen in the real emulator at several screen
 # sizes, then serves a page where each named part can be dragged, stretched or
 # hidden, and the result copied back as placement tweaks.
-#   tools/layout-editor.sh [screen]          render (default home), then serve
+#   tools/layout-editor.sh [screen ...]      render the screens (default home garden), then serve
 #   tools/layout-editor.sh --serve           serve what was rendered before
 # KO_DIR points at the KOReader checkout (default ~/koreader-emulator).
 set -euo pipefail
@@ -60,7 +60,11 @@ json.dump(out, open(os.path.join(site, "manifest.json"), "w"))
 PY
 }
 
-if [ "${1:-}" != "--serve" ]; then render "${1:-home}"; fi
+if [ "${1:-}" != "--serve" ]; then
+    screens=("$@")
+    [ ${#screens[@]} -gt 0 ] || screens=(home garden)
+    for screen in "${screens[@]}"; do render "$screen"; done
+fi
 cp "$here/tools/layout-editor/index.html" "$site/index.html"
 manifest
 echo "Layout editor: http://localhost:$port/   (Ctrl+C to stop)"
