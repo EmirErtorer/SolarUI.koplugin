@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SolarUI layout editor</title>
+<style>
+/* The layout editor for SolarUI's poster screens. Served by tools/layout-editor.sh;
+   the pictures it edits are the emulator's own. */
+:root {
+  --bg: #f3efe8; --panel: #fbf9f5; --ink: #2b2620; --muted: #7a7064; --line: #ddd5c8;
+  --accent: #2f6b4f; --accent-ink: #fff; --warn: #b3402e; --sel: #2f6b4f; --hover: #c78a1d;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1d1b18; --panel: #25231f; --ink: #ece6da; --muted: #9a9082; --line: #3a362f;
+    --accent: #6fb48f; --accent-ink: #11201a; --warn: #e0806b; --sel: #6fb48f; --hover: #e0a93b; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px; grid-template-rows: auto minmax(0, 1fr); }
+header { grid-column: 1 / 3; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 10px 16px;
+  background: var(--panel); border-bottom: 1px solid var(--line); }
+header h1 { font-size: 15px; margin: 0 8px 0 0; font-weight: 650; }
+label.f { display: flex; gap: 6px; align-items: center; color: var(--muted); }
+select, input, textarea, button { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 6px; padding: 5px 8px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.info { color: var(--muted); font-size: 12px; }
+#stage { overflow: auto; padding: 16px; display: flex; justify-content: center; align-items: flex-start; min-width: 0; }
+#wrap { position: relative; box-shadow: 0 2px 14px rgba(0,0,0,.25); background: #fff; flex: none; }
+canvas { display: block; touch-action: none; }
+aside { background: var(--panel); border-left: 1px solid var(--line); overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 6px; font-weight: 650; }
+#list { max-height: 230px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+#list div { padding: 4px 8px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+#list div:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+#list div.sel { background: var(--accent); color: var(--accent-ink); }
+#list small { color: inherit; opacity: .65; white-space: nowrap; }
+#list .mod::before { content: "● "; color: var(--hover); }
+#list .sel.mod::before { color: var(--accent-ink); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+.grid label { display: flex; flex-direction: column; gap: 2px; color: var(--muted); font-size: 12px; }
+.grid input { width: 100%; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+textarea { width: 100%; min-height: 84px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; resize: vertical; }
+pre { margin: 0; white-space: pre-wrap; font: 12px/1.45 ui-monospace, Menlo, monospace; background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px; max-height: 220px; overflow: auto; }
+.warn { color: var(--warn); font-size: 12px; }
+.note { color: var(--muted); font-size: 12px; }
+#msg { min-height: 1.2em; }
+@media (max-width: 900px) { body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto; } header { grid-column: 1; } aside { border-left: 0; border-top: 1px solid var(--line); max-height: 45vh; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>SolarUI layout editor</h1>
+  <label class="f">Screen <select id="screen"></select></label>
+  <label class="f">Size <select id="profile"></select></label>
+  <label class="f"><input type="checkbox" id="outlines"> Outlines</label>
+  <label class="f"><input type="checkbox" id="taps"> Tap areas</label>
+  <button id="before" title="Hold (or press Space) to see the screen as the emulator draws it now">Hold: as on device</button>
+  <span class="info" id="sizeinfo"></span>
+</header>
+<main id="stage"><div id="wrap"><canvas id="cv"></canvas></div></main>
+<aside>
+  <section>
+    <h2>Parts <span class="info" id="count"></span></h2>
+    <input id="filter" placeholder="Find a part by name" style="width:100%;margin-bottom:6px">
+    <div id="list"></div>
+  </section>
+  <section id="sel">
+    <h2>Selected</h2>
+    <div id="selname" class="info">Click a part on the screen or in the list.</div>
+    <div class="grid" id="fields" style="margin-top:6px">
+      <label>X <input type="number" id="fx" step="1"></label>
+      <label>Y <input type="number" id="fy" step="1"></label>
+      <label>Width <input type="number" id="fw" step="1" min="1"></label>
+      <label>Height <input type="number" id="fh" step="1" min="1"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="f"><input type="checkbox" id="fhide"> Hidden</label>
+      <button id="reset">Reset this part</button>
+    </div>
+    <p class="note">Arrow keys nudge by 1 unit, Shift by 10. Stretching scales the picture here; on the device text keeps its size and only its width changes.</p>
+  </section>
+  <section>
+    <h2>Type changes</h2>
+    <textarea id="batch" placeholder="home.cover dy -20&#10;home.battery x 920 y 70&#10;btn_details w 120&#10;home.snail hide"></textarea>
+    <div class="row"><button id="apply">Apply</button><span class="note">x y w h are positions and sizes in units; dx dy dw dh and scale are changes; hide, show, reset.</span></div>
+    <div id="msg" class="warn"></div>
+  </section>
+  <section>
+    <h2>Warnings</h2>
+    <div id="warns" class="note">None.</div>
+  </section>
+  <section>
+    <h2>Your changes</h2>
+    <pre id="changes">Nothing changed yet.</pre>
+    <div class="row" style="margin-top:8px">
+      <button id="copy" class="primary">Copy changes</button>
+      <button id="copylua">Copy as Lua</button>
+      <button id="download">Download file</button>
+      <button id="revert">Revert all</button>
+    </div>
+    <p class="note">Send the copied changes to Claude, or save the file as <code>solarui/data/layout_overrides.lua</code>. They are in the poster's units, so they fit every screen size.</p>
+  </section>
+</aside>
+<script>
+"use strict";
+// ---------------------------------------------------------------- state
+const $ = id => document.getElementById(id);
+const cv = $("cv"), ctx = cv.getContext("2d");
+let manifest = {}, screenId, profile, data, parts = [], base = null, liveImg = null, saved = {}, all = {};
+let edits = {};            // per screen: { id: { dx, dy, sx, sy, hidden } }
+let selected = null, hover = null, drag = null, showBefore = false, scale = 1;
+
+// Where this browser keeps the unsent edits of a screen.
+const key = s => "solarui-layout-edits:" + s;
+// A fresh, untouched tweak.
+const blank = () => ({ dx: 0, dy: 0, sx: 1, sy: 1, hidden: false });
+// The tweak of a part (made on first use).
+function tw(id) { const e = edits[screenId]; return e[id] || (e[id] = blank()); }
+// Has the part been changed?
+function changed(t) { return t && (t.dx || t.dy || t.sx !== 1 || t.sy !== 1 || t.hidden); }
+// Round to a tenth of a unit, which is far finer than a pixel.
+const r1 = v => Math.round(v * 10) / 10;
+
+// ---------------------------------------------------------------- loading
+// Load a picture.
+function img(src) {
+  return new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error("missing " + src)); i.src = src + "?" + Date.now(); });
+}
+// The pixels of a picture.
+function pixels(i) {
+  const c = document.createElement("canvas"); c.width = i.width; c.height = i.height;
+  const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(i, 0, 0);
+  return x.getImageData(0, 0, i.width, i.height);
+}
+// Lift one part's own pixels out of the picture: where leaving it out changes
+// the screen, those pixels are the part's.
+function lift(p, baseData, without) {
+  const W = baseData.width, H = baseData.height, a = baseData.data, b = without.data;
+  let x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for (let y = 0; y < H; y++) {
+    const row = y * W * 4;
+    for (let x = 0; x < W; x++) {
+      const o = row + x * 4;
+      if (a[o] !== b[o] || a[o + 1] !== b[o + 1] || a[o + 2] !== b[o + 2]) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0) { p.px = null; return; }
+  const w = x1 - x0 + 1, h = y1 - y0 + 1;
+  const layer = new ImageData(w, h), patch = new ImageData(w, h), mask = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const s = ((y + y0) * W + x + x0) * 4, d = (y * w + x) * 4;
+    const diff = a[s] !== b[s] || a[s + 1] !== b[s + 1] || a[s + 2] !== b[s + 2];
+    for (let k = 0; k < 3; k++) { layer.data[d + k] = a[s + k]; patch.data[d + k] = b[s + k]; }
+    layer.data[d + 3] = diff ? 255 : 0; patch.data[d + 3] = 255;
+    mask[y * w + x] = diff ? 1 : 0;
+  }
+  const mk = d => { const c = document.createElement("canvas"); c.width = w; c.height = h; c.getContext("2d").putImageData(d, 0, 0); return c; };
+  p.px = { x: x0, y: y0, w, h, layer: mk(layer), patch: mk(patch), mask };
+}
+
+// Load a screen at a size: its layout and pictures.
+async function load(screen, prof) {
+  $("msg").textContent = "Loading…";
+  const dir = screen + "/" + prof + "/";
+  const lay = await (await fetch(dir + "layout.json?" + Date.now())).json();
+  const baseImg = await img(dir + "base.png");
+  const baseData = pixels(baseImg);
+  const live = await img(dir + "live.png");
+  const list = lay.parts.map(p => ({ ...p, px: null }));
+  for (let i = 0; i < list.length; i++) {
+    const w = await img(dir + "without_" + (i + 1) + ".png");
+    lift(list[i], baseData, pixels(w));
+    $("msg").textContent = "Loading… " + (i + 1) + " of " + list.length;
+  }
+  data = lay; parts = list; base = baseImg; liveImg = live; screenId = screen; profile = prof;
+  all = lay.all_overrides || {};
+  saved = (lay.overrides && Object.keys(lay.overrides).length) ? lay.overrides : {};
+  if (!edits[screen]) {
+    edits[screen] = {};
+    let stored = null;
+    try { stored = JSON.parse(localStorage.getItem(key(screen)) || "null"); } catch (e) {}
+    const from = stored || saved;
+    for (const id in from) edits[screen][id] = { ...blank(), ...from[id] };
+  }
+  cv.width = lay.w; cv.height = lay.h;
+  $("sizeinfo").textContent = lay.w + " × " + lay.h + " px, " + lay.dpi + " dpi, poster scale " + lay.k.toFixed(3) + " px per unit";
+  $("msg").textContent = "";
+  fit(); buildList(); draw(); report();
+}
+
+// ---------------------------------------------------------------- geometry
+// A part's saved-tweak box in units: { x, y, w, h }.
+function box(p) {
+  const t = edits[screenId][p.id] || blank();
+  return { x: p.ox + t.dx + (p.x - p.ox) * t.sx, y: p.oy + t.dy + (p.y - p.oy) * t.sy, w: p.w * t.sx, h: p.h * t.sy };
+}
+// Units to pixels and back, on the device's own pixels.
+const toPx = (p, u) => ({ x: data.ox + u.x * data.k, y: u.y * data.k, w: u.w * data.k, h: u.h * data.k });
+// The part's pixel box as drawn.
+function drawn(p) { return toPx(p, box(p)); }
+// Give a part a box in units: sets its move and stretch.
+function setBox(p, X, Y, W, H) {
+  const t = tw(p.id);
+  t.sx = p.w > 0 ? Math.max(0.05, W / p.w) : 1;
+  t.sy = p.h > 0 ? Math.max(0.05, H / p.h) : 1;
+  t.dx = X - (p.ox + (p.x - p.ox) * t.sx);
+  t.dy = Y - (p.oy + (p.y - p.oy) * t.sy);
+  t.dx = r1(t.dx); t.dy = r1(t.dy);
+  t.sx = Math.round(t.sx * 1000) / 1000; t.sy = Math.round(t.sy * 1000) / 1000;
+}
+// Where a lifted picture lands, in device pixels, under the part's own tweak.
+function placed(p) { return placedBy(p, edits[screenId][p.id] || blank()); }
+// Where it lands under a given tweak.
+function placedBy(p, t) {
+  const q = p.px;
+  const ux = (q.x - data.ox) / data.k, uy = q.y / data.k;
+  const X = p.ox + t.dx + (ux - p.ox) * t.sx, Y = p.oy + t.dy + (uy - p.oy) * t.sy;
+  return { x: data.ox + X * data.k, y: Y * data.k, w: q.w * t.sx, h: q.h * t.sy };
+}
+
+// ---------------------------------------------------------------- drawing
+// Paint the screen: the picture, the parts that moved lifted out and set
+// down again, and the outlines.
+function draw() {
+  if (!base) return;
+  // untouched, the screen is the emulator's own picture, pixel for pixel
+  const exact = showBefore || sameAsSaved();
+  ctx.drawImage(exact ? liveImg : base, 0, 0);
+  const t = edits[screenId];
+  if (!showBefore) {
+    if (exact) { outlines(); return; }
+    const moved = parts.filter(p => p.px && changed(t[p.id]));
+    for (let i = moved.length - 1; i >= 0; i--) ctx.drawImage(moved[i].px.patch, moved[i].px.x, moved[i].px.y);
+    for (const p of moved) {
+      if (t[p.id].hidden) continue;
+      const d = placed(p);
+      ctx.imageSmoothingEnabled = t[p.id].sx !== 1 || t[p.id].sy !== 1;
+      ctx.drawImage(p.px.layer, d.x, d.y, d.w, d.h);
+    }
+    ctx.imageSmoothingEnabled = true;
+    outlines();
+  }
+}
+// The tweaks as one comparable string (parts in name order).
+function keyOf(map) {
+  const out = {};
+  for (const id of Object.keys(map).sort()) if (changed(map[id])) out[id] = map[id];
+  return JSON.stringify(out, (k, v) => typeof v === "number" ? Math.round(v * 1000) / 1000 : v);
+}
+// Is everything as saved in layout_overrides.lua?
+function sameAsSaved() {
+  const was = {};
+  for (const id in saved) was[id] = { ...blank(), ...saved[id] };
+  return keyOf(edits[screenId]) === keyOf(was);
+}
+// Outlines of the parts, the selected one with its handles.
+function outlines() {
+  const unit = Math.max(1, cv.width / 600);
+  ctx.lineWidth = unit;
+  if ($("outlines").checked) {
+    for (const p of parts) {
+      const empty = !p.px;
+      if (empty && !$("taps").checked) continue;
+      if ((edits[screenId][p.id] || {}).hidden) continue;
+      const d = drawn(p);
+      ctx.strokeStyle = empty ? "rgba(179,64,46,.7)" : "rgba(47,107,79,.35)";
+      ctx.setLineDash(empty ? [6 * unit, 4 * unit] : []);
+      ctx.strokeRect(d.x, d.y, d.w, d.h);
+    }
+  }
+  ctx.setLineDash([]);
+  const h = hover && hover !== selected ? hover : null;
+  if (h) { const d = drawn(h); ctx.strokeStyle = "#c78a1d"; ctx.lineWidth = 2 * unit; ctx.strokeRect(d.x, d.y, d.w, d.h); }
+  if (selected) {
+    const d = drawn(selected);
+    ctx.strokeStyle = "#2f6b4f"; ctx.lineWidth = 2.5 * unit; ctx.strokeRect(d.x, d.y, d.w, d.h);
+    ctx.fillStyle = "#fff";
+    for (const hd of handles(d)) { ctx.fillRect(hd.x - hd.s, hd.y - hd.s, hd.s * 2, hd.s * 2); ctx.strokeRect(hd.x - hd.s, hd.y - hd.s, hd.s * 2, hd.s * 2); }
+  }
+}
+// The eight handles of a box: where they sit and which sides they move.
+function handles(d) {
+  const s = Math.max(6, 7 / scale), mx = d.x + d.w / 2, my = d.y + d.h / 2, r = d.x + d.w, b = d.y + d.h;
+  return [
+    { x: d.x, y: d.y, l: 1, t: 1, s }, { x: mx, y: d.y, t: 1, s }, { x: r, y: d.y, r: 1, t: 1, s },
+    { x: d.x, y: my, l: 1, s }, { x: r, y: my, r: 1, s },
+    { x: d.x, y: b, l: 1, b: 1, s }, { x: mx, y: b, b: 1, s }, { x: r, y: b, r: 1, b: 1, s },
+  ];
+}
+
+// Fit the picture into the stage.
+function fit() {
+  const st = $("stage"), aw = st.clientWidth - 32, ah = st.clientHeight - 32;
+  scale = Math.min(aw / cv.width, ah / cv.height, 1.5);
+  cv.style.width = Math.round(cv.width * scale) + "px";
+  cv.style.height = Math.round(cv.height * scale) + "px";
+}
+
+// ---------------------------------------------------------------- picking
+// The device pixel under a mouse event.
+function at(e) {
+  const r = cv.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height };
+}
+// Is this device pixel on one of the part's own pixels as it is drawn?
+function onPixels(p, pt, t) {
+  const q = p.px;
+  if (!q) return false;
+  const d = placedBy(p, t || edits[screenId][p.id] || blank()), x = Math.floor((pt.x - d.x) / d.w * q.w), y = Math.floor((pt.y - d.y) / d.h * q.h);
+  return x >= 0 && y >= 0 && x < q.w && y < q.h && q.mask[y * q.w + x] === 1;
+}
+// The part under a point: the topmost whose pixels are there, else the
+// smallest whose box is.
+function pick(pt) {
+  const t = edits[screenId];
+  const shown = parts.filter(p => !(t[p.id] && t[p.id].hidden));
+  for (let i = shown.length - 1; i >= 0; i--) if (onPixels(shown[i], pt)) return shown[i];
+  let best = null, area = Infinity;
+  for (const p of shown) {
+    const d = drawn(p);
+    if (!p.px && !$("taps").checked) continue;
+    if (pt.x >= d.x && pt.y >= d.y && pt.x <= d.x + d.w && pt.y <= d.y + d.h && d.w * d.h < area) { best = p; area = d.w * d.h; }
+  }
+  return best;
+}
+// The handle of the selected part under a point.
+function handleAt(pt) {
+  if (!selected) return null;
+  const d = drawn(selected);
+  return handles(d).find(h => Math.abs(pt.x - h.x) <= h.s * 1.6 && Math.abs(pt.y - h.y) <= h.s * 1.6) || null;
+}
+
+// ---------------------------------------------------------------- mouse
+cv.addEventListener("pointerdown", e => {
+  const pt = at(e), h = handleAt(pt);
+  if (h) { drag = { kind: "size", h, p: selected, start: pt, box: box(selected) }; }
+  else {
+    const p = pick(pt);
+    select(p);
+    if (p) drag = { kind: "move", p, start: pt, box: box(p) };
+  }
+  if (drag) cv.setPointerCapture(e.pointerId);
+  draw();
+});
+cv.addEventListener("pointermove", e => {
+  const pt = at(e);
+  if (!drag) {
+    const h = handleAt(pt), p = h ? selected : pick(pt);
+    if (p !== hover) { hover = p; draw(); }
+    cv.style.cursor = h ? ((h.l && h.t) || (h.r && h.b) ? "nwse-resize" : (h.r && h.t) || (h.l && h.b) ? "nesw-resize" : (h.l || h.r) ? "ew-resize" : "ns-resize") : p ? "move" : "default";
+    return;
+  }
+  const du = (pt.x - drag.start.x) / data.k, dv = (pt.y - drag.start.y) / data.k, b = drag.box, p = drag.p;
+  if (drag.kind === "move") setBox(p, Math.round(b.x + du), Math.round(b.y + dv), b.w, b.h);
+  else {
+    const h = drag.h;
+    let X = b.x, Y = b.y, W = b.w, H = b.h;
+    if (h.l) { X = b.x + du; W = b.w - du; }
+    if (h.r) W = b.w + du;
+    if (h.t) { Y = b.y + dv; H = b.h - dv; }
+    if (h.b) H = b.h + dv;
+    if (e.shiftKey && b.w && b.h && (h.l || h.r) && (h.t || h.b)) {
+      const f = Math.max(W / b.w, H / b.h);
+      const nw = b.w * f, nh = b.h * f;
+      if (h.l) X = b.x + b.w - nw; if (h.t) Y = b.y + b.h - nh;
+      W = nw; H = nh;
+    }
+    if (W < 8) { if (h.l) X -= 8 - W; W = 8; }
+    if (H < 8) { if (h.t) Y -= 8 - H; H = 8; }
+    setBox(p, Math.round(X), Math.round(Y), Math.round(W), Math.round(H));
+  }
+  draw(); fields(); report();
+});
+cv.addEventListener("pointerup", () => { if (drag) { drag = null; persist(); buildList(); } });
+cv.addEventListener("pointerleave", () => { if (!drag && hover) { hover = null; draw(); } });
+window.addEventListener("keydown", e => {
+  if (e.target.matches("input, textarea, select")) return;
+  const step = e.shiftKey ? 10 : 1, k = e.key;
+  if (selected && k.startsWith("Arrow")) {
+    const b = box(selected);
+    setBox(selected, b.x + (k === "ArrowRight" ? step : k === "ArrowLeft" ? -step : 0), b.y + (k === "ArrowDown" ? step : k === "ArrowUp" ? -step : 0), b.w, b.h);
+    draw(); fields(); report(); persist(); buildList(); e.preventDefault();
+  } else if (k === "Escape") { select(null); draw(); }
+  else if (k === " " && !e.repeat) { showBefore = true; draw(); e.preventDefault(); }
+});
+window.addEventListener("keyup", e => { if (e.key === " " && showBefore) { showBefore = false; draw(); } });
+const beforeBtn = $("before");
+beforeBtn.addEventListener("pointerdown", () => { showBefore = true; draw(); });
+window.addEventListener("pointerup", () => { if (showBefore) { showBefore = false; draw(); } });
+
+// ---------------------------------------------------------------- panel
+// Select a part (or none).
+function select(p) { selected = p; fields(); highlight(); }
+// Show the selected part's numbers.
+function fields() {
+  const p = selected, on = !!p;
+  for (const id of ["fx", "fy", "fw", "fh", "fhide", "reset"]) $(id).disabled = !on;
+  if (!p) { $("selname").textContent = "Click a part on the screen or in the list."; for (const id of ["fx", "fy", "fw", "fh"]) $(id).value = ""; $("fhide").checked = false; return; }
+  const b = box(p), t = edits[screenId][p.id] || blank();
+  $("selname").innerHTML = "<b>" + p.id + "</b> — " + p.label + (p.px ? "" : " (invisible, a tap area)");
+  const set = (id, v) => { if (document.activeElement !== $(id)) $(id).value = Math.round(v); };
+  set("fx", b.x); set("fy", b.y); set("fw", b.w); set("fh", b.h);
+  $("fhide").checked = !!t.hidden;
+}
+// The list of parts, filtered.
+function buildList() {
+  const q = $("filter").value.trim().toLowerCase(), t = edits[screenId], list = $("list");
+  list.innerHTML = "";
+  let n = 0;
+  for (const p of parts) {
+    if (q && !(p.id + " " + p.label).toLowerCase().includes(q)) continue;
+    n++;
+    const row = document.createElement("div");
+    row.className = (p === selected ? "sel " : "") + (changed(t[p.id]) ? "mod" : "");
+    row.innerHTML = "<span>" + p.id.replace(/^[^.]*\./, "") + "</span><small>" + p.label + "</small>";
+    row.onclick = () => { select(p); draw(); };
+    row.dataset.id = p.id;
+    list.appendChild(row);
+  }
+  $("count").textContent = "(" + n + ")";
+}
+// Mark the selected row.
+function highlight() {
+  for (const row of $("list").children) row.classList.toggle("sel", !!selected && row.dataset.id === selected.id);
+}
+// Keep this browser's copy of the edits.
+function persist() { try { localStorage.setItem(key(screenId), JSON.stringify(edits[screenId])); } catch (e) {} }
+
+for (const id of ["fx", "fy", "fw", "fh"]) $(id).addEventListener("input", () => {
+  if (!selected) return;
+  const v = ["fx", "fy", "fw", "fh"].map(i => parseFloat($(i).value));
+  if (v.some(isNaN) || v[2] < 1 || v[3] < 1) return;
+  setBox(selected, v[0], v[1], v[2], v[3]);
+  draw(); report(); persist(); buildList();
+});
+$("fhide").addEventListener("change", () => { if (selected) { tw(selected.id).hidden = $("fhide").checked; draw(); report(); persist(); buildList(); } });
+$("reset").addEventListener("click", () => { if (selected) { delete edits[screenId][selected.id]; draw(); fields(); report(); persist(); buildList(); } });
+$("filter").addEventListener("input", buildList);
+$("outlines").addEventListener("change", draw);
+$("taps").addEventListener("change", draw);
+
+// ---------------------------------------------------------------- batch text
+// Find the part a typed name means: the exact id, or one it ends with.
+function find(name) {
+  const hit = parts.filter(p => p.id === name);
+  if (hit.length) return hit[0];
+  const ends = parts.filter(p => p.id.endsWith("." + name) || p.id.endsWith("_" + name) || p.id.split(".").pop() === name);
+  if (ends.length === 1) return ends[0];
+  if (ends.length > 1) throw new Error(name + " fits several: " + ends.map(p => p.id).join(", "));
+  throw new Error("no part called " + name);
+}
+// Apply the typed lines.
+function applyBatch() {
+  const errs = [];
+  for (const raw of $("batch").value.split("\n")) {
+    const line = raw.replace(/#.*$/, "").trim();
+    if (!line) continue;
+    try {
+      const tok = line.split(/[\s,]+/), p = find(tok[0]);
+      let b = box(p);
+      let X = b.x, Y = b.y, W = b.w, H = b.h;
+      for (let i = 1; i < tok.length; i++) {
+        const w = tok[i].toLowerCase();
+        if (w === "hide") { tw(p.id).hidden = true; continue; }
+        if (w === "show") { tw(p.id).hidden = false; continue; }
+        if (w === "reset") { delete edits[screenId][p.id]; b = box(p); X = b.x; Y = b.y; W = b.w; H = b.h; continue; }
+        const v = parseFloat(tok[++i]);
+        if (isNaN(v)) throw new Error("a number is missing after " + w);
+        const d0 = { x: p.x, y: p.y, w: p.w, h: p.h };
+        if (w === "x") X = v; else if (w === "y") Y = v; else if (w === "w") W = v; else if (w === "h") H = v;
+        else if (w === "dx") X += v; else if (w === "dy") Y += v; else if (w === "dw") W += v; else if (w === "dh") H += v;
+        else if (w === "scale") { W = d0.w * v; H = d0.h * v; }
+        else throw new Error("I do not know " + w);
+      }
+      if (!tok.slice(1).every(w => ["hide", "show", "reset"].includes(w.toLowerCase()))) setBox(p, X, Y, W, H);
+    } catch (e) { errs.push(line + " → " + e.message); }
+  }
+  $("msg").textContent = errs.join("\n");
+  $("msg").style.whiteSpace = "pre-wrap";
+  persist(); draw(); fields(); report(); buildList();
+}
+$("apply").addEventListener("click", applyBatch);
+
+// ---------------------------------------------------------------- report
+// The tweaks as numbers for the Lua file.
+function overrides(screen) {
+  const out = {};
+  for (const id in edits[screen] || {}) {
+    const t = edits[screen][id];
+    if (!changed(t)) continue;
+    const o = {};
+    if (t.dx) o.dx = r1(t.dx);
+    if (t.dy) o.dy = r1(t.dy);
+    if (t.sx !== 1) o.sx = t.sx;
+    if (t.sy !== 1) o.sy = t.sy;
+    if (t.hidden) o.hidden = true;
+    out[id] = o;
+  }
+  return out;
+}
+// The whole file: every screen's tweaks, the screens not open kept as they were.
+function lua() {
+  const merged = { ...all };
+  for (const s in edits) merged[s] = overrides(s);
+  const lines = ["-- Placement tweaks for the named parts of a screen, made in the layout editor", "-- (tools/layout-editor.sh) and kept here. Per screen, per component name:",
+    "-- dx, dy (units moved right and down), sx, sy (stretch of width and height,", "-- from the component's top-left corner) and hidden. The units are the", "-- poster's, so one tweak fits every screen size.", "", "return {"];
+  for (const s of Object.keys(merged).sort()) {
+    const ids = Object.keys(merged[s] || {}).sort();
+    if (!ids.length) continue;
+    lines.push("    " + s + " = {");
+    for (const id of ids) {
+      const o = merged[s][id], f = [];
+      for (const k of ["dx", "dy", "sx", "sy"]) if (o[k] !== undefined) f.push(k + " = " + o[k]);
+      if (o.hidden) f.push("hidden = true");
+      lines.push('        ["' + id + '"] = { ' + f.join(", ") + " },");
+    }
+    lines.push("    },");
+  }
+  lines.push("}", "");
+  return lines.join("\n");
+}
+// The changes in words, one part to a line, in the form the batch box reads.
+function words() {
+  const out = [], t = edits[screenId];
+  for (const p of parts) {
+    const e = t[p.id];
+    if (!changed(e)) continue;
+    if (e.hidden) { out.push(p.id + " hide"); continue; }
+    const b = box(p), f = [];
+    if (e.dx || e.dy || e.sx !== 1 || e.sy !== 1) f.push("x " + Math.round(b.x), "y " + Math.round(b.y));
+    if (e.sx !== 1) f.push("w " + Math.round(b.w));
+    if (e.sy !== 1) f.push("h " + Math.round(b.h));
+    const note = " # was x " + Math.round(p.x) + " y " + Math.round(p.y) + " w " + Math.round(p.w) + " h " + Math.round(p.h);
+    out.push(p.id + " " + f.join(" ") + note);
+  }
+  return out.join("\n");
+}
+// How many sampled pixels of part a, under tweak ta, lie on pixels of part b under tb.
+function overlap(a, ta, b, tb) {
+  const q = a.px, d = placedBy(a, ta), step = Math.max(2, Math.round(Math.sqrt(q.w * q.h / 5000)));
+  let n = 0;
+  for (let y = 0; y < q.h; y += step) for (let x = 0; x < q.w; x += step) {
+    if (!q.mask[y * q.w + x]) continue;
+    if (onPixels(b, { x: d.x + (x + .5) / q.w * d.w, y: d.y + (y + .5) / q.h * d.h }, tb)) n++;
+  }
+  return n;
+}
+// Overlaps this edit made that were not there before, and parts off the screen.
+function warnings() {
+  const out = [], t = edits[screenId], vis = parts.filter(p => p.px && !(t[p.id] && t[p.id].hidden));
+  const b0 = blank();
+  for (const a of vis) {
+    if (!changed(t[a.id])) continue;
+    for (const b of vis) {
+      if (a === b || (changed(t[b.id]) && parts.indexOf(b) < parts.indexOf(a))) continue;
+      if (overlap(a, t[a.id], b, t[b.id] || b0) > 4 && overlap(a, b0, b, changed(t[b.id]) ? b0 : (t[b.id] || b0)) <= 4)
+        out.push(a.id + " now covers " + b.id);
+    }
+    const d = drawn(a);
+    if (d.x < -2 || d.y < -2 || d.x + d.w > cv.width + 2 || d.y + d.h > cv.height + 2) out.push(a.id + " reaches past the edge of the screen");
+  }
+  return out;
+}
+let warnTimer = 0;
+// Refresh the text panels.
+function report() {
+  const w = words();
+  $("changes").textContent = w || "Nothing changed yet.";
+  clearTimeout(warnTimer);
+  warnTimer = setTimeout(() => {
+    const ws = warnings();
+    $("warns").innerHTML = ws.length ? ws.map(s => '<div class="warn">' + s + "</div>").join("") : "None.";
+  }, 250);
+}
+const say = text => { $("msg").style.whiteSpace = "normal"; $("msg").textContent = text; setTimeout(() => { if ($("msg").textContent === text) $("msg").textContent = ""; }, 2200); };
+$("copy").addEventListener("click", () => { navigator.clipboard.writeText(screenId + " layout changes\n" + (words() || "(none)")).then(() => say("Copied.")); });
+$("copylua").addEventListener("click", () => { navigator.clipboard.writeText(lua()).then(() => say("Copied the Lua.")); });
+$("download").addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lua()], { type: "text/plain" })); a.download = "layout_overrides.lua"; a.click();
+});
+$("revert").addEventListener("click", () => {
+  if (!confirm("Throw away every change on this screen and go back to the saved layout?")) return;
+  edits[screenId] = {};
+  for (const id in saved) edits[screenId][id] = { ...blank(), ...saved[id] };
+  persist(); draw(); fields(); report(); buildList();
+});
+
+// ---------------------------------------------------------------- start
+$("screen").addEventListener("change", () => fillProfiles($("screen").value, null));
+$("profile").addEventListener("change", () => load(screenId_(), $("profile").value).catch(fail));
+const screenId_ = () => $("screen").value;
+// Show the sizes of a screen and load one.
+function fillProfiles(screen, want) {
+  const sel = $("profile");
+  sel.innerHTML = "";
+  for (const p of manifest[screen] || []) {
+    const o = document.createElement("option");
+    o.value = p.id; o.textContent = p.w + " × " + p.h + " — " + p.label;
+    sel.appendChild(o);
+  }
+  if (want) sel.value = want;
+  if (sel.value) load(screen, sel.value).catch(fail);
+}
+function fail(e) { $("msg").style.whiteSpace = "pre-wrap"; $("msg").textContent = String(e); }
+window.addEventListener("resize", () => { fit(); draw(); });
+window.addEventListener("beforeunload", persist);
+(async function start() {
+  manifest = await (await fetch("manifest.json?" + Date.now())).json();
+  for (const s of Object.keys(manifest)) { const o = document.createElement("option"); o.value = s; o.textContent = s; $("screen").appendChild(o); }
+  fields();
+  fillProfiles($("screen").value || Object.keys(manifest)[0], null);
+})().catch(fail);
+</script>
+</body>
+</html>
