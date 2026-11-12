@@ -1,7 +1,7 @@
 -- Saves a screenshot of each tab of the reading log (log, stats, goal) in the
 -- emulator, for looking at its charts and the goal's tree.
 local H = ...
-H.step(1, function() H.app().go("history") end)
+H.step(3, function() H.app().go("history") end)
 for _i, tab in ipairs({ "log", "stats", "goal" }) do
     H.step(1, function()
         local s = H.app().current()
