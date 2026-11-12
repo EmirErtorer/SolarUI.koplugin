@@ -43,8 +43,9 @@ end
 function Keyboard.grid(rows, o)
     local th = Theme.get()
     o = o or {}
-    local key_h = o.key_h or Theme.px(46)
-    local gap = o.gap or Theme.px(4)
+    -- tall keys, easy to hit on a phone, but never more than the share of the screen four rows may take
+    local key_h = o.key_h or math.min(Theme.px(62), math.floor(require("device").screen:getHeight() * .1))
+    local gap = o.gap or Theme.px(6)
     local out = {}
     for _i, row in ipairs(rows) do
         local keys = {}
