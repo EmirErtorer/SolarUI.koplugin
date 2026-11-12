@@ -4,6 +4,7 @@
 
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
+local Rootline = require("solarui/art/rootline")
 local Svg = require("solarui/art/svg")
 
 local n = Svg.n
@@ -17,9 +18,7 @@ end
 
 -- The root every plant of the dock grows from: a long swaying runner.
 function Dock.root(c, vw, vh)
-    local way = {}
-    for i = 0, 8 do way[#way + 1] = { 6 + (vw - 12) * i / 8, vh * (i % 2 == 0 and .62 or .36) } end
-    local pts = Svg.spline(way, 10)
+    local pts = Rootline.points(vw, vh)
     local out = {}
     for i, f in ipairs({ .08, .31, .5, .7, .93 }) do
         local x, y, ang = Svg.along(pts, Svg.length(pts) * f)

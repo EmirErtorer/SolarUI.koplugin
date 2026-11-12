@@ -22,6 +22,7 @@ local ArtView = require("solarui/ui/artview")
 local Scene = require("solarui/ui/scene")
 local Screen = require("solarui/screens/screen")
 local Season = require("solarui/art/season")
+local Rootline = require("solarui/art/rootline")
 local Settings = require("solarui/settings")
 local StatusBar = require("solarui/ui/statusbar")
 local Strip = require("solarui/ui/readingstrip")
@@ -206,7 +207,8 @@ function Home:dock(scene, y)
     for i, entry in ipairs(entries) do
         local art, icon, label, action = Launcher.describe(entry)
         local cx = LEFT - 20 + slot * (i - .5)
-        local top = y + 120 - tall
+        -- each plant stands on the root where it runs under it
+        local top = y + 104 + Rootline.y(1032, 40, cx - 20) - tall
         scene:group("home.dock_" .. entry.id, label .. " plant", function()
             scene:backdrop(art, cx - size / 2, top, size, tall)
             if ICON_FLOWERS[art] then
