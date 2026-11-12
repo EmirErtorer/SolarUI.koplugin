@@ -36,7 +36,7 @@ local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 190, 26
 local SHELF_COVER = { s = { 72, 108 }, m = { 88, 132 }, l = { 104, 156 }, xl = { 104, 156 } }
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
 -- The flowers that carry a button's own icon in their heart.
-local ICON_FLOWERS = { dock_medallion = true, dock_inkaway = true }
+local ICON_FLOWERS = { dock_medallion = true }
 local HEAD = 158              -- where headings start, clear of the climbing rose (the scene's own default)
 
 -- Shown again after a book: the book just read is back in front.
@@ -126,10 +126,11 @@ function Home:hero(scene, y, cur)
         return
     end
     local path = cur.path
-    local info, st = Books.info(path), Books.state(path)
+    local st = Books.state(path)
     local pct = math.floor(st.percent * 100 + 0.5)
     scene:group("home.cover", "Book cover", function()
-        scene:place(Cover:new({ path = path, on_tap = function() Actions.open(path) end, on_hold = function() Actions.details(path) end }),
+        -- the cover opens the book's details; "Continue reading" opens the book
+        scene:place(Cover:new({ path = path, on_tap = function() Actions.details(path) end, on_hold = function() Actions.details(path) end }),
             172, y + 118, 296, 444)
     end)
     scene:sprite("rose_cluster", 6, y + 318, 200, 300)
@@ -140,13 +141,8 @@ function Home:hero(scene, y, cur)
         scene:touch(145, y + 534, 350, 92, function() Actions.open(path) end)
     end)
 
-    local who = info.author or ""
-    if info.series then who = who .. (who ~= "" and "  ·  " or "") .. info.series .. (info.series_index and (" " .. info.series_index) or "") end
     local pages = st.pages and string.format(_("page %d of %d"), math.floor(st.percent * st.pages + 0.5), st.pages) or ""
     local opened = cur.time and string.format(_("Last opened %s"), Format.ago(cur.time)) or _("Not opened yet")
-    if who ~= "" then
-        scene:group("home.author", "Author and series", function() scene:place(Label:new({ text = who, kind = "label", color = "muted" }), x0, y + 22, w) end)
-    end
     scene:group("home.companion", "Garden companion card", function() HomeCompanion.place(scene, x0, y + 58, w) end)
     scene:group("home.progress", "Reading progress vine", function()
         scene:place(Layout.Column:new({ gap = scene:px(8), children = {
