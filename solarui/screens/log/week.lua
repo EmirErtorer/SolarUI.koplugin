@@ -57,7 +57,7 @@ function Week.build(screen)
     } })
 
     local detail = string.format("%s = %s", Format.date("%a", sel.time), Metric.text(Metric.value(sel)))
-    local shown = Charts.Bars:new({ values = values, labels = labels, goal = Metric.goal(goal), selected = screen.day, height = Theme.px(130),
+    local shown = Charts.Bars:new({ values = values, labels = labels, goal = Metric.goal(goal), selected = screen.day, height = Theme.px(170),
             on_select = function(i) screen.day = i; App.update() end })
     local chart = Layout.Column:new({ gap = th.space.s, children = {
         Section.title(Metric.title("week"), detail),

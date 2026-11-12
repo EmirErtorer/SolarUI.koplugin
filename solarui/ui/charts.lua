@@ -1,6 +1,7 @@
 -- Small charts for the reading log: a bar chart whose bars can be tapped and
 -- a calendar heatmap. Shades come from theme roles, lightest to darkest.
 
+local Art = require("solarui/gfx/art")
 local Element = require("solarui/ui/element")
 local Paint = require("solarui/gfx/paint")
 local Text = require("solarui/gfx/text")
@@ -21,30 +22,13 @@ end
 ---------------------------------------------------------------- Bar
 local Bar = Element:extend({})
 
--- One bar as a flower: a stalk from the baseline up to its head, a leaf on
--- the way, and a bud when nothing was read; the chosen one is in bloom.
+-- One bar as a flower drawn by art/bars.lua: a stalk from the baseline up to
+-- its head, as tall as the bar is high (in steps of five percent), with a
+-- sprout when nothing was read; the chosen one is in fuller bloom.
 function Bar:draw(bb, x, y)
-    local th = Theme.get()
-    local bh = math.floor(self.h * self.frac + 0.5)
-    local head = math.max(Theme.px(8), math.floor(self.w * 0.26))
-    local cx = x + math.floor(self.w / 2)
-    local base = y + self.h
-    local stalk = math.max(th.size.stroke, Theme.px(3))
-    if bh <= 0 then
-        Paint.disc(bb, cx - math.floor(head / 3), base - math.floor(head * .66), math.floor(head * .66), th.c.sage)
-        return
-    end
-    local top = base - math.max(bh, head)
-    Paint.fill(bb, cx - math.floor(stalk / 2), top + math.floor(head / 2), stalk, base - top - math.floor(head / 2), th.c.stem)
-    local mid = base - math.floor((base - top) * .45)
-    Paint.round(bb, cx + stalk, mid - Theme.px(5), math.floor(head * .8), Theme.px(8), Theme.px(4), "tb", th.c.leaf)
-    Paint.round(bb, cx - stalk - math.floor(head * .8), mid + Theme.px(3), math.floor(head * .8), Theme.px(8), Theme.px(4), "tb", th.c.sage)
-    local petals = self.selected and th.c.bloom or th.c.bloom2
-    local pr = math.floor(head / 2)
-    for _i, d in ipairs({ { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } }) do
-        Paint.disc(bb, cx + d[1] * math.floor(head * .38) - math.floor(head * .32), top + pr + d[2] * math.floor(head * .38) - math.floor(head * .32), math.floor(head * .64), petals)
-    end
-    Paint.disc(bb, cx - math.floor(head * .22), top + pr - math.floor(head * .22), math.floor(head * .44), th.c.gold)
+    local k = Theme.px(100) / 178
+    local steps = self.frac > 0 and math.max(5, math.floor(self.frac * 20 + .5) * 5) or 0
+    Art.draw(bb, "bar_flower", x, y, self.w, self.h, math.floor(self.w / k + .5), math.floor(self.h / k + .5), steps .. ":" .. (self.selected and 1 or 0))
 end
 
 ---------------------------------------------------------------- Bars

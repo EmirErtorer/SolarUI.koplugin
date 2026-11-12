@@ -5,7 +5,7 @@
 
 local Sprites = {}
 
-for _i, part in ipairs({ "solarui/art/home", "solarui/art/reading", "solarui/art/dock", "solarui/art/pages", "solarui/art/frames", "solarui/art/coverart", "solarui/art/ornaments", "solarui/art/scenes", "solarui/art/garden", "solarui/art/garden_book", "solarui/art/garden_clock", "solarui/art/garden_season", "solarui/art/garden_vine", "solarui/art/garden_peek", "solarui/art/gardenplants", "solarui/art/animals" }) do
+for _i, part in ipairs({ "solarui/art/home", "solarui/art/reading", "solarui/art/dock", "solarui/art/pages", "solarui/art/bars", "solarui/art/frames", "solarui/art/coverart", "solarui/art/ornaments", "solarui/art/scenes", "solarui/art/garden", "solarui/art/garden_book", "solarui/art/garden_clock", "solarui/art/garden_season", "solarui/art/garden_vine", "solarui/art/garden_peek", "solarui/art/gardenplants", "solarui/art/animals" }) do
     for name, draw in pairs(require(part)) do Sprites[name] = draw end
 end
 

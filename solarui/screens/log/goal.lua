@@ -53,17 +53,22 @@ function GoalTab.build(screen)
     local nav = navrow({ label = string.format(_("%d"), year), can_next = screen.goal_back > 0,
         on_prev = function() screen.goal_back, screen.page = screen.goal_back + 1, 1; App.update() end,
         on_next = function() screen.goal_back, screen.page = screen.goal_back - 1, 1; App.update() end })
-    local goal = Layout.Column:new({ gap = th.space.s, children = {
-        Layout.Row:new({ gap = th.space.m, children = {
-            tile(_("Finished"), string.format("%d/%d", #shelf, target), string.format(_("%d%% of the goal"), math.floor(math.min(#shelf / target, 1) * 100))),
+    -- the tree, which stands for the year's progress, beside the numbers
+    local percent = math.floor(math.min(#shelf / target, 1) * 100 + .5)
+    local numbers_col = Layout.Column:new({ grow = true, gap = th.space.s, children = {
+        Layout.Row:new({ gap = th.space.s, children = {
+            tile(_("Finished"), string.format("%d/%d", #shelf, target), string.format(_("%d%% of the goal"), percent)),
             tile(_("Achieved"), tostring(got), latest or _("None yet")),
-            Layout.Column:new({ children = {
-                Label:new({ text = _("Year goal"), kind = "small", color = "muted" }),
-                Controls.Stepper({ value = target, min = 1, max = 999, step = 1, format = function(v) return tostring(v) end, value_w = 48,
-                    on_change = function(v) Goal.setTarget(v); App.update() end }),
-            } }),
         } }),
-        ArtView:new({ name = "goal_tree", param = math.floor(math.min(#shelf / target, 1) * 100 + .5), height = Theme.px(170) }),
+        Layout.Row:new({ gap = th.space.m, valign = "center", children = {
+            Label:new({ text = _("Year goal"), kind = "body", color = "muted", grow = true }),
+            Controls.Stepper({ value = target, min = 1, max = 999, step = 1, format = function(v) return tostring(v) end, value_w = 48,
+                on_change = function(v) Goal.setTarget(v); App.update() end }),
+        } }),
+    } })
+    local goal = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
+        ArtView:new({ name = "goal_tree", param = percent, grow = true, height = Theme.px(300) }),
+        numbers_col,
     } })
     local body = { nav, goal }
     for _i, l in ipairs(ladders) do body[#body + 1] = ladder(l) end
