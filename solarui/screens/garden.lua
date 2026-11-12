@@ -204,14 +204,17 @@ end
 -- field notes, journal, the clock, the seasons and the guide.
 function Garden:heading(scene)
     local th = Theme.get()
-    local unit = th.size.touch / scene.k
-    local gap = 12
+    -- the buttons sit in the band between the border and the sky's arch, clear of both
+    local top, bottom = Layout.HEAD.top, Layout.HEAD.bottom
+    local unit = math.min(th.size.touch / scene.k, bottom - top - 2 * Layout.HEAD.clear)
+    local gap = 18
+    local y = (top + bottom - unit) / 2
     local function button(id, label, spec, x, on_tap)
-        spec.variant, spec.width, spec.on_tap = "icon", th.size.touch, on_tap
-        scene:group("garden." .. id, label, function() scene:place(Button:new(spec), x, 34, unit, unit) end)
+        spec.variant, spec.width, spec.on_tap = "icon", scene:px(unit), on_tap
+        scene:group("garden." .. id, label, function() scene:place(Button:new(spec), x, y, unit, unit) end)
         return x - unit - gap
     end
-    local x = 962 - unit
+    local x = 1017 - unit
     x = button("btn_notes", "Field notes button", { icon = "book" }, x, function() App.push("gardennotes") end)
     x = button("btn_journal", "Journal button", { icon = "notes" }, x, function() App.push("gardenjournal") end)
     x = button("btn_clock", "Clock button", { art = { "garden_clock_icon", tostring(Sky.hour()) }, icon_size = 30 }, x,

@@ -106,6 +106,13 @@ for _i, size in ipairs({ { 600, 800 }, { 1200, 1600 }, { 758, 1024 }, { 1236, 16
         if m.fixed == true and (x < edge - 2 or x + w > scene.width - edge + 2) then inside = false end
     end
     Kit.ok(inside, "plants and animals stand between the borders at " .. label)
+    SceneEdit.raw = true
+    for _j, b in ipairs(SceneEdit.boxes(scene)) do
+        if b.id:match("^garden%.btn_") then
+            Kit.ok(b.y >= 22.2 and b.y + b.h <= 118 - 6, b.id .. " stays clear of the border and the sky at " .. label)
+        end
+    end
+    SceneEdit.raw = false
 end
 
 Kit.finish("sceneedit")

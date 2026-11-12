@@ -13,9 +13,11 @@ local State = require("solarui/garden/state")
 
 local GardenView = {}
 
--- The stretch of the poster the lawn and sky cover (34 to 1038), which is
--- spread to reach the screen's ruled border (21 units in, a line wide).
-GardenView.SPAN = { x0 = Layout.SKY.x, x1 = Layout.SKY.x + Layout.SKY.w, inset = Layout.EDGE }
+-- Where the screen's ruled border runs, in units in from its edge: the middle
+-- of the inner line, worked out from the pixels it is drawn on.
+function GardenView.edge(scene)
+    return (scene:px(21) + math.max(1, scene:px(1.2)) / 2) / scene.k
+end
 
 -- The param of a plant's drawing: its stage, wilting, turning, fading and
 -- the light of the sky phase and the season.
@@ -60,11 +62,12 @@ function GardenView.compose(scene, o)
     local phase = Sky.phase(o.hour or Sky.hour())
     local season = o.season or Season.now()
     local weather = State.weather()
+    local edge = GardenView.edge(scene)
     local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "") .. ":" .. season
     -- the whole garden is one part, so the layout editor can size it against the screen
     scene:group("garden.field", "The whole garden", function()
         -- drawn as wide as the screen, so its lawn reaches the borders
-        scene:placed(function() scene:backdrop("garden_ground", -scene.ox / scene.k, 0, scene.width / scene.k, vh, light) end)
+        scene:placed(function() scene:backdrop("garden_ground", -scene.ox / scene.k, 0, scene.width / scene.k, vh, light .. string.format(":edge%.3f", edge)) end)
         scene:apart(function()
             scene:border(14, 2.5)
             scene:border(21, 1.2)
@@ -122,7 +125,7 @@ function GardenView.compose(scene, o)
                 if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
             end
         end)
-    end, { uniform = true, clip = true, span = GardenView.SPAN })
+    end, { uniform = true, clip = true, span = { x0 = Layout.SKY.x, x1 = Layout.SKY.x + Layout.SKY.w, inset = edge } })
 end
 
 return GardenView
