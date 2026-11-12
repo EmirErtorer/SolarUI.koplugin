@@ -1,7 +1,8 @@
 -- More flowers and leaves of the garden: a maple leaf, the dandelion in
--- bloom, narcissus, crocus, pansy and the lily. Each is drawn upright with
--- its centre (or its stalk, for the leaf) at the origin of its group and
--- returns SVG text, like the plants of art/flora.lua.
+-- bloom, narcissus, crocus, pansy, the lily, a five-petal blossom and a
+-- seedling. Each is drawn upright with its centre (or its stalk, for the
+-- leaf) at the origin of its group and returns SVG text, like the plants of
+-- art/flora.lua.
 
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
@@ -92,6 +93,41 @@ function Blooms.lily(c, cx, cy, R)
     local body = around(0, 0, 0, 6, petal(c, R, R * .34, c.cream, 1.8), 0)
         .. Svg.circle(0, 0, R * .62, c.cream, c.ink, 1.8)
     return group(cx, cy, 0, body)
+end
+
+-- A broad petal with a notch at its tip, growing up from the origin.
+local function notched(c, L, W, fill, sw)
+    return Svg.path(string.format("M0 0 C%s %s %s %s %s %s Q0 %s %s %s C%s %s %s %s 0 0Z",
+        n(-W * .95), n(-L * .28), n(-W * 1.2), n(-L * .96), n(-W * .3), n(-L), n(-L * .84), n(W * .3), n(-L),
+        n(W * 1.2), n(-L * .96), n(W * .95), n(-L * .28)), fill, c.ink, sw)
+end
+
+-- A five-petal blossom (apple, wild rose) of radius `R` in `fill`, with a
+-- golden heart: `back`, when given, is the colour of five more petals that
+-- show between the first; a large one gets a line down each petal and
+-- stamens round its heart.
+function Blooms.blossom(c, cx, cy, R, fill, back, rot)
+    local sw = math.max(.9, math.min(1.7, R * .07))
+    local body = (back and around(0, 0, 0, 5, notched(c, R, R * .46, back, sw), 36) or "")
+        .. around(0, 0, 0, 5, notched(c, back and R * .85 or R, R * .5, fill or c.cream, sw), 0)
+    if R >= 18 then
+        body = body .. around(0, 0, R * .34, 5, Svg.line(string.format("M0 0 L0 %s", n(-R * .34)), c.ink, sw * .6), 0)
+            .. Svg.dots(0, 0, R * .38, 10, R * .09, c.ink)
+    end
+    body = body .. Svg.circle(0, 0, R * .26, c.gold, c.ink, sw)
+    if R >= 18 then body = body .. Svg.dots(0, 0, R * .12, 5, R * .07, c.ink) end
+    return group(cx, cy, rot or 0, body)
+end
+
+-- A seedling standing on (x, y), `s` tall: two leaves on a bent stalk, the
+-- husk of the seed (golden, or in `husk`) still on the taller leaf.
+function Blooms.seedling(c, x, y, s, husk)
+    local pts = Svg.spline({ { x, y }, { x + s * .15, y - s * .45 }, { x - s * .05, y - s } }, 8)
+    local tx, ty = pts[#pts][1], pts[#pts][2]
+    return Svg.line(Svg.poly(pts), c.stem, math.max(1.6, s * .13))
+        .. Flora.leaf(c, tx, ty, -152, s * .76, s * .29, c.sage, true)
+        .. Flora.leaf(c, tx, ty, -44, s * .9, s * .32, c.leaf, true)
+        .. Svg.ellipse(tx + s * .67, ty - s * .66, s * .19, s * .12, -44, husk or c.gold, c.ink, math.max(.9, s * .06))
 end
 
 return Blooms
