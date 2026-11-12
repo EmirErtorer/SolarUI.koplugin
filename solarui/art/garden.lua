@@ -64,18 +64,19 @@ end
 -- the hedge's foot, then blades of grass over it, three to a tuft, all of
 -- similar height and leaning this way and that, and what the season and
 -- the weather leave on it.
-local function lawn(c, vh, top, season, weather)
+local function lawn(c, vh, top, season, weather, x0, x1)
     local fill = Wash.mix(c.sage, c.bg, .5)
     local floor = vh - 30
-    local ground = path(string.format("M34 %s C300 %s 700 %s 1038 %s L1038 %s L34 %s Z", n(top), n(top - 5), n(top + 5), n(top), n(floor), n(floor)), fill)
+    local ground = path(string.format("M%s %s C%s %s %s %s %s %s L%s %s L%s %s Z", n(x0), n(top), n(x0 + (x1 - x0) * .26), n(top - 5), n(x0 + (x1 - x0) * .7),
+        n(top + 5), n(x1), n(top), n(x1), n(floor), n(x0), n(floor)), fill)
     local dark, light = {}, {}
     local function blade(set, x, y, h, lean, w)
         set[#set + 1] = string.format("M%s %s Q%s %s %s %sQ%s %s %s %sZ", n(x - w), n(y), n(x - w + lean * .2), n(y - h * .6), n(x + lean), n(y - h),
             n(x + w + lean * .3), n(y - h * .5), n(x + w), n(y))
     end
     for gy = 0, math.floor((floor - top - 20) / 34) do
-        for gx = 0, 28 do
-            local x, y = 46 + gx * 34 + 22 * Svg.vary(gx, gy), top + 30 + gy * 34 + 18 * Svg.vary(gy, gx + 5)
+        for gx = 0, math.floor((x1 - x0 - 24) / 34) do
+            local x, y = x0 + 12 + gx * 34 + 22 * Svg.vary(gx, gy), top + 30 + gy * 34 + 18 * Svg.vary(gy, gx + 5)
             if y < floor - 4 then
                 for k = -1, 1 do
                     local v = Svg.vary(gx * 7 + k, gy)
@@ -84,8 +85,8 @@ local function lawn(c, vh, top, season, weather)
             end
         end
     end
-    return ground .. GardenWeather.lawn(c, season, 34, 1038, top, floor) .. path(table.concat(dark, " "), c.leaf) .. path(table.concat(light, " "), c.sage)
-        .. (weather == "snow" and GardenWeather.drifts(c, 34, 1038, top, floor) or "")
+    return ground .. GardenWeather.lawn(c, season, x0, x1, top, floor) .. path(table.concat(dark, " "), c.leaf) .. path(table.concat(light, " "), c.sage)
+        .. (weather == "snow" and GardenWeather.drifts(c, x0, x1, top, floor) or "")
 end
 
 -- A nest of fallen leaves `s` large on the ground at (m, base) where an
@@ -140,23 +141,29 @@ function Garden.garden_arch(c, vw, vh)
 end
 
 -- The whole backdrop for a canvas vw x vh.
-function Garden.garden_ground(c, _vw, vh, mode)
+function Garden.garden_ground(c, vw, vh, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)
     local base = ivy.y + ivy.h
-    local sky = GardenSky.draw(c, mode, Layout.SKY.x, Layout.SKY.y, Layout.SKY.x + Layout.SKY.w, base, ivy.x + ivy.w / 2)
+    -- the lawn reaches the borders: things keep their size and stand further apart
+    local fan = Layout.fan(vw)
+    local x0, x1 = Layout.EDGE, vw - Layout.EDGE
+    local function moved(b) return { x = fan.at(b.x + b.w / 2) - b.w / 2, y = b.y, w = b.w, h = b.h } end
+    local arch = fan.at(ivy.x + ivy.w / 2)
+    pond, tab = moved(pond), moved(tab)
+    local sky = GardenSky.draw(c, mode, x0, Layout.SKY.y, x1, base, arch)
     local season, weather = PlantSeason.of(mode), GardenWeather.of(mode)
     c = Wash.apply(GardenWeather.palette(PlantSeason.palette(c, season), weather), mode)
     local snow = weather == "snow"
-    local out = sky .. lawn(c, vh, base, season, weather) .. hedge(c, 34, ivy.x + 46, base, snow) .. hedge(c, ivy.x + ivy.w - 46, 1038, base, snow)
-        .. group(ivy.x + ivy.w / 2, base, 0, Trellis.frame(c))
-    if weather == "mist" then out = out .. GardenWeather.mist(c, 34, 1038, base) end
+    local out = sky .. lawn(c, vh, base, season, weather, x0, x1) .. hedge(c, x0, arch - ivy.w / 2 + 46, base, snow)
+        .. hedge(c, arch + ivy.w / 2 - 46, x1, base, snow) .. group(arch, base, 0, Trellis.frame(c))
+    if weather == "mist" then out = out .. GardenWeather.mist(c, x0, x1, base) end
     out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. (snow and GardenWeather.rim(c, pond) or "")
         .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
     for id, b in pairs(Layout.EXTRAS) do
-        local at, small = Layout.at(b, vh), Props.small(id)
+        local at, small = moved(Layout.at(b, vh)), Props.small(id)
         out = out .. group(at.x, at.y, 0, small.draw(c), at.w / small.w, at.h / small.h)
     end
-    return out .. GardenWeather.fall(c, weather, Layout.SKY.x, Layout.SKY.x + Layout.SKY.w, Layout.SKY.y + 30, vh - 34)
+    return out .. GardenWeather.fall(c, weather, x0, x1, Layout.SKY.y + 30, vh - 34)
 end
 
 return Garden

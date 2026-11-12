@@ -68,10 +68,11 @@ function Garden:hop(id)
     self.at[id] = to
     self.pose[id] = self.pose[id] == "2" and "1" or "2"
     local was, now = Layout.at(Layout.waypoint(id, from), scene.vh), Layout.at(Layout.waypoint(id, to), scene.vh)
-    -- the garden may be stretched against the screen (layout editor)
+    -- the garden is spread to the borders and may be stretched by a tweak (layout editor)
     local tweak = SceneEdit.lookup("garden", "garden.field")
     local k = tweak and tweak.sx or 1
-    App.repaintMoved(el, scene:px((now.x - was.x) * k), scene:px((now.y - was.y) * k), "fast")
+    local fx = (scene.spread_by or 1) * k
+    App.repaintMoved(el, scene:px((now.x - was.x) * fx), scene:px((now.y - was.y) * k), "fast")
 end
 
 -- Make a small movement: flip an animal between its two poses and repaint

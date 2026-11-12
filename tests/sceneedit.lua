@@ -87,4 +87,25 @@ package.loaded["solarui/data/layout_overrides"] = { home = { ["home.snail"] = { 
 local hidden = homeScene(W, H)
 Kit.ok(#hidden.children == #home.children - 1, "a hidden part is not on home")
 
+-- The garden's lawn reaches the borders on screens of any shape, and what stands on it stays inside
+package.loaded["solarui/data/layout_overrides"] = {}
+local Garden = require("solarui/screens/garden")
+for _i, size in ipairs({ { 600, 800 }, { 1200, 1600 }, { 758, 1024 }, { 1236, 1648 }, { 1448, 1072 } }) do
+    local root = Garden:new({}):build({ w = size[1], h = size[2] })
+    local scene = root.children[1]
+    scene:layout(size[1], root.h or size[2])
+    local field
+    for _j, g in ipairs(scene.groups) do if g.id == "garden.field" then field = g end end
+    local ground = field.members[1].item
+    local edge = scene:px(21.6)
+    local label = string.format("%dx%d", size[1], size[2])
+    Kit.ok(math.abs(ground[2] - 0) <= 1 and math.abs(ground[4] - scene.width) <= 2, "the garden's ground is as wide as the screen at " .. label)
+    local inside = true
+    for _j, m in ipairs(field.members) do
+        local x, _y, w = scene:pixelBox(m)
+        if m.fixed == true and (x < edge - 2 or x + w > scene.width - edge + 2) then inside = false end
+    end
+    Kit.ok(inside, "plants and animals stand between the borders at " .. label)
+end
+
 Kit.finish("sceneedit")

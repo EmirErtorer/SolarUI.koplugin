@@ -38,7 +38,7 @@ end
 function Scene:backdrop(name, vx, vy, vw, vh, param)
     local it = { name, 0, 0, 0, 0, vw, vh, param }
     self.items[#self.items + 1] = it
-    local m = { item = it, unit = { vx, vy, vw, vh } }
+    local m = { item = it, unit = { vx, vy, vw, vh }, art = { vw, vh }, fixed = self.fixed }
     self:refit(m, vx, vy, vw, vh)
     if self.cur then self.cur.members[#self.cur.members + 1] = m end
 end
@@ -48,7 +48,7 @@ function Scene:refit(m, vx, vy, vw, vh)
     if m.item then
         local it = m.item
         -- the drawing keeps the space it was made for; only its box on the screen changes
-        it[2], it[3], it[4], it[5], it[6], it[7] = self.ox + self:px(vx), self:px(vy), self:px(vw), self:px(vh), m.unit[3], m.unit[4]
+        it[2], it[3], it[4], it[5], it[6], it[7] = self.ox + self:px(vx), self:px(vy), self:px(vw), self:px(vh), m.art[1], m.art[2]
         it.key = table.concat({ it[1], vx, vy, vw, vh, tostring(it[8]) }, ",")
     else
         local el = m.el
@@ -67,14 +67,52 @@ end
 -- Run `add`, which adds parts to the scene, as one named part of the page
 -- (`id` like "home.cover") that the layout editor can move and stretch; its
 -- saved tweak is applied, or it is left out when hidden.
+-- Add parts that a spread leaves where they were put (they are drawn for it already).
+function Scene:placed(add)
+    local was = self.fixed
+    self.fixed = "placed"
+    add()
+    self.fixed = was
+end
+
+-- A part that keeps its size when its group is spread wider (see `span`).
+function Scene:keepSize(add)
+    local was = self.fixed
+    self.fixed = true
+    add()
+    self.fixed = was
+end
+
+-- Spread a group sideways so the stretch of the poster from x0 to x1 fills
+-- the screen between the borders, `inset` units in from each edge: parts
+-- that keep their size stand further apart, the rest are stretched. Sets
+-- scene.spread_by to the factor.
+function Scene:spread(g, span)
+    local left, right = -self.ox / self.k, (self.width - self.ox) / self.k
+    local from = left + span.inset
+    local f = ((right - span.inset) - from) / (span.x1 - span.x0)
+    self.spread_by = f
+    local function at(x) return from + (x - span.x0) * f end
+    for _i, m in ipairs(g.members) do
+        local u = m.unit
+        if m.fixed == "placed" then goto next end
+        if m.fixed then m.unit = { at(u[1] + u[3] / 2) - u[3] / 2, u[2], u[3], u[4] }
+        else m.unit = { at(u[1]), u[2], u[3] * f, u[4] } end
+        self:refit(m, m.unit[1], m.unit[2], m.unit[3], m.unit[4])
+        ::next::
+    end
+end
+
 -- Options: `uniform` keeps the part's shape when stretched; `clip` leaves out
--- the elements a tweak pushes past the top or bottom of the scene.
+-- the elements a tweak pushes past the top or bottom of the scene; `span`
+-- ({ x0, x1, inset }, see Scene:spread) fills the screen's width.
 function Scene:group(id, label, add, opts)
     opts = opts or {}
     local g = { id = id, label = label, members = {}, uniform = opts.uniform }
     self.cur = g
     add()
     self.cur = nil
+    if opts.span then self:spread(g, opts.span) end
     local o = SceneEdit.lookup(self.screen or self.slot, id)
     if o and o.hidden then
         local gone = {}
@@ -136,7 +174,7 @@ end
 
 -- Place an element at a box in units (a nil height lets it take its own).
 function Scene:place(el, vx, vy, vw, vh)
-    local m = { el = el, unit = { vx, vy, vw, vh } }
+    local m = { el = el, unit = { vx, vy, vw, vh }, fixed = self.fixed }
     self:refit(m, vx, vy, vw, vh)
     self.children[#self.children + 1] = el
     if self.cur then self.cur.members[#self.cur.members + 1] = m end

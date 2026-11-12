@@ -20,6 +20,17 @@ local function box(x, y, w, h) return { x = x, y = y, w = w, h = h } end
 Layout.SKY = box(34, 112, 1004, 344)
 Layout.LAWN_TOP = 456
 
+-- How far in from the screen's edge the lawn reaches: up to the ruled border.
+Layout.EDGE = 21.6
+
+-- On a canvas `vw` units wide the lawn and sky reach from EDGE to `vw` - EDGE
+-- instead of from 34 to 1038: { f = how much further apart things stand,
+-- at(x) = where the poster's x goes }.
+function Layout.fan(vw)
+    local f = (vw - 2 * Layout.EDGE) / Layout.SKY.w
+    return { f = f, at = function(x) return Layout.EDGE + (x - Layout.SKY.x) * f end }
+end
+
 -- Plants by id: three trees and the trellis along the back, standing on the
 -- lawn's edge, the rest scattered, tall and low mixed.
 Layout.PLANTS = {

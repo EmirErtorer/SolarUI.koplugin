@@ -13,6 +13,10 @@ local State = require("solarui/garden/state")
 
 local GardenView = {}
 
+-- The stretch of the poster the lawn and sky cover (34 to 1038), which is
+-- spread to reach the screen's ruled border (21 units in, a line wide).
+GardenView.SPAN = { x0 = Layout.SKY.x, x1 = Layout.SKY.x + Layout.SKY.w, inset = Layout.EDGE }
+
 -- The param of a plant's drawing: its stage, wilting, turning, fading and
 -- the light of the sky phase and the season.
 function GardenView.plantParam(entry, faded, phase, season, year)
@@ -59,7 +63,8 @@ function GardenView.compose(scene, o)
     local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "") .. ":" .. season
     -- the whole garden is one part, so the layout editor can size it against the screen
     scene:group("garden.field", "The whole garden", function()
-        scene:backdrop("garden_ground", 0, 0, Layout.WIDTH, vh, light)
+        -- drawn as wide as the screen, so its lawn reaches the borders
+        scene:placed(function() scene:backdrop("garden_ground", -scene.ox / scene.k, 0, scene.width / scene.k, vh, light) end)
         scene:apart(function()
             scene:border(14, 2.5)
             scene:border(21, 1.2)
@@ -67,51 +72,57 @@ function GardenView.compose(scene, o)
         end)
         local progress = State.progress()
         local vine = progress.vine
-        if vine.days > 0 and not o.faded then scene:backdrop("garden_vine", 0, 0, Layout.WIDTH, vh, vine.leaves .. ":" .. vine.flowers) end
-        for _i, def in ipairs(Cast.PLANTS) do
-            if def.find and not State.get().plants[def.id] then
-                local b = Layout.place(def.id, vh)
-                scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1" .. (o.faded and ":wash" or "") .. ":" .. phase)
+        if vine.days > 0 and not o.faded then
+            scene:keepSize(function() scene:backdrop("garden_vine", 0, 0, Layout.WIDTH, vh, vine.leaves .. ":" .. vine.flowers) end)
+        end
+        scene:keepSize(function()
+            for _i, def in ipairs(Cast.PLANTS) do
+                if def.find and not State.get().plants[def.id] then
+                    local b = Layout.place(def.id, vh)
+                    scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1" .. (o.faded and ":wash" or "") .. ":" .. phase)
+                end
             end
-        end
-        for _i, e in ipairs(State.plants()) do
-            local b = Layout.place(e.def.id, vh)
-            scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season, progress.year))
-            if o.on_tap then scene:touch(b.x, b.y, b.w, b.h, function() o.on_tap(e.def.id, "plant") end) end
-        end
+            for _i, e in ipairs(State.plants()) do
+                local b = Layout.place(e.def.id, vh)
+                scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season, progress.year))
+                if o.on_tap then scene:touch(b.x, b.y, b.w, b.h, function() o.on_tap(e.def.id, "plant") end) end
+            end
+        end)
         if o.on_book then
             local b = Layout.bookHit(vh)
             scene:touch(b.x, b.y, b.w, b.h, o.on_book)
         end
-        local spread = Layout.spread(o.seed)
-        local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
-        if peek then
-            local b = Layout.at(peek, vh)
-            scene:backdrop("garden_peek", b.x, b.y, b.w, b.h, light)
-            scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
-        end
-        for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
-            local id = a.def.id
-            local base = spread[id]
-            if o.at and o.at[id] then
-                base = Layout.waypoint(id, o.at[id])
-                base.flip = spread[id].flip
+        scene:keepSize(function()
+            local spread = Layout.spread(o.seed)
+            local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
+            if peek then
+                local b = Layout.at(peek, vh)
+                scene:backdrop("garden_peek", b.x, b.y, b.w, b.h, light)
+                scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
             end
-            local b = Layout.at(base, vh)
-            if a.here then
-                local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, o.faded, phase) end
-                if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
-                else
-                    local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
-                    if o.sprites then o.sprites[id] = el end
+            for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
+                local id = a.def.id
+                local base = spread[id]
+                if o.at and o.at[id] then
+                    base = Layout.waypoint(id, o.at[id])
+                    base.flip = spread[id].flip
                 end
-            elseif a.mood == "hiding" or a.resting then
-                scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))
+                local b = Layout.at(base, vh)
+                if a.here then
+                    local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, o.faded, phase) end
+                    if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
+                    else
+                        local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
+                        if o.sprites then o.sprites[id] = el end
+                    end
+                elseif a.mood == "hiding" or a.resting then
+                    scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))
+                end
+                local hit = b.hit or b
+                if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
             end
-            local hit = b.hit or b
-            if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
-        end
-    end, { uniform = true, clip = true })
+        end)
+    end, { uniform = true, clip = true, span = GardenView.SPAN })
 end
 
 return GardenView
