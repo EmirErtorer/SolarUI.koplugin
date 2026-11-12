@@ -23,11 +23,13 @@ end
 local Bar = Element:extend({})
 
 -- One bar as a flower drawn by art/bars.lua: a stalk from the baseline up to
--- its head, as tall as the bar is high (in steps of five percent), with a
+-- its head, as tall as the bar is high (in steps of a percent, five when tall), with a
 -- sprout when nothing was read; the chosen one is in fuller bloom.
 function Bar:draw(bb, x, y)
     local k = Theme.px(100) / 178
-    local steps = self.frac > 0 and math.max(5, math.floor(self.frac * 20 + .5) * 5) or 0
+    -- the height in percent: to the unit while small (so a little reads as little), in fives when tall
+    local pct = self.frac * 100
+    local steps = self.frac <= 0 and 0 or pct < 20 and math.max(1, math.floor(pct + .5)) or math.floor(pct / 5 + .5) * 5
     Art.draw(bb, "bar_flower", x, y, self.w, self.h, math.floor(self.w / k + .5), math.floor(self.h / k + .5), steps .. ":" .. (self.selected and 1 or 0))
 end
 

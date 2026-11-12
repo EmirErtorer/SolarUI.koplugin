@@ -22,7 +22,7 @@ end
 -- lower than the youngest flower; the chosen one is larger, its husk in
 -- the colour of the chosen flower.
 local function sprout(c, vw, vh, chosen)
-    local s = math.min(vw * .36, math.max(vh * .08, math.min(vh * .14, 14)))
+    local s = math.min(vw * .3, vh * .05)
     return Blooms.seedling(c, vw / 2, vh, chosen and s * 1.3 or s, chosen and c.bloom or nil)
 end
 
@@ -40,24 +40,28 @@ local function leaves(c, pts, count, reach)
     return table.concat(out)
 end
 
--- A day's reading as a flower whose head tops out at `pct` percent of the
--- canvas: a young one stays small on a short stalk between two leaves, a
--- tall one carries more leaves; the chosen one is larger, deeper in colour
--- and has a second ring of petals.
+-- A day's reading as a flower as tall as its bar: a bar too short for a full
+-- flower holds the same flower grown smaller, so a little reading looks like
+-- a little and a lot like a lot; a tall one carries more leaves. The chosen
+-- one is larger, deeper in colour and has a second ring of petals.
 local function flower(c, vw, vh, pct, chosen)
     local m = vw / 2
     local full = math.min(vw * .42, math.max(vh * .12, math.min(vh * .2, 16)))
-    local grown = math.min(1, pct / 30)
-    local R = full * (chosen and 1 or .84) * (.66 + .34 * grown)
-    -- the head's top: at the bar's height, but never so low that head and leaves do not fit
-    local top = vh - math.max(vh * .97 * pct / 100, 2 * R + full)
+    local R_full = full * (chosen and 1 or .84)
+    local smallest = 2 * R_full + full          -- the height of the smallest full-size flower
+    -- (a day read is never lower than a small flower, so it stands above a day not read)
+    local height = math.max(vh * .97 * pct / 100, vh * .09)
+    -- below that height the whole flower shrinks with the bar (never to nothing)
+    local scale = math.min(1, height / smallest)
+    local R, size = R_full * scale, full * scale
+    local top = vh - math.max(height, 2 * R + size)
     local cy = top + R
     local stalk = vh - cy
     local sway = math.min(vw * .07, stalk * .07)
     local pts = stemWay(m, vh, cy, sway)
-    local reach = math.min(vw * .42 - sway, full * 1.25, stalk * .9)
-    local count = math.max(2, math.min(5, math.floor(stalk / (full * 1.5))))
-    return Svg.line(Svg.poly(pts), c.stem, math.max(1.8, full * .1))
+    local reach = math.min(vw * .42 - sway, size * 1.25, stalk * .9)
+    local count = math.max(2, math.min(5, math.floor(stalk / (size * 1.5))))
+    return Svg.line(Svg.poly(pts), c.stem, math.max(1.4, size * .1))
         .. leaves(c, pts, count, reach)
         .. Blooms.blossom(c, m, cy, R, chosen and c.bloom or c.bloom2, chosen and c.gold or nil, chosen and 0 or (pct * 7) % 72 - 36)
 end

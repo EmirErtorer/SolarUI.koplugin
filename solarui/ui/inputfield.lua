@@ -1,5 +1,5 @@
--- A text field in the style: an outlined box with a prompt, the text wrapped
--- over as many lines as it is given, and a block cursor. It owns no text: the
+-- A text field in the style: a softly rounded outlined box, the text wrapped
+-- over as many lines as it is given, and a thin cursor. It owns no text: the
 -- owner says what the text is and where the cursor is (`get`), and what a tap
 -- on a spot of the text means (`on_caret`). With `active` (a function) the
 -- field is drawn lit while it is the one being typed into. Used for typing on SolarUI's own
@@ -10,7 +10,7 @@ local Paint = require("solarui/gfx/paint")
 local Text = require("solarui/gfx/text")
 local Theme = require("solarui/theme")
 
-local InputField = Element:extend({ kind = "mono", lines = 1, prompt = "> " })
+local InputField = Element:extend({ kind = "mono", lines = 1 })
 
 
 -- The inner padding of the box.
@@ -91,8 +91,8 @@ function InputField:layout(w, h)
     self.h = self.height or h or self:naturalHeight()
     self.visible = math.max(1, math.floor((self.h - 2 * padding()) / lh))
     self.state = self.state or {}
-    self.text_x = padding() + (self.prompt and Text.width(self.kind, self.prompt) or 0)
-    self.avail = math.max(1, self.w - self.text_x - padding() - Theme.px(9))
+    self.text_x = padding() + Theme.px(4)
+    self.avail = math.max(1, self.w - self.text_x - padding() - Theme.px(4))
     self:refresh()
     if self.on_caret then self.on_tap = function() self:place() end end
 end
@@ -111,17 +111,20 @@ function InputField:draw(bb, x, y)
     self:refresh()
     local th = Theme.get()
     local lh = Text.height(self.kind)
-    Paint.fill(bb, x, y, self.w, self.h, th.c.bg)
+    local radius = math.min(math.floor(self.h / 2), Theme.px(20))
     local lit = self.active and self.active()   -- the field the keyboard types into, among several
-    Paint.frame(bb, x, y, self.w, self.h, th.size.stroke * (lit and 2 or 1), self.readonly and th.c.muted or (lit and th.c.accent or th.c.ink))
+    Paint.round(bb, x, y, self.w, self.h, radius, "trbl", th.c.cream)
+    Paint.roundFrame(bb, x, y, self.w, self.h, radius, "trbl", th.size.stroke * (lit and 2 or 1),
+        self.readonly and th.c.muted or (lit and th.c.accent or th.c.ink))
     local tx, ty = x + self.text_x, y + padding()
-    if self.prompt then Text.draw(bb, x + padding(), ty, self.kind, self.prompt, th.c.muted) end
-    local cursor_w = Theme.px(9)
+    local cursor_w = math.max(2, th.size.stroke)
+    -- a thin bar in the accent colour, a little shorter than the line
+    local function cursor(cx, cy) Paint.fill(bb, cx, cy + math.floor(lh * .08), cursor_w, math.floor(lh * .84), th.c.accent) end
     if #self.chars == 0 then
         if self.hint and self.hint ~= "" then
-            Text.draw(bb, tx + cursor_w + Theme.px(4), ty, self.kind, Text.fit(self.kind, self.hint, self.avail - cursor_w), th.c.muted)
+            Text.draw(bb, tx + cursor_w + Theme.px(5), ty, self.kind, Text.fit(self.kind, self.hint, self.avail - cursor_w), th.c.muted)
         end
-        if not self.readonly then Paint.fill(bb, tx, ty, cursor_w, lh, th.c.ink) end
+        if not self.readonly then cursor(tx, ty) end
         return
     end
     for r = 0, self.visible - 1 do
@@ -131,10 +134,7 @@ function InputField:draw(bb, x, y)
         Text.draw(bb, tx, ly, self.kind, lineText(self.chars, line), th.c.ink)
         if self.caret and not self.readonly and self.state.top + r == self.caret_row then
             local before = lineText(self.chars, { first = line.first, last = math.min(self.caret - 1, line.last) })
-            local cx = tx + Text.width(self.kind, before)
-            Paint.fill(bb, cx, ly, cursor_w, lh, th.c.ink)
-            local under = self.chars[self.caret]
-            if under and under ~= "\n" then Text.draw(bb, cx, ly, self.kind, under, th.c.bg) end
+            cursor(tx + Text.width(self.kind, before), ly)
         end
     end
 end
