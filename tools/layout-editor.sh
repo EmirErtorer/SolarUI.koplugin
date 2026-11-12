@@ -4,7 +4,7 @@
 # hidden, and the result copied back as placement tweaks.
 #   tools/layout-editor.sh [screen ...]      render the screens (default home garden), then serve
 #   tools/layout-editor.sh --serve           serve what was rendered before
-# KO_DIR points at the KOReader checkout (default ~/koreader-emulator).
+# ONLY=<size name> renders just that size. KO_DIR points at the KOReader checkout (default ~/koreader-emulator).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 site="$here/dist/layout-editor"
@@ -16,7 +16,7 @@ PROFILES=(
     "kindle-basic 300 400 167 600x800, 167 dpi"
     "paperwhite 379 512 212 758x1024, 212 dpi"
     "paperwhite-3 536 724 300 1072x1448, 300 dpi"
-    "libra 632 840 300 1264x1680, 300 dpi"
+    "paperwhite-5 618 824 300 1236x1648, 300 dpi"
     "landscape 724 536 300 1448x1072 on its side, 300 dpi"
 )
 
@@ -26,6 +26,7 @@ render() {
     mkdir -p "$site"
     for line in "${PROFILES[@]}"; do
         read -r name w h dpi label <<<"$line"
+        [ -z "${ONLY:-}" ] || [ "$name" = "$ONLY" ] || continue
         echo "== $screen at $name ($label)"
         SOLARUI_EXPORT_SCREEN="$screen" "$here/tests/e2e/run.sh" "$here/tests/e2e/layoutexport.lua" "$site/$screen/$name" "$w" "$h" "$dpi" | tail -2
         rm -rf "$site/$screen/$name/home" "$site/$screen/$name/emulator.log"
