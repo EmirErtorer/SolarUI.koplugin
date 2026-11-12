@@ -10,6 +10,7 @@ local Alpha = require("solarui/gfx/alpha")
 local Blitbuffer = require("ffi/blitbuffer")
 local DataStorage = require("datastorage")
 local RenderImage = require("ui/renderimage")
+local Natural = require("solarui/art/natural")
 local Svg = require("solarui/art/svg")
 local Theme = require("solarui/theme")
 local lfs = require("libs/libkoreader-lfs")
@@ -29,7 +30,8 @@ local sprites = {}   -- key -> buffer (false when the drawing failed)
 local order = {}     -- keys, oldest first
 local layers = {}    -- slot -> { sig, w, h, type, bb }
 local version        -- the theme version everything kept was drawn for
-local colours        -- the roles as "#rrggbb" for that version
+local colours        -- the roles as "#rrggbb" for that version, and the same with living things' real colours
+local natural_colours
 local svg_file
 
 -- Forget everything when the look changed since it was drawn.
@@ -42,12 +44,15 @@ local function sync()
 end
 
 -- The theme's colours as the drawings want them.
-local function palette()
+local function palette(natural)
     if not colours then
-        colours = {}
-        for _i, role in ipairs(ROLES) do colours[role] = Theme.hex(role) end
+        colours, natural_colours = {}, {}
+        for _i, role in ipairs(ROLES) do
+            colours[role] = Theme.hex(role)
+            natural_colours[role] = Theme.hex(role, true)
+        end
     end
-    return colours
+    return natural and natural_colours or colours
 end
 
 -- The file a drawing is written to on its way to the renderer.
@@ -81,7 +86,7 @@ local function render(name, w, h, vw, vh, param)
     local f = io.open(scratch(), "w")
     if not f then return nil end
     f:write(Svg.document(W, H, string.format('<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g>', ox, oy, zoom,
-        draw(palette(), vw, vh, param))))
+        draw(palette(Natural.is(name)), vw, vh, param))))
     f:close()
     local bb = RenderImage:renderSVGImageFile(scratch(), W, H, 1)
     if not bb then return nil end
@@ -185,7 +190,7 @@ function Art.free()
         if s then s.bb:free() end
     end
     for _k, l in pairs(layers) do l.bb:free() end
-    sprites, order, layers, colours = {}, {}, {}, nil
+    sprites, order, layers, colours, natural_colours = {}, {}, {}, nil, nil
 end
 
 return Art

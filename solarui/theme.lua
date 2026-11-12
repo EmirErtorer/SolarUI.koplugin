@@ -50,6 +50,9 @@ function Theme.px(n)
     return Screen:scaleBySize(n)
 end
 
+-- The colour roles of living things, which keep their real colours.
+Theme.NATURAL_ROLES = { "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
+
 -- Work out every role, size and face for the current settings.
 local function resolve()
     local style = Registry.style(Settings.get("style", Registry.STYLES[1]))
@@ -82,6 +85,15 @@ local function resolve()
         c[role] = Color.toScreen(p, colour)
     end
 
+    -- the plants' and animals' own colours: the same whatever the scheme, painted the way the screen needs
+    local natural = {}
+    local garden_light = Registry.scheme(Registry.SCHEMES[1]).light
+    for _i, role in ipairs(Theme.NATURAL_ROLES) do
+        local rgb = Color.parse(garden_light[role])
+        if not colour then local g = Color.grey(rgb); rgb = { g, g, g } end
+        natural[role] = night and { 255 - rgb[1], 255 - rgb[2], 255 - rgb[3] } or rgb
+    end
+
     local size = {}
     for k, v in pairs(style.size) do size[k] = Screen:scaleBySize(v) end
     local space = {}
@@ -95,6 +107,7 @@ local function resolve()
         c = c,
         rgb = seen,
         painted = painted,
+        natural = natural,
         size = size,
         space = space,
         decor = style.decor,
@@ -116,10 +129,11 @@ function Theme.color(role)
     return t.c[role] or t.c.ink
 end
 
--- A role's colour as "#rrggbb", as it must be painted (for drawing artwork).
-function Theme.hex(role)
+-- A role's colour as "#rrggbb", as it must be painted (for drawing artwork);
+-- with `natural`, a living thing's real colour in place of the scheme's.
+function Theme.hex(role, natural)
     local t = Theme.get()
-    return Color.hex(t.painted[role] or t.painted.ink)
+    return Color.hex((natural and t.natural[role]) or t.painted[role] or t.painted.ink)
 end
 
 -- A font set's file as Font:getFace wants it: KOReader's own faces by name,

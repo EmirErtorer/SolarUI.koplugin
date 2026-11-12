@@ -14,7 +14,7 @@ local time = require("ui/time")
 
 -- name, virtual width, virtual height, param
 local SHEET = {
-    { "vine_left", 150, 900 }, { "vine_right", 80, 420 }, { "halo", 480, 480 }, { "rose_cluster", 200, 300 }, { "sprig", 130, 150 },
+    { "dock_lily", 150, 130 }, { "vine_left", 150, 900 }, { "vine_knot", 48, 26 }, { "vine_right", 80, 420 }, { "halo", 480, 480 }, { "rose_cluster", 200, 300 }, { "sprig", 130, 150 },
     { "clock_frame", 320, 130 }, { "clock_wing", 200, 84, "l" }, { "clock_wing", 330, 84, "r" }, { "bee", 130, 70 }, { "frame_corner", 90, 90, 0 }, { "frame_corner", 90, 90, 1 }, { "frame_bud", 60, 30 }, { "dayphase", 64, 44, 0 }, { "dayphase", 64, 44, 1 }, { "dayphase", 64, 44, 2 }, { "dayphase", 64, 44, 3 }, { "butterfly", 64, 56 }, { "snail", 56, 38 }, { "peacock_fan", 600, 600 }, { "vine_left", 150, 800, 3 }, { "card_curl", 30, 30, 0 }, { "card_curl", 30, 30, 2 }, { "scene_fox", 220, 140 }, { "scene_branch", 220, 140 }, { "scene_shelf", 220, 140 }, { "scene_book", 220, 140 }, { "scene_leaves", 220, 140 }, { "plaque", 350, 84 }, { "whiplash", 500, 24 },
     { "progress", 400, 70, 0 }, { "progress", 400, 70, 7 }, { "progress", 400, 70, 42 }, { "progress", 400, 70, 78 }, { "progress", 400, 70, 100 },
     { "btn_details", 120, 120 }, { "btn_bookmarks", 120, 120 }, { "btn_highlights", 120, 120 },
@@ -35,7 +35,7 @@ local SHEET = {
 }
 
 local W = math.floor(1100 * K)
-local bb = Kit.canvas(W, math.floor(3400 * K))
+local bb = Kit.canvas(W, math.floor(4800 * K))
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 30, 30, 0
 local total = 0

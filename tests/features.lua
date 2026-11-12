@@ -521,4 +521,22 @@ do
     os.execute("rm -rf '" .. root .. "'")
 end
 
+-- plants and animals keep their real colours whatever scheme is chosen; the page's colours follow it
+do
+    local Natural = require("solarui/art/natural")
+    local Settings = require("solarui/settings")
+    Settings.set("scheme", "garden")
+    Theme.refresh()
+    local leaf, bloom, accent = Theme.hex("leaf", true), Theme.hex("bloom", true), Theme.hex("accent")
+    Settings.set("scheme", "rosewood")
+    Theme.refresh()
+    Kit.ok(Theme.hex("leaf", true) == leaf and Theme.hex("bloom", true) == bloom, "a plant's colours do not follow the scheme")
+    Kit.ok(Theme.hex("accent") ~= accent, "while the page's colours do")
+    Kit.ok(Natural.is("plant_rose") and Natural.is("animal_fox") and Natural.is("dock_inkaway") and Natural.is("rose_cluster"),
+        "plants and animals are living things")
+    Kit.ok(not Natural.is("halo") and not Natural.is("plaque") and not Natural.is("dock_medallion"), "the page's ornaments are not")
+    Settings.set("scheme", "garden")
+    Theme.refresh()
+end
+
 Kit.finish("features")
