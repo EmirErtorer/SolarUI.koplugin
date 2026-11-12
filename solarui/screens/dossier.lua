@@ -123,8 +123,9 @@ function Dossier:build()
     local body = ScrollText:new({ grow = true, text = text, color = info.description and "ink" or "muted", state = self.synopsis_page, on_turn = function() App.update() end })
     local synopsis = Layout.Column:new({ grow = true, gap = th.space.s, children = {
         Section.title(_("Synopsis")),
-        initial and Layout.Row:new({ grow = true, gap = th.space.xs, valign = "top", children = {
-            Label:new({ text = initial:upper(), kind = "hero", color = "accent" }), body } }) or body,
+        initial and Layout.Row:new({ grow = true, gap = th.space.xs, valign = "stretch", children = {
+            -- (in a column of its own, so the stretched row leaves the initial at the top)
+            Layout.Column:new({ children = { Label:new({ text = initial:upper(), kind = "hero", color = "accent" }) } }), body } }) or body,
     } })
     self.synopsis = body
 
