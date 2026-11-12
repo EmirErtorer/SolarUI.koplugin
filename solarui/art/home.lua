@@ -54,27 +54,51 @@ local function dress(c, pts, from, to, step, reach)
     return table.concat(out)
 end
 
--- The climbing rose up the left edge: it rises from the bottom of the canvas,
--- sways unevenly, thickens at its joints and curls over into a crozier at
--- the top.
-function Home.vine_left(c, vw, vh, season)
-    c = Season.palette(c, tonumber(season) or 2)
+-- The path of the climbing rose's stem up a vw x vh canvas. `anchor` ({ x, y },
+-- or nil) is a place it must pass through: where the rose cluster's shoots
+-- grow out of it.
+local function leftStem(vw, vh, anchor)
     local way = { { vw * .36, vh } }
     local y, side, i = vh - 150, 1, 0
     while y > 150 do
-        way[#way + 1] = { vw * ((side > 0 and .45 or .31) + (vary(i, 4) - .5) * .06), y }
+        -- bends close to the anchor are left out so the stem runs straight through it
+        if not (anchor and math.abs(y - anchor[2]) < 110) then
+            way[#way + 1] = { vw * ((side > 0 and .45 or .31) + (vary(i, 4) - .5) * .06), y }
+        elseif anchor and not anchor.used then
+            way[#way + 1] = { anchor[1], anchor[2] }
+            anchor.used = true
+        end
         y, side, i = y - 150 - 50 * vary(i, 5), -side, i + 1
     end
     way[#way + 1] = { vw * .32, 96 }
     way[#way + 1] = { vw * .34, 60 }
+    return Svg.spline(way, 12)
+end
+
+-- The climbing rose up the left edge: it rises from the bottom of the canvas,
+-- sways unevenly, thickens at its joints and curls over into a crozier at
+-- the top.
+function Home.vine_left(c, vw, vh, param)
+    -- param: the season, then where the rose cluster grows from it ("season:x:y")
+    local season, ax, ay = tostring(param or "2"):match("^(%d+):([%d%.]+):([%d%.]+)$")
+    c = Season.palette(c, tonumber(season or param) or 2)
     local r = vw * .22
-    local stem = Svg.spline(way, 12)
+    local stem = leftStem(vw, vh, ax and { tonumber(ax), tonumber(ay) } or nil)
     local top = stem[#stem]
     local pts = Svg.join(stem, Svg.spiral(top[1] + r, top[2], r, 1.7, -90))
     local len = Svg.length(stem)
     local function width(t) return (11 - 6.5 * t) * (1 + .09 * sin(t * 46)) end
     return dress(c, stem, 70, len - 60, 56, vw * .52)
         .. Svg.stem(pts, width, c.stem, c.ink, 1.7)
+end
+
+-- A knot on the climbing rose where the rose cluster's shoots leave it: a
+-- swelling of the stem with a leaf on each side, over the ends of the shoots.
+function Home.vine_knot(c, vw, vh)
+    local x, y = vw / 2, vh * .56
+    return Flora.leaf(c, x, y, 205, vw * .42, vh * .2, c.sage, true) .. Flora.leaf(c, x, y, -25, vw * .42, vh * .2, nil, true)
+        .. Svg.ellipse(x, y, vw * .3, vh * .22, 0, c.stem, c.ink, 1.7)
+        .. Svg.line(string.format("M%s %s q%s %s %s 0", n(x - vw * .2), n(y), n(vw * .2), n(-vh * .08), n(vw * .4)), c.ink, 1.1)
 end
 
 -- The shorter vine up the right edge, leaning left, ending in a bud: ivy

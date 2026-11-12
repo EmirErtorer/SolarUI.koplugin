@@ -38,6 +38,7 @@ local SHELF_COVER = { s = { 72, 108 }, m = { 88, 132 }, l = { 104, 156 }, xl = {
 local LEFT, RIGHT = 104, 1006   -- the columns' outer edges
 -- The flowers that carry a button's own icon in their heart.
 local ICON_FLOWERS = { dock_medallion = true }
+local CLUSTER_X, CLUSTER_Y = 28, 318   -- the rose cluster's corner, from the hero's top (its shoots start 12 units in)
 local HEAD = 158              -- where headings start, clear of the climbing rose (the scene's own default)
 
 -- Shown again after a book: the book just read is back in front.
@@ -111,7 +112,7 @@ function Home:hero(scene, y, cur)
     scene:group("home.halo", "Halo", function() scene:backdrop("halo", 85, y, 470, 470) end)
     local x0, w = 612, RIGHT - 612
     if not cur then
-        scene:sprite("rose_cluster", 6, y + 330, 200, 300)
+        scene:sprite("rose_cluster", CLUSTER_X, y + CLUSTER_Y + 12, 200, 300)
         scene:group("home.empty_text", "Nothing open yet", function()
             scene:place(Layout.Column:new({ gap = scene:px(14), children = {
                 Label:new({ text = _("Nothing open yet"), kind = "hero", lines = 2 }),
@@ -134,7 +135,7 @@ function Home:hero(scene, y, cur)
         scene:place(Cover:new({ path = path, on_tap = function() Actions.details(path) end, on_hold = function() Actions.details(path) end }),
             172, y + 118, 296, 444)
     end)
-    scene:sprite("rose_cluster", 6, y + 318, 200, 300)
+    scene:sprite("rose_cluster", CLUSTER_X, y + CLUSTER_Y, 200, 300)
     scene:group("home.continue_button", "Continue reading button", function()
         scene:sprite("plaque", 145, y + 538, 350, 84)
         scene:place(Label:new({ text = st.percent > 0 and _("Continue reading") or _("Start reading"), kind = "heading", color = "on_accent",
@@ -254,11 +255,18 @@ function Home:build(ctx)
     local dock_y = math.max(y, scene.vh - FOOT - DOCK_H)
 
     local season = Settings.get("home_season", true) and Season.current() or 2
-    scene:group("home.vine_left", "Climbing vine, left", function() scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34, season) end)
+    -- the vine runs through the foot of the rose cluster, so the cluster grows out of it
+    local foot_y = hero_y + (cur and CLUSTER_Y or CLUSTER_Y + 12) + 300
+    scene:group("home.vine_left", "Climbing vine, left", function()
+        scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34, string.format("%d:%.1f:%.1f", season, CLUSTER_X + 12 - 4, foot_y - 34))
+    end)
     scene:group("home.vine_right", "Climbing vine, right", function() scene:backdrop("vine_right", 990, dock_y - 270, 78, 400, season) end)
     self:ornaments(scene)
     self:status(scene)
     self:hero(scene, hero_y, cur)
+    scene:group("home.vine_knot", "Knot where the roses leave the vine", function()
+        scene:sprite("vine_knot", CLUSTER_X + 12 - 24, foot_y - 14, 48, 26)
+    end)
     if stats then Strip.place(scene, stats_y, Strip.data(), function() App.go("history") end) end
     if shelf then self:shelf(scene, shelf_y, cur) end
     self:dock(scene, dock_y)
