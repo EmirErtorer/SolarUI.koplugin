@@ -50,7 +50,7 @@ local function flower(c, vw, vh, pct, chosen)
     local grown = math.min(1, pct / 30)
     local R = full * (chosen and 1 or .84) * (.66 + .34 * grown)
     -- the head's top: at the bar's height, but never so low that head and leaves do not fit
-    local top = vh - math.max(vh * .97 * pct / 100, 2 * R + full * .7)
+    local top = vh - math.max(vh * .97 * pct / 100, 2 * R + full)
     local cy = top + R
     local stalk = vh - cy
     local sway = math.min(vw * .07, stalk * .07)

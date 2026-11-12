@@ -35,7 +35,18 @@ local SHEET = {
 }
 
 local W = math.floor(1100 * K)
-local bb = Kit.canvas(W, math.floor(4800 * K))
+-- the sheet is as tall as its rows need
+local sheet_h = 30
+do
+    local sx, row = 30, 0
+    for _, s in ipairs(SHEET) do
+        local w, h = math.floor(s[2] * K), math.floor(s[3] * K)
+        if sx + w > W - 30 then sx, sheet_h, row = 30, sheet_h + row + 40, 0 end
+        sx, row = sx + w + 40, math.max(row, h)
+    end
+    sheet_h = sheet_h + row + 30
+end
+local bb = Kit.canvas(W, sheet_h)
 bb:fill(Theme.color("bg"))
 local x, y, row_h = 30, 30, 0
 local total = 0
