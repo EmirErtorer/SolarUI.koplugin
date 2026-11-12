@@ -12,7 +12,7 @@ Species.LIST = {
     { id = "narcissus", dock = "dock_library", en = _("Poet's narcissus"), latin = "Narcissus poeticus" },
     { id = "crocus", dock = "dock_history", en = _("Spring crocus"), latin = "Crocus vernus" },
     { id = "pansy", dock = "dock_search", en = _("Garden pansy"), latin = "Viola \u{D7} wittrockiana" },
-    { id = "lily", dock = "dock_inkaway", en = _("Madonna lily"), latin = "Lilium candidum" },
+    { id = "lily", dock = "dock_lily", en = _("Madonna lily"), latin = "Lilium candidum" },
     { id = "chamomile", dock = "dock_settings", en = _("Chamomile"), latin = "Matricaria chamomilla" },
     { id = "posy", dock = "dock_collections", en = _("Rose, daisy and tulip posy"), latin = "Rosa, Bellis, Tulipa" },
     { id = "dandelion", dock = "dock_karahindiba", en = _("Dandelion"), latin = "Taraxacum officinale" },

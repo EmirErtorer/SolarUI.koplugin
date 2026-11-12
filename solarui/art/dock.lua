@@ -4,6 +4,7 @@
 
 local Blooms = require("solarui/art/blooms")
 local Flora = require("solarui/art/flora")
+local Quill = require("solarui/art/quill")
 local Rootline = require("solarui/art/rootline")
 local Svg = require("solarui/art/svg")
 
@@ -87,8 +88,18 @@ function Dock.dock_search(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.pansy(c, vw * .5, vh * .4, vh * .36)
 end
 
--- Ink Away: a lily with a pale heart for the button's own icon.
+-- Ink Away: a lily with a feather pen lying in its pale heart, the nib
+-- to the lower left and a drop of ink beside it.
 function Dock.dock_inkaway(c, vw, vh)
+    local u, x = vh / 130, vw * .5
+    local way = {}
+    for i, p in ipairs({ { -21, 73 }, { -15, 62 }, { -6, 50 }, { 4, 40 }, { 13, 33 }, { 21, 28 } }) do way[i] = { x + p[1] * u, p[2] * u } end
+    return Dock.dock_lily(c, vw, vh) .. Quill.drop(c, x - 9 * u, 75 * u, 2.2 * u)
+        .. Quill.pen(c, way, 18 * u, .27, c.bloom, c.bloom2, .5)
+end
+
+-- A lily on its stalk.
+function Dock.dock_lily(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Blooms.lily(c, vw * .5, vh * .4, vh * .4)
 end
 
