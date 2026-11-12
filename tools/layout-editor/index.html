@@ -160,7 +160,7 @@ function lift(p, baseData, without) {
     const s = ((y + y0) * W + x + x0) * 4, d = (y * w + x) * 4;
     const diff = a[s] !== b[s] || a[s + 1] !== b[s + 1] || a[s + 2] !== b[s + 2];
     for (let k = 0; k < 3; k++) { layer.data[d + k] = a[s + k]; patch.data[d + k] = b[s + k]; }
-    layer.data[d + 3] = diff ? 255 : 0; patch.data[d + 3] = 255;
+    layer.data[d + 3] = diff ? 255 : 0; patch.data[d + 3] = diff ? 255 : 0;   // a patch covers only the part's own pixels, so it never wipes another part
     mask[y * w + x] = diff ? 1 : 0;
   }
   const mk = d => { const c = document.createElement("canvas"); c.width = w; c.height = h; c.getContext("2d").putImageData(d, 0, 0); return c; };
