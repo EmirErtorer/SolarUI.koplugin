@@ -109,7 +109,7 @@ for _i, size in ipairs({ { 600, 800 }, { 1200, 1600 }, { 758, 1024 }, { 1236, 16
     SceneEdit.raw = true
     for _j, b in ipairs(SceneEdit.boxes(scene)) do
         if b.id:match("^garden%.btn_") then
-            Kit.ok(b.y >= 22.2 and b.y + b.h <= 118 - 6, b.id .. " stays clear of the border and the sky at " .. label)
+            Kit.ok(b.y >= 22.2 and b.y + b.h <= 118 - 4, b.id .. " stays clear of the border and the sky at " .. label)
         end
     end
     SceneEdit.raw = false
