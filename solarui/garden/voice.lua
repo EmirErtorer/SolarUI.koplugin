@@ -293,6 +293,7 @@ function Voice.current()
         local moments = { "idle", "idle" }
         if ctx.pages_today > 0 then moments[#moments + 1] = "read_today" else moments[#moments + 1] = "nudge" end
         if ctx.book then moments[#moments + 1] = "book_now" end
+        if ctx.quote then moments[#moments + 1] = "quote" end
         local order = {}
         local start = roll(p, #moments)
         for i = 0, #moments - 1 do order[#order + 1] = moments[(start + i - 1) % #moments + 1] end
