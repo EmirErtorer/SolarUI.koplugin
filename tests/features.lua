@@ -564,4 +564,17 @@ do
     Settings.set("styled_widgets", true)
 end
 
+-- where artwork is written: memory-backed folders first, else the cache
+do
+    local Scratch = require("solarui/gfx/scratch")
+    local mounts = "/dev/root / ext4 rw 0 0\ntmpfs /tmp tmpfs rw 0 0\n/dev/mmcblk0p3 /mnt/us vfat rw 0 0\n"
+    local all = function() return true end
+    Kit.ok(Scratch.pick(mounts, { "/dev/shm", "/tmp" }, all) == "/tmp", "a tmpfs folder is chosen")
+    Kit.ok(Scratch.pick(mounts, { "/mnt/us" }, all) == nil, "flash storage is not")
+    Kit.ok(Scratch.pick("/dev/root / ext4 rw 0 0\n", { "/tmp" }, all) == nil, "and neither is a /tmp that is on the root flash")
+    Kit.ok(Scratch.pick(mounts, { "/tmp/sub" }, all) == "/tmp/sub", "a folder inside a tmpfs counts")
+    Kit.ok(Scratch.pick(nil, { "/tmp" }, all) == nil, "no mount list means the cache folder")
+    Kit.ok(type(Scratch.path()) == "string", "there is always a place to write")
+end
+
 Kit.finish("features")

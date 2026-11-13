@@ -8,12 +8,10 @@
 
 local Alpha = require("solarui/gfx/alpha")
 local Blitbuffer = require("ffi/blitbuffer")
-local DataStorage = require("datastorage")
 local RenderImage = require("ui/renderimage")
 local Natural = require("solarui/art/natural")
 local Svg = require("solarui/art/svg")
 local Theme = require("solarui/theme")
-local lfs = require("libs/libkoreader-lfs")
 
 local Art = {}
 
@@ -63,11 +61,7 @@ end
 
 -- The file a drawing is written to on its way to the renderer.
 local function scratch()
-    if not svg_file then
-        local dir = DataStorage:getDataDir() .. "/cache"
-        if lfs.attributes(dir, "mode") ~= "directory" then lfs.mkdir(dir) end
-        svg_file = dir .. "/solarui-art.svg"
-    end
+    if not svg_file then svg_file = require("solarui/gfx/scratch").path() end
     return svg_file
 end
 
