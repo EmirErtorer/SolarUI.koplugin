@@ -46,7 +46,7 @@ end
 
 -- Take the plant or animal `id`, who is in the garden, as the companion with
 -- the name `name` (their own when blank). Returns true, or false and why:
--- "none" (not in the garden), "have" (a companion already), "orchard" (one who said goodbye).
+-- "none" (not in the garden), "have" (a companion already), "orchard" (one who said goodbye: they come back through Pet.comeBack).
 function Pet.adopt(id, name)
     local e, kind = State.entry(id)
     if not e then return false, "none" end
@@ -179,7 +179,7 @@ function Pet.goodbye()
     if not p then return false end
     d.orchard = d.orchard or {}
     d.orchard[#d.orchard + 1] = { id = p.id, kind = p.kind, name = State.name(p.id), since = p.since, left = State.clock(), pages = Pet.pages(),
-        days = Pet.days(), level = p.level, diary = p.diary, beats = p.beats }
+        days = Pet.days(), level = p.level, diary = p.diary, beats = p.beats, total = State.source().total or 0, returns = p.returns }
     d.pet = nil
     State.save()
     return true
@@ -191,6 +191,49 @@ function Pet.remembered(id)
         if o.id == id then return true end
     end
     return false
+end
+
+-- What a companion who said goodbye asks before they come back: pages read and
+-- days passed since they left.
+Pet.RETURN_PAGES = 250
+Pet.RETURN_DAYS = 7
+
+-- The orchard entry of `id`, or nil.
+local function orchardEntry(id)
+    for i, o in ipairs(State.get().orchard or {}) do
+        if o.id == id then return o, i end
+    end
+end
+
+-- How far the reader is from earning the return of `id`: { pages_left,
+-- days_left, earned } (nil when they are not in the orchard).
+function Pet.comeback(id)
+    local o = orchardEntry(id)
+    if not o then return nil end
+    local read = math.max(0, (State.source().total or 0) - (o.total or State.source().total or 0))
+    local days = math.floor((State.clock() - o.left) / DAY)
+    local pages_left, days_left = math.max(0, Pet.RETURN_PAGES - read), math.max(0, Pet.RETURN_DAYS - days)
+    return { pages_left = pages_left, days_left = days_left, earned = pages_left == 0 and days_left == 0, name = o.name }
+end
+
+-- Take `id` back from the orchard as the companion, with their bond, memories
+-- and diary as they were. Returns true, or false and why: "have" (a companion
+-- already), "none" (not in the orchard), "earn" (not earned yet).
+function Pet.comeBack(id)
+    if Pet.get() then return false, "have" end
+    local o, i = orchardEntry(id)
+    if not o then return false, "none" end
+    if not Pet.comeback(id).earned then return false, "earn" end
+    local d, reading, now = State.get(), State.source(), State.clock()
+    table.remove(d.orchard, i)
+    local marked = {}
+    for _i, a in ipairs(Pet.ANNIVERSARIES) do if a <= o.days then marked[a] = now end end
+    d.pet = { id = id, kind = o.kind, since = now - o.days * DAY, pages0 = (reading.total or 0) - o.pages, books_seen = reading.books or 0,
+        level = o.level, beats = o.beats or {}, streaks = {}, days_marked = marked, seen = {}, n = 0, rng = (now % 100000) + #id,
+        diary = o.diary or {}, events = {}, last_open = now, returns = (o.returns or 0) + 1 }
+    Pet.note("return", string.format(_("%s came back to you."), State.name(id)))
+    State.save()
+    return true
 end
 
 -- Everyone who lives in the orchard now, oldest first.

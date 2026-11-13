@@ -669,6 +669,19 @@ do
     for _, item in ipairs(Companion.list(12)) do if item.id == "tulip" then still = true end end
     Kit.ok(not still, "and no longer keeps company on home")
     Kit.ok(select(2, Pet.adopt("tulip")) == "orchard", "and cannot be taken again")
+    -- coming back has to be earned: pages and days since they left
+    local back = Pet.comeback("tulip")
+    Kit.ok(back and not back.earned and back.pages_left == Pet.RETURN_PAGES and back.days_left == Pet.RETURN_DAYS, "a companion who left asks for pages and days before coming back")
+    Kit.ok(select(2, Pet.comeBack("tulip")) == "have" or select(2, Pet.comeBack("tulip")) == "earn", "and cannot be taken back too soon")
+    reading.total = reading.total + Pet.RETURN_PAGES
+    Kit.ok(not Pet.comeback("tulip").earned, "pages alone are not enough")
+    now = now + (Pet.RETURN_DAYS + 1) * DAY
+    Kit.ok(Pet.comeback("tulip").earned, "pages and days together earn it")
+    local left_level, left_diary = Pet.orchard()[#Pet.orchard()].level, #Pet.orchard()[#Pet.orchard()].diary
+    Kit.ok(Pet.comeBack("tulip") and Pet.is("tulip") and not Pet.remembered("tulip") and Pet.get().returns == 1, "and they come back")
+    Kit.ok(Pet.get().level == left_level and #Pet.get().diary == left_diary + 1, "with their bond and diary kept")
+    Kit.ok(Voice.say("tulip", "locked", { name = "Tuli", pages = 10, days = 2 }) ~= nil and Voice.say("tulip", "returned", {}) ~= nil, "and they speak for themselves about it")
+    Kit.ok(Pet.goodbye(), "and may say goodbye again")
     Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "while a new companion can be chosen")
     Pet.goodbye()
     State.unload()

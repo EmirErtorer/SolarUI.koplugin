@@ -127,7 +127,7 @@ end
 Host.box = box
 
 -- Flash the element inverted at once, run its action, then repaint the area
--- unless the action already redrew the screen.
+-- the flash covered (whatever the action redrew).
 function Host:press(el, handler)
     if not el[handler] then return end
     local d = box(el)
@@ -141,7 +141,9 @@ function Host:press(el, handler)
         logger.err("SolarUI: action failed:", err)
         if self.on_error then self.on_error(err) end
     end
-    if not self.repainted and UIManager:isWidgetShown(self) then
+    if UIManager:isWidgetShown(self) then
+        -- the flash is always cleared, even when the action redrew only part of the screen
+        -- (a dialog refreshes just its own box, which may leave the pressed element's edge inverted);
         -- on a dark screen a small flash over the button clears its trace
         UIManager:setDirty(self, Theme.isDark() and "flashui" or "ui", d)
     end

@@ -192,6 +192,22 @@ function Voice.pick(moment, ctx, peek)
     return { text = fill(chosen.text, ctx, p), key = chosen.key }
 end
 
+-- A line of `id`'s own voice for a moment that comes without a companion (the
+-- orchard: "locked" when the reader asks them back too soon, "returned" when
+-- they have earned it). `words` fills {name}, {pages} and {days}. Nil when
+-- the voice has none.
+function Voice.say(id, moment, words)
+    local pool = Voice.of(id).moments[moment]
+    if not pool or #pool == 0 then
+        local _e, kind = State.entry(id)
+        pool = Voice.of("_" .. (kind == "plant" and "plant" or "animal")).moments[moment]
+    end
+    if not pool or #pool == 0 then return nil end
+    local p = { rng = (os.time() % 100000) + #id }
+    local line = pool[roll(p, #pool)]
+    return (fill(type(line) == "table" and line.t or line, words or {}, p))
+end
+
 -- A text of the voice (a memory) with its words filled in for now.
 function Voice.render(text)
     local p = Pet.get()

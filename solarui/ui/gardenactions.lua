@@ -29,6 +29,7 @@ function GardenActions.of(id, after)
         on_rename = function() App.input(_("Choose a name"), State.rec(id).nick or "", function(text) State.rename(id, text); after() end, _("Save")) end,
         on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); after() end,
         on_companion = function() require("solarui/ui/gardenadopt").start(id, after) end,
+        on_return = function() require("solarui/ui/gardenreturn").ask(id, after) end,
         on_pet = function() App.closeDialog(); App.push("gardenpet") end,
     }
 end

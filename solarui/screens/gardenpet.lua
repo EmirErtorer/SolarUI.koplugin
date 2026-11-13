@@ -91,7 +91,7 @@ local function orchard()
     local th = Theme.get()
     local rows = {}
     for _i, o in ipairs(Pet.orchard()) do
-        rows[#rows + 1] = Layout.Row:new({ gap = th.space.m, children = {
+        rows[#rows + 1] = Layout.Row:new({ gap = th.space.m, on_tap = function() require("solarui/ui/gardenreturn").ask(o.id, function() App.update() end) end, children = {
             Label:new({ text = o.name, kind = "body", grow = true }),
             Label:new({ text = string.format("%s \u{B7} %s", string.format(_.n("%d day", "%d days", o.days), o.days),
                 string.format(_.n("%d page", "%d pages", o.pages), o.pages)), kind = "small", color = "muted" }),
@@ -134,6 +134,7 @@ function GardenPet:build()
     end
     if #Pet.orchard() > 0 then
         body[#body + 1] = heading(_("The orchard"))
+        body[#body + 1] = Label:new({ text = _("Tap one to ask them to come back."), kind = "small", color = "muted" })
         body[#body + 1] = orchard()
     end
     return Frame.page({ screen = self, title = p and State.name(p.id) or _("Companion"), plant = "sprout", tab = "garden",
