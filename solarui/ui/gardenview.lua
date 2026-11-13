@@ -100,7 +100,7 @@ function GardenView.compose(scene, o)
             local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
             if peek then
                 local b = Layout.at(peek, vh)
-                scene:backdrop("garden_peek", b.x, b.y, b.w, b.h, light)
+                scene:sprite("garden_peek", b.x, b.y, b.w, b.h, light)
                 scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
             end
             for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
@@ -119,7 +119,7 @@ function GardenView.compose(scene, o)
                         if o.sprites then o.sprites[id] = el end
                     end
                 elseif a.mood == "hiding" or a.resting then
-                    scene:backdrop("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))
+                    scene:sprite("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))   -- (a sprite: where it stands changes on every visit, and must not redraw the backdrop)
                 end
                 local hit = b.hit or b
                 if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
