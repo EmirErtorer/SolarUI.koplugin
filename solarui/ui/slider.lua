@@ -1,5 +1,5 @@
 -- A slider for a number from `min` to `max`: the cells of the progress bar
--- filled up to the value, a marker on the edge of the fill and the value after
+-- filled up to the value, a marker on the end of the fill and the value after
 -- it. A tap sets the value where the finger is and a drag follows the finger;
 -- each change calls on_change(value) and asks on_redraw(self) to repaint it.
 
@@ -61,8 +61,12 @@ function Slider:draw(bb, x, y)
     self.value = fraction   -- the bar draws a fraction
     Progress.draw(self, bb, x, y)
     self.value = keep
-    local mx = x + math.floor(fraction * (self.w - Theme.px(4)))
-    Paint.fill(bb, mx, y - Theme.px(3), Theme.px(4), self.h + Theme.px(6), th.c.ink)
+    -- the marker sits on the end of the fill, inside the bar's own height (it never
+    -- reaches into the rows above and below), with a thin gap of the page colour round it
+    local tw, halo = Theme.px(5), Theme.px(2)
+    local mx = math.max(x, math.min(x + self.w - tw, x + math.floor(fraction * self.w) - math.floor(tw / 2)))
+    Paint.fill(bb, mx - halo, y, tw + 2 * halo, self.h, th.c.bg)
+    Paint.fill(bb, mx, y, tw, self.h, th.c.ink)
     self.w = full
     local text = tostring(self.value)
     Text.draw(bb, x + full - Text.width("mono", text), y + math.floor((self.h - Text.height("mono")) / 2), "mono", text, th.c.ink)
