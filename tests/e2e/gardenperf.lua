@@ -2,6 +2,7 @@
 -- one, closing the card, and the same on home. Counts the SVG drawings
 -- rasterised and the files written on each step, and times each in ms.
 local H = ...
+local WAIT = tonumber(os.getenv("GARDEN_WAIT") or "0")
 local UIManager = require("ui/uimanager")
 local time = require("ui/time")
 local RenderImage = require("ui/renderimage")
@@ -31,6 +32,10 @@ H.step(1.5, function()
     local State = require("solarui/garden/state")
     State.refresh()
     measure("home (already open) rebuild", function() H.app().update() end)
+end)
+-- the garden is drawn ahead of time while home sits idle: wait as a reader would
+H.step(WAIT or 0, function() end)
+H.step(.5, function()
     measure("open the garden", function() H.app().go("garden") end)
 end)
 H.step(1, function() measure("garden rebuild (no change)", function() H.app().update() end) end)

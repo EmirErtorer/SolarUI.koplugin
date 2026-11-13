@@ -123,6 +123,10 @@ function GardenView.compose(scene, o)
                     if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
                     else
                         local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
+                        el.variants = function()
+                            local pose = o.pose and o.pose[id] or "1"
+                            return { GardenView.animalParam(pose, false, false, phase), GardenView.animalParam(pose, true, false, phase) }
+                        end
                         if o.sprites then o.sprites[id] = el end
                     end
                 elseif a.mood == "hiding" or a.resting then

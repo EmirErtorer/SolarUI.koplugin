@@ -21,7 +21,7 @@ local Art = {}
 local ROLES = { "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_accent",
     "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
 
-local MAX_SPRITES = 64
+local MAX_SPRITES = 160   -- (the garden alone has about forty, and home, library and history more)
 
 -- The kinds of buffer KOReader can blend a colour sprite straight into.
 local DIRECT = { [Blitbuffer.TYPE_BB8] = true, [Blitbuffer.TYPE_BBRGB16] = true, [Blitbuffer.TYPE_BBRGB32] = true }
@@ -202,11 +202,11 @@ end
 -- { frame = inset, t = thickness } for a ruled border), composed over the
 -- page colour the first time and whenever `sig` (a text naming what is on
 -- it) changes, then copied in one go. `slot` names the backdrop.
-function Art.layer(slot, bb, x, y, w, h, items, sig, fade)
+function Art.prepare(slot, btype, w, h, items, sig, fade)
     sync()
     if fade then sig = sig .. "~fade" .. fade end
     local l = layers[slot]
-    if not l or l.sig ~= sig or l.w ~= w or l.h ~= h or l.type ~= bb:getType() then
+    if not l or l.sig ~= sig or l.w ~= w or l.h ~= h or l.type ~= btype then
         if l then l.bb:free() end
         -- the leading items marked `base` (a backdrop that rarely changes: the garden's ground)
         -- are composed once into a layer of their own, which every change starts from
@@ -240,15 +240,37 @@ function Art.layer(slot, bb, x, y, w, h, items, sig, fade)
             canvas:blendRectRGB32(0, 0, w, h, Blitbuffer.ColorRGB32(p[1], p[2], p[3], math.floor(fade * 255 + .5)))
         end
         local out = canvas
-        if bb:getType() ~= Blitbuffer.TYPE_BBRGB32 then
-            out = Blitbuffer.new(w, h, bb:getType())
+        if btype ~= Blitbuffer.TYPE_BBRGB32 then
+            out = Blitbuffer.new(w, h, btype)
             out:blitFrom(canvas, 0, 0, 0, 0, w, h)
             canvas:free()
         end
-        l = { sig = sig, w = w, h = h, type = bb:getType(), bb = out }
+        l = { sig = sig, w = w, h = h, type = btype, bb = out }
         layers[slot] = l
     end
+    return l
+end
+
+function Art.layer(slot, bb, x, y, w, h, items, sig, fade)
+    local l = Art.prepare(slot, bb:getType(), w, h, items, sig, fade)
     bb:blitFrom(l.bb, x, y, 0, 0, w, h)
+end
+
+-- The backdrop items among `items` whose drawing is not kept yet (to draw
+-- them one at a time while the screen is idle; see Art.draw_piece).
+function Art.pending(items)
+    sync()
+    local out = {}
+    for _i, it in ipairs(items) do
+        if not it.frame and pieces[table.concat({ it[1], it[4], it[5], it[6], it[7], tostring(it[8]) }, "|")] == nil then out[#out + 1] = it end
+    end
+    return out
+end
+
+-- Draw and keep one backdrop item now.
+function Art.draw_piece(it)
+    sync()
+    piece(it)
 end
 
 -- Free every sprite and backdrop (the look changed, or SolarUI closed).

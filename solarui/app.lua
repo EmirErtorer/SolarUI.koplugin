@@ -289,6 +289,42 @@ local function prewarm()
     end)
 end
 
+-- Draw the garden's backdrop while home sits idle, a drawing at a time, so
+-- opening the garden is a copy. It waits while anything else is on the screen.
+local warming = false
+function App.warmGarden()
+    if warming then return end
+    local Scene = require("solarui/ui/scene")
+    local time = require("ui/time")
+    local ok, scene, root = pcall(function()
+        return require("solarui/screens/garden").warmScene({ w = Screen:getWidth(), h = Screen:getHeight() })
+    end)
+    if not ok or not scene then return end
+    warming = true
+    local Art = require("solarui/gfx/art")
+    local jobs = {}
+    for _i, it in ipairs(Art.pending(scene.items)) do jobs[#jobs + 1] = function() Art.draw_piece(it) end end
+    for _i, job in ipairs(Scene.spriteJobs(root)) do jobs[#jobs + 1] = job end
+    local function step()
+        if not onTop() then
+            -- a book or a dialog is over home: try again in a while
+            warming = false
+            return UIManager:scheduleIn(20, function() App.warmGarden() end)
+        end
+        -- as many drawings as fit in a short slice, then back to the touch screen for a moment
+        local t0 = time.now()
+        local ran = false
+        while #jobs > 0 and time.to_ms(time.since(t0)) < 60 do
+            table.remove(jobs, 1)()
+            ran = true
+        end
+        if ran or #jobs > 0 then return UIManager:scheduleIn(.1, step) end
+        scene:prepare(Screen.bb:getType())
+        warming = false
+    end
+    UIManager:scheduleIn(.15, step)
+end
+
 -- The companion has noticed the reading done since SolarUI was last open (a
 -- finished book, a streak, a memory): say so on whatever screen is showing
 -- (the home screen tells it itself).
@@ -309,6 +345,7 @@ end
 function App.afterShow()
     prewarm()
     UIManager:scheduleIn(1, function() App.companionNews() end)
+    UIManager:scheduleIn(5, function() if onTop() then App.warmGarden() end end)
     if not update_started then
         -- once a session: tidy up after an update, and the daily check
         update_started = true

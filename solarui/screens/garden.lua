@@ -5,6 +5,7 @@
 -- and the field notes are pages of their own.
 
 local App = require("solarui/app")
+local ArtView = require("solarui/ui/artview")
 local Button = require("solarui/ui/button")
 local Care = require("solarui/garden/care")
 local GardenActions = require("solarui/ui/gardenactions")
@@ -302,6 +303,28 @@ function Garden:stillness(ctx)
     GardenView.compose(scene, { seed = self.seed, at = self.at, pose = self.pose })
     scene:touch(0, 0, Layout.WIDTH, scene.vh, function() self:endSit(false) end)
     return scene
+end
+
+-- The garden's scene as it will be built on this screen, only to draw its
+-- backdrop ahead of time (nil when the first-visit guide has not been seen:
+-- that garden looks different). Nothing is shown and no timer is started.
+function Garden.warmScene(ctx)
+    State.refresh()
+    if not State.guideSeen() then return nil end
+    local bar = Theme.get().size.tabbar + Theme.px(16)
+    local scene = Scene.make("garden", ctx.w, ctx.h - bar, Layout.HEIGHT)
+    scene.screen = "garden"
+    GardenView.compose(scene, {})
+    local g = Garden:new({})
+    g.scene = scene
+    g:heading(scene)
+    local tabs = TabBar.build(App.TABS, nil, function() end)
+    local root = LayoutUI.Column:new({ children = { scene, tabs } })
+    root:layout(ctx.w, ctx.h)
+    -- the vine under the tab bar, which the bar lays out only when it is shown
+    local vine = ArtView:new({ name = "root", height = Theme.px(16) })
+    vine.w, vine.h = ctx.w, Theme.px(16)
+    return scene, { children = { root, vine } }
 end
 
 -- Build the garden.

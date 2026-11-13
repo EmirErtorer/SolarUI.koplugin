@@ -10,6 +10,7 @@ local Element = require("solarui/ui/element")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local SceneEdit = require("solarui/ui/sceneedit")
+local Theme = require("solarui/theme")
 
 -- Named groups of parts (see Scene:group) can be moved and stretched by
 -- tweaks kept in data/layout_overrides.lua.
@@ -221,12 +222,53 @@ function Scene:layout(w, h)
     for _i, c in ipairs(self.children) do c:layout(c.sw, c.sh) end
 end
 
+-- The signature of the backdrop (what is on it, at this width).
+function Scene:signature()
+    local keys = {}
+    for i, it in ipairs(self.items) do keys[i] = it.key end
+    return table.concat(keys, ";") .. "@" .. (self.w or self.width)
+end
+
+-- Compose the backdrop now, without painting it (the screen is idle): it is
+-- kept, and the first paint is a copy.
+function Scene:prepare(btype)
+    Art.prepare(self.slot, btype, self.width, self.height, self.items, self:signature(), self.fade)
+end
+
+-- Draw the artwork of the elements ahead of time: a list of functions, each
+-- drawing and keeping one sprite (see Art.sprite). The scene must be laid out.
+function Scene.spriteJobs(root)
+    local jobs = {}
+    local function walk(c)
+        if type(c) ~= "table" then return end
+        if c.name and c.w and c.h and c.scale and c.w >= 2 and c.h >= 2 then
+            -- (an element may name the other looks it can take: an animal facing either way)
+            local params = c.variants and c.variants() or { c.param_fn and c.param_fn() or c.param }
+            for _i, param in ipairs(params) do
+                jobs[#jobs + 1] = function()
+                    local k = c:scale()
+                    Art.sprite(c.name, c.w, c.h, math.floor(c.w / k + 0.5), math.floor(c.h / k + 0.5), param)
+                end
+            end
+        end
+        if c.art and c.icon_size and c.art[1] then
+            -- (a button with a picture in it, drawn at the size Button gives it)
+            jobs[#jobs + 1] = function()
+                local isz, k = Theme.px(c.icon_size), Theme.px(100) / 178
+                Art.sprite(c.art[1], isz, isz, isz / k, isz / k, c.art[2])
+            end
+        end
+        for _i, kid in ipairs(c.children or {}) do walk(kid) end
+        walk(c.child)
+    end
+    walk(root)
+    return jobs
+end
+
 -- Paint the backdrop, then the elements.
 function Scene:paint(bb, x, y)
     self.x, self.y = x, y
-    local keys = {}
-    for i, it in ipairs(self.items) do keys[i] = it.key end
-    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, table.concat(keys, ";") .. "@" .. self.w, self.fade)
+    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, self:signature(), self.fade)
     for _i, c in ipairs(self.children) do c:paint(bb, x + c.sx, y + c.sy) end
 end
 
