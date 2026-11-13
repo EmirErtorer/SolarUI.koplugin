@@ -67,7 +67,7 @@ function GardenView.compose(scene, o)
     -- the whole garden is one part, so the layout editor can size it against the screen
     scene:group("garden.field", "The whole garden", function()
         -- drawn as wide as the screen, so its lawn reaches the borders
-        scene:placed(function() scene:backdrop("garden_ground", -scene.ox / scene.k, 0, scene.width / scene.k, vh, light .. string.format(":edge%.3f", edge)) end)
+        scene:placed(function() scene:base(function() scene:backdrop("garden_ground", -scene.ox / scene.k, 0, scene.width / scene.k, vh, light .. string.format(":edge%.3f", edge)) end) end)
         scene:apart(function()
             scene:border(14, 2.5)
             scene:border(21, 1.2)

@@ -36,7 +36,7 @@ end
 
 -- Add artwork to the backdrop at a box in units.
 function Scene:backdrop(name, vx, vy, vw, vh, param)
-    local it = { name, 0, 0, 0, 0, vw, vh, param }
+    local it = { name, 0, 0, 0, 0, vw, vh, param, base = self.in_base }
     self.items[#self.items + 1] = it
     local m = { item = it, unit = { vx, vy, vw, vh }, art = { vw, vh }, fixed = self.fixed }
     self:refit(m, vx, vy, vw, vh)
@@ -67,6 +67,15 @@ end
 -- Run `add`, which adds parts to the scene, as one named part of the page
 -- (`id` like "home.cover") that the layout editor can move and stretch; its
 -- saved tweak is applied, or it is left out when hidden.
+-- Run `add`, which adds backdrop artwork that rarely changes (the garden's
+-- ground, first of all): it is composed into a layer of its own once, and
+-- every change to the rest of the backdrop starts from that.
+function Scene:base(add)
+    self.in_base = true
+    add()
+    self.in_base = nil
+end
+
 -- Add parts that a spread leaves where they were put (they are drawn for it already).
 function Scene:placed(add)
     local was = self.fixed

@@ -26,6 +26,11 @@ local MAX_SPRITES = 64
 -- The kinds of buffer KOReader can blend a colour sprite straight into.
 local DIRECT = { [Blitbuffer.TYPE_BB8] = true, [Blitbuffer.TYPE_BBRGB16] = true, [Blitbuffer.TYPE_BBRGB32] = true }
 
+local PIECE_BYTES = 48 * 1024 * 1024   -- what the drawings kept for backdrops may take
+
+local pieces = {}    -- key -> { bb, dx, dy, bytes } (drawings composed into backdrops, kept so one change redraws one drawing)
+local piece_order = {}   -- their keys, oldest first
+local piece_bytes = 0
 local sprites = {}   -- key -> buffer (false when the drawing failed)
 local order = {}     -- keys, oldest first
 local layers = {}    -- slot -> { sig, w, h, type, bb }
@@ -141,6 +146,54 @@ function Art.draw(bb, name, x, y, w, h, vw, vh, param)
     if s then Art.blend(bb, s, x + dx, y + dy) end
 end
 
+-- The drawing of a backdrop item, from the pieces kept or drawn now and kept:
+-- the picture and where its corner lies from the box's corner. Where the item
+-- sits on the screen is not part of what is kept, so moving it costs nothing.
+local function piece(it)
+    local key = table.concat({ it[1], it[4], it[5], it[6], it[7], tostring(it[8]) }, "|")
+    local p = pieces[key]
+    if p == nil then
+        local bb, dx, dy = render(it[1], it[4], it[5], it[6], it[7], it[8])
+        p = bb and { bb = bb, dx = dx, dy = dy, bytes = bb:getWidth() * bb:getHeight() * 4 } or false
+        pieces[key] = p
+        piece_order[#piece_order + 1] = key
+        piece_bytes = piece_bytes + (p and p.bytes or 0)
+        -- the oldest go first, but never the one just drawn
+        while piece_bytes > PIECE_BYTES and #piece_order > 1 do
+            local old = table.remove(piece_order, 1)
+            local o = pieces[old]
+            if o then o.bb:free(); piece_bytes = piece_bytes - o.bytes end
+            pieces[old] = nil
+        end
+    end
+    return p
+end
+
+-- Compose `items` over the page colour (or over a copy of `under`, a canvas
+-- already composed) into a new RGB32 canvas w x h.
+local function compose(w, h, items, under)
+    local th = Theme.get()
+    local function rgb(role)
+        local p = th.painted[role]
+        return Blitbuffer.ColorRGB32(p[1], p[2], p[3], 0xFF)
+    end
+    local canvas = Blitbuffer.new(w, h, Blitbuffer.TYPE_BBRGB32)
+    if under then canvas:blitFrom(under, 0, 0, 0, 0, w, h) else canvas:paintRectRGB32(0, 0, w, h, rgb("bg")) end
+    for _i, it in ipairs(items) do
+        if it.frame then
+            local i, t, c = it.frame, it.t, rgb("ink")
+            canvas:paintRectRGB32(i, i, w - 2 * i, t, c)
+            canvas:paintRectRGB32(i, h - i - t, w - 2 * i, t, c)
+            canvas:paintRectRGB32(i, i, t, h - 2 * i, c)
+            canvas:paintRectRGB32(w - i - t, i, t, h - 2 * i, c)
+        else
+            local p = piece(it)
+            if p then canvas:alphablitFrom(p.bb, it[2] + p.dx, it[3] + p.dy, 0, 0, p.bb:getWidth(), p.bb:getHeight()) end
+        end
+    end
+    return canvas
+end
+
 -- Paint a backdrop: `items` are { name, x, y, w, h, vw, vh, param } (or
 -- { frame = inset, t = thickness } for a ruled border), composed over the
 -- page colour the first time and whenever `sig` (a text naming what is on
@@ -150,28 +203,26 @@ function Art.layer(slot, bb, x, y, w, h, items, sig)
     local l = layers[slot]
     if not l or l.sig ~= sig or l.w ~= w or l.h ~= h or l.type ~= bb:getType() then
         if l then l.bb:free() end
-        local th = Theme.get()
-        local function rgb(role)
-            local p = th.painted[role]
-            return Blitbuffer.ColorRGB32(p[1], p[2], p[3], 0xFF)
-        end
-        local canvas = Blitbuffer.new(w, h, Blitbuffer.TYPE_BBRGB32)
-        canvas:paintRectRGB32(0, 0, w, h, rgb("bg"))
+        -- the leading items marked `base` (a backdrop that rarely changes: the garden's ground)
+        -- are composed once into a layer of their own, which every change starts from
+        local base_items, rest = {}, {}
         for _i, it in ipairs(items) do
-            if it.frame then
-                local i, t, c = it.frame, it.t, rgb("ink")
-                canvas:paintRectRGB32(i, i, w - 2 * i, t, c)
-                canvas:paintRectRGB32(i, h - i - t, w - 2 * i, t, c)
-                canvas:paintRectRGB32(i, i, t, h - 2 * i, c)
-                canvas:paintRectRGB32(w - i - t, i, t, h - 2 * i, c)
-            else
-                local s, dx, dy = render(it[1], it[4], it[5], it[6], it[7], it[8])
-                if s then
-                    canvas:alphablitFrom(s, it[2] + dx, it[3] + dy, 0, 0, s:getWidth(), s:getHeight())
-                    s:free()
-                end
-            end
+            if it.base and #rest == 0 then base_items[#base_items + 1] = it else rest[#rest + 1] = it end
         end
+        local under
+        if #base_items > 0 then
+            local keys = {}
+            for i, it in ipairs(base_items) do keys[i] = it.key end
+            local base_sig = table.concat(keys, ";") .. "@" .. w .. "x" .. h
+            local bl = layers[slot .. "|base"]
+            if not bl or bl.sig ~= base_sig then
+                if bl then bl.bb:free() end
+                bl = { sig = base_sig, bb = compose(w, h, base_items) }
+                layers[slot .. "|base"] = bl
+            end
+            under = bl.bb
+        end
+        local canvas = compose(w, h, rest, under)
         local out = canvas
         if bb:getType() ~= Blitbuffer.TYPE_BBRGB32 then
             out = Blitbuffer.new(w, h, bb:getType())
@@ -190,7 +241,11 @@ function Art.free()
         if s then s.bb:free() end
     end
     for _k, l in pairs(layers) do l.bb:free() end
+    for _k, p in pairs(pieces) do
+        if p then p.bb:free() end
+    end
     sprites, order, layers, colours, natural_colours = {}, {}, {}, nil, nil
+    pieces, piece_order, piece_bytes = {}, {}, 0
 end
 
 return Art
