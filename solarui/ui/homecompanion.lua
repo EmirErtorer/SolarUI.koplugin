@@ -105,41 +105,46 @@ end
 -- their kind and how long they have been together; the others: the Latin
 -- name) and how they are doing, then the care button when they need care.
 -- Whatever the text size it is built to stay within `budget` pixels of
--- height: the Latin name goes first, then the button, when room is short.
--- Returns the column.
+-- height, measured by what each line really takes. When room is short the
+-- first-visit hint goes, then the Latin name; the care button stays as long
+-- as it can fit at all. Returns the column.
 function HomeCompanion.header(scene, item, w, budget)
     local gap = scene:px(6)
-    local name_h, line_h = Text.height("heading"), Text.height("micro")
+    local px = scene:px(w)
     local narrow = w < 200   -- (units: a companion who does not speak has a narrow column)
-    local used = name_h + gap + line_h
-    local kids = { Label:new({ text = State.name(item.id), kind = "heading", lines = narrow and 2 or 1 }) }
-    if narrow then used = used + name_h end
-    if item.pet then
-        kids[#kids + 1] = Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted", lines = narrow and 2 or 1 })
-        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = narrow and 2 or 1 })
-        used = used + gap + line_h + (narrow and 2 * line_h or 0)
-    else
-        local latin = used + gap + line_h + gap + line_h <= budget
-        if latin then
-            kids[#kids + 1] = Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" })
-            used = used + gap + line_h
-        end
-        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = 2 })
-        used = used + gap + 2 * line_h
-    end
-    -- the first few visits say how to talk to them
+    local lines = narrow and 2 or 1
+    local name = Label:new({ text = State.name(item.id), kind = "heading", lines = lines })
+    local sub = item.pet and Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted", lines = lines })
+        or Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" })
+    local how = Label:new({ text = mood(item), kind = "micro", lines = item.pet and lines or 2 })
     local p = item.pet and Pet.get()
-    if p and Pet.talks() and (p.taps or 0) < Pet.HINTS then
-        local hint = Label:new({ text = _("Tap to chat. Hold to open their page."), kind = "micro", color = "muted", lines = 2 })
-        if used + gap + 2 * line_h + gap + (item.need > 0 and careButton(scene, item, w):naturalHeight() or 0) <= budget then
-            kids[#kids + 1] = hint
-            used = used + gap + 2 * line_h
-        end
+    local hint = p and Pet.talks() and (p.taps or 0) < Pet.HINTS
+        and Label:new({ text = _("Tap to chat. Hold to open their page."), kind = "micro", color = "muted", lines = 2 }) or nil
+    local button = item.need > 0 and careButton(scene, item, w) or nil
+    local function height(list)
+        local total = 0
+        for i, el in ipairs(list) do total = total + el:naturalHeight(px) + (i > 1 and gap or 0) end
+        return total
     end
-    if item.need > 0 then
-        local button = careButton(scene, item, w)
-        if used + gap + button:naturalHeight() <= budget then kids[#kids + 1] = button end
+    local function with_button(list)
+        local all = {}
+        for i, el in ipairs(list) do all[i] = el end
+        if button then all[#all + 1] = button end
+        return all
     end
+    -- put the optional rows back in order while the care button and all the rows still fit
+    local order = {}
+    for _i, el in ipairs({ name, sub, how, hint }) do order[#order + 1] = el end
+    local keep = { [name] = true, [how] = true }
+    for _i, el in ipairs({ sub, hint }) do
+        keep[el] = true
+        local list = {}
+        for _j, e in ipairs(order) do if keep[e] then list[#list + 1] = e end end
+        if height(with_button(list)) > budget then keep[el] = nil end
+    end
+    local kids = {}
+    for _i, e in ipairs(order) do if keep[e] then kids[#kids + 1] = e end end
+    if button and height(with_button(kids)) <= budget then kids[#kids + 1] = button end
     return LayoutUI.Column:new({ gap = gap, children = kids })
 end
 
@@ -186,13 +191,8 @@ function HomeCompanion.place(scene, x, y, w)
     scene:backdrop("garden_arch", x, y, aw, ah)
     picture(scene, item, x, y, aw, ah)
     local tx, tw = x + aw + 14, w - aw - 14
-    scene:place(HomeCompanion.header(scene, item, tw, scene:px(ah)), tx, y, tw, ah)
-    if item.pet then Pet.refresh(Voice.beats(item.id)) end
-    local text = talk and HomeCompanion.speech(item, fitter(scene, w)) or nil
-    if text and text ~= "" then bubble(scene, text, x, y + ah + 6, w) end
     local h = HomeCompanion.height(scene.k)
-    -- something waits to be told: a tap hears it
-    if item.pet and Pet.waiting() > 0 then scene:backdrop("garden_badge", x + aw - 30, y - 6, 36, 36) end
+    -- the whole card answers a tap. It is placed first so the care button, placed after it, is on top and gets its own taps
     if item.pet and not talk then
         scene:touch(x, y, w, h, function() App.push("gardenpet") end, function() App.push("gardenpet") end)
     elseif item.pet then
@@ -201,6 +201,12 @@ function HomeCompanion.place(scene, x, y, w)
     else
         scene:touch(x, y, w, h, function() GardenPopup.open(item.id) end)
     end
+    scene:place(HomeCompanion.header(scene, item, tw, scene:px(ah)), tx, y, tw, ah)
+    if item.pet then Pet.refresh(Voice.beats(item.id)) end
+    local text = talk and HomeCompanion.speech(item, fitter(scene, w)) or nil
+    if text and text ~= "" then bubble(scene, text, x, y + ah + 6, w) end
+    -- something waits to be told: a tap hears it
+    if item.pet and Pet.waiting() > 0 then scene:backdrop("garden_badge", x + aw - 30, y - 6, 36, 36) end
     return h
 end
 
