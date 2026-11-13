@@ -139,6 +139,20 @@ function Garden.garden_arch(c, vw, vh)
         .. Flora.leaf(c, r, 14, -164, 34, 9, c.leaf, true) .. Flora.leaf(c, r, 14, -16, 34, 9, c.leaf, true) .. Flora.rosebud(c, r, 20, 0, 13)
 end
 
+-- The speech bubble under a companion's arch: a rounded panel with a small
+-- tail pointing up at the arch and a sprig of leaves in the lower corner.
+function Garden.garden_bubble(c, vw, vh)
+    local r, t, tx = 18, 10, 52
+    local function panel(d)
+        return string.format("M%s %s L%s %s L%s %s L%s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s Z",
+            n(r + d), n(t + d), n(tx - 9), n(t + d), n(tx), n(d), n(tx + 11), n(t + d), n(vw - r - d), n(t + d),
+            n(vw - d), n(t + d), n(vw - d), n(t + r + d), n(vw - d), n(vh - r - d), n(vw - d), n(vh - d), n(vw - r - d), n(vh - d),
+            n(r + d), n(vh - d), n(d), n(vh - d), n(d), n(vh - r - d), n(d), n(t + r + d), n(d), n(t + d), n(r + d), n(t + d))
+    end
+    return path(panel(3), c.bg, c.ink, 2.6) .. line(panel(9), c.line, 1.2)
+        .. Flora.leaf(c, vw - 22, vh - 14, -158, 30, 8, c.leaf) .. Flora.leaf(c, vw - 22, vh - 14, -112, 26, 7, c.sage)
+end
+
 -- The whole backdrop for a canvas vw x vh.
 function Garden.garden_ground(c, vw, vh, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)

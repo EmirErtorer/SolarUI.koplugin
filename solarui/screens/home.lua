@@ -31,7 +31,7 @@ local _ = require("solarui/gettext")
 local Home = Screen:extend()
 
 -- Heights of the blocks, in the scene's units.
-local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 624, Strip.HEIGHT, 190, 26
+local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 664, Strip.HEIGHT, 190, 26
 -- A cover on the shelf, per cover size setting (the library's): width and
 -- height in the scene's units. The two biggest sizes share one, for room.
 local SHELF_COVER = { s = { 72, 108 }, m = { 88, 132 }, l = { 104, 156 }, xl = { 104, 156 } }
@@ -144,20 +144,19 @@ function Home:hero(scene, y, cur)
     end)
 
     local pages = st.pages and string.format(_("page %d of %d"), math.floor(st.percent * st.pages + 0.5), st.pages) or ""
-    local opened = cur.time and string.format(_("Last opened %s"), Format.ago(cur.time)) or _("Not opened yet")
+    local below = y + 58 + HomeCompanion.height(scene.k) + 10
     scene:group("home.companion", "Garden companion card", function() HomeCompanion.place(scene, x0, y + 58, w) end)
     scene:group("home.progress", "Reading progress vine", function()
         scene:place(Layout.Column:new({ gap = scene:px(8), children = {
-            Label:new({ text = opened, kind = "small", color = "muted" }),
-            ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(70) }),
+            ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(40) }),
             Layout.Row:new({ gap = scene:px(14), valign = "center", children = {
                 Label:new({ text = pct .. "%", kind = "title" }),
                 Label:new({ text = pages, kind = "body", color = "muted", grow = true }),
             } }),
-        } }), x0, y + 270, w)
+        } }), x0, below, w)
     end)
 
-    local by = y + 462
+    local by = y + 516 + scene.extra
     bookButton(scene, "home.btn_details", "Details button", "btn_details", _("Details"), 668, by, function() Actions.details(path) end)
     bookButton(scene, "home.btn_bookmarks", "Bookmarks button", "btn_bookmarks", _("Bookmarks"), 810, by,
         function() App.push("annotations", { path = path, kind = "bookmarks" }) end)
@@ -237,8 +236,15 @@ end
 function Home:build(ctx)
     local stats, shelf = Settings.get("home_stats", true), Settings.get("home_shelf", true)
     local shelf_h = select(3, shelfSize())
-    local blocks = STATUS_H + HERO_H + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H
-    local scene = Scene.make("home", ctx.w, ctx.h, blocks + FOOT)
+    -- the companion's speech bubble grows with the text size, and the hero with it
+    local extra = HomeCompanion.extra(ctx.w / Scene.design_w)
+    local function make()
+        return Scene.make("home", ctx.w, ctx.h, STATUS_H + HERO_H + extra + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H + FOOT)
+    end
+    local scene = make()
+    if scene.k < ctx.w / Scene.design_w then extra = HomeCompanion.extra(scene.k); scene = make() end
+    scene.extra = extra
+    local blocks = STATUS_H + HERO_H + extra + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H
     local gaps = 2 + (stats and 1 or 0) + (shelf and 1 or 0)
     local gap = math.min(110, math.max(0, (scene.vh - blocks - FOOT) / gaps))
     local cur = self:shown()
@@ -247,7 +253,7 @@ function Home:build(ctx)
     scene:border(21, 1.2)
     local y = STATUS_H + gap
     local hero_y = y
-    y = y + HERO_H + gap
+    y = y + HERO_H + extra + gap
     local stats_y = y
     if stats then y = y + STATS_H + gap end
     local shelf_y = y

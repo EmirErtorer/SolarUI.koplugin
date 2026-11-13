@@ -1,7 +1,9 @@
 -- The garden companion on the home screen: a small arch holding one plant or
--- animal of the garden, its name, Latin name and how it is doing, and either
--- a button to care for it (when it needs care) or a sentence about it.
--- Tapping the card opens it over the home screen (ui/gardenpopup.lua).
+-- animal of the garden, beside it their name and how they are doing (and a
+-- button to care for them when they need care), and under the two a speech
+-- bubble as wide as the card with what they are saying. Tapping the card
+-- opens it over the home screen (ui/gardenpopup.lua); the companion for life
+-- answers a tap with a new line and opens their page when held.
 
 local App = require("solarui/app")
 local Button = require("solarui/ui/button")
@@ -23,7 +25,26 @@ local _ = require("solarui/gettext")
 
 local HomeCompanion = {}
 
-local ARCH_W, ARCH_H = 124, 196   -- the arch, in the scene's units
+HomeCompanion.WIDTH = 394         -- the card's width, in units
+local ARCH_W, ARCH_H = 150, 190   -- the arch, in the scene's units
+HomeCompanion.BUBBLE_H = 160      -- the speech bubble under it, at the usual text size, in units
+HomeCompanion.ROWS = 4            -- rows of text it always has room for
+
+-- The bubble's height in units on a scene scaled by `k`: tall enough for
+-- ROWS rows at whatever the text size is.
+function HomeCompanion.bubbleHeight(k)
+    return math.max(HomeCompanion.BUBBLE_H, 24 + HomeCompanion.ROWS * math.ceil(Text.height("small") / k))
+end
+
+-- How much taller than usual the card is on a scene scaled by `k`.
+function HomeCompanion.extra(k)
+    return HomeCompanion.bubbleHeight(k) - HomeCompanion.BUBBLE_H
+end
+
+-- The card's height in units on a scene scaled by `k`.
+function HomeCompanion.height(k)
+    return ARCH_H + 6 + HomeCompanion.bubbleHeight(k)
+end
 
 -- The pinned companion's id, or "auto".
 function HomeCompanion.pinned()
@@ -48,9 +69,9 @@ end
 -- Draw the companion's picture inside the arch at (x, y).
 local function picture(scene, item, x, y)
     local size = item.kind == "plant" and Layout.PLANTS[item.id] or Layout.ANIMALS[item.id]
-    local k = math.min(92 / size.w, 130 / size.h)
+    local k = math.min((ARCH_W - 30) / size.w, (ARCH_H - 44) / size.h)
     local w, h = size.w * k, size.h * k
-    local px, py = x + (ARCH_W - w) / 2, y + ARCH_H - 14 - h
+    local px, py = x + (ARCH_W - w) / 2, y + ARCH_H - 12 - h
     if item.kind == "plant" then scene:backdrop("plant_" .. item.id, px, py, w, h, GardenView.plantParam(item.entry))
     else scene:backdrop("animal_" .. item.id, px, py, w, h, GardenView.animalParam("1", false)) end
 end
@@ -77,76 +98,88 @@ local function careButton(scene, item, w)
         end })
 end
 
--- The text beside the arch: the name and how it is doing, then a care button
--- or a sentence about it, and the Latin name when there is room. Whatever
--- the text size, it is built to stay within `budget` pixels of height: the
--- sentence takes as many lines as are left, and the Latin name goes first
--- when room is short. Returns the column and the height it uses.
-function HomeCompanion.column(scene, item, w, budget)
+-- The text beside the arch: the name, who they are (the companion for life:
+-- their kind and how long they have been together; the others: the Latin
+-- name) and how they are doing, then the care button when they need care.
+-- Whatever the text size it is built to stay within `budget` pixels of
+-- height: the Latin name goes first, then the button, when room is short.
+-- Returns the column.
+function HomeCompanion.header(scene, item, w, budget)
     local gap = scene:px(6)
     local name_h, line_h = Text.height("heading"), Text.height("micro")
-    local button = item.need > 0 and careButton(scene, item, w) or nil
-    -- the name and the mood always show; the rest as room allows
     local used = name_h + gap + line_h
-    local lower_h = button and button:naturalHeight() or line_h
-    local latin = used + gap + line_h + gap + lower_h <= budget
-    if latin then used = used + gap + line_h end
     local kids = { Label:new({ text = State.name(item.id), kind = "heading" }) }
-    if latin then kids[#kids + 1] = Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" }) end
-    kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro" })
-    if button then
-        if used + gap + lower_h <= budget then kids[#kids + 1] = button; used = used + gap + lower_h end
+    if item.pet then
+        kids[#kids + 1] = Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted" })
+        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = 2 })
+        used = used + gap + 2 * line_h
     else
-        local lines = math.min(3, math.floor((budget - used - gap) / line_h))
-        if lines >= 1 then
-            kids[#kids + 1] = Label:new({ text = Lore.get(item.id), kind = "micro", lines = lines })
-            used = used + gap + lines * line_h
+        local latin = used + gap + line_h + gap + line_h <= budget
+        if latin then
+            kids[#kids + 1] = Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" })
+            used = used + gap + line_h
         end
+        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = 2 })
+        used = used + gap + 2 * line_h
     end
-    return LayoutUI.Column:new({ gap = gap, children = kids }), used
-end
-
--- The text beside the arch for the companion for life: their name, who they
--- are and how long they have been together, what they are saying, and the
--- care button when they need care and there is room.
-function HomeCompanion.petColumn(scene, item, w, budget)
-    local gap = scene:px(6)
-    local name_h, line_h, body_h = Text.height("heading"), Text.height("micro"), Text.height("body")
-    local days = Pet.days()
-    local kids = {
-        Label:new({ text = State.name(item.id), kind = "heading" }),
-        Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, days), kind = "micro", color = "muted" }),
-    }
-    local used = name_h + gap + line_h
-    local button = item.need > 0 and careButton(scene, item, w) or nil
-    local reserve = button and (button:naturalHeight() + gap) or 0
-    local line = Voice.current()
-    local lines = math.min(4, math.floor((budget - used - gap - reserve) / body_h))
-    if line and lines >= 1 then
-        kids[#kids + 1] = Label:new({ text = line, kind = "body", lines = lines })
-        used = used + gap + lines * body_h
+    if item.need > 0 then
+        local button = careButton(scene, item, w)
+        if used + gap + button:naturalHeight() <= budget then kids[#kids + 1] = button end
     end
-    if button and used + gap + button:naturalHeight() <= budget then kids[#kids + 1] = button end
     return LayoutUI.Column:new({ gap = gap, children = kids })
 end
 
--- Put the card on `scene` with its top-left at (x, y), `w` units wide.
+-- What the companion says in the bubble: the companion for life their line
+-- of the moment (a memory, which is long, is only hinted at here and told in
+-- full on their page), any other a sentence about them. `fits` says whether
+-- a line fits the bubble, so the lines chosen are ones that do.
+function HomeCompanion.speech(item, fits)
+    if not item.pet then return Lore.get(item.id) end
+    Voice.fits = fits
+    local text = Voice.current()
+    Voice.fits = nil
+    local p = Pet.get()
+    if text and p and p.now and p.now.moment == "beat" and p.now.text == text and p.now.title then
+        return string.format(_("A memory came back to me: %s. Hold me to hear the story."), p.now.title)
+    end
+    return text
+end
+
+-- Does a line fit the bubble `w` units wide on this scene?
+local function fitter(scene, w)
+    local px = scene:px(w - 36)
+    return function(text) return #Text.wrap("small", text, px) <= HomeCompanion.ROWS end
+end
+
+-- The speech bubble under the arch, with `text` in its rows (the rest of a
+-- very long line ends in an ellipsis).
+local function bubble(scene, text, x, y, w)
+    local pad, h = 18, HomeCompanion.bubbleHeight(scene.k)
+    scene:backdrop("garden_bubble", x, y, w, h)
+    scene:place(Label:new({ text = text, kind = "small", lines = HomeCompanion.ROWS }), x + pad, y + 12, w - 2 * pad, h - 24)
+end
+
+-- Put the card on `scene` with its top-left at (x, y), `w` units wide, and
+-- return the height it uses (HomeCompanion.height, so what is under it stays put).
 function HomeCompanion.place(scene, x, y, w)
     State.refresh()
     local item = HomeCompanion.pick()
-    if not item then return end
+    if not item then return HomeCompanion.height(scene.k) end
     scene:backdrop("garden_arch", x, y, ARCH_W, ARCH_H)
     picture(scene, item, x, y)
     local tx, tw = x + ARCH_W + 14, w - ARCH_W - 14
+    scene:place(HomeCompanion.header(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
+    if item.pet then Pet.refresh(Voice.beats(item.id)) end
+    local text = HomeCompanion.speech(item, fitter(scene, w))
+    if text and text ~= "" then bubble(scene, text, x, y + ARCH_H + 6, w) end
+    local h = HomeCompanion.height(scene.k)
     if item.pet then
-        Pet.refresh(Voice.beats(item.id))
-        scene:place(HomeCompanion.petColumn(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
         -- a tap is greeted with a new line; holding opens their page
-        scene:touch(x, y, ARCH_W, ARCH_H, function() Voice.react(); App.update() end, function() App.push("gardenpet") end)
-        return
+        scene:touch(x, y, w, h, function() Voice.fits = fitter(scene, w); Voice.react(); Voice.fits = nil; App.update() end, function() App.push("gardenpet") end)
+    else
+        scene:touch(x, y, w, h, function() GardenPopup.open(item.id) end)
     end
-    scene:place(HomeCompanion.column(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
-    scene:touch(x, y, ARCH_W, ARCH_H, function() GardenPopup.open(item.id) end)
+    return h
 end
 
 return HomeCompanion

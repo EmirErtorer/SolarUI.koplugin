@@ -127,6 +127,21 @@ local function fill(text, ctx, p)
     return (text:gsub("%f[%d]1 pages", "1 page"))
 end
 
+-- The longest a line can come out: its [a|b] parts at their longest and its
+-- {words} for now.
+local function longest(text, ctx)
+    text = text:gsub("%[([^%]]-)%]", function(set)
+        local best = ""
+        for part in (set .. "|"):gmatch("(.-)|") do if #part > #best then best = part end end
+        return best
+    end)
+    return (text:gsub("{(%w+)}", function(k) return ctx[k] ~= nil and tostring(ctx[k]) or "" end))
+end
+
+-- A test a screen sets while it asks for lines (text -> fits), so lines that
+-- would not fit the room it has are left for the pages that do have the room.
+Voice.fits = nil
+
 -- Has this line been said lately?
 local function said(p, key)
     for _i, k in ipairs(p.seen) do if k == key then return true end end
@@ -149,7 +164,7 @@ function Voice.pick(moment, ctx, peek)
     local pool = Voice.of(p.id).moments[moment]
     if not pool or #pool == 0 then pool = Voice.of("_" .. (p.kind == "plant" and "plant" or "animal")).moments[moment] end
     if not pool then return nil end
-    local fresh, any = {}, {}
+    local fresh, any, fit = {}, {}, {}
     for i, line in ipairs(pool) do
         local text = type(line) == "table" and line.t or line
         local when = type(line) == "table" and line.when or nil
@@ -157,10 +172,13 @@ function Voice.pick(moment, ctx, peek)
             local key = moment .. ":" .. i
             local item = { text = text, key = key, weight = when and 2 or 1 }
             any[#any + 1] = item
-            if not said(p, key) then fresh[#fresh + 1] = item end
+            if not said(p, key) then
+                fresh[#fresh + 1] = item
+                if Voice.fits and Voice.fits(longest(text, ctx)) then fit[#fit + 1] = item end
+            end
         end
     end
-    local from = #fresh > 0 and fresh or any
+    local from = #fit > 0 and fit or #fresh > 0 and fresh or any
     if #from == 0 then return nil end
     local total = 0
     for _i, it in ipairs(from) do total = total + it.weight end
@@ -258,7 +276,7 @@ function Voice.current()
         end
     end
     p.day, p.last_open = day, now
-    if chosen then p.now = { text = chosen.text, moment = chosen.moment, key = key, at = now } end
+    if chosen then p.now = { text = chosen.text, moment = chosen.moment, key = key, at = now, title = chosen.title } end
     State.save()
     return chosen and chosen.text or nil
 end

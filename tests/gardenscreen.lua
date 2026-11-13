@@ -263,13 +263,13 @@ do
         Theme.refresh()
         local scene = Scene.make("t", W, H, 1430)
         for _, item in ipairs(picks) do
-            local budget = scene:px(196)
-            local col, used = HomeCompanion.column(scene, item, 270, budget)
-            col:layout(scene:px(270), budget)
+            local budget = scene:px(190)
+            local col = HomeCompanion.header(scene, item, 230, budget)
+            col:layout(scene:px(230), budget)
             local total = 0
             for _, c in ipairs(col.children) do total = total + c.h + col.gap end
             total = total - col.gap
-            Kit.ok(used <= budget and total <= budget, item.id .. " fits its card at text size " .. scale .. "% (" .. total .. " of " .. budget .. ")")
+            Kit.ok(total <= budget, item.id .. " fits its card at text size " .. scale .. "% (" .. total .. " of " .. budget .. ")")
         end
     end
     Settings.set("text_scale", 1)
