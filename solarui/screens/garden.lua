@@ -12,6 +12,7 @@ local GardenCard = require("solarui/ui/gardencard")
 local GardenClock = require("solarui/ui/gardenclock")
 local GardenGive = require("solarui/ui/gardengive")
 local GardenGuide = require("solarui/ui/gardenguide")
+local GardenPopup = require("solarui/ui/gardenpopup")
 local GardenSeason = require("solarui/ui/gardenseason")
 local GardenSit = require("solarui/ui/gardensit")
 local Season = require("solarui/garden/season")
@@ -316,7 +317,7 @@ function Garden:build(ctx)
     local show = self.showcase
     self.scene = scene
     GardenView.compose(scene, { showcase = show, season = show and "summer" or nil, faded = self.focus ~= nil, pose = self.pose, sprites = self.sprites, seed = self.seed, at = self.at,
-        on_tap = not self.focus and function(id) if show then self:guide() else self.focus = id; App.update() end end or nil,
+        on_tap = not self.focus and function(id) if show then self:guide() else GardenPopup.open(id, inhabitants) end end or nil,
         on_peek = not (self.focus or show) and function() self:peeked() end or nil,
         on_book = not self.focus and function() if show then self:guide() else self.focus = "book"; App.update() end end or nil })
     self:heading(scene)
