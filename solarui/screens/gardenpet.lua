@@ -116,18 +116,18 @@ function GardenPet:build()
             line and Label:new({ text = line, kind = "body", align = "center", lines = 4 }) or Layout.Spacer:new({}),
         } })
         body[#body + 1] = bond()
-        if Pet.talks() then
-            body[#body + 1] = heading(_("Memories"))
-            body[#body + 1] = memories(p)
-        end
-        body[#body + 1] = heading(_("Diary"))
-        body[#body + 1] = diary(p)
         body[#body + 1] = Layout.Row:new({ gap = th.space.s, children = {
             Button:new({ label = _("Rename"), icon = "edit", icon_size = 18, grow = true, on_tap = function()
                 App.input(_("Choose a name"), State.rec(p.id).nick or "", function(text) Pet.rename(text); App.update() end, _("Save"))
             end }),
             Button:new({ label = _("Say goodbye"), grow = true, on_tap = function() GardenAdopt.goodbye(function() App.update() end) end }),
         } })
+        if Pet.talks() then
+            body[#body + 1] = heading(_("Memories"))
+            body[#body + 1] = memories(p)
+        end
+        body[#body + 1] = heading(_("Diary"))
+        body[#body + 1] = diary(p)
     else
         body[#body + 1] = Label:new({ text = _("No companion yet. Open a plant or an animal in the garden and choose Make them my companion. A companion stays for life."),
             kind = "body", lines = 4 })
