@@ -84,7 +84,7 @@ local function companion(id, o)
     if Pet.is(id) then
         return Button:new({ label = _("Their page"), variant = "secondary", grow = true, height = Theme.get().size.touch, on_tap = o.on_pet })
     end
-    if not Pet.get() and o.on_companion then
+    if not Pet.get() and not Pet.remembered(id) and o.on_companion then
         return Button:new({ label = string.format(_("Make %s my companion"), State.name(id)), variant = "secondary", grow = true,
             height = Theme.get().size.touch, on_tap = o.on_companion })
     end

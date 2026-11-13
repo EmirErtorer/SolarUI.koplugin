@@ -26,6 +26,7 @@ local Progress = require("solarui/ui/progress")
 local Registry = require("solarui/theme/registry")
 local Screen = require("solarui/screens/screen")
 local Settings = require("solarui/settings")
+local Pet = require("solarui/garden/pet")
 local State = require("solarui/garden/state")
 local row = require("solarui/ui/settingrow")
 local Swatch = require("solarui/ui/swatch")
@@ -184,6 +185,8 @@ function SettingsScreen:home()
                 end
                 App.choose({ title = _("Garden companion"), options = options })
             end })),
+        row(_("Companion dialogue"), _("The companion speaks in written lines on home and on their page, and tells memories as you read. Turn it off for a quiet companion with a bigger window"),
+            Controls.Toggle:new({ on = Pet.talks(), on_change = function(on) save("companion_talk", on) end })),
         row(_("Seasons on home"), _("The vines blossom in spring, turn gold in autumn and go pale in winter"),
             Controls.Toggle:new({ on = Settings.get("home_season", true), on_change = function(on) save("home_season", on) end })),
         row(_("Sleep picture"), _("Draws a picture in the garden's style to choose as KOReader's sleep screen (Settings, Screen, Sleep screen, Wallpaper, Custom image)"),

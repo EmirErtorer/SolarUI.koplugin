@@ -651,9 +651,25 @@ do
     Kit.ok(Pet.waiting() == 1 and Pet.get().now.moment == "level", "a tap tells the first of them")
     Voice.react(); Voice.react()
     Kit.ok(Pet.waiting() == 0, "and the next, and then a tap is a plain tap again")
+    -- a quiet companion: no lines, no memories, nothing waiting
+    local Settings = require("solarui/settings")
+    Settings.set("companion_talk", false)
+    Kit.ok(Voice.current() == nil and Voice.react() == nil and #Voice.beats(Pet.get().id) == 0, "with the dialogue off the companion says nothing")
+    Pet.get().events = {}
+    reading.total = reading.total + 100000
+    Pet.refresh({})
+    Kit.ok(Pet.waiting() == 0, "and nothing waits to be told")
+    Settings.set("companion_talk", true)
+    Kit.ok(Pet.talks() and Voice.current() ~= nil, "the dialogue is on by default and comes back when switched on")
     -- goodbye
     Kit.ok(Pet.goodbye() and Pet.get() == nil and #Pet.orchard() == 1 and Pet.orchard()[1].name == "Tuli", "goodbye sends the companion to the orchard")
-    Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "and a new companion can be chosen")
+    Kit.ok(Pet.remembered("tulip") and not Pet.remembered("rose"), "the one who left is remembered")
+    local Companion = require("solarui/garden/companion")
+    local still = false
+    for _, item in ipairs(Companion.list(12)) do if item.id == "tulip" then still = true end end
+    Kit.ok(not still, "and no longer keeps company on home")
+    Kit.ok(select(2, Pet.adopt("tulip")) == "orchard", "and cannot be taken again")
+    Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "while a new companion can be chosen")
     Pet.goodbye()
     State.unload()
     require("solarui/settings").set("garden", nil)

@@ -26,7 +26,8 @@ local _ = require("solarui/gettext")
 local HomeCompanion = {}
 
 HomeCompanion.WIDTH = 394         -- the card's width, in units
-local ARCH_W, ARCH_H = 150, 190   -- the arch, in the scene's units
+local ARCH_W, ARCH_H = 150, 190   -- the arch, in the scene's units (with the speech bubble under it)
+local QUIET_W, QUIET_H = 220, 356  -- the arch of a companion who does not speak: it takes the bubble's room too
 HomeCompanion.BUBBLE_H = 160      -- the speech bubble under it, at the usual text size, in units
 HomeCompanion.ROWS = 4            -- rows of text it always has room for
 
@@ -38,11 +39,13 @@ end
 
 -- How much taller than usual the card is on a scene scaled by `k`.
 function HomeCompanion.extra(k)
+    if not Pet.talks() then return 0 end
     return HomeCompanion.bubbleHeight(k) - HomeCompanion.BUBBLE_H
 end
 
 -- The card's height in units on a scene scaled by `k`.
 function HomeCompanion.height(k)
+    if not Pet.talks() then return QUIET_H end
     return ARCH_H + 6 + HomeCompanion.bubbleHeight(k)
 end
 
@@ -67,11 +70,11 @@ function HomeCompanion.pick()
 end
 
 -- Draw the companion's picture inside the arch at (x, y).
-local function picture(scene, item, x, y)
+local function picture(scene, item, x, y, aw, ah)
     local size = item.kind == "plant" and Layout.PLANTS[item.id] or Layout.ANIMALS[item.id]
-    local k = math.min((ARCH_W - 30) / size.w, (ARCH_H - 44) / size.h)
+    local k = math.min((aw - 30) / size.w, (ah - 44) / size.h)
     local w, h = size.w * k, size.h * k
-    local px, py = x + (ARCH_W - w) / 2, y + ARCH_H - 12 - h
+    local px, py = x + (aw - w) / 2, y + ah - 12 - h
     if item.kind == "plant" then scene:backdrop("plant_" .. item.id, px, py, w, h, GardenView.plantParam(item.entry))
     else scene:backdrop("animal_" .. item.id, px, py, w, h, GardenView.animalParam("1", false)) end
 end
@@ -107,12 +110,14 @@ end
 function HomeCompanion.header(scene, item, w, budget)
     local gap = scene:px(6)
     local name_h, line_h = Text.height("heading"), Text.height("micro")
+    local narrow = w < 200   -- (units: a companion who does not speak has a narrow column)
     local used = name_h + gap + line_h
-    local kids = { Label:new({ text = State.name(item.id), kind = "heading" }) }
+    local kids = { Label:new({ text = State.name(item.id), kind = "heading", lines = narrow and 2 or 1 }) }
+    if narrow then used = used + name_h end
     if item.pet then
-        kids[#kids + 1] = Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted" })
-        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro" })
-        used = used + gap + line_h
+        kids[#kids + 1] = Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted", lines = narrow and 2 or 1 })
+        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = narrow and 2 or 1 })
+        used = used + gap + line_h + (narrow and 2 * line_h or 0)
     else
         local latin = used + gap + line_h + gap + line_h <= budget
         if latin then
@@ -124,7 +129,7 @@ function HomeCompanion.header(scene, item, w, budget)
     end
     -- the first few visits say how to talk to them
     local p = item.pet and Pet.get()
-    if p and (p.taps or 0) < Pet.HINTS then
+    if p and Pet.talks() and (p.taps or 0) < Pet.HINTS then
         local hint = Label:new({ text = _("Tap to chat. Hold to open their page."), kind = "micro", color = "muted", lines = 2 })
         if used + gap + 2 * line_h + gap + (item.need > 0 and careButton(scene, item, w):naturalHeight() or 0) <= budget then
             kids[#kids + 1] = hint
@@ -174,17 +179,23 @@ function HomeCompanion.place(scene, x, y, w)
     State.refresh()
     local item = HomeCompanion.pick()
     if not item then return HomeCompanion.height(scene.k) end
-    scene:backdrop("garden_arch", x, y, ARCH_W, ARCH_H)
-    picture(scene, item, x, y)
-    local tx, tw = x + ARCH_W + 14, w - ARCH_W - 14
-    scene:place(HomeCompanion.header(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
+    -- a companion who does not speak has the bubble's room for a bigger arch
+    local talk = Pet.talks()
+    local aw, ah = ARCH_W, ARCH_H
+    if not talk then aw, ah = QUIET_W, QUIET_H end
+    scene:backdrop("garden_arch", x, y, aw, ah)
+    picture(scene, item, x, y, aw, ah)
+    local tx, tw = x + aw + 14, w - aw - 14
+    scene:place(HomeCompanion.header(scene, item, tw, scene:px(ah)), tx, y, tw, ah)
     if item.pet then Pet.refresh(Voice.beats(item.id)) end
-    local text = HomeCompanion.speech(item, fitter(scene, w))
-    if text and text ~= "" then bubble(scene, text, x, y + ARCH_H + 6, w) end
+    local text = talk and HomeCompanion.speech(item, fitter(scene, w)) or nil
+    if text and text ~= "" then bubble(scene, text, x, y + ah + 6, w) end
     local h = HomeCompanion.height(scene.k)
     -- something waits to be told: a tap hears it
-    if item.pet and Pet.waiting() > 0 then scene:backdrop("garden_badge", x + ARCH_W - 30, y - 6, 36, 36) end
-    if item.pet then
+    if item.pet and Pet.waiting() > 0 then scene:backdrop("garden_badge", x + aw - 30, y - 6, 36, 36) end
+    if item.pet and not talk then
+        scene:touch(x, y, w, h, function() App.push("gardenpet") end, function() App.push("gardenpet") end)
+    elseif item.pet then
         -- a tap is greeted with a new line; holding opens their page
         scene:touch(x, y, w, h, function() Pet.tapped(); Voice.fits = fitter(scene, w); Voice.react(); Voice.fits = nil; App.update() end, function() App.push("gardenpet") end)
     else

@@ -4,6 +4,7 @@
 -- day. Plain functions of a list so they can be tested.
 
 local Care = require("solarui/garden/care")
+local Pet = require("solarui/garden/pet")
 local State = require("solarui/garden/state")
 
 local Companion = {}
@@ -34,9 +35,12 @@ end
 -- or hiding (an animal asleep for the night is not).
 function Companion.list(hour)
     local out = {}
-    for _i, e in ipairs(State.plants()) do out[#out + 1] = { id = e.def.id, kind = "plant", entry = e } end
+    -- (one who has said goodbye lives in the orchard and does not keep company on home any more)
+    for _i, e in ipairs(State.plants()) do
+        if not Pet.remembered(e.def.id) then out[#out + 1] = { id = e.def.id, kind = "plant", entry = e } end
+    end
     for _i, e in ipairs(State.animals(hour)) do
-        if e.here or e.mood == Care.HIDING then out[#out + 1] = { id = e.def.id, kind = "animal", entry = e } end
+        if (e.here or e.mood == Care.HIDING) and not Pet.remembered(e.def.id) then out[#out + 1] = { id = e.def.id, kind = "animal", entry = e } end
     end
     return out
 end

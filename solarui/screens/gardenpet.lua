@@ -116,8 +116,10 @@ function GardenPet:build()
             line and Label:new({ text = line, kind = "body", align = "center", lines = 4 }) or Layout.Spacer:new({}),
         } })
         body[#body + 1] = bond()
-        body[#body + 1] = heading(_("Memories"))
-        body[#body + 1] = memories(p)
+        if Pet.talks() then
+            body[#body + 1] = heading(_("Memories"))
+            body[#body + 1] = memories(p)
+        end
         body[#body + 1] = heading(_("Diary"))
         body[#body + 1] = diary(p)
         body[#body + 1] = Layout.Row:new({ gap = th.space.s, children = {

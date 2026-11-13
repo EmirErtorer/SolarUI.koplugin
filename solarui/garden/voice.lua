@@ -37,6 +37,7 @@ end
 
 -- The memories of the companion `id`.
 function Voice.beats(id)
+    if not Pet.talks() then return {} end
     return Voice.of(id).beats or {}
 end
 
@@ -235,7 +236,7 @@ end
 -- Returns the text.
 function Voice.current()
     local p = Pet.get()
-    if not p then return nil end
+    if not p or not Pet.talks() then return nil end
     local now = State.clock()
     local ctx = Voice.context(p)
     local key = table.concat({ os.date("%Y%m%d", now), ctx.pages_today, ctx.goal_reached and 1 or 0 }, ":")
@@ -284,7 +285,7 @@ end
 -- A reaction to a tap: what waits to be told, else a new line each time.
 function Voice.react()
     local p = Pet.get()
-    if not p then return nil end
+    if not p or not Pet.talks() then return nil end
     local ctx = Voice.context(p)
     -- a tap hears the next thing that waits to be told, if there is one
     local waiting = pending(p, ctx)

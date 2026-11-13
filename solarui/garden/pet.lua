@@ -7,6 +7,7 @@
 -- table (`pet` and `orchard`), so tests can set the time and the reading
 -- numbers through State.clock and State.source.
 
+local Settings = require("solarui/settings")
 local State = require("solarui/garden/state")
 local _ = require("solarui/gettext")
 
@@ -45,11 +46,12 @@ end
 
 -- Take the plant or animal `id`, who is in the garden, as the companion with
 -- the name `name` (their own when blank). Returns true, or false and why:
--- "none" (not in the garden), "have" (a companion already).
+-- "none" (not in the garden), "have" (a companion already), "orchard" (one who said goodbye).
 function Pet.adopt(id, name)
     local e, kind = State.entry(id)
     if not e then return false, "none" end
     if Pet.get() then return false, "have" end
+    if Pet.remembered(id) then return false, "orchard" end
     local d, reading, now = State.get(), State.source(), State.clock()
     if name and name ~= "" then State.rename(id, name) end
     d.pet = { id = id, kind = kind, since = now, pages0 = reading.total or 0, books_seen = reading.books or 0, level = 1,
@@ -105,15 +107,22 @@ end
 
 -- Add an event for the voice to tell (a level reached, a memory, a book).
 local function event(p, kind, extra)
+    if not Pet.talks() then return end
     local e = extra or {}
     e.kind = kind
     p.events[#p.events + 1] = e
 end
 
+-- Does the companion talk? (a setting, on by default: some readers prefer
+-- a companion without written dialogue)
+function Pet.talks()
+    return Settings.get("companion_talk", true)
+end
+
 -- How many things wait to be told (a memory, a level, a book, a streak).
 function Pet.waiting()
     local p = Pet.get()
-    return p and #p.events or 0
+    return p and Pet.talks() and #p.events or 0
 end
 
 -- Bring the bond up to date: new levels, memories (`beats`: { { id, at, title,
@@ -174,6 +183,14 @@ function Pet.goodbye()
     d.pet = nil
     State.save()
     return true
+end
+
+-- Has `id` been a companion who is now in the orchard?
+function Pet.remembered(id)
+    for _i, o in ipairs(State.get().orchard or {}) do
+        if o.id == id then return true end
+    end
+    return false
 end
 
 -- Everyone who lives in the orchard now, oldest first.

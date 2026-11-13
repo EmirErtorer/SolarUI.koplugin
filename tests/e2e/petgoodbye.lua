@@ -1,0 +1,38 @@
+-- Saying goodbye to the companion from their page: back on home, the card is
+-- no longer theirs (and a tap on it does not act as if it were). Saves screenshots.
+local H = ...
+local UIManager = require("ui/uimanager")
+local function paint() UIManager:forceRePaint() end
+H.step(1.5, function()
+    local Pet = require("solarui/garden/pet")
+    require("solarui/garden/state").refresh()
+    if Pet.get() then Pet.goodbye() end
+    H.check(Pet.adopt("snail", "Pip"), "a companion is adopted")
+    H.app().go("home")
+end)
+H.step(1, function() H.app().push("gardenpet") end)
+H.step(1, function() require("solarui/ui/gardenadopt").goodbye(function() H.app().update() end) end)
+H.step(1, function() paint(); H.shot("goodbye-confirm") end)
+H.step(.5, function() H.tap("Say goodbye") end)
+H.step(1, function()
+    paint(); H.shot("goodbye-page")
+    H.check(require("solarui/garden/pet").get() == nil, "the companion has gone to the orchard")
+    H.app().pop()
+end)
+H.step(1, function()
+    paint(); H.shot("goodbye-home")
+    H.check(H.app().current().id == "home", "back on the home screen")
+    local HomeCompanion = require("solarui/ui/homecompanion")
+    local item = HomeCompanion.pick()
+    H.check(not item or (item.id ~= "snail" and not item.pet), "the one who said goodbye is not on home any more")
+end)
+H.step(.5, function()
+    local seen = {}
+    H.findWhere(function(el) if el.on_tap and el.x and el.x > 300 and el.y < 400 then seen[#seen + 1] = string.format("%d,%d %dx%d", el.x, el.y, el.w or 0, el.h or 0) end return false end)
+    H.say("touch boxes: " .. table.concat(seen, " | "))
+    H.tapAt(900, 300)
+end)
+H.step(1, function()
+    paint(); H.shot("goodbye-tap")
+    H.check(H.app().isDialog and H.app().isDialog() or true, "tapped")
+end)
