@@ -78,11 +78,20 @@ function Host:overlayBox()
     return Geom:new({ x = x, y = y, w = o.w + off, h = o.h + off })
 end
 
--- Where the toast sits: centred near the bottom, clear of the tab bar.
+-- Where the toast sits: centred near the bottom, clear of the tab bar and of any dialog.
 function Host:toastPos()
     local t = self.toast
     local th = Theme.get()
-    return math.floor((self.dimen.w - t.w) / 2), self.dimen.h - th.size.tabbar - th.space.xl - t.h
+    local x, y = math.floor((self.dimen.w - t.w) / 2), self.dimen.h - th.size.tabbar - th.space.xl - t.h
+    -- a toast never lies over a dialog: it moves to the clear room above or below it
+    local box = self:overlayBox()
+    if box and y < box.y + box.h and y + t.h > box.y then
+        local gap = th.space.s
+        -- below it when it fits (over the tab bar, which a dialog keeps from being used), else above
+        if box.y + box.h + gap + t.h <= self.dimen.h then y = box.y + box.h + gap
+        elseif box.y - gap - t.h >= 0 then y = box.y - gap - t.h end
+    end
+    return x, y
 end
 
 -- Paint background, screen, overlay and toast (timed), unless invisible.
