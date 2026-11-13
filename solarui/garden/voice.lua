@@ -115,11 +115,13 @@ local function fill(text, ctx, p)
         for part in (set .. "|"):gmatch("(.-)|") do parts[#parts + 1] = part end
         return parts[roll(p, #parts)]
     end)
-    return (text:gsub("{(%w+)}", function(k)
+    text = text:gsub("{(%w+)}", function(k)
         local v = ctx[k]
         if v == nil then return "" end
         return tostring(v)
-    end))
+    end)
+    -- (one page, not "1 pages")
+    return (text:gsub("%f[%d]1 pages", "1 page"))
 end
 
 -- Has this line been said lately?
