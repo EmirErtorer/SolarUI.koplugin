@@ -182,6 +182,8 @@ function HomeCompanion.place(scene, x, y, w)
     local text = HomeCompanion.speech(item, fitter(scene, w))
     if text and text ~= "" then bubble(scene, text, x, y + ARCH_H + 6, w) end
     local h = HomeCompanion.height(scene.k)
+    -- something waits to be told: a tap hears it
+    if item.pet and Pet.waiting() > 0 then scene:backdrop("garden_badge", x + ARCH_W - 30, y - 6, 36, 36) end
     if item.pet then
         -- a tap is greeted with a new line; holding opens their page
         scene:touch(x, y, w, h, function() Pet.tapped(); Voice.fits = fitter(scene, w); Voice.react(); Voice.fits = nil; App.update() end, function() App.push("gardenpet") end)

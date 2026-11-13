@@ -289,9 +289,26 @@ local function prewarm()
     end)
 end
 
+-- The companion has noticed the reading done since SolarUI was last open (a
+-- finished book, a streak, a memory): say so on whatever screen is showing
+-- (the home screen tells it itself).
+function App.companionNews()
+    local Pet = require("solarui/garden/pet")
+    if not (App.isOpen() and Pet.get()) then return end
+    local before = Pet.waiting()
+    Pet.refresh(require("solarui/garden/voice").beats(Pet.get().id))
+    if Pet.waiting() <= before then return end
+    local s = App.current()
+    if s and s.id ~= "home" then
+        App.toast(string.format(_("%s has something to tell you."), require("solarui/garden/state").name(Pet.get().id)))
+    end
+    App.update()
+end
+
 -- Work done once the screen is up, so it never delays the first paint.
 function App.afterShow()
     prewarm()
+    UIManager:scheduleIn(1, function() App.companionNews() end)
     if not update_started then
         -- once a session: tidy up after an update, and the daily check
         update_started = true

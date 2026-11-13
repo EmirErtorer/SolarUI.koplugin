@@ -281,11 +281,18 @@ function Voice.current()
     return chosen and chosen.text or nil
 end
 
--- A reaction to a tap: a new line each time.
+-- A reaction to a tap: what waits to be told, else a new line each time.
 function Voice.react()
     local p = Pet.get()
     if not p then return nil end
     local ctx = Voice.context(p)
+    -- a tap hears the next thing that waits to be told, if there is one
+    local waiting = pending(p, ctx)
+    if waiting then
+        p.now = { text = waiting.text, moment = waiting.moment, key = "tap", at = State.clock(), title = waiting.title }
+        State.save()
+        return waiting.text
+    end
     local line = Voice.pick("tap", ctx)
     if line then
         p.now = { text = line.text, moment = "tap", key = "tap", at = State.clock() }

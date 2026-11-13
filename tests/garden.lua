@@ -643,6 +643,14 @@ do
     local again = Voice.current()
     Kit.ok(again == told, "the line stays until something changes")
     Kit.ok(Voice.react() ~= nil, "a tap is answered")
+    -- a tap hears what waits to be told, one thing at a time
+    local pet_p = Pet.get()
+    pet_p.events = { { kind = "level", level = 2 }, { kind = "book" } }
+    Kit.ok(Pet.waiting() == 2, "two things wait to be told")
+    Voice.react()
+    Kit.ok(Pet.waiting() == 1 and Pet.get().now.moment == "level", "a tap tells the first of them")
+    Voice.react(); Voice.react()
+    Kit.ok(Pet.waiting() == 0, "and the next, and then a tap is a plain tap again")
     -- goodbye
     Kit.ok(Pet.goodbye() and Pet.get() == nil and #Pet.orchard() == 1 and Pet.orchard()[1].name == "Tuli", "goodbye sends the companion to the orchard")
     Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "and a new companion can be chosen")

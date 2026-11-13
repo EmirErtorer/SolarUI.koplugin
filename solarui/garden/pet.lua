@@ -110,6 +110,12 @@ local function event(p, kind, extra)
     p.events[#p.events + 1] = e
 end
 
+-- How many things wait to be told (a memory, a level, a book, a streak).
+function Pet.waiting()
+    local p = Pet.get()
+    return p and #p.events or 0
+end
+
 -- Bring the bond up to date: new levels, memories (`beats`: { { id, at, title,
 -- text } } from the voice), books finished, streaks and days together each
 -- become a diary line and an event for the voice. Call when the home screen is built.

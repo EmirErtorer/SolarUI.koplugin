@@ -13,6 +13,7 @@ local Files = require("solarui/data/files")
 local Format = require("solarui/format")
 local History = require("solarui/data/history")
 local HomeCompanion = require("solarui/ui/homecompanion")
+local Pet = require("solarui/garden/pet")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
 local Launcher = require("solarui/ui/launcher")
@@ -214,6 +215,7 @@ function Home:dock(scene, y)
             if ICON_FLOWERS[art] then
                 scene:place(Icon:new({ name = icon, size = math.floor(size * .3 / 1.787) }), cx - size * .22, top + tall * .4 - size * .22, size * .44, size * .44)
             end
+            if entry.id == "garden" and Pet.waiting() > 0 then scene:backdrop("garden_badge", cx + size * .22, top + 2, 32, 32) end
             scene:caption(label, cx - slot / 2, y + 144, slot, #entries > 6 and "small" or "heading")
             scene:touch(cx - slot / 2 + 4, y - 4, slot - 8, DOCK_H, action, function() Launcher.askRemove(entry, App.update) end)
         end)

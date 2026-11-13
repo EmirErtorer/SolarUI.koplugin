@@ -153,6 +153,15 @@ function Garden.garden_bubble(c, vw, vh)
         .. Flora.leaf(c, vw - 13, vh - 9, -168, 20, 6, c.leaf) .. Flora.leaf(c, vw - 13, vh - 9, -122, 17, 5, c.sage)
 end
 
+-- The badge that says the companion has something to tell: a gold bud-round
+-- with three dots of speech and a leaf.
+function Garden.garden_badge(c, vw, vh)
+    local r = math.min(vw, vh) / 2 - 3
+    local m, mid = vw / 2, vh / 2
+    return Svg.circle(m, mid, r, c.gold, c.ink, 2.4) .. Svg.circle(m - r * .45, mid, r * .15, c.ink) .. Svg.circle(m, mid, r * .15, c.ink)
+        .. Svg.circle(m + r * .45, mid, r * .15, c.ink) .. Flora.leaf(c, m + r * .55, mid - r * .8, -50, r * .8, r * .3, c.leaf)
+end
+
 -- The whole backdrop for a canvas vw x vh.
 function Garden.garden_ground(c, vw, vh, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)
