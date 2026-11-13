@@ -514,11 +514,17 @@ function App.bookClosed(path)
     if host and host.invisible then revealIfLeft() end
 end
 
--- Open KOReader's own drop-down menu (the file browser's) over home.
+-- Open KOReader's drop-down menu (the file browser's) over home.
 function App.koreaderMenu()
     require("solarui/park").finish()   -- the menu belongs to the file browser, which a parked book replaces
-    local KoMenu = require("solarui/komenu")
-    local fm_menu = KoMenu.fileManagerMenu()
+    local Menu = require("solarui/menu")
+    -- in SolarUI's style unless the reader chose KOReader's own or its menu cannot be read
+    if Settings.get("styled_menu", true) and Menu.available() then
+        local ok, err = pcall(function() if not Menu.current() then Menu.open() end end)
+        if ok then return end
+        require("logger").warn("SolarUI menu:", err)
+    end
+    local fm_menu = Menu.fileManagerMenu()
     if fm_menu then fm_menu:onShowMenu() end
 end
 

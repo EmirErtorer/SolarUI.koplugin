@@ -210,8 +210,14 @@ function SettingsScreen:home()
         row(_("Daily goal"), _("Minutes of reading a day, shown on home and in the reading log"),
             Controls.Stepper({ value = Settings.get("daily_goal", 30), min = 5, max = 240, step = 5,
                 format = function(v) return string.format(_("%d min"), v) end, value_w = 76, on_change = function(v) save("daily_goal", v) end })),
-        row(_("KOReader menu"), _("Also opens with a swipe down from the top of the screen"),
-            Button:new({ label = _("Open"), on_tap = function() App.koreaderMenu() end })),
+        row(_("KOReader menu"), _("In SolarUI's style, over home and in a book (off: KOReader's own); also opens with a swipe down from the top"),
+            Layout.Row:new({ gap = Theme.get().space.s, children = {
+                Controls.Toggle:new({ on = Settings.get("styled_menu", true), on_change = function(on) save("styled_menu", on) end }),
+                Button:new({ label = _("Open"), on_tap = function() App.koreaderMenu() end }),
+            } })),
+        row(_("Menu height"), _("How much of the screen KOReader's menu may take: taller shows more entries and needs fewer pages"),
+            Controls.Segmented({ options = { { "50%", 0.5 }, { "65%", 0.65 }, { "80%", 0.8 }, { "90%", 0.9 } }, value = Settings.get("menu_height", 0.8),
+                on_change = function(v) save("menu_height", v) end })),
         row(_("File browser"), _("Leave SolarUI for KOReader's own file browser"),
             Button:new({ label = _("Open"), on_tap = function() App.fileBrowser() end })),
     }

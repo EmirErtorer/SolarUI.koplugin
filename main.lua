@@ -54,6 +54,28 @@ function SolarUI:init()
     registerStartWith()
     self.ui.menu:registerToMainMenu(self)
     self:onDispatcherRegisterActions()
+    if self.ui.document then self:styleReaderMenu() end
+end
+
+-- Inside a book, the drop-down menu is SolarUI's too (unless the reader chose
+-- KOReader's own in Settings). Only this reader's own menu object is wrapped,
+-- never KOReader's class, and any failure shows KOReader's menu as built, so
+-- other plugins (ZenOS among them) are left as they are.
+function SolarUI:styleReaderMenu()
+    local km = self.ui.menu
+    local show = km.onShowMenu
+    km.onShowMenu = function(menu, tab_index, do_not_show)
+        if do_not_show or not require("solarui/settings").get("styled_menu", true) then
+            return show(menu, tab_index, do_not_show)
+        end
+        local Menu = require("solarui/menu")
+        local ok, err = pcall(function() if not Menu.current() then Menu.open({ km = menu, reader = true }) end end)
+        if not ok then
+            require("logger").warn("SolarUI menu:", err)
+            return show(menu, tab_index, do_not_show)
+        end
+        return true
+    end
 end
 
 -- The gesture and hotkey action "SolarUI home".
