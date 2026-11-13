@@ -63,7 +63,14 @@ function GardenView.compose(scene, o)
     local season = o.season or Season.now()
     local weather = State.weather()
     local edge = GardenView.edge(scene)
-    local light = (o.faded and "wash:" or "") .. phase .. (weather ~= "clear" and (":" .. weather) or "") .. ":" .. season
+    -- a tuft or a peek is a sprite (where it stands changes on every visit, and must not redraw the backdrop),
+    -- except in the faded copy, which is washed as one
+    local function small(name, b, param)
+        if o.faded then scene:backdrop(name, b.x, b.y, b.w, b.h, param) else scene:sprite(name, b.x, b.y, b.w, b.h, param) end
+    end
+    local light = phase .. (weather ~= "clear" and (":" .. weather) or "") .. ":" .. season
+    -- the faded copy is the same garden with the page's colour laid over it (one blend, no redrawing)
+    if o.faded then scene.fade = .72 end
     -- the whole garden is one part, so the layout editor can size it against the screen
     scene:group("garden.field", "The whole garden", function()
         -- drawn as wide as the screen, so its lawn reaches the borders
@@ -82,12 +89,12 @@ function GardenView.compose(scene, o)
             for _i, def in ipairs(Cast.PLANTS) do
                 if def.find and not State.get().plants[def.id] then
                     local b = Layout.place(def.id, vh)
-                    scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1" .. (o.faded and ":wash" or "") .. ":" .. phase)
+                    scene:backdrop("plant_" .. def.id, b.x, b.y, b.w, b.h, "1:" .. phase)
                 end
             end
             for _i, e in ipairs(State.plants()) do
                 local b = Layout.place(e.def.id, vh)
-                scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, o.faded, phase, season, progress.year))
+                scene:backdrop("plant_" .. e.def.id, b.x, b.y, b.w, b.h, GardenView.plantParam(e, false, phase, season, progress.year))
                 if o.on_tap then scene:touch(b.x, b.y, b.w, b.h, function() o.on_tap(e.def.id, "plant") end) end
             end
         end)
@@ -100,7 +107,7 @@ function GardenView.compose(scene, o)
             local peek = o.on_peek and State.peek() and Layout.peek(o.seed, spread)
             if peek then
                 local b = Layout.at(peek, vh)
-                scene:sprite("garden_peek", b.x, b.y, b.w, b.h, light)
+                small("garden_peek", b, light)
                 scene:touch(b.hit.x, b.hit.y, b.hit.w, b.hit.h, o.on_peek)
             end
             for _i, a in ipairs(o.showcase and everyone() or State.animals(o.hour or Sky.hour())) do
@@ -112,14 +119,14 @@ function GardenView.compose(scene, o)
                 end
                 local b = Layout.at(base, vh)
                 if a.here then
-                    local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, o.faded, phase) end
+                    local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, false, phase) end
                     if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
                     else
                         local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
                         if o.sprites then o.sprites[id] = el end
                     end
                 elseif a.mood == "hiding" or a.resting then
-                    scene:sprite("garden_tuft", b.x, b.y, b.w, b.h, light .. (a.resting and ":sleep" or ""))   -- (a sprite: where it stands changes on every visit, and must not redraw the backdrop)
+                    small("garden_tuft", b, light .. (a.resting and ":sleep" or ""))
                 end
                 local hit = b.hit or b
                 if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end

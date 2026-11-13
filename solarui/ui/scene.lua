@@ -226,7 +226,7 @@ function Scene:paint(bb, x, y)
     self.x, self.y = x, y
     local keys = {}
     for i, it in ipairs(self.items) do keys[i] = it.key end
-    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, table.concat(keys, ";") .. "@" .. self.w)
+    Art.layer(self.slot, bb, x, y, self.w, self.h, self.items, table.concat(keys, ";") .. "@" .. self.w, self.fade)
     for _i, c in ipairs(self.children) do c:paint(bb, x + c.sx, y + c.sy) end
 end
 

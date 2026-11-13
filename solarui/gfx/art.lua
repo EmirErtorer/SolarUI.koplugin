@@ -34,6 +34,7 @@ local piece_bytes = 0
 local sprites = {}   -- key -> buffer (false when the drawing failed)
 local order = {}     -- keys, oldest first
 local layers = {}    -- slot -> { sig, w, h, type, bb }
+local base_order = {}   -- the keys of the base layers kept, oldest first
 local version        -- the theme version everything kept was drawn for
 local colours        -- the roles as "#rrggbb" for that version, and the same with living things' real colours
 local natural_colours
@@ -201,8 +202,9 @@ end
 -- { frame = inset, t = thickness } for a ruled border), composed over the
 -- page colour the first time and whenever `sig` (a text naming what is on
 -- it) changes, then copied in one go. `slot` names the backdrop.
-function Art.layer(slot, bb, x, y, w, h, items, sig)
+function Art.layer(slot, bb, x, y, w, h, items, sig, fade)
     sync()
+    if fade then sig = sig .. "~fade" .. fade end
     local l = layers[slot]
     if not l or l.sig ~= sig or l.w ~= w or l.h ~= h or l.type ~= bb:getType() then
         if l then l.bb:free() end
@@ -217,15 +219,26 @@ function Art.layer(slot, bb, x, y, w, h, items, sig)
             local keys = {}
             for i, it in ipairs(base_items) do keys[i] = it.key end
             local base_sig = table.concat(keys, ";") .. "@" .. w .. "x" .. h
-            local bl = layers[slot .. "|base"]
-            if not bl or bl.sig ~= base_sig then
-                if bl then bl.bb:free() end
+            -- (shared by every slot that has the same ground: the faded copy starts from the garden's)
+            local bl = layers["base|" .. base_sig]
+            if not bl then
                 bl = { sig = base_sig, bb = compose(w, h, base_items) }
-                layers[slot .. "|base"] = bl
+                layers["base|" .. base_sig] = bl
+                -- grounds of old looks go (the weather, season or hour changed): three are kept
+                base_order[#base_order + 1] = "base|" .. base_sig
+                while #base_order > 3 do
+                    local old = table.remove(base_order, 1)
+                    if layers[old] then layers[old].bb:free(); layers[old] = nil end
+                end
             end
             under = bl.bb
         end
         local canvas = compose(w, h, rest, under)
+        if fade then
+            -- the faded copy: the page's colour laid over everything, `fade` of the way opaque
+            local p = Theme.get().painted.bg
+            canvas:blendRectRGB32(0, 0, w, h, Blitbuffer.ColorRGB32(p[1], p[2], p[3], math.floor(fade * 255 + .5)))
+        end
         local out = canvas
         if bb:getType() ~= Blitbuffer.TYPE_BBRGB32 then
             out = Blitbuffer.new(w, h, bb:getType())
@@ -248,7 +261,7 @@ function Art.free()
         if p then p.bb:free() end
     end
     sprites, order, layers, colours, natural_colours = {}, {}, {}, nil, nil
-    pieces, piece_order, piece_bytes = {}, {}, 0
+    pieces, piece_order, piece_bytes, base_order = {}, {}, 0, {}
 end
 
 return Art
