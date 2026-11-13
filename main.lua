@@ -123,6 +123,17 @@ end
 -- Close SolarUI on Exit too, or a window is left and KOReader never quits.
 function SolarUI:onExit()
     require("solarui/app").close()
+    require("solarui/settings").flush()
+end
+
+-- Settings are written a moment after they change; KOReader says when the
+-- moment must not wait (going to sleep, restarting).
+function SolarUI:onFlushSettings()
+    require("solarui/settings").flush()
+end
+
+function SolarUI:onSuspend()
+    require("solarui/settings").flush()
 end
 
 -- Open SolarUI; from the reader, home shows at once and the book closes

@@ -125,6 +125,15 @@ function Pet.waiting()
     return p and Pet.talks() and #p.events or 0
 end
 
+-- A short text that changes when anything Pet.refresh keeps changes.
+local function stamp(p)
+    local n = 0
+    for _k in pairs(p.beats) do n = n + 1 end
+    for _k in pairs(p.streaks) do n = n + 1 end
+    for _k in pairs(p.days_marked) do n = n + 1 end
+    return table.concat({ p.level, #p.diary, #p.events, p.books_seen, n }, ":")
+end
+
 -- Bring the bond up to date: new levels, memories (`beats`: { { id, at, title,
 -- text } } from the voice), books finished, streaks and days together each
 -- become a diary line and an event for the voice. Call when the home screen is built.
@@ -132,6 +141,7 @@ function Pet.refresh(beats)
     local p = Pet.get()
     if not p then return end
     local reading, now = State.source(), State.clock()
+    local before = stamp(p)
     local pages = Pet.pages(reading)
     local level = Pet.level(pages)
     if level > p.level then
@@ -169,7 +179,7 @@ function Pet.refresh(beats)
             event(p, "anniversary", { days = a })
         end
     end
-    State.save()
+    if stamp(p) ~= before then State.save() end
 end
 
 -- Say goodbye: the companion goes to the orchard, where they stay in the
