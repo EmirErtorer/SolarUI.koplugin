@@ -16,6 +16,14 @@ do
     local ids = {}
     for _, e in ipairs(Launcher.entries()) do ids[#ids + 1] = e.id end
     Kit.ok(table.concat(ids, ",") == table.concat(Launcher.BUILTIN, ","), "the launcher starts with the built-in buttons in order")
+    -- a list saved in an earlier default order, never edited, follows the new default
+    Settings.set("launcher", { { id = "library" }, { id = "collections" }, { id = "history" }, { id = "search" }, { id = "inkaway" }, { id = "garden" }, { id = "settings" } })
+    Kit.ok(Launcher.entries()[1].id == "search" and Launcher.entries()[4].id == "garden", "an unedited old default list gets the new order")
+    Settings.set("launcher", { { id = "library" }, { id = "collections" }, { id = "history", hidden = true }, { id = "search" }, { id = "inkaway" }, { id = "garden" }, { id = "settings" } })
+    Kit.ok(Launcher.entries()[1].id == "library", "a list the reader edited keeps its order")
+    Settings.set("launcher", { { id = "library" }, { id = "collections" }, { id = "history" }, { id = "search" }, { id = "inkaway" }, { id = "settings" }, { id = "garden" } })
+    Kit.ok(Launcher.entries()[1].id == "search" and Launcher.entries()[7].id == "settings", "so does the list from before the garden had its own button")
+    Settings.set("launcher", nil)
     Launcher.move("search", 1)
     Kit.ok(Launcher.entries()[1].id == "history" and Launcher.entries()[2].id == "search", "a button moves down")
     Launcher.setHidden("history", true)

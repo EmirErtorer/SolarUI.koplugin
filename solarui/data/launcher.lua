@@ -19,11 +19,35 @@ local MAX = 12   -- buttons the home screen has room for
 local builtin = {}
 for _i, id in ipairs(Launcher.BUILTIN) do builtin[id] = true end
 
+-- The default order of earlier versions. A list saved in that order with nothing
+-- hidden or added was never edited, so it follows the new default.
+Launcher.OLD_DEFAULTS = {
+    { "library", "collections", "history", "search", "inkaway", "garden", "settings" },
+    -- (from before the garden had a button of its own: it was added at the end)
+    { "library", "collections", "history", "search", "inkaway", "settings", "garden" },
+}
+
+-- Is the saved list one of the old defaults, unedited?
+function Launcher.untouched(saved)
+    for _i, old in ipairs(Launcher.OLD_DEFAULTS) do
+        if #saved == #old then
+            local same = true
+            for j, e in ipairs(saved) do
+                if type(e) ~= "table" or e.id ~= old[j] or e.hidden or e.custom then same = false break end
+            end
+            if same then return true end
+        end
+    end
+    return false
+end
+
 -- The saved entries, valid ones only, with every built-in present:
 -- { id, hidden, custom = { name, icon, target } }.
 function Launcher.entries()
     local out, seen = {}, {}
-    for _i, e in ipairs(Settings.get("launcher", {})) do
+    local saved = Settings.get("launcher", {})
+    if Launcher.untouched(saved) then saved = {} end
+    for _i, e in ipairs(saved) do
         if type(e) == "table" and (builtin[e.id] or e.custom) and not seen[e.id] then
             seen[e.id] = true
             out[#out + 1] = e
