@@ -253,6 +253,31 @@ do
     ck(State.get().animals.bee.fed == now and State.get().animals.snail.fed == now and State.get().animals.ladybug.fed == now, "sharing the harvest feeds the three who wait longest")
 end
 
+group("reseeding: a plant cut back grows again, generation after generation")
+for _, def in ipairs(Cast.PLANTS) do
+    reset("spring")
+    State.get().plants, State.get().animals = {}, {}
+    plant(def.id, 5, { seeded = T0 - 3 * DAY })
+    local eff = Season.adjust(def, "spring")
+    local ok = true
+    for gen = 2, 4 do
+        local took = State.collect(def.id, "keep")
+        local rec = State.get().plants[def.id]
+        ok = ok and took and rec.gen == gen and rec.stage == 2
+        -- from a sprout to a seed head again, watered all the way
+        local need = eff.need[2] + eff.need[3] + eff.need[4]
+        for at = 0, need + DAY, 6 * HOUR do
+            now = now + 6 * HOUR
+            if def.interval then rec.watered = now end
+            State.refresh()
+        end
+        ok = ok and rec.stage == 5 and rec.seeded ~= nil
+        now = now + 3 * DAY
+    end
+    ck(ok, def.id .. " grows from a sprout to seed again after each cutting back, for three generations")
+    ck(State.get().plants[def.id].gen == 4, def.id .. " is on its fourth generation")
+end
+
 -- ---------------------------------------------------------------- names
 group("names: nicknames for everyone")
 for _, id in ipairs(ids) do
