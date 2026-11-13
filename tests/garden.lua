@@ -641,7 +641,7 @@ do
     local told = Voice.current()
     Kit.ok(told and told ~= "", "the companion has something to say on home")
     local again = Voice.current()
-    Kit.ok(again == told or #p.events == 0, "the line stays until something changes")
+    Kit.ok(again == told, "the line stays until something changes")
     Kit.ok(Voice.react() ~= nil, "a tap is answered")
     -- goodbye
     Kit.ok(Pet.goodbye() and Pet.get() == nil and #Pet.orchard() == 1 and Pet.orchard()[1].name == "Tuli", "goodbye sends the companion to the orchard")

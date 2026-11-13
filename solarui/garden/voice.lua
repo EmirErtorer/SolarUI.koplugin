@@ -20,6 +20,9 @@ local Voice = {}
 
 -- How many lines a companion remembers having said.
 Voice.MEMORY = 48
+-- The moments that tell something that waited (they are held a few hours when told).
+local EVENTS = { beat = true, level = true, finished = true, streak = true, anniversary = true }
+
 -- How long a line stays on the home screen before another is chosen, in seconds.
 Voice.HOLD = 3 * 3600
 
@@ -218,8 +221,13 @@ function Voice.current()
     local now = State.clock()
     local ctx = Voice.context(p)
     local key = table.concat({ os.date("%Y%m%d", now), ctx.pages_today, ctx.goal_reached and 1 or 0 }, ":")
-    if p.now and #p.events == 0 and ((p.now.key == key and now - p.now.at < Voice.HOLD) or (p.now.moment == "tap" and now - p.now.at < 120)) then
-        return p.now.text
+    if p.now then
+        -- a tap is answered for a moment, and what was told (a memory, a level) stays its few hours
+        -- before the next waiting thing is told, so the visits do not use them up at once
+        local age = now - p.now.at
+        if p.now.moment == "tap" and age < 120 then return p.now.text end
+        if EVENTS[p.now.moment] and age < Voice.HOLD then return p.now.text end
+        if p.now.key == key and age < Voice.HOLD and #p.events == 0 then return p.now.text end
     end
     local chosen = pending(p, ctx)
     local day = os.date("%Y%m%d", now)
