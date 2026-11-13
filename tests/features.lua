@@ -539,4 +539,29 @@ do
     Theme.refresh()
 end
 
+-- KOReader's windows in SolarUI's style: every skin loads and registers, each belongs to a switch,
+-- and the switches are honoured
+do
+    local Settings = require("solarui/settings")
+    for _i, name in ipairs({ "message", "confirm", "highlightmenu", "edithighlight", "buttondialog", "keyboard", "inputdialog", "list",
+        "dictionary", "textviewer", "numbers", "choice", "keyvalue", "sort", "progress", "qr", "network", "bookstatus" }) do
+        local ok, err = pcall(require, "solarui/skin/" .. name)
+        Kit.ok(ok, "skin " .. name .. " loads: " .. tostring(err))
+    end
+    local Core, Groups = require("solarui/skin/core"), require("solarui/skin/groups")
+    Kit.ok(#Core.skins >= 18, "the skins register themselves (" .. #Core.skins .. ")")
+    for _i, skin in ipairs(Core.skins) do
+        Kit.ok(Groups.of(skin.name) ~= nil, "skin " .. skin.name .. " has a switch of its own")
+    end
+    Settings.set("styled_widgets", true)
+    Settings.set("styled_notices", true)
+    Kit.ok(Core.wanted("confirm"), "a skin is wanted when its switches are on")
+    Settings.set("styled_notices", false)
+    Kit.ok(not Core.wanted("confirm") and Core.wanted("keyboard"), "one kind can be switched off alone")
+    Settings.set("styled_notices", true)
+    Settings.set("styled_widgets", false)
+    Kit.ok(not Core.wanted("keyboard") and not Core.wanted(), "the main switch turns every kind off")
+    Settings.set("styled_widgets", true)
+end
+
 Kit.finish("features")

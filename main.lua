@@ -54,6 +54,9 @@ function SolarUI:init()
     registerStartWith()
     self.ui.menu:registerToMainMenu(self)
     self:onDispatcherRegisterActions()
+    -- KOReader's own windows in SolarUI's style (each kind has a switch in Settings)
+    local ok, err = pcall(function() require("solarui/skin/all").install() end)
+    if not ok then require("logger").warn("SolarUI skins:", err) end
     if self.ui.document then self:styleReaderMenu() end
 end
 
