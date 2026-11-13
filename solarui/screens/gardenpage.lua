@@ -22,7 +22,7 @@ local GardenPage = Screen:extend()
 -- Start on the first page of the one asked for in the params.
 function GardenPage:init(params)
     self.page = 1
-    self.id = params.id or Cast.PLANTS[1].id
+    self.who = params.id or Cast.PLANTS[1].id
 end
 
 -- A titled paragraph.
@@ -57,39 +57,39 @@ end
 
 -- The items of the page, top to bottom.
 function GardenPage:items()
-    local def, kind = Cast.find(self.id)
-    local tier = Almanac.tier(self.id)
-    local page = Almanac.page(self.id)
+    local def, kind = Cast.find(self.who)
+    local tier = Almanac.tier(self.who)
+    local page = Almanac.page(self.who)
     local items = {}
     local function add(e) items[#items + 1] = e end
     local th = Theme.get()
     add(Layout.Column:new({ gap = 0, pad = { 0, 0, th.space.s, 0 }, children = {
-        Label:new({ text = State.name(self.id), kind = "title" }),
+        Label:new({ text = State.name(self.who), kind = "title" }),
         Label:new({ text = def.latin, kind = "small", color = "muted" }),
     } }))
     if tier == 0 then
         add(section(_("Not met yet"), require("solarui/garden/visitors").hint(def)))
         return items
     end
-    local e = State.entry(self.id)
+    local e = State.entry(self.who)
     add(section(_("Now"), GardenCard.status(e, kind)))
-    add(section(_("About"), Lore.get(self.id)))
+    add(section(_("About"), Lore.get(self.who)))
     add(section(_("The name"), page.name))
     if tier >= 2 then
         add(section(_("Where they live"), page.habitat))
         add(section(_("Through the year"), when(def, kind)))
-        for _i, l in ipairs(Almanac.linksOf(self.id)) do
-            local other = Cast.find(l[1] == self.id and l[2] or l[1])
+        for _i, l in ipairs(Almanac.linksOf(self.who)) do
+            local other = Cast.find(l[1] == self.who and l[2] or l[1])
             add(section(string.format(_("Linked to %s"), other.en), l[3]))
         end
     else
-        add(section(_("Where they live"), locked(self.id, 1), true))
+        add(section(_("Where they live"), locked(self.who, 1), true))
     end
     if tier >= 3 then
         add(section(_("How people have lived with them"), page.story))
         add(section(_("Look for them outdoors"), page.look))
     elseif tier == 2 then
-        add(section(_("Their story"), locked(self.id, 2), true))
+        add(section(_("Their story"), locked(self.who, 2), true))
     end
     return items
 end

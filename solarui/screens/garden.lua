@@ -337,7 +337,7 @@ function Garden:cacheKey(ctx)
     table.sort(pose); table.sort(at)
     return table.concat({ State.version, math.floor(State.clock() / 60), Sky.phase(Sky.hour()), Season.now(), State.weather(), Theme.get().version,
         ctx.w, ctx.h, tostring(self.focus), tostring(self.showcase), tostring(self.sitting), tostring(self.seed), table.concat(pose, ","), table.concat(at, ","),
-        tostring(self.quote_at) }, "|")
+        tostring(self.quote_at), State.owed(), tostring(self.asked) }, "|")
 end
 
 -- Build the garden.
