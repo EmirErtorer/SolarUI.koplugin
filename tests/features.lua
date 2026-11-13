@@ -16,8 +16,8 @@ do
     local ids = {}
     for _, e in ipairs(Launcher.entries()) do ids[#ids + 1] = e.id end
     Kit.ok(table.concat(ids, ",") == table.concat(Launcher.BUILTIN, ","), "the launcher starts with the built-in buttons in order")
-    Launcher.move("library", 1)
-    Kit.ok(Launcher.entries()[1].id == "collections" and Launcher.entries()[2].id == "library", "a button moves down")
+    Launcher.move("search", 1)
+    Kit.ok(Launcher.entries()[1].id == "history" and Launcher.entries()[2].id == "search", "a button moves down")
     Launcher.setHidden("history", true)
     Kit.ok(#Launcher.visible() == #Launcher.BUILTIN - 1, "a hidden button is not shown")
     Launcher.setHidden(Launcher.FIXED, true)
