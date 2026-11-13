@@ -111,8 +111,8 @@ function HomeCompanion.header(scene, item, w, budget)
     local kids = { Label:new({ text = State.name(item.id), kind = "heading" }) }
     if item.pet then
         kids[#kids + 1] = Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted" })
-        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = 2 })
-        used = used + gap + 2 * line_h
+        kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro" })
+        used = used + gap + line_h
     else
         local latin = used + gap + line_h + gap + line_h <= budget
         if latin then
@@ -121,6 +121,15 @@ function HomeCompanion.header(scene, item, w, budget)
         end
         kids[#kids + 1] = Label:new({ text = mood(item), kind = "micro", lines = 2 })
         used = used + gap + 2 * line_h
+    end
+    -- the first few visits say how to talk to them
+    local p = item.pet and Pet.get()
+    if p and (p.taps or 0) < Pet.HINTS then
+        local hint = Label:new({ text = _("Tap to chat. Hold to open their page."), kind = "micro", color = "muted", lines = 2 })
+        if used + gap + 2 * line_h + gap + (item.need > 0 and careButton(scene, item, w):naturalHeight() or 0) <= budget then
+            kids[#kids + 1] = hint
+            used = used + gap + 2 * line_h
+        end
     end
     if item.need > 0 then
         local button = careButton(scene, item, w)
@@ -175,7 +184,7 @@ function HomeCompanion.place(scene, x, y, w)
     local h = HomeCompanion.height(scene.k)
     if item.pet then
         -- a tap is greeted with a new line; holding opens their page
-        scene:touch(x, y, w, h, function() Voice.fits = fitter(scene, w); Voice.react(); Voice.fits = nil; App.update() end, function() App.push("gardenpet") end)
+        scene:touch(x, y, w, h, function() Pet.tapped(); Voice.fits = fitter(scene, w); Voice.react(); Voice.fits = nil; App.update() end, function() App.push("gardenpet") end)
     else
         scene:touch(x, y, w, h, function() GardenPopup.open(item.id) end)
     end

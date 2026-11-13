@@ -9,7 +9,8 @@ local _ = require("solarui/gettext")
 
 local GardenAdopt = {}
 
--- Make `id` the companion: ask for a name, then make sure. `after` runs once it is done.
+-- Make `id` the companion: ask for a name, then make sure. `after` runs once it is done,
+-- and then the home screen opens, where the companion greets you.
 function GardenAdopt.start(id, after)
     if Pet.get() then return App.toast(_("There is a companion already. Say goodbye to them first.")) end
     App.input(_("Name your companion"), State.rec(id).nick or "", function(text)
@@ -19,8 +20,15 @@ function GardenAdopt.start(id, after)
             ok = _("Yes, for life"), cancel = _("Not yet"),
             on_ok = function()
                 local ok = Pet.adopt(id, text)
-                App.toast(ok and string.format(_("%s is your companion."), name) or _("That did not work."))
                 if after then after() end
+                if ok then
+                    -- straight to the home screen, where the new companion says hello
+                    App.closeDialog()
+                    App.go("home")
+                    App.toast(string.format(_("%s is your companion."), name))
+                else
+                    App.toast(_("That did not work."))
+                end
             end })
     end, _("Next"), { placeholder = State.name(id) })
 end

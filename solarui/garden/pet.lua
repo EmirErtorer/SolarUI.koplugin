@@ -59,6 +59,17 @@ function Pet.adopt(id, name)
     return true
 end
 
+-- How many taps teach the way to talk to the companion (the hint on the home card goes after).
+Pet.HINTS = 3
+
+-- Count a tap on the companion.
+function Pet.tapped()
+    local p = Pet.get()
+    if not p then return end
+    p.taps = (p.taps or 0) + 1
+    State.save()
+end
+
 -- How many pages have been read since the adoption.
 function Pet.pages(reading)
     local p = Pet.get()
