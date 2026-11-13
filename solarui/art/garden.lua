@@ -150,7 +150,7 @@ function Garden.garden_bubble(c, vw, vh)
             n(r + d), n(vh - d), n(d), n(vh - d), n(d), n(vh - r - d), n(d), n(t + r + d), n(d), n(t + d), n(r + d), n(t + d))
     end
     return path(panel(3), c.bg, c.ink, 2.6) .. line(panel(9), c.line, 1.2)
-        .. Flora.leaf(c, vw - 22, vh - 14, -158, 30, 8, c.leaf) .. Flora.leaf(c, vw - 22, vh - 14, -112, 26, 7, c.sage)
+        .. Flora.leaf(c, vw - 13, vh - 9, -168, 20, 6, c.leaf) .. Flora.leaf(c, vw - 13, vh - 9, -122, 17, 5, c.sage)
 end
 
 -- The whole backdrop for a canvas vw x vh.
