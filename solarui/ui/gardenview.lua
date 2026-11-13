@@ -83,7 +83,9 @@ function GardenView.compose(scene, o)
         local progress = State.progress()
         local vine = progress.vine
         if vine.days > 0 and not o.faded then
-            scene:keepSize(function() scene:backdrop("garden_vine", 0, 0, Layout.WIDTH, vh, vine.leaves .. ":" .. vine.flowers) end)
+            -- as wide as the screen, like the ground, so it runs in the margin between the border's two rules
+            -- (the poster is narrower than a screen that is wider than its shape)
+            scene:placed(function() scene:backdrop("garden_vine", -scene.ox / scene.k, 0, scene.width / scene.k, vh, vine.leaves .. ":" .. vine.flowers) end)
         end
         scene:keepSize(function()
             for _i, def in ipairs(Cast.PLANTS) do
