@@ -31,6 +31,7 @@ local SHEET = {
     { "bar_flower", 160, 100, "0:0" }, { "bar_flower", 160, 100, "5:0" }, { "bar_flower", 160, 100, "40:0" }, { "bar_flower", 160, 100, "100:1" },
     { "bar_flower", 38, 100, "0:0" }, { "bar_flower", 38, 100, "5:0" }, { "bar_flower", 38, 100, "40:0" }, { "bar_flower", 38, 100, "100:0" }, { "bar_flower", 38, 100, "100:1" },
     { "bar_flower", 33, 170, "0:0" }, { "bar_flower", 33, 170, "15:0" }, { "bar_flower", 33, 170, "60:1" }, { "bar_flower", 84, 170, "0:0" }, { "bar_flower", 84, 170, "25:0" }, { "bar_flower", 84, 170, "80:1" },
+    { "tab_flower", 100, 130, "1:0" }, { "tab_flower", 100, 130, "2:0" }, { "tab_flower", 100, 130, "3:0" }, { "tab_flower", 100, 130, "4:0" }, { "tab_flower", 100, 130, "5:0" }, { "tab_flower", 100, 130, "6:0" }, { "tab_flower", 100, 130, "7:0" }, { "tab_flower", 100, 130, "8:0" }, { "tab_flower", 100, 130, "9:0" }, { "tab_flower", 100, 130, "10:0" }, { "tab_flower", 100, 130, "11:0" }, { "tab_flower", 100, 130, "12:0" }, { "tab_flower", 100, 130, "1:1" }, { "tab_flower", 100, 130, "2:1" }, { "tab_flower", 100, 130, "3:1" }, { "tab_flower", 100, 130, "4:1" }, { "tab_flower", 100, 130, "5:1" }, { "tab_flower", 100, 130, "6:1" }, { "tab_flower", 100, 130, "7:1" }, { "tab_flower", 100, 130, "8:1" }, { "tab_flower", 100, 130, "9:1" }, { "tab_flower", 100, 130, "10:1" }, { "tab_flower", 100, 130, "11:1" }, { "tab_flower", 100, 130, "12:1" },
     { "wifi", 90, 90, 1 }, { "wifi", 90, 90, 0 }, { "lamp", 80, 100, 1 }, { "lamp", 80, 100, 0 }, { "battery", 100, 50, 7 }, { "battery", 100, 50, 2 },
 }
 
