@@ -139,29 +139,4 @@ K.shot("e09-home-auto-resident-the-neediest", function()
     Settings.set("home_companion", "auto"); K.animals("hiding"); home()
 end)
 
--- ---------------------------------------------------------------- the sleep picture
-K.shot("f01-settings-sleep-picture", function() K.reset({}); K.everyone(); H.app().go("settings") end)
-K.shot("f02-make-a-sleep-picture", function()
-    for _ = 1, 8 do
-        if H.find("Make") then break end
-        H.swipe("north", 600, 1100)   -- (the settings list scrolls)
-        require("ui/uimanager"):forceRePaint()
-    end
-    H.tap("Make")
-end)
-K.shot("f03-sleep-garden", function()
-    H.tap("My garden as it is now")
-    os.execute(string.format("cp '%s' '%s/sleep-garden.png'", require("solarui/sleep").path(), H.out))
-end, function() H.check(K.lastToast() and K.lastToast():find("Saved"), "the garden picture is saved") end)
-K.shot("f04-make-the-poster", function()
-    for _ = 1, 8 do
-        if H.find("Make") then break end
-        H.swipe("north", 600, 1100)   -- (the settings list scrolls)
-        require("ui/uimanager"):forceRePaint()
-    end
-    H.tap("Make")
-end)
-K.shot("f05-the-poster-saved", function()
-    H.tap("The home poster")
-    os.execute(string.format("cp '%s' '%s/sleep-poster.png'", require("solarui/sleep").path(), H.out))
-end)
+-- (the sleep picture is made through Settings in gardenall5.lua)
