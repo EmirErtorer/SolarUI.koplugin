@@ -425,6 +425,16 @@ do
     Season.set("spring")
 end
 
+-- the maple counts only books finished after the garden began
+do
+    local began = 1700000000
+    local day = function(offset) return os.date("%Y-%m-%d", began + offset * DAY) end
+    local list = { { date = day(-400) }, { date = day(-1) }, { date = day(0) }, { date = day(3) }, { date = day(90) } }
+    Kit.ok(State.booksSince(list, began) == 3, "only the books finished on or after the day the garden began count")
+    Kit.ok(State.booksSince(list, nil) == 5, "with no start every book counts")
+    Kit.ok(State.booksSince({ { date = nil } }, began) == 0, "a book with no date is not counted")
+end
+
 -- what reading grows
 do
     local Progress = require("solarui/garden/progress")

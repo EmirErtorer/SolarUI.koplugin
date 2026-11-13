@@ -29,6 +29,18 @@ State.RIPEN = 2 * 86400  -- seconds a seed head wants before it is cut back for 
 -- The time now; replaced in tests.
 State.clock = os.time
 
+-- How many of the books `list` ({ { date = "YYYY-MM-DD" }, ... }) were
+-- finished on or after the day the garden began (`created`, a time); all of
+-- them when the garden has no start yet. Books finished before count for nothing.
+function State.booksSince(list, created)
+    if not created then return #list end
+    local since, n = os.date("%Y-%m-%d", created), 0
+    for _i, b in ipairs(list) do
+        if b.date and b.date >= since then n = n + 1 end
+    end
+    return n
+end
+
 -- The reading numbers { total (pages ever), pages (weekly grid), streak
 -- (longest), books (finished), days (dates with reading), year_books (finished
 -- this year), goal (books a year, or nil) }; replaced in tests.
@@ -40,12 +52,18 @@ function State.source()
         local days = {}
         for _i, day in ipairs(Insights.days()) do days[#days + 1] = day.date end
         return { total = Insights.allTime().pages, pages = pattern and pattern.pages or {}, streak = Insights.streaks().day_best, books = #Goal.finished(),
-            days = days, year_books = #Goal.finishedIn(tonumber(os.date("%Y"))), goal = Goal.target() }
+            days = days, year_books = State.booksSince(Goal.finishedIn(tonumber(os.date("%Y"))), State.startedAt()), goal = Goal.target() }
     end)
     return ok and r or { total = 0, pages = {}, streak = 0, books = 0, days = {}, year_books = 0 }
 end
 
 local data
+
+-- When the garden began, from the saved garden (nil before there is one).
+function State.startedAt()
+    local d = data or Settings.get("garden", nil)
+    return type(d) == "table" and d.created or nil
+end
 
 -- A new garden: every plant in bloom, some a little further on than others,
 -- and the three animals that are always there, counting reading from now.
