@@ -592,4 +592,83 @@ do
     Season.set("spring")
 end
 
+-- the companion for life: adopting, the bond, memories, goodbye
+do
+    local Pet = require("solarui/garden/pet")
+    local Voice = require("solarui/garden/voice")
+    State.unload()
+    require("solarui/settings").set("garden", nil)
+    now = 1700000000
+    reading.total, reading.books, reading.streak = 100, 2, 0
+    Kit.ok(Pet.get() == nil, "no companion at first")
+    Kit.ok(not Pet.adopt("fox", "Rusty") and select(2, Pet.adopt("fox", "Rusty")) == "none", "someone not in the garden cannot be the companion")
+    Kit.ok(Pet.adopt("tulip", "Tuli") and Pet.is("tulip") and State.name("tulip") == "Tuli", "a plant can be the companion, with a name")
+    Kit.ok(not Pet.adopt("rose") and select(2, Pet.adopt("rose")) == "have", "only one companion at a time")
+    Kit.ok(Pet.pages() == 0 and Pet.level() == 1 and Pet.days() == 1, "the bond starts at level one, day one")
+    reading.total = 100 + Pet.LEVELS[2] + 5
+    Pet.refresh({})
+    local p = Pet.get()
+    Kit.ok(p.level == 2 and #p.events == 1 and p.events[1].kind == "level", "reading together deepens the bond, and there is something to tell")
+    Kit.ok(#p.diary == 2, "and the diary notes it")
+    reading.total = 100 + 10
+    Kit.ok(Pet.level(Pet.pages()) == 1, "the level is a function of the pages (the bond never drops: the saved level stays)")
+    Kit.ok(p.level == 2, "the saved bond does not shrink")
+    reading.total = 100 + Pet.LEVELS[3] + 1
+    local beats = { { id = "a", at = 20, title = "The den", text = "A story for {days} days." }, { id = "b", at = 400, title = "The river", text = "A longer one." } }
+    Pet.refresh(beats)
+    Kit.ok(p.beats.a and not p.beats.b, "a memory comes at its pages, the next waits")
+    -- books, streaks, anniversaries
+    reading.books, reading.streak = 3, 7
+    now = now + 40 * DAY
+    Pet.refresh(beats)
+    local kinds = {}
+    for _, e in ipairs(p.events) do kinds[e.kind] = (kinds[e.kind] or 0) + 1 end
+    Kit.ok(kinds.book == 1 and kinds.streak >= 2 and kinds.anniversary >= 2, "a finished book, streaks and days together are told")
+    -- the voice: never a line said lately, conditions hold, words are filled in
+    local ctx = { hour = "day", season = "spring", weather = "rain", level = 3, streak = 7, pages_today = 12, book = "Black Sheep", author = "Heyer",
+        last = "Emma", total = 200, days = 41, name = "Tuli", away = 0, hour_number = 12 }
+    local seen = {}
+    for _ = 1, 3 do seen[Voice.pick("tap", ctx).key] = true end
+    local n = 0
+    for _ in pairs(seen) do n = n + 1 end
+    Kit.ok(n == 3, "three taps give three different lines from a voice of three (" .. n .. ")")
+    for _ = 1, 60 do
+        local l = Voice.pick("idle", ctx, true)
+        Kit.ok(not l.text:find("Snow"), "a snow line is not said in the rain")
+    end
+    local line = Voice.pick("book_now", ctx, true)
+    Kit.ok(line and line.text:find("Black Sheep", 1, true) and not line.text:find("{"), "the book's name is filled in")
+    local told = Voice.current()
+    Kit.ok(told and told ~= "", "the companion has something to say on home")
+    local again = Voice.current()
+    Kit.ok(again == told or #p.events == 0, "the line stays until something changes")
+    Kit.ok(Voice.react() ~= nil, "a tap is answered")
+    -- goodbye
+    Kit.ok(Pet.goodbye() and Pet.get() == nil and #Pet.orchard() == 1 and Pet.orchard()[1].name == "Tuli", "goodbye sends the companion to the orchard")
+    Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "and a new companion can be chosen")
+    Pet.goodbye()
+    State.unload()
+    require("solarui/settings").set("garden", nil)
+    reading.books, reading.streak = 2, 0
+end
+
+-- wording of every voice: nobody in the garden is called "it"
+do
+    local files = {}
+    local pf = io.popen("ls '" .. REPO .. "'/solarui/garden/voices/*.lua 2>/dev/null")
+    for f in pf:lines() do files[#files + 1] = f end
+    pf:close()
+    local bad = 0
+    for _, f in ipairs(files) do
+        local fh = io.open(f)
+        local src = fh:read("*a")
+        fh:close()
+        for text in src:gmatch('"([^"\n]*)"') do
+            local hit = text:match("%f[%a][Ii]t%f[%A]") or text:match("%f[%a][Ii]ts%f[%A]") or text:match("%f[%a]itself%f[%A]") or text:match("%f[%a][Ii]t's%f[%A]")
+            if hit and not text:find("[a-z_]+/") then bad = bad + 1; print("FAIL: \"it\" in " .. f:match("[^/]*$") .. ": " .. text:sub(1, 90)) end
+        end
+    end
+    Kit.ok(bad == 0, "no \"it\" in any voice (" .. bad .. " in " .. #files .. " files)")
+end
+
 Kit.finish("garden")

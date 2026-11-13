@@ -13,8 +13,10 @@ local Label = require("solarui/ui/label")
 local Layout = require("solarui/garden/layout")
 local LayoutUI = require("solarui/ui/layout")
 local Lore = require("solarui/garden/lore")
+local Pet = require("solarui/garden/pet")
 local Settings = require("solarui/settings")
 local Text = require("solarui/gfx/text")
+local Voice = require("solarui/garden/voice")
 local State = require("solarui/garden/state")
 local Theme = require("solarui/theme")
 local _ = require("solarui/gettext")
@@ -28,9 +30,19 @@ function HomeCompanion.pinned()
     return Settings.get("home_companion", "auto")
 end
 
--- Today's companion (see Companion.pick), or nil.
+-- The companion for life as an item { id, kind, entry, need, pet }, or nil
+-- (they are always shown, asleep by night or not).
+local function pet()
+    local p = Pet.get()
+    if not p then return nil end
+    local e, kind = State.entry(p.id, tonumber(os.date("%H")))
+    if not e then return nil end
+    return { id = p.id, kind = kind, entry = e, need = Companion.need(e, kind), pet = true }
+end
+
+-- The companion for life, else today's resident (see Companion.pick), or nil.
 function HomeCompanion.pick()
-    return Companion.pick(HomeCompanion.pinned(), tonumber(os.date("%j")) or 1, tonumber(os.date("%H")))
+    return pet() or Companion.pick(HomeCompanion.pinned(), tonumber(os.date("%j")) or 1, tonumber(os.date("%H")))
 end
 
 -- Draw the companion's picture inside the arch at (x, y).
@@ -94,6 +106,30 @@ function HomeCompanion.column(scene, item, w, budget)
     return LayoutUI.Column:new({ gap = gap, children = kids }), used
 end
 
+-- The text beside the arch for the companion for life: their name, who they
+-- are and how long they have been together, what they are saying, and the
+-- care button when they need care and there is room.
+function HomeCompanion.petColumn(scene, item, w, budget)
+    local gap = scene:px(6)
+    local name_h, line_h, body_h = Text.height("heading"), Text.height("micro"), Text.height("body")
+    local days = Pet.days()
+    local kids = {
+        Label:new({ text = State.name(item.id), kind = "heading" }),
+        Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, days), kind = "micro", color = "muted" }),
+    }
+    local used = name_h + gap + line_h
+    local button = item.need > 0 and careButton(scene, item, w) or nil
+    local reserve = button and (button:naturalHeight() + gap) or 0
+    local line = Voice.current()
+    local lines = math.min(4, math.floor((budget - used - gap - reserve) / body_h))
+    if line and lines >= 1 then
+        kids[#kids + 1] = Label:new({ text = line, kind = "body", lines = lines })
+        used = used + gap + lines * body_h
+    end
+    if button and used + gap + button:naturalHeight() <= budget then kids[#kids + 1] = button end
+    return LayoutUI.Column:new({ gap = gap, children = kids })
+end
+
 -- Put the card on `scene` with its top-left at (x, y), `w` units wide.
 function HomeCompanion.place(scene, x, y, w)
     State.refresh()
@@ -102,6 +138,13 @@ function HomeCompanion.place(scene, x, y, w)
     scene:backdrop("garden_arch", x, y, ARCH_W, ARCH_H)
     picture(scene, item, x, y)
     local tx, tw = x + ARCH_W + 14, w - ARCH_W - 14
+    if item.pet then
+        Pet.refresh(Voice.beats(item.id))
+        scene:place(HomeCompanion.petColumn(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
+        -- a tap is greeted with a new line; holding opens their page
+        scene:touch(x, y, ARCH_W, ARCH_H, function() Voice.react(); App.update() end, function() App.push("gardenpet") end)
+        return
+    end
     scene:place(HomeCompanion.column(scene, item, tw, scene:px(ARCH_H)), tx, y, tw, ARCH_H)
     scene:touch(x, y, ARCH_W, ARCH_H, function() GardenPopup.open(item.id) end)
 end

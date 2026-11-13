@@ -32,6 +32,9 @@ local function picture(id, e, kind)
     } })
 end
 
+-- The picture of `id` in its arch (also on the companion's page).
+GardenPopup.picture = picture
+
 -- The popup's card for `id` on a screen `w` wide, or nil when it is not in
 -- the garden.
 function GardenPopup.card(id, w)

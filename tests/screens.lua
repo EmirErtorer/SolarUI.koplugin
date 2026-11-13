@@ -30,7 +30,7 @@ local Library = require("solarui/data/library")
 
 local only = {}
 for i = 3, #arg do only[arg[i]] = true end
-local SCREENS = { "home", "library", "dossier", "collections", "history", "search", "settings", "trash", "fonts", "topbar", "launcher", "launchedit", "iconpick", "flowerpick", "targetpick", "metaedit", "filepick", "colourpick", "annotations", "updates", "garden", "gardenjournal", "gardennotes", "gardenpage", "dialogs" }
+local SCREENS = { "home", "library", "dossier", "collections", "history", "search", "settings", "trash", "fonts", "topbar", "launcher", "launchedit", "iconpick", "flowerpick", "targetpick", "metaedit", "filepick", "colourpick", "annotations", "updates", "garden", "gardenjournal", "gardennotes", "gardenpage", "dialogs", "gardenpet" }
 local PARAMS = {
     dossier = function() return { path = Library.all()[1] } end,
     metaedit = function() return { path = Library.all()[1] } end,

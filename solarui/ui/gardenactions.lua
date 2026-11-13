@@ -19,7 +19,7 @@ function GardenActions.say(ok, why, done)
 end
 
 -- The actions for the plant or animal `id`: { on_water, on_feed, on_collect,
--- on_rename, on_sow }.
+-- on_rename, on_sow, on_companion (take them as the companion), on_pet (open the page of the companion) }.
 function GardenActions.of(id, after)
     local say = GardenActions.say
     return {
@@ -28,6 +28,8 @@ function GardenActions.of(id, after)
         on_collect = function() require("solarui/ui/gardencut").open(id, after) end,
         on_rename = function() App.input(_("Choose a name"), State.rec(id).nick or "", function(text) State.rename(id, text); after() end, _("Save")) end,
         on_sow = function() local ok, why = State.sow(id); say(ok, why, string.format(_("%s is in bloom."), State.name(id))); after() end,
+        on_companion = function() require("solarui/ui/gardenadopt").start(id, after) end,
+        on_pet = function() App.closeDialog(); App.push("gardenpet") end,
     }
 end
 

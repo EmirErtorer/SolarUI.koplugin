@@ -8,6 +8,7 @@ local Care = require("solarui/garden/care")
 local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Lore = require("solarui/garden/lore")
+local Pet = require("solarui/garden/pet")
 local Panel = require("solarui/ui/panel")
 local Season = require("solarui/garden/season")
 local State = require("solarui/garden/state")
@@ -77,6 +78,19 @@ local function actions(e, kind, o)
     return Layout.Row:new(row)
 end
 
+-- The button that takes this one as the companion, or (for the companion
+-- already) opens their page; nil when neither applies.
+local function companion(id, o)
+    if Pet.is(id) then
+        return Button:new({ label = _("Their page"), variant = "secondary", grow = true, height = Theme.get().size.touch, on_tap = o.on_pet })
+    end
+    if not Pet.get() and o.on_companion then
+        return Button:new({ label = string.format(_("Make %s my companion"), State.name(id)), variant = "secondary", grow = true,
+            height = Theme.get().size.touch, on_tap = o.on_companion })
+    end
+    return nil
+end
+
 -- The row that moves between the garden's inhabitants, or (with o.on_open)
 -- the one that closes the card or opens the garden.
 local function moves(o)
@@ -102,22 +116,29 @@ function GardenCard.build(id, o)
     local def, rec = e.def, State.rec(id)
     local status, care = (kind == "plant" and plantStatus or animalStatus)(e)
     local names = (rec.nick and (def.en .. " · ") or "") .. def.latin
-    return Panel:new({ shape = "frame", double = true, fill = "bg", pad = th.space.m, child = Layout.Column:new({ gap = th.space.s, children = {
+    local kids = {
         Label:new({ text = State.name(id), kind = "title" }),
         Label:new({ text = names, kind = "small", color = "muted" }),
         Label:new({ text = status .. ". " .. care, kind = "small" }),
-        Label:new({ text = Lore.get(id), kind = "body", lines = 7 }),
+        Label:new({ text = Lore.get(id), kind = "body", lines = 4 }),
         Layout.Spacer:new({ grow = true }),
         actions(e, kind, o),
-        moves(o),
-    } }) })
+    }
+    local mine = companion(id, o)
+    if mine then kids[#kids + 1] = mine end
+    kids[#kids + 1] = moves(o)
+    return Panel:new({ shape = "frame", double = true, fill = "bg", pad = th.space.m, child = Layout.Column:new({ gap = th.space.s, children = kids }) })
 end
 
 -- The care and moving buttons alone, for a card that is not this panel (the
 -- popup over home): { actions row, moves row }.
 function GardenCard.rows(id, o)
     local e, kind = State.entry(id)
-    return { actions(e, kind, o), moves(o) }
+    local out = { actions(e, kind, o) }
+    local mine = companion(id, o)
+    if mine then out[#out + 1] = mine end
+    out[#out + 1] = moves(o)
+    return out
 end
 
 return GardenCard
