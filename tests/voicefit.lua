@@ -37,7 +37,8 @@ local function lines()
         for _, c in ipairs(group) do
             local v = Voice.of(c.id)
             for moment, pool in pairs(v.moments or {}) do
-                for _, l in ipairs(pool) do
+                -- (the orchard's lines are shown in a dialog, not on the home card)
+                for _, l in ipairs((moment == "locked" or moment == "returned") and {} or pool) do
                     out[#out + 1] = { c.id, moment, longest(type(l) == "table" and l.t or l) }
                 end
             end

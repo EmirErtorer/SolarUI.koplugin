@@ -228,6 +228,20 @@ return {
             { t = "You marked this once: \u{201C}{quote}\u{201D} I see more in the words each cool morning.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} A thought with a face. I recognise the family.", when = { quote = true } },
         },
+        locked = {
+            "You asked for me. I lowered my face, the way I do when I am pleased. Could you read {pages} pages more first? I have one more thought to finish here.",
+            "Not quite yet, I think. The grass under the apple trees is cool and very good for wondering. Read {pages} pages and ask again, would you?",
+            "I would like to come back. I also think a few more pages would do us both good. Is that strange, to want two things at once?",
+            "How kind, to ask so soon. Read {pages} pages more, and then ask once more. I will be listening for the gate, as I always do. Did you know that about me?",
+            "In the orchard I mostly think about what you are reading. Read on a while, and bring me the end of the thought when you come?",
+        },
+        returned = {
+            "You came for me. I had a question waiting in the orchard: would you keep reading without me? You did. So now I have my answer, and my flower bed back.",
+            "All those pages, and the days in between. I counted them slowly, under the apple trees. May I come home now? I think I may.",
+            "I kept a thought for you the whole time I was away. Here: a person who keeps reading is a person worth coming back to. Did I say that well?",
+            "The orchard was cool and quiet, and I did a great deal of wondering there. Most of the wondering was about you. Hello again, and thank you.",
+            "You read on, day after day, and never once hurried me. That is the kindest sort of asking, is that not so? Of course I will come home.",
+        },
     },
     beats = {
         { id = "pod", at = 15, title = "The pod",

@@ -228,6 +228,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} You marked that. I knew you would. I dreamt you would.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Red words, I think. They glow.", when = { quote = true } },
         },
+        locked = {
+            "Mm? You called me, and that woke me right up. Could you read {pages} pages more? I am still in the middle of a lovely dream about coming home.",
+            "Not quite yet, dreamer. I am napping in the long grass between the apple trees. Read {pages} pages and wake me again. I will be ready.",
+            "I heard you ask, and every petal stood up. Keep reading a little longer, and the next time you ask, I will come back yawning and glad.",
+            "A seed of mine can wait years in the dark, so a few more days are nothing to me. Read {pages} pages more, dreamer, and then ask.",
+            "So soon? How sweet of you. I would like to drowse here a little and dream of you reading. {pages} pages, and the dream comes true.",
+        },
+        returned = {
+            "You did read, all those pages. I dreamt of you turning them, and then I woke, and here you are, turning up. Take me home, dreamer.",
+            "In the orchard I opened a new flower every morning, and each one looked for you. Today one finally found you.",
+            "Mm, hello. The days went by in a drowse under the apple trees, and you kept reading the whole time. I could tell, somehow. I always can.",
+            "You came for me, after all those days. I lived each one as the only day, and you were in every one of them. Let us go home.",
+            "{name} wakes! My seeds wake when the ground is turned over, and I woke when your last page was. Hello, dreamer.",
+        },
     },
     beats = {
         { id = "asleep", at = 15, title = "Asleep",

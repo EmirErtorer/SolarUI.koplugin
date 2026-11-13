@@ -225,6 +225,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Darling, that line has posture.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} I was briefly speechless. Mark the date.", when = { quote = true } },
         },
+        locked = {
+            "My dear, how flattering to be asked. One would adore to return. But one has standards, and they say {pages} pages more first. Do ask again.",
+            "Not quite yet, darling. One is standing in a very elegant row beneath the apple trees, and the row would fall apart without one. Read {pages} pages, then call.",
+            "Darling, a return is like a good entrance: all the better for a little delay. Read on a while, and one shall come back in full colour.",
+            "One is touched, truly. Read {pages} pages more, my dear, let a few more days go by, and one shall be ready before you have finished asking.",
+            "The orchard is cool in the mornings, and one keeps one's petals closed until the day warms. Give one {pages} pages more, and one will open for you instead.",
+        },
+        returned = {
+            "My dear, you read every page and kept every day. How very correct of you. One accepts the invitation home with the greatest pleasure.",
+            "Darling, there you are. One spent the whole time in the orchard keeping one's colour up and one's stem straight. Do take one home before the wind interferes.",
+            "You earned this, my dear, page by page. In the Tulip Era they gave candlelit parties for less. One will settle for a place beside your book.",
+            "Home at last. The apple trees were pleasant company, though rather badly dressed. You, darling, look exactly right.",
+            "{name}, returning by invitation. One has waited with great dignity and only a little sighing. Shall we?",
+        },
     },
     beats = {
         { id = "bag", at = 15, title = "The paper bag",

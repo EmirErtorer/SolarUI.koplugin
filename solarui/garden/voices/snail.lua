@@ -230,6 +230,20 @@ return {
             { t = "I keep returning to this, slowly: \u{201C}{quote}\u{201D} Still good.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} You went slowly enough to notice that. Well travelled.", when = { quote = true } },
         },
+        locked = {
+            "I am glad you asked, truly glad, and yet I have only just turned round to look back at you, so read {pages} pages more and by then I may be facing the right way.",
+            "Not yet, if you will forgive me, for I have found a windfall apple in the long grass, and a snail does not leave an apple half eaten, so read {pages} pages and ask again.",
+            "Your asking reached me under the apple trees like the first drop of rain, which is to say very welcome, and I would ask only for a little more reading before I set out.",
+            "A snail likes a thing done slowly, and a return most of all, so let us both take our time, you with {pages} pages and I with the long way back across the grass.",
+            "I drew my head out of my shell to hear you ask, and I liked what I heard, so do read on a little, and when you ask again I shall already be on my way.",
+        },
+        returned = {
+            "You read all those pages while I crossed the orchard, which I did at my own speed, and we have arrived at the same moment, which is how I like an arrival to be.",
+            "I set out for home on the day you began reading, and I am pleased to report that I am nearly at the gate, and would accept being carried for the last part.",
+            "Welcome me home, if you please, for I have been away long enough to grow a little more shell at the lip, and I should like you to see the new edge.",
+            "The orchard was damp and kind, and I left a silver trail under every tree, but none of the trails led anywhere so good as back to you and your book.",
+            "{name} is home, said slowly, as a homecoming should be said, and thank you for every page, each of which I am sure was read slowly and well.",
+        },
     },
     beats = {
         { id = "egg", at = 15, title = "The first meal",

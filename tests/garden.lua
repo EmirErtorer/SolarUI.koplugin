@@ -681,6 +681,12 @@ do
     Kit.ok(Pet.comeBack("tulip") and Pet.is("tulip") and not Pet.remembered("tulip") and Pet.get().returns == 1, "and they come back")
     Kit.ok(Pet.get().level == left_level and #Pet.get().diary == left_diary + 1, "with their bond and diary kept")
     Kit.ok(Voice.say("tulip", "locked", { name = "Tuli", pages = 10, days = 2 }) ~= nil and Voice.say("tulip", "returned", {}) ~= nil, "and they speak for themselves about it")
+    local clean = true
+    for _ = 1, 40 do
+        local l = Voice.say("rose", "locked", { name = "Rosie", pages = 0, days = 3 })
+        if l and l:find("0 pages", 1, true) then clean = false end
+    end
+    Kit.ok(clean, "a line never speaks of 0 pages still to read")
     Kit.ok(Pet.goodbye(), "and may say goodbye again")
     Kit.ok(Pet.adopt("rose", "Rosie") and Pet.is("rose"), "while a new companion can be chosen")
     Pet.goodbye()

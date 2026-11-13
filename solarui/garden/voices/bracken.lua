@@ -225,6 +225,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Hm. Even the moss went quiet.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Worth keeping. I keep very little.", when = { quote = true } },
         },
+        locked = {
+            "Hm. Asked so soon. Good. I like being asked. Read {pages} pages more first, youngster. I am only just settling my root under this apple tree.",
+            "Not yet. I have barely unrolled here. Give me {pages} pages more of yours and I will start creeping your way.",
+            "You want me back already. That is a kind thing. In fern time you have been gone a blink. Read on. A few more blinks, then ask.",
+            "Hm. {pages} pages, youngster, and {days} more days. To me that is nothing at all. To you that is a good book. Then ask.",
+            "Glad you asked. Very. But I do everything underground, and slowly. Turn {pages} more pages. I will be ready. I do not hurry for anyone else.",
+        },
+        returned = {
+            "Hm. You read the pages. You waited the days. Most things that passed me never came back for me. You did. Sit.",
+            "Back. Good. The orchard was fine. Trees there drop things on you. Apples, mostly. I prefer pages, youngster.",
+            "{name} returns. I unrolled a frond in that orchard and nobody watched. Here somebody does. Hm. Better.",
+            "You kept at the reading, youngster. Steady, one leaf after another, no skipping. That is how a fern does things. I noticed.",
+            "I was in the orchard a long while by your count. By mine, a nap. I missed you anyway. That surprised me. Hm.",
+        },
     },
     beats = {
         { id = "spore", at = 15, title = "Dust",

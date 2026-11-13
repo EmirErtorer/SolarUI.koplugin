@@ -228,6 +228,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Lovely. Pass that one along to the robin for me.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} I heard that through your window once, I am sure. Good then, good now.", when = { quote = true } },
         },
+        locked = {
+            "Oh, love, you came to ask! I am thrilled. I am also halfway up an old apple tree with a lot of gossip to finish. {pages} more pages, then come back for me.",
+            "I want to come home, I do. But read {pages} pages first, love. Then you will have stories for me and I will have stories for you. Fair trade.",
+            "Not yet, love. The orchard wall is lovely and the blackbirds are dreadful company, so I will not be long. Keep reading and ask again soon.",
+            "{pages} pages still to go, and I am counting every one through the hedge. Hold on to your book for me. Holding on is my department, usually.",
+            "Come here. No, I am not coming yet. I only wanted a hug through the fence. Read a little more, wait a little more, and I am yours, rootlets and all.",
+        },
+        returned = {
+            "You came back for me! Of course you did. I told the whole orchard you would. They said nothing. Apple trees never do. Off we go, love.",
+            "All those pages, love, and all those days. I heard about every one from the robin. Now pick me up before I start clinging to you. Too late.",
+            "I climbed the oldest apple tree out here just to watch your window. I am coming down now. Gently. Take me home.",
+            "The wall missed me, I am sure. I missed the wall. I missed you most of all, and I am not even exaggerating. Much.",
+            "{name}, home from the orchard, with a full season of gossip about the apple trees. You will not believe the pears. Sit down, love.",
+        },
     },
     beats = {
         { id = "blackbird", at = 15, title = "The blackbird",

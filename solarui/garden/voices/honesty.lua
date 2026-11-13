@@ -229,6 +229,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Somebody meant that. You can tell.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} I can see right through that line, and I like what is in there.", when = { quote = true } },
         },
+        locked = {
+            "Honest answer: yes, I want to come back. Also honest: not yet. Read {pages} more pages. I would only nag you otherwise.",
+            "I like being asked. Truly. But you have {pages} pages to go and I will not pretend otherwise. I cannot pretend. Look at me.",
+            "The orchard grass is long and the apple trees are smug. I am fine. Read a while more, then ask again. I will say yes. Spoiler.",
+            "Not yet. No hard feelings. {pages} pages, and {days} more days, and I am yours again. Plain arithmetic. My favourite kind.",
+            "You want me home and I want to go. Good. We agree. Now read {pages} pages so the agreement can be put into practice.",
+        },
+        returned = {
+            "You did the pages. I saw. I see everything, and nothing shows quite like a person keeping a promise. Take me home.",
+            "Back to the garden, then. The orchard was fine. Fine is the most I will say for the orchard. You, I will say more for.",
+            "Truthfully? I counted. Every day of the wait. Do not tell anyone a plant counts. Let us go.",
+            "I set a few silver pods out there to impress the apple trees. Did not work. Apple trees only care about apples. Home, please.",
+            "{name}, ready to go. That is me, by name, saying yes. Short speech. True speech. Glad, glad, glad.",
+        },
     },
     beats = {
         { id = "year_one", at = 15, title = "Year one",

@@ -227,6 +227,20 @@ return {
             { t = "Darling, this one: \u{201C}{quote}\u{201D} I felt every feather lift.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} A sentence in full plumage. You do find them.", when = { quote = true } },
         },
+        locked = {
+            "Darling, you called for me! The whole orchard heard. But an encore must be earned. Read {pages} pages more and call again, louder.",
+            "Not yet, my front row. I am rehearsing up in an apple tree, and the show is not ready. {pages} pages of your reading and the curtain goes up.",
+            "You miss me! Of course you do. Who would not? Still, a grand return needs a proper wait. Keep reading, darling. I shall keep fanning.",
+            "I would come running this instant, train and all. But the best entrances come late. Read {pages} pages more, then ask again, and mind you gasp.",
+            "Asked back so soon! I am flattered down to the last eye on my train. Read on a while, darling, and the stage is yours again.",
+        },
+        returned = {
+            "Darling! You read and read, and the days went by, and now you call me home. I have prepared an entrance. Stand back. A little further. Perfect.",
+            "In the orchard I performed for the apple trees. Now and then one dropped an apple, which I chose to take as applause. You are a far better audience.",
+            "I roosted high in the orchard every night and watched for your lamp. You kept reading. I saw. Take me back, and I shall fan for you alone.",
+            "You earned me, darling, page by page. Nobody has worked so hard for a peacock since the Sunday visitors, and they never stayed past five.",
+            "{name} is back on the lawn! I have no speech prepared. Me, without a speech. That is how pleased I am.",
+        },
     },
     beats = {
         { id = "egg", at = 15, title = "The egg",

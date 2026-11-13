@@ -203,9 +203,18 @@ function Voice.say(id, moment, words)
         pool = Voice.of("_" .. (kind == "plant" and "plant" or "animal")).moments[moment]
     end
     if not pool or #pool == 0 then return nil end
+    words = words or {}
+    -- a line that speaks of a count that is nothing (0 pages, 0 days) is left out
+    local usable = {}
+    for _i, l in ipairs(pool) do
+        local text = type(l) == "table" and l.t or l
+        local empty = (words.pages == 0 and text:find("{pages}", 1, true)) or (words.days == 0 and text:find("{days}", 1, true))
+        if not empty then usable[#usable + 1] = l end
+    end
+    if #usable > 0 then pool = usable end
     local p = { rng = (os.time() % 100000) + #id }
     local line = pool[roll(p, #pool)]
-    return (fill(type(line) == "table" and line.t or line, words or {}, p))
+    return (fill(type(line) == "table" and line.t or line, words, p))
 end
 
 -- A text of the voice (a memory) with its words filled in for now.

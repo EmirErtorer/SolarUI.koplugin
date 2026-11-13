@@ -227,6 +227,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} That one made my ears stand up.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} You marked that once. I would have marked that twice.", when = { quote = true } },
         },
+        locked = {
+            "Asked back already? Flattering, clever one. But I have a den under the old pear and windfalls for supper. {pages} pages more, then tempt me.",
+            "Oh, I want to come back. I am a fox, though, and foxes like to be chased a little. Read {pages} pages and chase me then.",
+            "Not yet. I want to hear more of your story before I trot in. Keep going, clever one, and ask me again at dusk.",
+            "Here is the twist: I say no, you read {pages} pages more, and {days} more days go by, and then I say yes. Good plot, no?",
+            "I have been sitting at the orchard hedge facing your way, purely by chance. A few more pages, clever one, and I will come through.",
+        },
+        returned = {
+            "Well, well. You read every page and waited every day. I had a clever remark ready, and now I only want to sit by you.",
+            "Back through your hedge, tail high. The orchard was all windfalls and owls. Nobody there turned a single page.",
+            "{name} returns, smelling of windfalls and very pleased. I buried an apple core out there for later. This is better than later.",
+            "You kept reading while I was gone. I know, I listened from the far hedge. Do not ask how far a fox can hear. Far.",
+            "Chin on my paws, ears on your pages, the hazel at my back. All just where I left them. Go on, clever one, turn the page.",
+        },
     },
     beats = {
         { id = "den", at = 15, title = "The den",

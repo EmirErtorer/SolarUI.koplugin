@@ -229,6 +229,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} A drop of that goes a long way. Well found.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Filed under keep. A short file, and a good one.", when = { quote = true } },
         },
+        locked = {
+            "Asked back already? Lovely! Only the apple blossom here is not finished with me yet. {pages} pages more on your side, colleague, then send for me.",
+            "Delighted to be asked, truly. Work plan, though: you read {pages} pages, I finish this row of pear trees. Then we compare notes.",
+            "Hmm-mm, that was the pleased hum. Not quite yet. The orchard has me on blossom duty a little longer. Gather a while and ask again.",
+            "The route home is all worked out. I danced the directions twice, for practice. Give me {pages} pages and {days} more days, and I am on the wing.",
+            "Not yet, colleague, and only because a half-full jar is a poor jar to hand over. {pages} pages more and we both come out sweeter.",
+        },
+        returned = {
+            "Recalled to the old route! I watched your pages pile up from the top of a pear tree. Good gathering, colleague. Onwards, together.",
+            "You did the reading and you waited the days. I call that a plan carried out. My favourite thing. My second favourite is you.",
+            "I found a hollow apple tree in the orchard, just like the one I danced for once. Lovely tree. I flew straight past to get back here.",
+            "{name}, reporting for duty. Wings dry, baskets empty, route memorised. I kept count of your pages from afar. Excellent figures.",
+            "Hmm-mm! The loud hum and the pleased hum together. I did not know I could manage both at once. Hello again, colleague.",
+        },
     },
     beats = {
         { id = "cell", at = 15, title = "The cell",

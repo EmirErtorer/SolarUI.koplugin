@@ -226,6 +226,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} A line like that deserves a pond to echo in.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} I was going to make a joke. I have decided against.", when = { quote = true } },
         },
+        locked = {
+            "You want an encore already? Bravo! But the second act needs more of your reading. {pages} pages more, then call me back on stage.",
+            "I am touched! Truly, both cheeks. Alas, I am booked at the orchard ditch, playing to the slugs. {pages} pages, then I come home.",
+            "Not yet, dear audience. Every great return needs a little waiting in the wings. Read on, and I will be there for the curtain.",
+            "The orchard pond has a tiny stage and very damp seats. {pages} pages from you and {days} more days of rehearsal from me, then send for the star.",
+            "Ah, the call I hoped for! Timing, though. A frog never comes on too early. {pages} pages more, and I shall make a proper entrance.",
+        },
+        returned = {
+            "The star returns! Hold your applause. No, do not hold the applause. You read all those pages for this. Clap away.",
+            "{name}, back from the provinces! The orchard ditch was a tough house. Slugs never clap. You read every page to bring me back. Bravo.",
+            "Back to my own pond and my own audience of one. I sang to the apple trees nightly. Lovely trees. Terrible listeners.",
+            "You waited the days, read the pages, and here I am, damp and delighted. Every great show needs an interval. Ours is over.",
+            "In the orchard I practised my comeback croak every night. Now you are here, and all that comes out is a happy squeak.",
+        },
     },
     beats = {
         { id = "jelly", at = 15, title = "One of thousands",

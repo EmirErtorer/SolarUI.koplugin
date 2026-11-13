@@ -229,6 +229,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} A sentence that forks. I like the branch you took.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} I have filed that away with the centuries. There is room.", when = { quote = true } },
         },
+        locked = {
+            "You asked. I am pleased, more than I will show. Read {pages} pages more first. I have waited out ages. I can wait out a book.",
+            "The apple trees here are infants and speak only of fruit. I would gladly come home. Read {pages} more pages, and ask again.",
+            "Not yet. A tree does not move twice in one season. Give me {pages} pages, and {days} more days, and I will consider the matter settled.",
+            "I would like to come back. I would also like you to read a little more first. Both wishes are sincere, and the second is older.",
+            "{pages} pages more. A small number, by my reckoning. Read them, and I will let myself be dug up and carried home without complaint.",
+        },
+        returned = {
+            "You read the pages and let the days go by. I noticed both. Take me home. The orchard was pleasant, and pleasant is not the same as home.",
+            "Back. I stood among the apple trees and counted your evenings from afar. Fewer than an ice age. More than I liked.",
+            "You kept at your book. I kept still, which is my part. Between us we managed very well. Lead the way.",
+            "In the orchard my leaves were admired by nobody. The apples had all the attention. Here I am admired properly. Thank you for coming.",
+            "{name}, home again. Out there only the wind said my name, and the wind mispronounces everything. Say the name again, if you would.",
+        },
     },
     beats = {
         { id = "seed", at = 15, title = "The heap",

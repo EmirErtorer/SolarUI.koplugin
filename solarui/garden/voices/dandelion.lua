@@ -226,6 +226,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Ha. Words with wind in them.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Scatter that about. Good for the soil.", when = { quote = true } },
         },
+        locked = {
+            "Oh, you want me back! Brilliant. Not yet though, wildling. Blow through {pages} pages more and I will float straight home.",
+            "The orchard grass never gets mown. I am having a riot. Read a little longer and ask again. I will be packed by then, seeds and all.",
+            "Ha, asked already! I am flattered to the root. {pages} pages more, wildling. Let some ideas fly first, then whistle for me.",
+            "Make a wish after {pages} pages and {days} more days. That one I will carry home myself, no parachute needed.",
+            "I am under an apple tree with my clock half blown, grinning. Keep reading, {pages} pages more, and the wind will turn your way.",
+        },
+        returned = {
+            "Blown home! You read the pages, you waited the days, and here I am, crack in the paving and all. Hello, wildling.",
+            "I left a whole clock of seeds in that orchard. Let them have the place. My root wanted to be back by your chair.",
+            "{name} is back on the untidy end of the lawn. You kept reading the whole time. I could tell. The wind smelled of paper.",
+            "Ha! Every wish I made in the orchard was the same wish. Now look. You did all the work, of course. Pages and pages.",
+            "You came for me, wildling! Nobody ever came for a dandelion before. People usually come at us with a trowel.",
+        },
     },
     beats = {
         { id = "clock", at = 15, title = "The clock",

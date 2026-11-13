@@ -230,6 +230,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Who told the writer? I thought only I knew that.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Wish on that one. I already have.", when = { quote = true } },
         },
+        locked = {
+            "Oh, dear, you asked! Lucky me. I tossed a petal to check, and the petal said not yet. Read {pages} pages more and I shall toss again.",
+            "The apple trees here are simply crawling with aphids, dear. I am working very hard. {pages} more pages from you, and I will fly straight home.",
+            "Not yet, dear. Nothing to do with you. A good return wants a lucky number of days, and we have not reached one. Keep reading, and ask me soon.",
+            "Seven is my lucky number, but {pages} is yours today. Read {pages} pages and ask again. I shall be on the nearest apple leaf, all spots ready.",
+            "I would love to come home. Truly! Read {pages} more pages, and {days} more days, and I will find a sign that says so. I always find one.",
+        },
+        returned = {
+            "You read and read and waited and waited! I knew you would. Fly away home, the rhyme says. This time I know exactly where home is.",
+            "I ate a great many orchard aphids for you while you read. Well, for me. Mostly for me. Now take me home, dear. Lucky you, lucky me.",
+            "All seven spots present and correct, and ready for the garden. I counted them at dawn, and then I counted your pages. Both came out right.",
+            "The apple trees will miss me. The aphids will not. Hold out a finger, dear, and I will climb aboard and ride all the way.",
+            "{name} is coming home! I knew today had a seven in somewhere. Perhaps not. Perhaps you are the good sign. You usually are.",
+        },
     },
     beats = {
         { id = "egg", at = 15, title = "Yellow",

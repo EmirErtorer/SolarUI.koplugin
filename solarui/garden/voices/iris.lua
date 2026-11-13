@@ -230,6 +230,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Hold that up to the light. Every colour is in there.", when = { quote = true } },
             { t = "This one, correspondent: \u{201C}{quote}\u{201D} Top of today's news.", when = { quote = true } },
         },
+        locked = {
+            "Bulletin from the orchard: request received, iris delighted, iris not yet coming. Reason: {pages} pages still to read. End of bulletin.",
+            "Correspondent! You asked! Lovely news. The answer is yes, delivered later, once you have read {pages} more pages. I will keep the reply sealed till then.",
+            "The orchard bees are excellent sources, though they only talk about blossom. I would rather hear about your books. Read {pages} pages more and come tell me.",
+            "Not yet, correspondent. A message sent too soon arrives before the news. Read a little longer and wait a little longer. I shall be ready.",
+            "My root is warm in the orchard sun and my leaves are well. Still, I want to come home. {pages} pages, and {days} more days, and the post goes out.",
+        },
+        returned = {
+            "Hold the front page: the reader kept reading, the days went by, and the iris is going home. I wrote that headline myself. Accurate in every detail.",
+            "I sent word by every bee in the orchard that you were reading. They never delivered a single message. So I am delivering myself instead.",
+            "You did all the pages! I heard. A messenger hears. Lift me carefully, root up to the sun, and take me home.",
+            "Every day in the orchard I checked the path for a reader. Today the path delivered. Best post I have had all season.",
+            "{name} reporting for duty, correspondent. Back on the old route, between your books and the bed. I missed the work. I missed you more.",
+        },
     },
     beats = {
         { id = "wall", at = 15, title = "Over the wall",

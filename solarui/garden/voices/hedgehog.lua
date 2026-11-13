@@ -225,6 +225,20 @@ return {
             { t = "I remembered something you marked. \u{201C}{quote}\u{201D} I hope I said that right.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Somebody wrote that and you found the words. Things do get found.", when = { quote = true } },
         },
+        locked = {
+            "Oh! You asked. I am so pleased I nearly rolled up. Could you read {pages} pages more first? I would like to come back to a well-read person.",
+            "I like the orchard hedge. Lots of beetles under the windfalls. I would still rather be with you, after {pages} more pages. I counted them twice.",
+            "Please do not worry. I am dry and well fed here. Read a little more, and wait a little more, and then ask again. I will be listening for you.",
+            "Not quite yet, if that is all right. {pages} pages more, and {days} more days. I am writing the numbers in the dirt so I do not forget.",
+            "You came all the way to the orchard to ask. That was very brave. I would like you to read {pages} pages first. Then I will come running. Well, trotting.",
+        },
+        returned = {
+            "You read all the pages. I counted them twice, to be sure. Then I counted the days. Everything adds up. Yes, please. I will follow your feet.",
+            "I listened for your pages from under the orchard hedge. I am almost sure I heard some. Thank you for coming back for me.",
+            "You kept reading the whole time. I kept eating slugs the whole time. We were both very good. Now we can be good together.",
+            "I brought nothing from the orchard but a leaf stuck on my spines. I will keep the leaf, if you do not mind. Home, please.",
+            "{name} is ready. That is me. I wanted to say my name properly, so you know I am sure. Lead the way, slowly.",
+        },
     },
     beats = {
         { id = "nest", at = 15, title = "The nest",

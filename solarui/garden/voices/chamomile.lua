@@ -225,6 +225,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Mm. Take one of those before bed.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} You chose well. That one soothes.", when = { quote = true } },
         },
+        locked = {
+            "How kind of you to ask, dear. Not quite yet. A remedy wants the full steeping time. {pages} pages more, and then we pour.",
+            "I would love to come home. You are doing so nicely on your own, though. Another {pages} pages, a dose a night, and then send for me.",
+            "Here among the apple trees nobody can tell which smell is mine. I rather like the rest. A little more reading, dear, and ask again.",
+            "Ah, you missed me. That is a good sign in a patient. Keep up the reading, {pages} pages and {days} more days, then I come back.",
+            "Nothing wrong, dear, I only steep slowly. Give the book {pages} more pages and a few more evenings by the lamp, then call me home.",
+        },
+        returned = {
+            "There you are, dear. You read all those pages and waited all those days. I could not have prescribed better myself.",
+            "Home again. The orchard was lovely, but there was no lamp, and nobody to sit up with. I had nothing to do with my evenings.",
+            "{name}, back at your elbow. I kept the hollow in my flowers empty the whole time, for whatever you read next.",
+            "You kept reading without me. I am a little proud and a little put out. Mostly proud. Shall we have a last chapter?",
+            "I spent my days among the apple trees, smelling of apples, which confused the bees no end. Now I can smell of apples here instead.",
+        },
     },
     beats = {
         { id = "dust", at = 15, title = "Fine as dust",

@@ -231,6 +231,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Say that once more. I love a line that echoes.", when = { quote = true } },
             { t = "This one, fair one: \u{201C}{quote}\u{201D} For a moment I forgot my own face.", when = { quote = true } },
         },
+        locked = {
+            "Oh, fair one, you asked for me! I nearly swooned into the grass. Read {pages} pages more, then ask again. I shall practise looking surprised.",
+            "There is a rain barrel here with a very flattering reflection. Give me {pages} more pages of you reading, and I will leave the barrel without a backward glance.",
+            "I would come this minute, truly. But a romance wants a little longing first. Read {pages} pages, then call me home, and I will arrive like the last act.",
+            "The orchard grass is full of my wild cousins, and we sigh in chorus all afternoon. Read a while longer, fair one, and ask me when the chorus has had some fun.",
+            "You missed me! How lovely to be missed. Keep turning pages a little longer, and I promise to come back paler with joy. Paler. I was white already, as you know.",
+        },
+        returned = {
+            "You read every page I hoped for and let the days go by. Fair one, that is devotion, and devotion is the only thing lovelier than me.",
+            "Home! I spent the whole time leaning over the orchard rain barrel, and the face I kept hoping to see in the water was yours.",
+            "Say {name} once more, the way you just did. In the orchard only the wind called me, and the wind has no feeling for vowels.",
+            "I was lovely in the orchard, of course. But nobody there ever looked up from a book to see. Take me home, fair one, where somebody does.",
+            "The apple trees were very kind, though not one of them turned a page. You read your way all the way to me. I am quite undone. Beautifully, but undone.",
+        },
     },
     beats = {
         { id = "meadow", at = 15, title = "The meadow",

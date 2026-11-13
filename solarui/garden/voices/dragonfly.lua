@@ -226,6 +226,20 @@ return {
             { t = "You kept this: \u{201C}{quote}\u{201D} Good eye. I say so as an expert.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} That one I would carry across the pond.", when = { quote = true } },
         },
+        locked = {
+            "Request received, and appreciated. Not yet granted. {pages} pages remain. I hunt the orchard rides in the meantime.",
+            "You asked. I noted that, with some warmth. The figures say {pages} pages more. I trust figures. Then ask again.",
+            "The orchard is good hunting. Midges over every tree. I would still rather be on your bank. Read a little further first.",
+            "Status: {pages} pages outstanding, and {days} more days. I count well. I will count both down from this branch.",
+            "I waited two winters in the mud for one morning. I can wait a few more of your pages. Gladly, in fact. Read on.",
+        },
+        returned = {
+            "Returned. Pages read, days passed, both counts at zero. Precise work. I have nothing to correct.",
+            "I hunted the orchard daily and kept watch on your bank. Thousands of facets in each eye. The ones facing you were busiest.",
+            "{name}, back over the pond. I flew lower than necessary on the way here. Do not mention that.",
+            "You kept reading without me watching. I find I wanted to watch. Noted. Corrected. Sit down, I will hover.",
+            "The orchard had trees, midges and wind. No pale square anywhere. I did not know I would miss a page. I did.",
+        },
     },
     beats = {
         { id = "under", at = 15, title = "Under",

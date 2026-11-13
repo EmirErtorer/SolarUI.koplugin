@@ -225,6 +225,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} You marked that. I can see why. I can almost hear why.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Hush. Let that one ring a moment.", when = { quote = true } },
         },
+        locked = {
+            "Oh. You asked for me. I rang, I think. Only I am still listening to the orchard. Read {pages} pages more and I will hear you coming.",
+            "Hush, I was so happy you asked that I trembled. Not yet, though. {pages} pages more, turned softly, and then call me home.",
+            "The wind moves through the apple boughs here and I sway along. Let the pages go on a while longer, and every bell will turn your way.",
+            "I would like to come back very much. A few more of your pages first, {pages} of them, so I can hear the tune grow. Then ask again. Ting.",
+            "Thank you for asking. I am small and slow to move, and the orchard grass is kind to me. Read on a little, {pages} pages and {days} more days.",
+        },
+        returned = {
+            "You came for me. I heard your pages while I was away, faint as a far bell. Now I can hear them close again.",
+            "Hello. The orchard was lovely, all wind and falling apples. Nobody there turns pages, though, and I missed my wind. You.",
+            "{name} is home, and trembling, the happy kind. You kept reading all those days, and I kept listening for you.",
+            "You read so many pages to bring me back. I counted them by the small breaths of air they sent. I lost count. I did not mind.",
+            "In the orchard an apple fell near me every evening. Thump. I grew fond of the sound. I am far fonder of your book.",
+        },
     },
     beats = {
         { id = "hill", at = 15, title = "The hill",

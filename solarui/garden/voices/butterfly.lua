@@ -232,6 +232,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Somebody folded a whole afternoon into that.", when = { quote = true } },
             { t = "This, this: \u{201C}{quote}\u{201D} I have nothing to add. I shall just hover.", when = { quote = true } },
         },
+        locked = {
+            "Oh, you asked! Darling. Yes. Later. The orchard wall is so warm and my wings are only half dry from the dew. {pages} pages more, then call me.",
+            "Back? I would love that. I would. Only, read a little more first. {pages} pages. I shall count them in wingbeats. I lose count. Never mind.",
+            "You remembered me. I was afraid you only remembered the yellow. Not yet, though. Some more of your book, and then ask me again.",
+            "I am sunning on a pear leaf, wings wide open, thinking of you. Thinking of fennel too. Mostly you. {pages} pages more, darling.",
+            "A little longer, darling. {pages} pages and {days} more days. I am bad at days, so you keep those and I will keep the colours.",
+        },
+        returned = {
+            "You came for me! I flew a loop round every tree in the orchard to say goodbye. Most of them did not notice. You did.",
+            "All those pages, darling, while I sat in the sun and forgot things. I never once forgot you. That surprised me.",
+            "{name}, back on the edge of your book. Wings folded. Turn a page, slowly. There. Now I am home.",
+            "Was I gone long? Days, you say. Pages too. You kept going. I flitted, you kept going. What a pair we make.",
+            "The orchard was all blossom and wind. Lovely. A little empty, like a book with the words gone. Let us have the words back.",
+        },
     },
     beats = {
         { id = "egg", at = 15, title = "A yellow pearl",

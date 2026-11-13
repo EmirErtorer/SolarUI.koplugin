@@ -227,6 +227,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Sweet and sharp at once. My favourite kind of line.", when = { quote = true } },
             { t = "This one, beloved: \u{201C}{quote}\u{201D} I may weep rose water.", when = { quote = true } },
         },
+        locked = {
+            "Beloved, you called for me! My heart leapt over the orchard wall. Not yet, though. Read {pages} pages more. Love tastes sweeter after a little waiting.",
+            "So soon? I am flattered to the root. Read {pages} pages first, then ask again, and I shall come back with every thorn sheathed. Most of them.",
+            "The apple trees here are my cousins, did you know? Apples and roses are one family. I am having a lovely visit. Read on a while, and ask again.",
+            "Not yet, my heart. A nightingale sings to me here at dusk, and I owe him a few more evenings of listening. Read {pages} pages, then send for me.",
+            "A ghazal needs a last couplet before the poem is whole. So does our story. Read {pages} pages more, beloved, and I will be the last couplet.",
+        },
+        returned = {
+            "Beloved! You read and read, and the days went by, and you never stopped. Take me home. I have been composing your praises among the apple trees.",
+            "You earned me. Page after page, day after day, like a lover in the old poems walking to the beloved's door. Well, here is the door, open.",
+            "The orchard was very pleasant, and my apple cousins very dull. Not one of them reads. Carry me back to you, beloved, and quickly.",
+            "I was sweet to everyone in the orchard, even the wasps, because I knew you were reading your way to me. Now I may go back to being thorny with them.",
+            "{name} comes home! I have saved my richest scent for this moment. Breathe in. That is what an earned welcome smells like.",
+        },
     },
     beats = {
         { id = "cutting", at = 15, title = "The cutting",

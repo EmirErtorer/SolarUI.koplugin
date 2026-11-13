@@ -226,6 +226,20 @@ return {
             { t = "I keep coming back to this: \u{201C}{quote}\u{201D} You choose your light well.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Some sentences are windows. You found an open one.", when = { quote = true } },
         },
+        locked = {
+            "You asked for me, friend! My whole head turned. Not yet, though. Read {pages} pages more and I will come back taller for the wait.",
+            "From here I can see right over the orchard wall to your window. Keep reading, {pages} pages more, and I will lean all the way home.",
+            "I would love to come back. The apple trees here are lovely, but they are shorter than me, which makes conversation hard. A little more reading first?",
+            "So soon! That warms me like noon. Give me {pages} pages more, friend, and a few more mornings facing east, and then ask again.",
+            "The bees here keep asking about you. I tell them: soon, when the reading is done. Keep at your book, friend, and I will keep my face your way.",
+        },
+        returned = {
+            "You did all the reading, every page! I watched your lamp from over the orchard wall each evening. Take me home, friend. I am ready to turn your way again.",
+            "Friend! The days were long in the orchard, and sunny, and I used every hour to grow. Look how much of me there is to bring home.",
+            "You kept going. I knew, because every evening there was a little light in your window. That was the second sun I waited for.",
+            "Home time! The finches in the orchard will miss my seeds, but they can visit. I would rather stand beside you and your book.",
+            "{name} is coming home! I have no legs and no arms, so you will have to do the carrying. I will do the beaming.",
+        },
     },
     beats = {
         { id = "dark", at = 15, title = "The dark",

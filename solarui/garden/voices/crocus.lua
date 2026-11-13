@@ -228,6 +228,20 @@ return {
             { t = "One you marked: \u{201C}{quote}\u{201D} First-rate. And I know first.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Good words to open on. I may use them next spring.", when = { quote = true } },
         },
+        locked = {
+            "Oi! You asked. Good. Status: not ready. Roots still finding their feet in the orchard grass. {pages} pages from you, then shout.",
+            "Ha, chief wants me back already. Flattered. Truly. {pages} pages first. Then I come up wherever you like. Ready, steady.",
+            "Report from the orchard: grass long, trees big, me small. Coming home soon. Need you to read a bit more first. Off you go.",
+            "Can't come yet. I never come up too early. Well. Always early. Not this early. {pages} pages, chief, then try me again.",
+            "Love to. Honestly. Give me {pages} pages and {days} more days and I will pop up by your chair like I never left.",
+        },
+        returned = {
+            "Ha! Back! Told the worms I would be. Pages read, days waited. Chief kept the deal. Status: delighted.",
+            "Out of the orchard grass and back by your chair. Missed the bench. Missed the pages. Missed your shadow most.",
+            "{name}, reporting in! Petals open, sun on, chief present. Full house. All systems go.",
+            "You read all that to get me back? For a three-inch flower? Oi. Steady on. I might blush. Hard to tell on purple.",
+            "Orchard was fine. Bees came by. Nobody turned a single page. I kept listening anyway. Now there are pages again. Good.",
+        },
     },
     beats = {
         { id = "bag", at = 15, title = "The bag",

@@ -228,6 +228,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Words like those spin down slowly and land well.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Read that to me again some autumn evening.", when = { quote = true } },
         },
+        locked = {
+            "Ah, sapling, you came to ask. That warms the old wood. Read {pages} pages more, and I will tell you the orchard stories on the way home.",
+            "There is a story waiting for you, and you know I love a story. {pages} more pages, then ask again. I will save the best shade for your return.",
+            "The orchard is pleasant. The apple trees are short and gossip about blossom. I would like to come home, my dear, once you have read a little more.",
+            "Not yet, sapling. A ring is laid down slowly, one good day at a time. {pages} pages, and {days} more days, and this ring is finished.",
+            "I have sent a winged seed spinning toward your garden, just to show I am thinking of you. Read {pages} pages more and come for the rest of me.",
+        },
+        returned = {
+            "You read the pages and waited the days, sapling. A tree notices patience. I shall put this one in my rings. Lead on.",
+            "The apple trees stood around me all season like grandchildren at a story. I told them a few. I saved the best for you.",
+            "Home, my dear. I dropped a few seeds in the orchard grass while I waited. Perhaps one will grow up telling stories too.",
+            "Every good story has someone come back at the end. Today I am the someone. Thank you for reading me home.",
+            "{name} returns to the old place. Mind the roots, sapling. They will be eager to get back into the soil they know.",
+        },
     },
     beats = {
         { id = "wing", at = 15, title = "The wing",

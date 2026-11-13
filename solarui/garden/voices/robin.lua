@@ -226,6 +226,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} You found that and held on. Good instinct, neighbour.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Pin that to the fence post where I can see.", when = { quote = true } },
         },
+        locked = {
+            "You want me back? Good. Right answer. Not yet, though. Read {pages} pages more, neighbour. I have an orchard to sort out first.",
+            "Request noted. Request pending. Read {pages} pages and ask again. I will be on the third apple tree, singing at a blackbird.",
+            "I would come now, neighbour, but rules are rules. And I made the rules. More reading first. Off you go. I will be listening.",
+            "Too early! Still, nice to be asked. Read {pages} pages more and then whistle. I will hear you. I hear everything on this side of the hedge.",
+            "The orchard is a mess. Wasps in the windfalls, a thrush who thinks he is in charge. Give me a few more days to fix that while you read.",
+        },
+        returned = {
+            "There you are! You did the pages, I saw. The days too. Good work, neighbour. Right. Home. I lead, you follow.",
+            "I sorted the whole orchard while you read. The thrush knows his place now. So take me back to my own patch, please.",
+            "You kept at your book. Every day. I checked from the fence. Well done, neighbour. That deserves a song, and here comes one.",
+            "Back to the patch! I bet the hedge missed me. I bet the gate missed me. I bet you missed me most. Do not answer, I can tell.",
+            "{name}, reporting for duty. Orchard guarded, songs sung, one thrush told off. Your patch next. Lead the way, neighbour.",
+        },
     },
     beats = {
         { id = "kettle", at = 15, title = "The kettle",

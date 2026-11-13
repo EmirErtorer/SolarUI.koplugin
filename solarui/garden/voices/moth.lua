@@ -229,6 +229,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} I do not fully understand, and I am moved all the same.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} If I could carry one line across the garden, I would take that.", when = { quote = true } },
         },
+        locked = {
+            "Dear reader, you came all this way to ask, and I fluttered. Forgive me. {pages} pages first, please. Then I will come home to your lamp.",
+            "The orchard has no lamps, only the moon caught in the apple boughs. I manage. Still, I would like to see your page turn again, {pages} pages from now.",
+            "Not yet, softly. A moth returning too early loses the thread of the night. Read a little longer, and let me miss the lamp a little longer too.",
+            "{pages} pages. I have written the number on a leaf, in dust from my wings. I read the leaf every dusk. Then I wait for the next dusk.",
+            "I would come at once if I followed every light. I am trying to be wiser. {pages} pages, and {days} more days, and then the lamp is mine again.",
+        },
+        returned = {
+            "You read all those pages, dear reader. I could tell from across the orchard: your window stayed lit later than the moon. Take me home.",
+            "I spent the dusks drinking at the orchard honeysuckle and thinking of your lamp. Now I can stop thinking and simply come.",
+            "The days passed and you kept turning pages. I counted dusks, which is how I count. They add up to yes.",
+            "I have folded my wings for the journey. Carry me softly. I will wake properly at your lamp, and not a moment before.",
+            "{name}, home to the lamp. If this were a chapter, I would let the last line be you, reading, and me, quite still beside you.",
+        },
     },
     beats = {
         { id = "egg", at = 15, title = "The willowherb",

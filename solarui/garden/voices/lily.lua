@@ -228,6 +228,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Hm. Yes. I have been thinking about that since you marked the page.", when = { quote = true } },
             { t = "This one, child: \u{201C}{quote}\u{201D} I stood very still for that one.", when = { quote = true } },
         },
+        locked = {
+            "You asked. I am glad, child. But a lily does not like to be lifted too often. Read {pages} pages more, and I will bear the move gladly.",
+            "Under the apple boughs the air is sweet, though not as sweet as mine. I will come home gladly, child, when {pages} more pages are behind you.",
+            "Not yet, child. I have waited through empty summers before. These few days will pass quickly, and you will have read a good deal by then.",
+            "Patience is my oldest habit. Lend me a little of yours. {pages} pages, and {days} more days, and I will stand in my old corner again.",
+            "I have been sent away and fetched back before, in baskets and in a monk's sleeve. Read {pages} pages first. Then fetch me properly.",
+        },
+        returned = {
+            "You kept reading, child, and you let the days pass. Both were noticed. Lift me with care, and plant me shallow, as before.",
+            "The orchard was quiet and the bees were polite. I kept my petals white for nobody in particular. Now there is somebody. Take me home.",
+            "A lily dislikes being moved. I have decided to make an exception. Only this once, child. Possibly twice, if you insist.",
+            "I heard your pages from across the orchard. Very faintly, as I hear the painters of Crete. Faintly is enough. I am ready.",
+            "{name} is ready, child. Soon there will be gold pollen on your sleeve again. I find I missed marking you.",
+        },
     },
     beats = {
         { id = "wall", at = 15, title = "The painted wall",

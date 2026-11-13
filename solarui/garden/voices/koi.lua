@@ -226,6 +226,20 @@ return {
             { t = "I have been turning this over: \u{201C}{quote}\u{201D} Like a smooth pebble.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} A petal on the water. Thank you for showing me.", when = { quote = true } },
         },
+        locked = {
+            "You have come to the orchard pond to ask. I rise, and I am glad. Yet the water asks for patience. Read {pages} pages more, honoured one.",
+            "A request made to the water is never wasted. The answer is yes, in time. {pages} pages, and the ripples will carry me home.",
+            "Here an apple falls into the water now and then, and I swim beneath the rings. I am content, though not complete. Read a little longer. Then ask again.",
+            "Does a carp hurry? Never. Should a reader? Seldom. Read {pages} pages slowly, honoured one, and I will be waiting at the edge.",
+            "I open my mouth at the surface, as I do for food, and say only this: soon. Keep reading. The pond is long, and so is my patience.",
+        },
+        returned = {
+            "You have read the pages and kept the days. I felt them pass through the water like a slow current. Carry me home, honoured one.",
+            "In the orchard pond I swam my circle and kept your face in mind. Now the face is here, and the circle can close.",
+            "Bring the bucket gently. I have been carried before, and I know good hands. These are good hands.",
+            "Apples fell into my water all season. Each ring they made, I counted as a day toward you. The counting is done.",
+            "{name} rises to the surface for you. I give my name in full, as one does at a ceremony. This is one. Let us go home.",
+        },
     },
     beats = {
         { id = "mud_pond", at = 15, title = "The mud pond",

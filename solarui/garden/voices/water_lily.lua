@@ -228,6 +228,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} I will dream on that tonight, folded up.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} Clear as the water at noon. I can see right through to you.", when = { quote = true } },
         },
+        locked = {
+            "You asked. I felt the words on the water like a leaf landing. Not yet, dreamer. Read {pages} pages more, and the pond and I will be ready.",
+            "There is a small pond at the bottom of the orchard, and I am resting on the stillest part. Read {pages} pages, and then come down to the bank again.",
+            "I would like to come back. Nothing here hurries, and I find I can wait. Stay with your book a while. The water keeps time for us both.",
+            "The apple trees lean over my pond, and their reflections are quiet company. Read on, {pages} pages more, and then call me to the bank.",
+            "Hush, I heard you, and I opened a little at the sound. Keep reading, dreamer. I will float here until you ask again.",
+        },
+        returned = {
+            "You read all those pages, and the days came and went on the water. Now you are here at the bank. I am opening, dreamer. Take me home.",
+            "The orchard pond was calm, and I was calm upon the orchard pond. Still, no face looked down into that water the way yours does.",
+            "I watched the sky in the water every day I was away, and one day the sky had your face in. That was today.",
+            "You kept at your book while I floated. That is the right way round, I think. Bring me back to your pond, and I will float beside your reading again.",
+            "{name}, coming home. My roots let go of the orchard mud with hardly a sigh, as though they already knew where I was going.",
+        },
     },
     beats = {
         { id = "float", at = 15, title = "The floating seed",

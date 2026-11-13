@@ -230,6 +230,20 @@ return {
             { t = "\u{201C}{quote}\u{201D} Bean is repeating that to everyone in the field.", when = { quote = true } },
             { t = "\u{201C}{quote}\u{201D} That belongs in the jar with the best seeds.", when = { quote = true } },
         },
+        locked = {
+            "You asked for us! Bean nearly fell off Maize. We would love to come home. Read {pages} pages more first, and then ask all three of us again.",
+            "Maize: Not yet. Bean: But soon, very soon! Squash: Read {pages} pages, and then we come. That is the whole plan.",
+            "We have a good mound in a sunny corner of the orchard, and the apple trees are polite neighbours. A little more reading from you, and we gladly come back.",
+            "Three of us voted. All three said yes, come home. All three also said: after some more reading. Read {pages} pages, and the vote stands.",
+            "Planting is patient work, and so is coming back. Keep reading, {pages} pages more, and Bean promises not to talk the whole way home.",
+        },
+        returned = {
+            "You kept reading, and the days went by, and now you have come for us. Maize stands tall, Bean waves, Squash is already spreading out to make room.",
+            "Maize: Thank you. Bean: Thank you, thank you! Squash: We counted every page you read. Well, Bean counted. We are coming home.",
+            "In the orchard the three of us held each other up, as always. Still, a mound grows better with somebody reading beside us. Take us home.",
+            "Many hands have carried our seeds over the years, and now yours again. You read your way back to us, and we are proud to be carried home.",
+            "{name}, all three of us, ready to go. Bean packed the tendrils, Squash packed the leaves, Maize simply stood up straighter. Lead on.",
+        },
     },
     beats = {
         { id = "jar", at = 15, title = "The jar",
