@@ -327,6 +327,19 @@ function Garden.warmScene(ctx)
     return scene, { children = { root, vine } }
 end
 
+-- What the garden's picture depends on: when it is the same as at the last
+-- build, the screen is shown again as it was (the app checks this before building). The minute is in
+-- it because plants get thirsty with time.
+function Garden:cacheKey(ctx)
+    local pose, at = {}, {}
+    for id, v in pairs(self.pose) do pose[#pose + 1] = id .. v end
+    for id, v in pairs(self.at) do at[#at + 1] = id .. tostring(v) end
+    table.sort(pose); table.sort(at)
+    return table.concat({ State.version, math.floor(State.clock() / 60), Sky.phase(Sky.hour()), Season.now(), State.weather(), Theme.get().version,
+        ctx.w, ctx.h, tostring(self.focus), tostring(self.showcase), tostring(self.sitting), tostring(self.seed), table.concat(pose, ","), table.concat(at, ","),
+        tostring(self.quote_at) }, "|")
+end
+
 -- Build the garden.
 function Garden:build(ctx)
     State.refresh()

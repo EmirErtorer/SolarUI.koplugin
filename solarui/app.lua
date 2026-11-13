@@ -71,7 +71,16 @@ local function build()
     local s = App.current()
     if not (host and s) then return end
     Perf.measure("build", function()
-        host:setRoot(s:build({ w = Screen:getWidth(), h = Screen:getHeight() }))
+        local ctx = { w = Screen:getWidth(), h = Screen:getHeight() }
+        -- a screen that can say what its picture depends on is not built again while that is the same
+        local key = s.cacheKey and s:cacheKey(ctx)
+        if key and s.built_key == key and s.built then
+            host:setRoot(s.built)
+        else
+            local root = s:build(ctx)
+            s.built, s.built_key = (key and root or nil), key
+            host:setRoot(root)
+        end
     end)
 end
 

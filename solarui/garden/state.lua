@@ -78,8 +78,11 @@ function State.unload()
     data = nil
 end
 
--- Write the garden.
+-- Write the garden. `State.version` counts the saves, so a screen can tell
+-- whether the garden is the one it drew.
+State.version = 0
 function State.save()
+    State.version = State.version + 1
     Settings.save("garden", State.get())
 end
 
