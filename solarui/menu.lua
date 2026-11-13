@@ -49,22 +49,22 @@ local PICK_H = 0.9   -- a picker lists long things (every KOReader action), so i
 -- KOReader's (and ZenOS's) tab icons as SolarUI icons and names; tabs other
 -- plugins add with their own icons show as EXTRA.
 local TABS = {
-    ["appbar.filebrowser"] = { "files", _("Files"), "library" },
+    ["appbar.filebrowser"] = { "folder", _("Files"), "library" },
     ["appbar.settings"] = { "settings", _("Settings"), "settings" },
     ["appbar.tools"] = { "tools", _("Tools"), "sprout" },
     ["appbar.search"] = { "search", _("Search"), "search" },
     ["appbar.menu"] = { "menu", _("Main"), "collections" },
     ["appbar.navigation"] = { "book", _("Navigation"), "details" },
-    ["appbar.typeset"] = { "edit", _("Typeset"), "notes" },
+    ["appbar.typeset"] = { "notes", _("Typeset"), "notes" },
     ["appbar.pageview"] = { "eye", _("View"), "bookmarks" },
-    ["appbar.textsize"] = { "edit", _("Typeset"), "notes" },
+    ["appbar.textsize"] = { "notes", _("Typeset"), "notes" },
     ["appbar.contrast"] = { "eye", _("View"), "bookmarks" },
     quicksettings = { "controls", _("Controls"), "history" },
     app_launcher = { "grid", _("Launcher"), "bookmarks" },
-    solarui_deck = { "light", _("Quick"), "highlights" },
+    solarui_deck = { "quick", _("Quick"), "highlights" },
     ["inkaway.tab"] = { "quill", _("Ink Away"), "history" },
 }
-local EXTRA = { "plus", _("More"), "bookmarks" }
+local EXTRA = { "plugin", _("Plugin"), "bookmarks" }
 
 -- A tab's icon and name, by its id first, then its icon.
 local function tabLook(tab)
@@ -657,11 +657,10 @@ function Menu:build(_close, screen_w)
 
     local tab_buttons = {}
     for i, t in ipairs(self.tabs) do
-        -- each tab is a small plant of the garden (a plugin's own icon file stays as it is)
-        local tl = tabLook(t)
-        local own_icon = tl[1]:find("/", 1, true) ~= nil
-        tab_buttons[i] = Button:new({ icon = own_icon and tl[1] or nil, art = not own_icon and { "plant_" .. tl[3] } or nil, icon_size = 34,
-            variant = i == self.tab and "chip_on" or "chip", grow = true, height = tabs_h, on_tap = function() self:switchTab(i) end })
+        -- each tab is an icon that says what it holds (a plugin's own icon file stays as it is);
+        -- the header names the tab shown, with its plant
+        tab_buttons[i] = Button:new({ icon = tabLook(t)[1], variant = i == self.tab and "chip_on" or "chip", grow = true,
+            height = tabs_h, on_tap = function() self:switchTab(i) end })
     end
     local path = self.pick and _("Pick an entry") or "KOReader"
     for _i, t in ipairs(self.trail) do path = path .. "  \u{B7}  " .. t end
