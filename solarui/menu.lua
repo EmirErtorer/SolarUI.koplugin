@@ -56,15 +56,15 @@ local TABS = {
     ["appbar.menu"] = { "menu", _("Main"), "collections" },
     ["appbar.navigation"] = { "book", _("Navigation"), "details" },
     ["appbar.typeset"] = { "edit", _("Typeset"), "notes" },
-    ["appbar.pageview"] = { "eye", _("View"), "highlights" },
+    ["appbar.pageview"] = { "eye", _("View"), "bookmarks" },
     ["appbar.textsize"] = { "edit", _("Typeset"), "notes" },
-    ["appbar.contrast"] = { "eye", _("View"), "highlights" },
-    quicksettings = { "controls", _("Controls"), "settings" },
-    app_launcher = { "grid", _("Launcher"), "collections" },
-    solarui_deck = { "light", _("Quick"), "settings" },
-    ["inkaway.tab"] = { "quill", _("Ink Away"), "notes" },
+    ["appbar.contrast"] = { "eye", _("View"), "bookmarks" },
+    quicksettings = { "controls", _("Controls"), "history" },
+    app_launcher = { "grid", _("Launcher"), "bookmarks" },
+    solarui_deck = { "light", _("Quick"), "highlights" },
+    ["inkaway.tab"] = { "quill", _("Ink Away"), "history" },
 }
-local EXTRA = { "plus", _("More"), "sprout" }
+local EXTRA = { "plus", _("More"), "bookmarks" }
 
 -- A tab's icon and name, by its id first, then its icon.
 local function tabLook(tab)
@@ -439,8 +439,11 @@ function Menu:row(item, w, h)
     local kids = {}
     if item.checked_func or item.checked ~= nil then
         local checked = item.checked_func and item.checked_func() or item.checked
-        kids[#kids + 1] = Panel:new({ shape = item.radio and "brackets" or "frame", width = Theme.px(22), height = Theme.px(22),
-            child = checked and Icon:new({ name = "check", size = 16, color = on and "ink" or "muted" }) or Layout.Spacer:new({}) })
+        -- a flower in bloom for what is on, an empty ring for what is off
+        kids[#kids + 1] = Layout.Row:new({ width = Theme.px(30), height = Theme.px(30), valign = "center", children = {
+            checked and ArtView:new({ name = "bloom", param = "daisy", width = Theme.px(30), height = Theme.px(30) })
+                or Panel:new({ shape = "frame", radius = Theme.px(13), width = Theme.px(26), height = Theme.px(26), child = Layout.Spacer:new({}) }),
+        } })
     end
     kids[#kids + 1] = Label:new({ text = textOf(item), kind = "label", color = on and "ink" or "muted", grow = true })
     if item.sub_item_table or item.sub_item_table_func then
@@ -451,7 +454,7 @@ function Menu:row(item, w, h)
             on_tap = on and function() self:select(item) end or nil,
             on_hold = function() self:hold(item) end,
             child = Layout.Row:new({ gap = th.space.m, children = kids }) }),
-        Deco.Divider:new({ height = item.separator and Theme.px(3) or nil }),
+        item.separator and Deco.Divider:new({ height = Theme.px(3) }) or Deco.RowRule:new({}),
     } })
 end
 
@@ -654,8 +657,11 @@ function Menu:build(_close, screen_w)
 
     local tab_buttons = {}
     for i, t in ipairs(self.tabs) do
-        tab_buttons[i] = Button:new({ icon = tabLook(t)[1], variant = i == self.tab and "chip_on" or "chip", grow = true,
-            height = tabs_h, on_tap = function() self:switchTab(i) end })
+        -- each tab is a small plant of the garden (a plugin's own icon file stays as it is)
+        local tl = tabLook(t)
+        local own_icon = tl[1]:find("/", 1, true) ~= nil
+        tab_buttons[i] = Button:new({ icon = own_icon and tl[1] or nil, art = not own_icon and { "plant_" .. tl[3] } or nil, icon_size = 34,
+            variant = i == self.tab and "chip_on" or "chip", grow = true, height = tabs_h, on_tap = function() self:switchTab(i) end })
     end
     local path = self.pick and _("Pick an entry") or "KOReader"
     for _i, t in ipairs(self.trail) do path = path .. "  \u{B7}  " .. t end
@@ -703,11 +709,9 @@ function Menu:build(_close, screen_w)
             self:show()
         end)
     end
-    local panel = Layout.Column:new({ width = screen_w, height = h, children = {
-        Panel:new({ shape = "none", fill = "bg", grow = true, pad = { pad, th.space.xl, pad, th.space.xl },
-            child = Layout.Column:new({ gap = gap, children = kids }) }),
-        ArtView:new({ name = "whiplash", fill = "bg", height = Theme.px(20) }),
-    } })
+    -- a leaf-edged card hanging from the top edge, ruled twice, a tendril curling in each corner
+    local panel = Panel:new({ shape = "chamfer", corners = "bl", fill = "bg", double = true, curls = true, width = screen_w, height = h,
+        pad = { pad, th.space.xl, th.space.m, th.space.xl }, child = Layout.Column:new({ gap = gap, children = kids }) })
     panel.dock = "top"
     panel.on_back = function() return self:up() end
     panel.on_page = function(delta)
