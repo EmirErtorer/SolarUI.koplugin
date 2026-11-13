@@ -32,6 +32,7 @@ local Label = require("solarui/ui/label")
 local Layout = require("solarui/ui/layout")
 local Panel = require("solarui/ui/panel")
 local Settings = require("solarui/settings")
+local TabFlower = require("solarui/ui/tabflower")
 local Theme = require("solarui/theme")
 local _ = require("solarui/gettext")
 
@@ -49,22 +50,22 @@ local PICK_H = 0.9   -- a picker lists long things (every KOReader action), so i
 -- KOReader's (and ZenOS's) tab icons as SolarUI icons and names; tabs other
 -- plugins add with their own icons show as EXTRA.
 local TABS = {
-    ["appbar.filebrowser"] = { "folder", _("Files"), "library" },
-    ["appbar.settings"] = { "settings", _("Settings"), "settings" },
-    ["appbar.tools"] = { "tools", _("Tools"), "sprout" },
-    ["appbar.search"] = { "search", _("Search"), "search" },
-    ["appbar.menu"] = { "menu", _("Main"), "collections" },
-    ["appbar.navigation"] = { "book", _("Navigation"), "details" },
-    ["appbar.typeset"] = { "notes", _("Typeset"), "notes" },
-    ["appbar.pageview"] = { "eye", _("View"), "bookmarks" },
-    ["appbar.textsize"] = { "notes", _("Typeset"), "notes" },
-    ["appbar.contrast"] = { "eye", _("View"), "bookmarks" },
-    quicksettings = { "controls", _("Controls"), "history" },
-    app_launcher = { "grid", _("Launcher"), "bookmarks" },
-    solarui_deck = { "quick", _("Quick"), "highlights" },
-    ["inkaway.tab"] = { "quill", _("Ink Away"), "history" },
+    ["appbar.filebrowser"] = { "folder", _("Files"), "library", 2 },
+    ["appbar.settings"] = { "settings", _("Settings"), "settings", 3 },
+    ["appbar.tools"] = { "tools", _("Tools"), "sprout", 4 },
+    ["appbar.search"] = { "search", _("Search"), "search", 5 },
+    ["appbar.menu"] = { "menu", _("Main"), "collections", 8 },
+    ["appbar.navigation"] = { "book", _("Navigation"), "details", 9 },
+    ["appbar.typeset"] = { "notes", _("Typeset"), "notes", 10 },
+    ["appbar.pageview"] = { "eye", _("View"), "bookmarks", 11 },
+    ["appbar.textsize"] = { "notes", _("Typeset"), "notes", 10 },
+    ["appbar.contrast"] = { "eye", _("View"), "bookmarks", 11 },
+    quicksettings = { "controls", _("Controls"), "history", 12 },
+    app_launcher = { "grid", _("Launcher"), "bookmarks", 6 },
+    solarui_deck = { "quick", _("Quick"), "highlights", 1 },
+    ["inkaway.tab"] = { "quill", _("Ink Away"), "history", 7 },
 }
-local EXTRA = { "plugin", _("Plugin"), "bookmarks" }
+local EXTRA = { "plugin", _("Plugin"), "bookmarks", 6 }
 
 -- A tab's icon and name, by its id first, then its icon.
 local function tabLook(tab)
@@ -648,7 +649,7 @@ end
 function Menu:build(_close, screen_w)
     local th = Theme.get()
     local screen_h = Screen:getHeight()
-    local row_h, tabs_h = Theme.px(50), Theme.px(46)
+    local row_h, tabs_h = Theme.px(50), Theme.px(76)
     local header_h = Theme.px(74)
     local gap, pad = th.space.s, th.space.m
     local tab = self.tabs[self.tab]
@@ -659,7 +660,7 @@ function Menu:build(_close, screen_w)
     for i, t in ipairs(self.tabs) do
         -- each tab is an icon that says what it holds (a plugin's own icon file stays as it is);
         -- the header names the tab shown, with its plant
-        tab_buttons[i] = Button:new({ icon = tabLook(t)[1], variant = i == self.tab and "chip_on" or "chip", grow = true,
+        tab_buttons[i] = TabFlower:new({ icon = tabLook(t)[1], kind = tabLook(t)[4] or (i - 1) % 12 + 1, chosen = i == self.tab, grow = true,
             height = tabs_h, on_tap = function() self:switchTab(i) end })
     end
     local path = self.pick and _("Pick an entry") or "KOReader"
