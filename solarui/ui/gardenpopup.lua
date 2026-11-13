@@ -43,7 +43,7 @@ GardenPopup.picture = picture
 function GardenPopup.card(id, w, list)
     local e, kind = State.entry(id)
     if not e then return nil end
-    local function again() App.update(); GardenPopup.open(id, list) end
+    local function again() App.updateChanged(); GardenPopup.open(id, list) end
     local a = GardenActions.of(id, again)
     a.on_close = function() App.closeDialog() end
     if list then

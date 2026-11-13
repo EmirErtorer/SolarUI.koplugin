@@ -276,4 +276,33 @@ do
     Theme.refresh()
 end
 
+-- after caring for a plant, only what changed is refreshed
+do
+    local Scene = require("solarui/ui/scene")
+    local g = Garden:new({})
+    State.get().plants.rose.watered = State.clock() - 60 * 86400
+    local root = g:build({ w = W, h = H })
+    root:layout(W, H)
+    local bb2 = Kit.canvas()
+    root:paint(bb2, 0, 0)
+    local before = g.scene:snapshot()
+    Kit.ok(Scene.changed(before, g.scene:snapshot(), 10) == false, "a rebuild with nothing changed refreshes nothing")
+    State.water("rose")
+    local root2 = g:build({ w = W, h = H })
+    root2:layout(W, H)
+    local after = g.scene:snapshot()
+    local box = Scene.changed(before, after, 10)
+    Kit.ok(box and box.w > 0 and box.w < W and box.h < H, "watering a plant refreshes a part of the screen, not all of it")
+    -- the rose's own box is inside what is refreshed, and so is the heading's dew count
+    local inside = false
+    for i, it in ipairs(before.items) do
+        if it[1]:find("plant_rose", 1, true) then
+            inside = box.x <= it[2] and box.y <= it[3] and box.x + box.w >= it[2] + it[4] and box.y + box.h >= it[3] + it[5]
+        end
+    end
+    Kit.ok(inside, "the refreshed part covers the plant that changed")
+    Kit.ok(box.y <= 20, "and the heading, where the dew shows")
+    bb2:free()
+end
+
 Kit.finish("gardenscreen")

@@ -95,6 +95,41 @@ function App.render(refresh)
     UIManager:setDirty(host, refresh or viewRefresh())
 end
 
+-- The scene on the screen (the part of the window that is composed as a poster), or nil.
+local function sceneOf(node)
+    if type(node) ~= "table" then return nil end
+    if node.items and node.children and node.slot then return node end
+    for _i, c in ipairs(node.children or {}) do
+        local s = sceneOf(c)
+        if s then return s end
+    end
+    return sceneOf(node.child)
+end
+
+-- Rebuild the current screen and refresh only what changed in its scene (and
+-- the dialog's box, if one is up), instead of the whole panel. The whole
+-- screen when what changed cannot be told.
+function App.updateChanged()
+    if not host then return end
+    local old = sceneOf(host.root)
+    local before = old and old:snapshot()
+    build()
+    host:markRepainted()
+    local scene = sceneOf(host.root)
+    local region
+    if before and scene then
+        local margin = Theme.px(40)   -- (a plant leans out of its box)
+        region = require("solarui/ui/scene").changed(before, scene:snapshot(), margin)
+        if region == false then region = Geom:new({ x = 0, y = 0, w = 1, h = 1 })
+        elseif region then
+            region = Geom:new(region)
+            local o = host.overlay
+            if o then region = region:combine(host:overlayBox()) end
+        end
+    end
+    UIManager:setDirty(host, "ui", region or host.dimen)
+end
+
 -- Rebuild the current screen but refresh only `region` (a Geom). Without
 -- one, the whole screen, or only what is above a docked keyboard.
 function App.update(region)

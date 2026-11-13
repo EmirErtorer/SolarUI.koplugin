@@ -265,6 +265,47 @@ function Scene.spriteJobs(root)
     return jobs
 end
 
+-- What a scene shows, to tell after a rebuild what changed: its backdrop
+-- items and its elements, each by what is drawn and where.
+function Scene:snapshot()
+    local snap = { x = self.x or 0, y = self.y or 0, items = {}, kids = {} }
+    for i, it in ipairs(self.items) do snap.items[i] = { it.key, it[2], it[3], it[4], it[5] } end
+    local function sig(c)
+        local parts = { c.name or "", tostring(c.param_fn and c.param_fn() or c.param), tostring(c.text), tostring(c.label), tostring(c.value), tostring(c.disabled) }
+        if c.art then parts[#parts + 1] = tostring(c.art[1]) .. tostring(c.art[2]) end
+        for _i, kid in ipairs(c.children or {}) do parts[#parts + 1] = sig(kid) end
+        if type(c.child) == "table" then parts[#parts + 1] = sig(c.child) end
+        return table.concat(parts, "\1")
+    end
+    for i, c in ipairs(self.children) do snap.kids[i] = { sig(c), c.sx or 0, c.sy or 0, c.sw or c.w or 0, c.sh or c.h or 0 } end
+    return snap
+end
+
+-- The box in screen pixels that changed between two snapshots of a scene of
+-- the same make (x, y, w, h), grown by `margin`; nil when the two are not
+-- alike enough to say (then the whole screen is the safe answer), false
+-- when nothing changed.
+function Scene.changed(old, new, margin)
+    if #old.items ~= #new.items or #old.kids ~= #new.kids then return nil end
+    local x0, y0, x1, y1
+    local function add(x, y, w, h)
+        x0, y0 = math.min(x0 or x, x), math.min(y0 or y, y)
+        x1, y1 = math.max(x1 or x + w, x + w), math.max(y1 or y + h, y + h)
+    end
+    for i, a in ipairs(old.items) do
+        local b = new.items[i]
+        if a[1] ~= b[1] then add(a[2], a[3], a[4], a[5]); add(b[2], b[3], b[4], b[5]) end
+    end
+    for i, a in ipairs(old.kids) do
+        local b = new.kids[i]
+        if a[1] ~= b[1] or a[2] ~= b[2] or a[3] ~= b[3] or a[4] ~= b[4] or a[5] ~= b[5] then
+            add(a[2], a[3], a[4], a[5]); add(b[2], b[3], b[4], b[5])
+        end
+    end
+    if not x0 then return false end
+    return { x = old.x + x0 - margin, y = old.y + y0 - margin, w = x1 - x0 + 2 * margin, h = y1 - y0 + 2 * margin }
+end
+
 -- Paint the backdrop, then the elements.
 function Scene:paint(bb, x, y)
     self.x, self.y = x, y
