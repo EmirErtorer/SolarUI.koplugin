@@ -81,11 +81,13 @@ end
 -- Gives the picture, where its corner lies from the box's corner, and
 -- whether it ran out of even that room; nil when there is no such drawing
 -- or it fails.
-local function render(name, w, h, vw, vh, param)
+-- `exact` (a backdrop that stays inside its box, the ground) is drawn at
+-- exactly its size: no margin to rasterise and nothing to trim.
+local function render(name, w, h, vw, vh, param, exact)
     local draw = require("solarui/art/sprites")[name]
     if not draw or w < 1 or h < 1 then return nil end
     local zoom = math.min(w / vw, h / vh)
-    local pad = bleed(vw, vh, zoom)
+    local pad = exact and 0 or bleed(vw, vh, zoom)
     local ox, oy = pad + (w - vw * zoom) / 2, pad + (h - vh * zoom) / 2
     local W, H = w + 2 * pad, h + 2 * pad
     local f = io.open(scratch(), "w")
@@ -95,6 +97,7 @@ local function render(name, w, h, vw, vh, param)
     f:close()
     local bb = RenderImage:renderSVGImageFile(scratch(), W, H, 1)
     if not bb then return nil end
+    if exact then return bb, 0, 0, false end
     local full_w, full_h = bb:getWidth(), bb:getHeight()
     local x, y
     bb, x, y = Alpha.trim(bb)
@@ -153,7 +156,7 @@ local function piece(it)
     local key = table.concat({ it[1], it[4], it[5], it[6], it[7], tostring(it[8]) }, "|")
     local p = pieces[key]
     if p == nil then
-        local bb, dx, dy = render(it[1], it[4], it[5], it[6], it[7], it[8])
+        local bb, dx, dy = render(it[1], it[4], it[5], it[6], it[7], it[8], it.base)
         p = bb and { bb = bb, dx = dx, dy = dy, bytes = bb:getWidth() * bb:getHeight() * 4 } or false
         pieces[key] = p
         piece_order[#piece_order + 1] = key
