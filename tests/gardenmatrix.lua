@@ -783,7 +783,7 @@ do
     -- the tuft, the nest, the peek, the pond, the table and the ground
     local sprites = require("solarui/art/sprites")
     local palette = {}
-    for _, role in ipairs({ "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_accent", "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }) do palette[role] = require("solarui/theme").hex(role, true) end
+    for _, role in ipairs({ "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_accent", "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream", "violet", "lilac" }) do palette[role] = require("solarui/theme").hex(role, true) end
     local fails = {}
     for _, phase in ipairs({ "night", "morning", "day", "golden" }) do
         for _, weather in ipairs(Weather.KINDS) do

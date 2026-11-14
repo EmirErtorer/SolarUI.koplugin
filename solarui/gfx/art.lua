@@ -17,7 +17,7 @@ local Art = {}
 
 -- The colour roles a drawing may use.
 local ROLES = { "ink", "bg", "muted", "line", "soft", "accent", "accent2", "on_accent",
-    "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
+    "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream", "violet", "lilac" }
 
 local MAX_SPRITES = 160   -- (the garden alone has about forty, and home, library and history more)
 

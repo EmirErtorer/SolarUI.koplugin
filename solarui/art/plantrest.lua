@@ -23,6 +23,7 @@ function Rest.dry(p)
     for role, hex in pairs(c) do d[role] = hex end
     d.leaf, d.sage, d.stem, d.bloom, d.bloom2 = c.dead, c.straw, c.straw, c.rust, c.dead
     d.pale, d.gold, d.sky, d.glass = c.straw, c.dead, c.straw, c.dead
+    d.violet, d.lilac = c.dead, c.straw
     return { c = d, st = p.st, wilt = false, W = p.W, H = p.H, season = p.season }
 end
 

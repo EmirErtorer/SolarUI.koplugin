@@ -1,7 +1,7 @@
 -- The plants every drawing is put together from: leaves, roses and buds,
 -- vines with tendrils, and the other flowers of the garden. Each takes the
 -- colours `c` (ink, leaf, stem, gold, pale, bloom, bloom2, sky, sage, glass,
--- cream) and a place, and returns SVG text.
+-- cream, violet, lilac) and a place, and returns SVG text.
 
 local Svg = require("solarui/art/svg")
 
