@@ -1,5 +1,5 @@
 -- The garden's shrub, shade and water plants through the stages of their
--- life: damask rose, honesty, bracken and the white water lily, and how the
+-- life: damask rose, honesty, a clump of bracken and the white water lily, and how the
 -- rose and honesty rest through the winter. All are drawn with plantkit,
 -- each in a bed of the plant's own size, and returned by name for gardenplants.
 
@@ -8,8 +8,10 @@ local Kit = require("solarui/art/plantkit")
 local Rest = require("solarui/art/plantrest")
 local Season = require("solarui/art/plantseason")
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
 local n, group, path, line, petal, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal, Svg.circle, Svg.ellipse
+local mix = Wash.mix
 
 local Shade = {}
 
@@ -120,25 +122,47 @@ local function frond(p, pts, reach, fill)
         out = out .. Kit.lobed(p.c, x, y, Kit.turn(p, ang, -1, 66, .3), L, L * .15 + 1.5, lobes, fill) .. Kit.lobed(p.c, x, y, Kit.turn(p, ang, 1, 72, .3), L * .82, L * .15 + 1.5, lobes, fill)
     end
     local x, y, ang = Kit.on(pts, .97)
-    return out .. Kit.lobed(p.c, x, y, ang, reach * .34, reach * .08, 3, fill) .. Svg.stem(Svg.head(pts, Svg.length(pts) * .97), Svg.taper(4.4, 1.8), p.c.stem, p.c.ink, 1.3)
+    return out .. Kit.lobed(p.c, x, y, ang, reach * .34, reach * .08, 3, fill) .. Svg.stem(Svg.head(pts, Svg.length(pts) * .97), Svg.taper(reach * .1, reach * .04), p.c.stem, p.c.ink, 1.3)
 end
 
--- Bracken: croziers that unroll into a broad three-cornered frond.
+-- The fronds of the bracken clump, back to front: the way each rachis
+-- rises from the rhizome and how far its lowest pinnae reach.
+local FRONDS = {
+    { way = { { 0, -3 }, { -3, -40 }, { 1, -74 }, { 10, -98 } }, reach = 30 },
+    { way = { { -7, -3 }, { -14, -30 }, { -34, -52 }, { -60, -60 } }, reach = 27 },
+    { way = { { 7, -3 }, { 15, -32 }, { 36, -56 }, { 60, -68 } }, reach = 27 },
+}
+
+-- The colours of the fronds, back to front: green, russet and copper in
+-- autumn and at the seed head, brown when the clump has died back.
+local function frondTones(p)
+    local c = p.c
+    if p.season == "dormant" then return { c.dead, mix(c.dead, c.straw, .5), c.straw } end
+    if p.season == "autumn" or p.st == 5 then
+        local copper = mix(c.gold, c.bloom, .55)
+        return { mix(copper, c.muted, .3), copper, mix(c.gold, c.bloom, .2) }
+    end
+    return { mix(c.leaf, c.stem, .45), c.leaf, mix(c.leaf, c.sage, .5) }
+end
+
+-- Bracken: a clump of croziers from one creeping rhizome that unroll into
+-- broad three-cornered fronds of different heights.
 local function bracken(p)
     local c, st = p.c, p.st
     local out = Kit.soil(p, 84)
-    if st == 2 then return out .. Flora.crozier(c, 12, -3, 8, 30, 9, c.sage) .. Flora.crozier(c, -6, -3, -6, 46, 12, c.leaf) end
-    if st == 3 then
-        local stalk = Svg.spline({ { -4, -3 }, { -12, -36 }, { -4, -70 } }, 8)
-        local half = ""
-        for i, f in ipairs({ .46, .68 }) do
-            local x, y, ang = Kit.on(stalk, f)
-            half = half .. Kit.lobed(c, x, y, Kit.turn(p, ang, -1, 66, .3), 34 - i * 8, 6, 4, c.leaf) .. Kit.lobed(c, x, y, Kit.turn(p, ang, 1, 66, .3), 32 - i * 8, 6, 4, c.leaf)
+    if st == 2 then return out .. Flora.crozier(c, 22, -3, 12, 20, 7, c.sage) .. Flora.crozier(c, 8, -3, 6, 32, 9, c.sage) .. Flora.crozier(c, -10, -3, -6, 46, 12, c.leaf) end
+    local tones = frondTones(p)
+    local k = st == 3 and .66 or 1
+    for i, f in ipairs(FRONDS) do
+        -- the young clump has two small fronds open, and the tallest still rolled
+        if st > 3 or i > 1 then
+            local way = {}
+            for j, pt in ipairs(f.way) do way[j] = { pt[1] * k, -3 + (pt[2] + 3) * k } end
+            out = out .. frond(p, Kit.rise(p, way, 50, .4), f.reach * k, tones[i])
         end
-        return out .. Flora.crozier(c, 30, -3, 10, 34, 10, c.sage) .. half .. Flora.crozier(c, -4, -3, 0, 78, 12, c.leaf)
     end
-    local rachis = Kit.rise(p, { { -26, -3 }, { -27, -36 }, { -10, -72 }, { 24, -102 } }, 50, .4)
-    return out .. frond(p, rachis, 44, st == 5 and c.gold or c.leaf) .. Flora.crozier(c, 52, -3, 12, st == 4 and 36 or 26, st == 4 and 10 or 8, st == 5 and c.pale or c.sage)
+    if st == 3 then return out .. Flora.crozier(c, 2, -3, 4, 70, 12, c.leaf) .. Flora.crozier(c, 20, -3, 14, 16, 6.5, c.sage) end
+    return (st == 4 and p.season ~= "dormant") and out .. Flora.crozier(c, 24, -3, 16, 17, 7.5, c.sage) or out
 end
 
 -- A floating lily pad seen at a slant, its notch at `notch` degrees.
