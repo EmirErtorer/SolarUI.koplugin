@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "My dear, there is {next} outdoors this week. Do wear something suitable.", "Darling, the weather is simply made for {next}. This week, my dear." },
+        outside_done = { "My dear, an outing! Quite the entrance, I am sure.", "Another outdoors. Darling, you do look well outdoors." },
+        outside_week = { "All three, my dear! A week fit for a painting. I am speechless. For a moment." },
         greet = {
             "Ah, my dear. Do come in. I have been holding this pose for you since dawn.",
             "Good [morning|day], darling. You find me upright, as ever.",

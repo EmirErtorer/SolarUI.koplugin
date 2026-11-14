@@ -8,6 +8,9 @@
 
 return {
     moments = {
+        outside_ask = { "Dear, a little fresh air is the best tonic. I prescribe {next} this week.", "A small dose of outdoors, dear: {next}. Take that whenever suits." },
+        outside_done = { "Well done, dear. One more dose of fresh air, taken.", "That is the tonic working, dear. Good." },
+        outside_week = { "All three doses, dear. A full course of fresh air. You will sleep well." },
         greet = {
             "There you are, dear. Come and sit. Nothing here needs doing quickly.",
             "Hello, dear. You look as though the day has had a good go at you. Sit down by me.",

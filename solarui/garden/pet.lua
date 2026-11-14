@@ -113,6 +113,18 @@ local function event(p, kind, extra)
     p.events[#p.events + 1] = e
 end
 
+-- The reader ticked off a thing outdoors (`full`: the week's three are all done):
+-- the companion has something to say about it, told at the next look.
+function Pet.outside(full)
+    local p = Pet.get()
+    if not p then return end
+    for j = #p.events, 1, -1 do
+        if p.events[j].kind == "outside" then table.remove(p.events, j) end   -- (only the latest is told)
+    end
+    event(p, "outside", { full = full and true or false })
+    p.now = nil   -- (the answer comes at the next look, not after the line that is held)
+end
+
 -- Does the companion talk? (a setting, on by default: some readers prefer
 -- a companion without written dialogue)
 function Pet.talks()

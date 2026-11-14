@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "I wonder... would you like {next} outdoors this week?", "There is {next} outside this week. What do you think that will be like?" },
+        outside_done = { "You went out. I wonder what you noticed.", "One more outing. Did the air change your mind about anything?" },
+        outside_week = { "All three. I wonder what the week was like. I hope I get to hear." },
         greet = {
             "Oh, hello. I was in the middle of a thought. You may have the rest when I find where I left off.",
             "You came. I had wondered whether you would, and then wondered why I wondered.",

@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Sapling, there is {next} outside this week. An old tree recommends a walk.", "Out under the sky this week, sapling: {next}. I have a good view of the sky." },
+        outside_done = { "One more outing. I will put a ring round that one.", "You went outside, sapling. The leaves heard the news." },
+        outside_week = { "Three outings in a week, sapling. A fat ring, that will be." },
         greet = {
             "Ah, there you are. Come, sit under my branches. The shade has been kept for you.",
             "Good to see you, sapling. I have stood here a long while. I can stand a little longer for you.",

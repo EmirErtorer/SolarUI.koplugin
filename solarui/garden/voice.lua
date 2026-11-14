@@ -21,7 +21,7 @@ local Voice = {}
 -- How many lines a companion remembers having said.
 Voice.MEMORY = 48
 -- The moments that tell something that waited (they are held a few hours when told).
-local EVENTS = { beat = true, level = true, finished = true, streak = true, anniversary = true }
+local EVENTS = { beat = true, level = true, finished = true, streak = true, anniversary = true, outside_done = true, outside_week = true }
 
 -- How long a line stays on the home screen before another is chosen, in seconds.
 Voice.HOLD = 3 * 3600
@@ -84,6 +84,14 @@ function Voice.context(p)
         ctx.quote_title = q.title
     end
     ctx.away = math.floor((State.clock() - (p.last_open or State.clock())) / 86400)
+    -- the week's things outdoors: how many are done and left, and what kind the next one is
+    local oks, sum = pcall(State.outsideSummary)
+    if oks and sum then
+        ctx.done, ctx.left = sum.done, sum.total - sum.done
+        ctx.next = sum.next and ({ look = "something to look at", listen = "something to listen to", ["do"] = "something to do" })[sum.next.kind] or ""
+    else
+        ctx.done, ctx.left, ctx.next = 0, 0, ""
+    end
     return ctx
 end
 
@@ -247,7 +255,8 @@ local function pending(p, ctx)
     end
     ctx.streak_days = e.days
     if e.days then ctx.days, ctx.streak = e.days, e.days end
-    local moment = ({ level = "level", book = "finished", streak = "streak", anniversary = "anniversary" })[e.kind]
+    local moment = ({ level = "level", book = "finished", streak = "streak", anniversary = "anniversary",
+        outside = e.full and "outside_week" or "outside_done" })[e.kind]
     if e.level then ctx.level = e.level end
     local line = moment and Voice.pick(moment, ctx)
     if line then return { text = line.text, moment = moment } end
@@ -294,6 +303,7 @@ function Voice.current()
         if ctx.pages_today > 0 then moments[#moments + 1] = "read_today" else moments[#moments + 1] = "nudge" end
         if ctx.book then moments[#moments + 1] = "book_now" end
         if ctx.quote then moments[#moments + 1] = "quote" end
+        if ctx.left > 0 then moments[#moments + 1] = "outside_ask" end
         local order = {}
         local start = roll(p, #moments)
         for i = 0, #moments - 1 do order[#order + 1] = moments[(start + i - 1) % #moments + 1] end
@@ -320,7 +330,10 @@ function Voice.react()
         State.save()
         return waiting.text
     end
-    local line = Voice.pick("tap", ctx)
+    -- the first tap of a week with things left outdoors is asked about them
+    local week = require("solarui/garden/prompts").week(State.clock())
+    local line = ctx.left > 0 and p.outside_told ~= week and Voice.pick("outside_ask", ctx)
+    if line then p.outside_told = week else line = Voice.pick("tap", ctx) end
     if line then
         p.now = { text = line.text, moment = "tap", key = "tap", at = State.clock() }
         State.save()

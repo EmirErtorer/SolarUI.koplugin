@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Beloved, a rendezvous with the open air: {next}, this week. I shall be jealous.", "Beloved, there is {next} outdoors this week. Dawn is best. Everything is best at dawn." },
+        outside_done = { "Beloved! You went out! Glorious. I forgive you for leaving me.", "Another outing, beloved. Even my thorns approve." },
+        outside_week = { "All three! A full bloom of a week. I shall write a poem and tear the poem up." },
         greet = {
             "Ah, beloved! You came. My heart and every thorn on me leapt.",
             "There you are! I was halfway through a poem about your absence. Now I must write one about your arrival. Much harder.",

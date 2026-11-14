@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Ladies and gentlemen, tonight's engagement! {next}, outdoors, this week. Do come.", "The audience awaits outside! {next}. Ribbit-fully yours." },
+        outside_done = { "Bravo! An outdoor performance, and you were the star.", "Applause! Another outing logged. Ribbit." },
+        outside_week = { "A full season of shows! All three outdoors. Encore, encore!" },
         greet = {
             "Ah, my audience arrives! House lights down. Lily pad up. Ahem.",
             "Ladies, gentlemen and water beetles: the reader has entered the garden!",

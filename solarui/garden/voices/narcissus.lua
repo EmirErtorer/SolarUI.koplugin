@@ -11,6 +11,9 @@
 
 return {
     moments = {
+        outside_ask = { "Fair one, there is {next} outdoors this week. The pool is quite still. Go and look.", "Outside, fair one, where the light shines back: {next} awaits." },
+        outside_done = { "You went out, fair one. Even the puddles were pleased.", "One more outing. I saw you in the water. Splendid." },
+        outside_week = { "All three, fair one! A full week of reflections. I am quite overcome, as usual." },
         greet = {
             "Ah, there you are. I was admiring myself in a dewdrop, and now I have a better view.",
             "Hello, fair one. Stand where the light falls on us both. We make a lovely picture.",

@@ -8,6 +8,9 @@
 
 return {
     moments = {
+        outside_ask = { "Colleague, I have {next} on the outdoor rota this week. Fresh air counts as gathering.", "Work plan update: {next}, outside, before the week is out. I will hum while you go." },
+        outside_done = { "Logged! One more trip on the board. Nicely flown, colleague.", "Another outdoor round done. I am counting that trip twice, out of pride." },
+        outside_week = { "All three trips flown, colleague. That is a full foraging week. Hum hum hum." },
         greet = {
             "Good, you are here. Roll call: one bee, one reader, all present. Onwards.",
             "Hello, colleague! Eleven trips done already. You are trip twelve, and the best of the lot.",

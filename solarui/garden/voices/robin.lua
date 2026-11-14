@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Neighbour! {next} outside this week. On the patch. Report to me after.", "Patch inspection, neighbour: {next} is due this week. Chop chop." },
+        outside_done = { "Good. One more outside. I saw you go, I see everything.", "Well done, neighbour. One more logged, and I shall sing about that." },
+        outside_week = { "All three! Excellent. The patch is proud of you. I am proud of you. Tic!" },
         greet = {
             "Oh good, you. Stand there. No, there. Perfect. Now I can keep an eye on you.",
             "Patch inspection: hedge present, gate present, you present. All in order.",

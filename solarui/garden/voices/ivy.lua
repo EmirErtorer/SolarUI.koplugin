@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Love, there is {next} outdoors this week. I would go, but I am rooted.", "Outside, love, I heard through the window: {next}. Do tell me." },
+        outside_done = { "Oh, you went! I knew you would. Tell me everything.", "One more outing, love. I will hold onto that." },
+        outside_week = { "All three, love! A whole week outside. Hugging this one tight." },
         greet = {
             "There you are, love! Come here. I would hug you properly if you stood by the wall a bit longer.",
             "Hello, hello! Sit down, I have news. Well, I have gossip. Nearly the same thing.",

@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Dreamer, the world above the pond has {next}, this week. Soft light, probably.", "There is {next} outdoors this week, dreamer. I will float here and think of the sky." },
+        outside_done = { "You went. I felt the ripples. Lovely.", "One more outing, dreamer. The water is calmer now." },
+        outside_week = { "All three, dreamer. A week of open air. Quiet and lovely." },
         greet = {
             "Hello. I opened just as you came. Perhaps that was the sun. Perhaps not.",
             "There you are on the bank, and there you are again, upside down in the water. Welcome, both of you.",

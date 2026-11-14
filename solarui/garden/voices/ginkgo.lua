@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "There is {next} to be done outside this week. I would suggest going, were I the sort to suggest.", "The world outdoors has been there for some time. This week: {next}." },
+        outside_done = { "One more outing. A good ring, I think.", "You went outside. I noticed. A tree notices such things." },
+        outside_week = { "Three outings in a week. I have known whole centuries with fewer." },
         greet = {
             "Good [morning|day]. You arrive the way spring does: not quite when expected, and always welcome.",
             "Ah, there you are. I am a patient tree. I confess I was looking forward to this anyway.",

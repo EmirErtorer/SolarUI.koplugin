@@ -12,6 +12,9 @@
 
 return {
     moments = {
+        outside_ask = { "We have {next} for you outdoors this week. Maize says go, Bean says now, Squash says whenever.", "Outside this week: {next}. We three would go together, if we could." },
+        outside_done = { "You went out! Maize nodded. Bean cheered. Squash made room.", "Another one done. Together is best, even when there is just one." },
+        outside_week = { "All three, as we are three. A full week outdoors. We are glad." },
         greet = {
             "Hello from all three of us! Maize waves, Bean waves twice, Squash nods. That is a full welcome.",
             "There you are. We saved you a place in the shade of the big leaves. Squash insisted.",

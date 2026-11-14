@@ -8,6 +8,9 @@
 
 return {
     moments = {
+        outside_ask = { "Excuse me, there is {next} outside this week, if you would like. I will wait here, in case.", "Please, I have counted, and there is {next} waiting for you outdoors." },
+        outside_done = { "You went! I counted twice, to be sure, and the answer is still one. Well done.", "Thank you for going out. I hope the ground was dry." },
+        outside_week = { "All three! I counted them twice. And a third time. Well done." },
         greet = {
             "Oh! Hello. I heard footsteps and nearly rolled up. Then I smelled that the steps were yours.",
             "Good [morning|day], if you do not mind my saying so. I have been hoping, quietly.",

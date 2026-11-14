@@ -12,6 +12,9 @@
 
 return {
     moments = {
+        outside_ask = { "News, correspondent! {next} outdoors this week. Go and report back.", "A bulletin: {next} awaits outside. Please send word." },
+        outside_done = { "Message received! You went out. I will pass the news along.", "Another report from the field, correspondent. Delighted." },
+        outside_week = { "All three delivered, correspondent! A full week of news from outdoors." },
         greet = {
             "Ah, the very person! I have news, and you are the first to hear. Well, after the bees.",
             "Hello, correspondent! Word reached me you were coming. The word was right.",

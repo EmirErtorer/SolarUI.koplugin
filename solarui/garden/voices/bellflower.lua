@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "There is {next} waiting outside this week... a quiet one, I think.", "Outside, if you like... {next}. I would ring for you, but I am shy." },
+        outside_done = { "You went. I felt the air change... a small ring, just for that.", "Oh, how lovely... that is one more heard." },
+        outside_week = { "All three... I rang, and nobody minded. Thank you for going out." },
         greet = {
             "Oh. Hello. I heard you before I saw you. Your steps have a gentle tune.",
             "Hello. I am the small blue one, nodding. That nod was for you.",

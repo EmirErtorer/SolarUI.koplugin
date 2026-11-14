@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Wildling, there is {next} out there. Go on, let the wind take you.", "Outdoors, wildling! {next} this week. Wishes happen outside." },
+        outside_done = { "Wildling! You went. I wished for exactly that.", "Another one outside. A little seed of you blew into the world." },
+        outside_week = { "All three, wildling! A whole week scattered over the meadow. Wish granted." },
         greet = {
             "Oi, wildling! Over here, in the patch of lawn nobody tidied.",
             "Ha, you again! Good. I was running out of bees to talk to.",

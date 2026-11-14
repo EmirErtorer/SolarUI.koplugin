@@ -7,6 +7,9 @@
 
 return {
     moments = {
+        outside_ask = { "Clever one, I know of {next} outside this week. Keep quiet, a secret between us.", "A little plot, clever one: step outside for {next}. Nobody will suspect a thing." },
+        outside_done = { "Clever one! You slipped out and nobody saw. Well, I saw.", "Another outing... you are getting sneaky, in the best way." },
+        outside_week = { "All three, clever one. A perfect heist of fresh air." },
         greet = {
             "Ah, [there you are|look who turned up]. I was only pretending to be asleep.",
             "You walk loudly, you know. I heard you three pages away.",

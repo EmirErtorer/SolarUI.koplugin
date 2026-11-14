@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Dreamer... there is {next} outside this week. A little wake-up, if you like.", "Mm... outdoors... {next}. I will doze while you go." },
+        outside_done = { "You went out. I dreamt of the outdoors, a little, just now.", "Mm. One more outing... lovely." },
+        outside_week = { "All three... a whole week outdoors. I shall remember that week. Mm." },
         greet = {
             "Mm? Oh, you. I was dreaming about you, and now here you are, which is better.",
             "Hello, dreamer. A new flower opened on me this morning. Your timing could not be lovelier.",

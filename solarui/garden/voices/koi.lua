@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Honoured one, a gentle suggestion: {next} waits outdoors this week.", "The pond is the world, but there is {next} beyond the pond, this week." },
+        outside_done = { "You went out, honoured one. The water was still, and so were we.", "Another outing. A ripple, widening." },
+        outside_week = { "Three outings in one week. A quiet circle, closed. Thank you, honoured one." },
         greet = {
             "You have come to the water. I rise to meet you. This is the whole ceremony, and enough.",
             "Good day to you. I knew your shape upon the bank before the ripples settled.",

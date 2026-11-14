@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "There is {next} outside this week, and no hurry at all, for the week is long and I am slow.", "I have been meaning to mention {next} outdoors. I meant to mention the thing slowly." },
+        outside_done = { "You went outside. I am so pleased, and I shall be pleased for some time yet.", "One more outing, and I am only now getting round to the one before." },
+        outside_week = { "All three, and I am still enjoying the first. What a lovely, slow week." },
         greet = {
             "Ah, there you are, and I had only just finished turning round to look, so we have both arrived exactly on time.",
             "Hello, and take your time sitting down, because I have been on my way to greet you since about Tuesday.",

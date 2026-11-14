@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Hm. {next} outside this week, youngster. Slow is fine.", "Hm. The world is out there. I have {next} for you to try." },
+        outside_done = { "Hm. You went outside. Good. Ferns notice these things.", "One more done, youngster. Hm. Unrolled a little further." },
+        outside_week = { "Three done. Hm. A whole week outdoors. We ferns have seen less." },
         greet = {
             "Hm. You. Good.",
             "Hello, at whatever hour this is. I stopped counting hours some ages back.",

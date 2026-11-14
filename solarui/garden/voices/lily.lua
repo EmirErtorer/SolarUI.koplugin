@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Child, there is {next} outdoors this week. The air would do you good.", "A small thing outside this week: {next}. I have seen palaces with less." },
+        outside_done = { "Good, child. One outing is as good as a procession.", "You went. That is enough. The air was grateful." },
+        outside_week = { "Three outings, child. A very full week. I am pleased." },
         greet = {
             "Ah. You have come. Sit, child. There is no hurry in this part of the garden.",
             "Good [morning|day]. I saw you at the gate, and I waited. Waiting is a thing I do well.",

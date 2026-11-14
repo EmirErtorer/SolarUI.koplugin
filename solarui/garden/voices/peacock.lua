@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Darling, a stage awaits outdoors: {next}, this week. Do dress for the occasion.", "Darling, the whole sky is a theatre. {next}, outdoors, this week." },
+        outside_done = { "Magnificent, darling! An outing! I trust you were noticed.", "Another outing! Darling, you have timing." },
+        outside_week = { "All three outings, darling! A full-train week. Take a bow. I shall take two." },
         greet = {
             "Darling! You are here. Hold still, I am deciding which side to show you first.",
             "Enter! The lawn is yours. The spotlight, naturally, remains mine.",

@@ -11,6 +11,9 @@
 
 return {
     moments = {
+        outside_ask = { "Plain truth: you have {next} outside this week. Staying in is also an option. A poor one.", "The honest thing is outdoors this week: {next}. Go on." },
+        outside_done = { "Done one. Good. No decoration needed.", "You went out. I would say well done, and I mean every word." },
+        outside_week = { "All three. That is the whole truth. Well done." },
         greet = {
             "Hello. I am pleased to see you. I would tell you if I were not.",
             "You came. Good. I was getting bored of the hedge, and the hedge knows.",

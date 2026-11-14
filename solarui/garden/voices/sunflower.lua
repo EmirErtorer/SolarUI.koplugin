@@ -8,6 +8,9 @@
 
 return {
     moments = {
+        outside_ask = { "Friend, I can see {next} from here! Go outside this week. Take a good look.", "Friend, the sun is out there, and so is {next}. This week, if you can." },
+        outside_done = { "You went out, friend! I saw you from here. Well, nearly.", "Another one in the sun. I turned to watch you go." },
+        outside_week = { "All three, friend! A whole sunny week. I am tall with pride." },
         greet = {
             "There you are! I turned my whole head. For me that is running to the gate.",
             "Good [morning|day], friend! I saw you coming from a long way off. Height has perks.",

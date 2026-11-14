@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Outdoors. {next}. This week.", "I observe {next} outside, this week. Suggest you go." },
+        outside_done = { "Logged. One outing. Efficient.", "Good. The outdoors noted you." },
+        outside_week = { "Three of three. Precisely correct." },
         greet = {
             "You. Good. I had the pond to myself. This is better. Marginally.",
             "Observed: one reader, approaching. I held my position. That is a welcome.",

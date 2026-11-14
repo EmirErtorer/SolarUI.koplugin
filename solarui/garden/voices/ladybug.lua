@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Dear, I spotted {next} outside this week. Lucky you, if you go!", "Seven spots say: go outside. {next}, dear. Lucky you!" },
+        outside_done = { "Lucky you! One more outside. I am counting the spots on that one.", "Dear, you went out! The luck is real, I think." },
+        outside_week = { "All three, dear! A very lucky week. Seven spots out of seven!" },
         greet = {
             "You! Here! On a day with a seven in, I expect. Everything good has a seven in.",
             "Hello, my dear! I landed facing the gate this morning. That always means company.",

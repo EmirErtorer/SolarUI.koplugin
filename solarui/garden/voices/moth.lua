@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Dear reader, there is {next} waiting beyond the window... at dusk, if you can.", "Dear reader, the night garden has {next} for you this week. I shall hover nearby." },
+        outside_done = { "You went out, dear reader. I felt the lamp go dim. A good sign.", "Another outing... I am so glad, dear reader." },
+        outside_week = { "All three, dear reader. A full week beyond the lamp. How lovely." },
         greet = {
             "Oh, you are here. Forgive the fluttering. I do that when I am glad.",
             "Good evening, dear reader. Or whatever hour this is. I keep time by lamps.",

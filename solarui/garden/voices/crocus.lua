@@ -9,6 +9,9 @@
 
 return {
     moments = {
+        outside_ask = { "Oi, chief! Outside! {next}, this week. Even I go out, in snow.", "Status report: {next} outside, waiting. Ha! Go!" },
+        outside_done = { "Ha! Done one, chief. Out in the cold and still smiling.", "Oi! Another outside. I count them. I always count." },
+        outside_week = { "Three! All three, chief! First out, every time. Ha!" },
         greet = {
             "Oi! Down here. Lower. There. Hello!",
             "You made the trip. Good. I was about to start the day without you.",

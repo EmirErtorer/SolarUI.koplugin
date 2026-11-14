@@ -10,6 +10,9 @@
 
 return {
     moments = {
+        outside_ask = { "Darling, there is {next} outdoors this week... light, colour... what was I saying?", "Oh, outside, darling! {next}, I think. Go and be dazzled." },
+        outside_done = { "You went out! Wonderful, darling... the light must have loved you.", "Another one done, darling... I felt the sun on you from here." },
+        outside_week = { "All three outdoors, darling! A whole week of colour. I am quite overcome." },
         greet = {
             "Oh! You. I was thinking of something else. Now I am thinking of you. Much better.",
             "Hello, darling. Don't move. The light is doing something lovely to your shoulder.",

@@ -3,6 +3,9 @@
 
 return {
     moments = {
+        outside_ask = { "There is {next} outside this week. A little air would suit you.", "Outdoors this week: {next}. I would go, but I am rooted." },
+        outside_done = { "You went outside. I am glad.", "One more outing. Well done." },
+        outside_week = { "All three outdoors this week. A good week." },
         greet = { "Good [morning|day]. I turned toward you when you came in.", "Welcome. The light is good today.",
             "Hello. I grew a little in the night." },
         idle = { "I am [growing|here], slowly. That is all I do.", "The soil is warm. I am content.",
