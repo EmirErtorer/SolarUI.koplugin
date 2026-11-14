@@ -152,6 +152,38 @@ local function chamomile(p)
     return out .. wire(p, main, st == 2 and 2.2 or 3) .. heads
 end
 
+-- One dandelion seed's parachute: a hair-thin stalk from (x, y) heading
+-- `deg`, `L` long, ending in a tuft of `s` long hairs over a fleck of down.
+local function pappus(c, x, y, deg, L, s, ink)
+    local tx, ty = Svg.pol(L, deg, x, y)
+    local fx, fy = Svg.pol(s * .5, deg, tx, ty)
+    local d = { string.format("M%s %s L%s %s", n(x), n(y), n(tx), n(ty)) }
+    for _i, a in ipairs({ -62, -31, 0, 31, 62 }) do
+        local hx, hy = Svg.pol(s, deg + a, tx, ty)
+        d[#d + 1] = string.format("M%s %s L%s %s", n(tx), n(ty), n(hx), n(hy))
+    end
+    return circle(fx, fy, s * .62, c.cream) .. line(table.concat(d, " "), ink, .7)
+end
+
+-- A dandelion clock on the origin, `R` to the tips: a loose ball of
+-- parachutes on a small bare receptacle, a few seeds gone from one side and
+-- two drifting away (none when the plant is thirsty and the air is still).
+local function clock(p, R)
+    local c = p.c
+    local far, near, adrift = "", "", ""
+    for i = 0, 10 do
+        far = far .. pappus(c, 0, 0, 16 + i * 33 + 10 * Svg.vary(i, 5), R * (.4 + .1 * Svg.vary(i, 6)), R * .2, c.muted)
+    end
+    for i = 0, 15 do
+        local deg = i * 22.5 + 9 * (Svg.vary(i, 7) - .5)
+        if deg < 22 or deg > 82 then near = near .. pappus(c, 0, 0, deg, R * (.7 + .1 * Svg.vary(i, 8)), R * .24, c.ink) end
+    end
+    for _i, s in ipairs(p.wilt and {} or { { R * 1.02, -R * .5, 62 }, { R * 1.3, -R * .98, 40 } }) do
+        adrift = adrift .. pappus(c, s[1], s[2], s[3], R * .34, R * .22, c.ink) .. ellipse(s[1], s[2], R * .04, R * .1, s[3], c.muted, c.ink, .6)
+    end
+    return far .. near .. circle(0, 0, R * .15, c.pale, c.ink, 1.1) .. Svg.dots(0, 0, R * .07, 4, R * .05, c.ink) .. adrift
+end
+
 -- Dandelion: a rosette of raked leaves and hollow stalks with a golden head.
 local function dandelion(p)
     local c, st = p.c, p.st
@@ -167,7 +199,7 @@ local function dandelion(p)
     local x, y, ang = Kit.on(scape, 1)
     local sx, sy, sang = Kit.on(side, 1)
     local bud = ellipse(0, -7, 5, 8, 0, c.leaf, c.ink, 1.3) .. path("M-3 -13 L0 -19 L3 -13Z", c.gold, c.ink, 1)
-    local head = st == 3 and bud or group(0, -10, 0, st == 4 and Blooms.karahindiba(c, 0, 0, 18) or Flora.dandelion(c, 0, 0, 18), 1, p.wilt and .7 or 1)
+    local head = st == 3 and bud or group(0, -10, 0, st == 4 and Blooms.karahindiba(c, 0, 0, 18) or clock(p, 18), 1, p.wilt and .7 or 1)
     return Kit.soil(p, 64) .. rosette .. Svg.stem(side, Svg.taper(3, 2.4), c.sage, c.ink, 1.2) .. Svg.stem(scape, Svg.taper(3.6, 2.8), c.sage, c.ink, 1.2)
         .. group(sx, sy, sang + 90, bud) .. group(x, y, ang + 90, head)
 end
