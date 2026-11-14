@@ -7,8 +7,9 @@ local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
 local Rest = require("solarui/art/plantrest")
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
-local n, group, path, line, petal = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal
+local n, group, path, line, petal, mix = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal, Wash.mix
 
 local Bulbs = {}
 
@@ -90,11 +91,13 @@ local function narcissus(p)
         .. Kit.blade(p, 1, -3, 4, tall * .62 + 20, 8, -10, c.leaf) .. head
 end
 
--- A crocus goblet on the origin, `s` tall, with its orange stigma.
+-- A crocus goblet on the origin, `s` tall: purple tepals feathered with
+-- deeper violet round an orange stigma.
 local function goblet(p, s, shut)
     local c = p.c
     local k = (p.wilt and 2 or 1) * (shut and .2 or 1)
-    local function tep(lean, L, W) return group(0, 0, lean * k, petal(c, L, W, c.sky, 1.5) .. line(string.format("M0 %s L0 %s M%s %s L%s %s M%s %s L%s %s", n(-L * .2), n(-L * .8), n(-W * .3), n(-L * .3), n(-W * .34), n(-L * .68), n(W * .3), n(-L * .3), n(W * .34), n(-L * .68)), c.glass, .9)) end
+    local purple = mix(c.violet, c.lilac, .55)
+    local function tep(lean, L, W) return group(0, 0, lean * k, petal(c, L, W, purple, 1.5) .. line(string.format("M0 %s L0 %s M%s %s L%s %s M%s %s L%s %s", n(-L * .2), n(-L * .8), n(-W * .3), n(-L * .3), n(-W * .34), n(-L * .68), n(W * .3), n(-L * .3), n(W * .34), n(-L * .68)), c.violet, 1)) end
     return tep(-24, s * .9, s * .3) .. tep(24, s * .9, s * .3)
         .. (shut and "" or line(string.format("M0 %s L0 %s M0 %s L%s %s M0 %s L%s %s", n(-s * .4), n(-s * .98), n(-s * .5), n(-s * .1), n(-s * .93), n(-s * .5), n(s * .1), n(-s * .93)), c.bloom, 2.2))
         .. tep(-15, s * .9, s * .36) .. tep(15, s * .9, s * .36) .. tep(0, shut and s or s * .8, s * .36)
