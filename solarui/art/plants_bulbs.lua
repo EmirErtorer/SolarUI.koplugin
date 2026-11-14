@@ -167,24 +167,32 @@ local function lily(p)
     return Kit.soil(p, 80) .. leaves .. Svg.stem(stem, Svg.taper(5.4, 3.2), c.stem, c.ink, 1.5) .. top
 end
 
--- A bearded iris flower on the origin, `s` tall: three standards arching
--- into a dome over three hanging falls, each with its golden beard.
-local function irisFlower(p, s)
-    local c = p.c
-    local standard = path(string.format("M0 %s C%s %s %s %s %s %s C%s %s %s %s 0 %sZ", n(-s * .1), n(-s * .62), n(-s * .3), n(-s * .62), n(-s * .92), n(-s * .05), n(-s * 1.06), n(-s * .22), n(-s * .72), n(-s * .12), n(-s * .4), n(-s * .1)), c.sky, c.ink, 1.6)
-        .. line(string.format("M%s %s Q%s %s %s %s", n(-s * .1), n(-s * .24), n(-s * .4), n(-s * .6), n(-s * .14), n(-s * .94)), c.ink, .8)
-    local fall = path(string.format("M0 %s C%s %s %s %s %s %s C%s %s %s %s %s %s C%s %s %s %s 0 %sZ", n(-s * .14), n(-s * .5), n(-s * .5), n(-s * .98), n(-s * .32), n(-s * .92), n(s * .24), n(-s * .88), n(s * .52), n(-s * .56), n(s * .46), n(-s * .5), n(s * .14),
-        n(-s * .46), n(-s * .08), n(-s * .2), n(-s * .1), n(-s * .14)), c.glass, c.ink, 1.6)
-        .. line(string.format("M%s %s Q%s %s %s %s", n(-s * .16), n(-s * .24), n(-s * .42), n(-s * .42), n(-s * .66), n(-s * .3)), c.gold, 3)
-    local front = path(string.format("M%s %s C%s %s %s %s 0 %s C%s %s %s %s %s %sZ", n(-s * .14), n(-s * .1), n(-s * .42), n(s * .1), n(-s * .36), n(s * .62), n(s * .7), n(s * .36), n(s * .62), n(s * .42), n(s * .1), n(s * .14), n(-s * .1)), c.glass, c.ink, 1.6)
-        .. line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-s * .08), n(s * .26), n(-s * .2), n(s * .42), n(-s * .16), n(s * .56), n(s * .08), n(s * .26), n(s * .2), n(s * .42), n(s * .16), n(s * .56)), c.sky, 1)
-        .. Svg.ellipse(0, s * .08, s * .06, s * .17, 0, c.gold, c.ink, 1.1)
-    return petal(c, s * 1.04, s * .4, c.sky, 1.6) .. both(fall) .. both(standard) .. front
+-- The purple of the iris: the standards, and the falls a touch deeper.
+local function irisPurple(c)
+    return mix(c.violet, c.lilac, .4), mix(c.violet, c.lilac, .12)
 end
 
--- An iris bud on the origin, `s` tall, in its papery sheath.
+-- A bearded iris flower on the origin, `s` tall: three standards arching
+-- into a dome over three hanging falls of the same purple, veined darker,
+-- each with its golden beard.
+local function irisFlower(p, s)
+    local c = p.c
+    local up, down = irisPurple(c)
+    local vein = mix(c.violet, c.ink, .45)
+    local standard = path(string.format("M0 %s C%s %s %s %s %s %s C%s %s %s %s 0 %sZ", n(-s * .1), n(-s * .62), n(-s * .3), n(-s * .62), n(-s * .92), n(-s * .05), n(-s * 1.06), n(-s * .22), n(-s * .72), n(-s * .12), n(-s * .4), n(-s * .1)), up, c.ink, 1.6)
+        .. line(string.format("M%s %s Q%s %s %s %s", n(-s * .1), n(-s * .24), n(-s * .4), n(-s * .6), n(-s * .14), n(-s * .94)), vein, .8)
+    local fall = path(string.format("M0 %s C%s %s %s %s %s %s C%s %s %s %s %s %s C%s %s %s %s 0 %sZ", n(-s * .14), n(-s * .5), n(-s * .5), n(-s * .98), n(-s * .32), n(-s * .92), n(s * .24), n(-s * .88), n(s * .52), n(-s * .56), n(s * .46), n(-s * .5), n(s * .14),
+        n(-s * .46), n(-s * .08), n(-s * .2), n(-s * .1), n(-s * .14)), down, c.ink, 1.6)
+        .. line(string.format("M%s %s Q%s %s %s %s", n(-s * .16), n(-s * .24), n(-s * .42), n(-s * .42), n(-s * .66), n(-s * .3)), c.gold, 3)
+    local front = path(string.format("M%s %s C%s %s %s %s 0 %s C%s %s %s %s %s %sZ", n(-s * .14), n(-s * .1), n(-s * .42), n(s * .1), n(-s * .36), n(s * .62), n(s * .7), n(s * .36), n(s * .62), n(s * .42), n(s * .1), n(s * .14), n(-s * .1)), down, c.ink, 1.6)
+        .. line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-s * .08), n(s * .26), n(-s * .2), n(s * .42), n(-s * .16), n(s * .56), n(s * .08), n(s * .26), n(s * .2), n(s * .42), n(s * .16), n(s * .56)), vein, 1)
+        .. Svg.ellipse(0, s * .08, s * .06, s * .17, 0, c.gold, c.ink, 1.1)
+    return petal(c, s * 1.04, s * .4, up, 1.6) .. both(fall) .. both(standard) .. front
+end
+
+-- An iris bud on the origin, `s` tall: the purple tip showing from its papery sheath.
 local function irisBud(p, s)
-    return petal(p.c, s, s * .22, p.c.glass, 1.4) .. group(0, 0, -7, petal(p.c, s * .62, s * .24, p.c.pale, 1.2)) .. group(0, 0, 9, petal(p.c, s * .5, s * .22, p.c.sage, 1.2))
+    return petal(p.c, s, s * .22, select(2, irisPurple(p.c)), 1.4) .. group(0, 0, -7, petal(p.c, s * .62, s * .24, p.c.pale, 1.2)) .. group(0, 0, 9, petal(p.c, s * .5, s * .22, p.c.sage, 1.2))
 end
 
 -- Iris: a fan of sword leaves and a stout stem with the flower at its top.
