@@ -21,7 +21,31 @@ local function hip(p, s)
         .. line(string.format("M0 %s L%s %s M0 %s L0 %s M0 %s L%s %s", n(-s * .9), n(-s * .22), n(-s * 1.2), n(-s * .9), n(-s * 1.26), n(-s * .9), n(s * .22), n(-s * 1.2)), p.c.ink, 1.5)
 end
 
--- Rose: three thorny canes with toothed leaves, each ending in a full bloom.
+-- A rose seen from the side, standing on the origin, `r` across its half:
+-- reflexed sepals under the green receptacle, two guard petals curled back,
+-- a cup of broad outer petals that overlap, and the inner petals showing
+-- over the rim.
+local function roseProfile(c, r, fill, fill2)
+    -- a path written for a rose one unit across its half, at this rose's size
+    local function sized(d) return (d:gsub("-?%d*%.?%d+", function(v) return n(tonumber(v) * r) end)) end
+    local function shape(d, colour) return path(sized(d), colour, c.ink, 1.5) end
+    local function fold(d) return line(sized(d), c.ink, .9) end
+    local sepals = ""
+    for _i, a in ipairs({ -112, 112, -150, 150 }) do sepals = sepals .. group(0, -r * .12, a, petal(c, r * (math.abs(a) > 130 and .5 or .68), r * .15, c.leaf, 1.3)) end
+    local heart = shape("M-.62 -.95 C-.78 -1.6 -.2 -1.86 0 -1.5 C.25 -1.86 .82 -1.56 .62 -.95Z", fill)
+        .. shape("M-.48 -1 C-.54 -1.52 .02 -1.64 .14 -1.08Z", fill2) .. shape("M-.06 -1 C-.04 -1.6 .54 -1.52 .48 -1Z", fill2)
+        .. shape("M-.26 -1 C-.26 -1.38 .28 -1.38 .26 -1Z", fill) .. fold("M-.1 -1.06 C-.08 -1.24 .14 -1.24 .1 -1.1")
+    local guard = shape("M-.08 -.14 C-.6 -.02 -1.26 -.16 -1.34 -.6 C-1.02 -.72 -.5 -.52 -.08 -.14Z", fill) .. fold("M-1.2 -.5 Q-.8 -.5 -.5 -.3")
+    local side = shape("M0 -.15 C-.72 -.15 -1.16 -.56 -1.02 -1.06 C-.96 -1.32 -.6 -1.3 -.44 -1.08 C-.3 -.8 -.1 -.5 0 -.15Z", fill)
+        .. fold("M-.92 -1.02 Q-.74 -1.14 -.56 -1.04")
+    local front = shape("M-.1 -.12 C-.62 -.16 -.84 -.62 -.66 -1.02 C-.4 -1.2 .02 -1.16 .2 -.98 C.3 -.6 .2 -.26 -.1 -.12Z", fill)
+        .. shape("M.08 -.12 C-.3 -.3 -.34 -.78 -.14 -1.04 C.14 -1.2 .5 -1.14 .7 -.98 C.84 -.6 .6 -.16 .08 -.12Z", fill)
+        .. fold("M-.56 -.96 Q-.3 -1.06 -.04 -.98 M-.04 -.98 Q.3 -1.08 .6 -.94")
+    return sepals .. heart .. guard .. group(0, 0, 0, guard, -1, 1) .. side .. group(0, 0, 0, side, -1, 1) .. front .. ellipse(0, -r * .08, r * .22, r * .18, 0, c.leaf, c.ink, 1.3)
+end
+
+-- Rose: three thorny canes with toothed leaves, each ending in a full bloom
+-- that faces the viewer, or is seen from the side when the bloom nods on a thirsty cane.
 local function rose(p)
     local c, st = p.c, p.st
     if st == 2 then
@@ -52,8 +76,10 @@ local function rose(p)
         local x, y, ang = Kit.on(pts, 1)
         if st == 3 then
             heads = heads .. Flora.rosebud(c, x, y, ang + 90, cane.r * .52, c.bloom2)
+        elseif st == 4 and p.wilt then
+            heads = heads .. group(x, y, (ang + 90) * 1.5, roseProfile(c, cane.r * .9, c.bloom2, c.bloom))
         elseif st == 4 then
-            heads = heads .. group(x, y, ang + 90, group(0, -cane.r * .62, i * 40, Flora.rose(c, 0, 0, cane.r, 0, c.bloom2, c.bloom), 1, p.wilt and .74 or 1))
+            heads = heads .. group(x, y, ang + 90, group(0, -cane.r * .62, i * 40, Flora.rose(c, 0, 0, cane.r, 0, c.bloom2, c.bloom)))
         else
             heads = heads .. group(x, y, ang + 90, hip(p, cane.r * .66))
         end
