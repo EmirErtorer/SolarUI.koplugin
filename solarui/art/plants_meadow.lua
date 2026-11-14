@@ -199,18 +199,18 @@ local function pansy(p)
     return out .. heads
 end
 
--- A harebell hanging from the origin, `s` long: a bell of five pointed lobes.
+-- A harebell hanging from the origin, `s` long: a lilac bell of five pointed lobes.
 local function bell(p, s, kind)
     local c = p.c
-    if kind == 3 then return ellipse(0, s * .34, s * .14, s * .36, 0, c.sky, c.ink, 1.2) .. circle(0, s * .04, s * .1, c.leaf, c.ink, 1) end
+    if kind == 3 then return ellipse(0, s * .34, s * .14, s * .36, 0, c.lilac, c.ink, 1.2) .. circle(0, s * .04, s * .1, c.leaf, c.ink, 1) end
     if kind == 5 then return ellipse(0, s * .3, s * .22, s * .3, 0, c.pale, c.ink, 1.2) .. line(string.format("M%s %s l%s %s M0 %s l0 %s M%s %s l%s %s", n(-s * .1), n(s * .56), n(-s * .08), n(s * .2), n(s * .6), n(s * .2), n(s * .1), n(s * .56), n(s * .08), n(s * .2)), c.ink, 1) end
     return path(string.format("M%s 0 C%s %s %s %s %s %s L%s %s L0 %s L%s %s L%s %s C%s %s %s %s %s 0Z", n(-s * .12), n(-s * .44), n(s * .12), n(-s * .32), n(s * .6), n(-s * .56), n(s * .9), n(-s * .26), n(s * .76), n(s * 1.04), n(s * .26), n(s * .76),
-        n(s * .56), n(s * .9), n(s * .32), n(s * .6), n(s * .44), n(s * .12), n(s * .12)), c.sky, c.ink, 1.4)
-        .. line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-s * .26), n(s * .76), n(-s * .2), n(s * .5), n(-s * .1), n(s * .3), n(s * .26), n(s * .76), n(s * .2), n(s * .5), n(s * .1), n(s * .3)), c.ink, .8)
+        n(s * .56), n(s * .9), n(s * .32), n(s * .6), n(s * .44), n(s * .12), n(s * .12)), c.lilac, c.ink, 1.4)
+        .. line(string.format("M%s %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-s * .26), n(s * .76), n(-s * .2), n(s * .5), n(-s * .1), n(s * .3), n(s * .26), n(s * .76), n(s * .2), n(s * .5), n(s * .1), n(s * .3)), c.violet, .9)
         .. path(string.format("M%s %s L0 %s L%s %sZ", n(-s * .16), n(s * .06), n(-s * .08), n(s * .16), n(s * .06)), c.leaf, c.ink, 1)
 end
 
--- Harebell: thread stems with narrow leaves and nodding blue bells.
+-- Harebell: thread stems with narrow leaves and nodding lilac bells.
 local function bellflower(p)
     local c, st = p.c, p.st
     local k = ({ 0, .34, .8, 1, 1 })[st]
