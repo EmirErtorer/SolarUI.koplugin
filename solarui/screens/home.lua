@@ -13,6 +13,7 @@ local Files = require("solarui/data/files")
 local Format = require("solarui/format")
 local History = require("solarui/data/history")
 local HomeCompanion = require("solarui/ui/homecompanion")
+local OutsideChip = require("solarui/ui/outsidechip")
 local Pet = require("solarui/garden/pet")
 local Icon = require("solarui/ui/icon")
 local Label = require("solarui/ui/label")
@@ -32,7 +33,9 @@ local _ = require("solarui/gettext")
 local Home = Screen:extend()
 
 -- Heights of the blocks, in the scene's units.
-local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 664, Strip.HEIGHT, 190, 26
+local CHIP_X, CHIP_W = 140, 360   -- the outdoors chip under the book's button: it takes the room the taller right column leaves there
+local CHIP_Y, CHIP_GAP = 628, 8
+local STATUS_H, HERO_H, STATS_H, DOCK_H, FOOT = 140, 664, Strip.HEIGHT, 180, 22
 -- A cover on the shelf, per cover size setting (the library's): width and
 -- height in the scene's units. The two biggest sizes share one, for room.
 local SHELF_COVER = { s = { 72, 108 }, m = { 88, 132 }, l = { 104, 156 }, xl = { 104, 156 } }
@@ -121,6 +124,7 @@ function Home:hero(scene, y, cur)
                 Label:new({ text = _("Open a book from the library and it will wait for you here."), kind = "body", color = "muted", lines = 4 }),
             } }), x0, y + 60, w)
         end)
+        if OutsideChip.visible() then scene:group("home.outside", "Outdoors this week", function() OutsideChip.place(scene, x0, y + 440, w) end) end
         scene:group("home.library_button", "Open the library button", function()
             scene:sprite("plaque", 140, y + 300, 350, 84)
             scene:place(Label:new({ text = _("Open the library"), kind = "heading", color = "on_accent", align = "center" }), 170, y + 300, 290, 84)
@@ -147,6 +151,9 @@ function Home:hero(scene, y, cur)
     local pages = st.pages and string.format(_("page %d of %d"), math.floor(st.percent * st.pages + 0.5), st.pages) or ""
     local below = y + 58 + HomeCompanion.height(scene.k) + 10
     scene:group("home.companion", "Garden companion card", function() HomeCompanion.place(scene, x0, y + 58, w) end)
+    if OutsideChip.visible() then
+        scene:group("home.outside", "Outdoors this week", function() OutsideChip.place(scene, CHIP_X, y + CHIP_Y, CHIP_W) end)
+    end
     scene:group("home.progress", "Reading progress vine", function()
         scene:place(Layout.Column:new({ gap = scene:px(8), children = {
             ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(40) }),
@@ -239,17 +246,23 @@ function Home:build(ctx)
     local stats, shelf = Settings.get("home_stats", true), Settings.get("home_shelf", true)
     local shelf_h = select(3, shelfSize())
     -- the companion's speech bubble grows with the text size, and the hero with it
-    local extra = HomeCompanion.extra(ctx.w / Scene.design_w)
+    local cur = self:shown()
+    -- how much taller than usual the hero is: the right column's speech bubble grows with the text size, and
+    -- the chip under the book needs room too (the bubble's extra room is room it can use as well)
+    local function extraAt(k)
+        local chip = cur and OutsideChip.visible() and CHIP_Y + OutsideChip.height(k) + CHIP_GAP - HERO_H or 0
+        return math.max(HomeCompanion.extra(k), chip)
+    end
+    local extra = extraAt(ctx.w / Scene.design_w)
     local function make()
         return Scene.make("home", ctx.w, ctx.h, STATUS_H + HERO_H + extra + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H + FOOT)
     end
     local scene = make()
-    if scene.k < ctx.w / Scene.design_w then extra = HomeCompanion.extra(scene.k); scene = make() end
+    if scene.k < ctx.w / Scene.design_w then extra = extraAt(scene.k); scene = make() end
     scene.extra = extra
     local blocks = STATUS_H + HERO_H + extra + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H
     local gaps = 2 + (stats and 1 or 0) + (shelf and 1 or 0)
     local gap = math.min(110, math.max(0, (scene.vh - blocks - FOOT) / gaps))
-    local cur = self:shown()
 
     scene:border(14, 2.5)
     scene:border(21, 1.2)

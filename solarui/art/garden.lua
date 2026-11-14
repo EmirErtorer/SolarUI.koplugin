@@ -162,6 +162,42 @@ function Garden.garden_badge(c, vw, vh)
         .. Svg.circle(m + r * .45, mid, r * .15, c.ink) .. Flora.leaf(c, m + r * .55, mid - r * .8, -50, r * .8, r * .3, c.leaf)
 end
 
+-- The chip on home for the week's things outdoors: a low rounded panel with
+-- a sprig at the left and three round pips at the right, filled for each
+-- thing done (`param` is three flags, "101"). With all three done the sprig
+-- opens a gold flower.
+function Garden.garden_chip(c, vw, vh, param)
+    local r = 18
+    local function panel(d)
+        return string.format("M%s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s L%s %s Q%s %s %s %s Z",
+            n(r + d), n(d), n(vw - r - d), n(d), n(vw - d), n(d), n(vw - d), n(r + d), n(vw - d), n(vh - r - d), n(vw - d), n(vh - d), n(vw - r - d), n(vh - d),
+            n(r + d), n(vh - d), n(d), n(vh - d), n(d), n(vh - r - d), n(d), n(r + d), n(d), n(d), n(r + d), n(d))
+    end
+    local flags = tostring(param or "000")
+    local out = path(panel(3), c.bg, c.ink, 2.6) .. line(panel(9), c.line, 1.2)
+    -- the sprig: a stem, two leaves and a bud (a gold flower when the week is done)
+    local cy = vh / 2
+    out = out .. line(string.format("M30 %s Q31 %s 30 %s", n(cy + 20), n(cy + 4), n(cy - 10)), c.ink, 2.4)
+        .. Flora.leaf(c, 30, cy + 8, -48, 22, 7, c.leaf) .. Flora.leaf(c, 30, cy + 8, -132, 22, 7, c.sage)
+    if flags == "111" then
+        for i = 0, 5 do
+            local a = math.rad(i * 60)
+            out = out .. Svg.circle(30 + math.cos(a) * 8, cy - 14 + math.sin(a) * 8, 5.2, c.gold, c.ink, 1.4)
+        end
+        out = out .. Svg.circle(30, cy - 14, 4.2, c.rose or c.leaf, c.ink, 1.2)
+    else
+        out = out .. Flora.rosebud(c, 30, cy - 12, 0, 11)
+    end
+    -- the pips
+    for k = 1, 3 do
+        local cx = vw - 26 - (3 - k) * 26
+        local done = flags:sub(k, k) == "1"
+        out = out .. Svg.circle(cx, 25, 9.5, done and c.leaf or c.bg, c.ink, 2.2)
+        if done then out = out .. line(string.format("M%s 25.5 L%s 29.5 L%s 20.5", n(cx - 4.2), n(cx - 1), n(cx + 4.6)), c.bg, 2.2) end
+    end
+    return out
+end
+
 -- The whole backdrop for a canvas vw x vh.
 function Garden.garden_ground(c, vw, vh, mode)
     local ivy, pond, tab = box("ivy", vh), box("pond", vh), box("table", vh)

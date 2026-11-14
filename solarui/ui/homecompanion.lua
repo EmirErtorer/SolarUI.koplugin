@@ -144,6 +144,8 @@ function HomeCompanion.header(scene, item, w, budget)
     end
     local kids = {}
     for _i, e in ipairs(order) do if keep[e] then kids[#kids + 1] = e end end
+    -- the care button matters more than a second line of how they are doing
+    if button and how.lines > 1 and height(with_button(kids)) > budget then how.lines = 1 end
     if button and height(with_button(kids)) <= budget then kids[#kids + 1] = button end
     return LayoutUI.Column:new({ gap = gap, children = kids })
 end

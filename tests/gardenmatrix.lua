@@ -633,9 +633,7 @@ group("outside: the weekly things to do")
 do
     local Prompts = require("solarui/garden/prompts")
     for _, s in ipairs(SEASONS) do
-        local p = Prompts.of(T0, s)
-        ck(#p.items == Prompts.PER_WEEK, s .. " gives " .. Prompts.PER_WEEK .. " things")
-        for _, item in ipairs(p.items) do ck(#Prompts.text(s, item.i) > 5, s .. " thing " .. item.i .. " has words") end
+        for i = 1, #Prompts.LIST[s] do ck(#Prompts.text(s, i) > 5 and Prompts.kind(s, i) ~= nil, s .. " thing " .. i .. " has words and a kind") end
     end
     reset("spring")
     ck(State.toggleOutside(1) == true and State.outsideTotals().done == 1, "ticking a thing is kept")
@@ -644,6 +642,83 @@ do
     State.toggleOutside(1); State.toggleOutside(2); State.toggleOutside(3)
     ck(State.outsideTotals().full_weeks == 1 and #State.outsideLog() == 3, "a week with all ticked is counted, and the log keeps each")
     ck(State.toggleOutside(99) == false, "a thing that is not there is not ticked")
+end
+
+group("outside: the garden's pick, no repeats, seen outside, firsts, notes")
+do
+    local Prompts = require("solarui/garden/prompts")
+    reset("spring")
+    -- twelve weeks (a thing of each kind is offered again only when all twelve of them have been): the same
+    -- things all week, one of each kind, and nothing offered twice
+    local offered, repeats, garden_weeks, wrong_kind, unstable, expected = {}, 0, 0, 0, 0, 0
+    for w = 0, 11 do
+        now = T0 + w * 7 * DAY
+        if Prompts.gardenWeek(Prompts.week(now)) then expected = expected + 1 end
+        local week = State.outsideWeek()
+        local again = State.outsideWeek()
+        for k = 1, 3 do
+            if week[k].text ~= again[k].text then unstable = unstable + 1 end
+            if week[k].kind ~= Prompts.KINDS[k] then wrong_kind = wrong_kind + 1 end
+            local key = week[k].who and ("who:" .. week[k].who) or ("i:" .. week[k].i)
+            if week[k].who then garden_weeks = garden_weeks + 1 end
+            if offered[key] and not week[k].who then repeats = repeats + 1 end
+            offered[key] = true
+        end
+    end
+    ck(unstable == 0, "a week's three things stay the same all week")
+    ck(wrong_kind == 0, "each week has one to look at, one to listen to and one to do")
+    ck(repeats == 0, "no thing from the list comes twice in twelve weeks")
+    ck(garden_weeks == expected and expected >= 7 and expected <= 9, "the garden's pick takes the thing to look at in two weeks of three (" .. garden_weeks .. " of 12)")
+    -- the pick is someone in the garden, and someone never seen outdoors comes first
+    reset("spring")
+    plant("rose", 4); plant("tulip", 4); animal("bee")
+    now = T0 + 7 * DAY
+    local look = State.outsideWeek()[1]
+    ck(not Prompts.gardenWeek(Prompts.week(now)) or (look.who and State.rec(look.who) ~= nil), "the garden's pick is someone who lives in the garden")
+    ck(look.text:find("From your garden", 1, true) ~= nil or look.who == nil, "and says so")
+    -- seen outside: ticking the pick stamps their page, unticking takes it away
+    reset("spring")
+    plant("rose", 4)
+    now = T0 + 7 * DAY
+    local pick = State.outsideWeek()[1]
+    if pick.who then
+        ck(State.seenOutside(pick.who) == nil, "not seen outside before the tick")
+        State.toggleOutside(1)
+        local seen = State.seenOutside(pick.who)
+        ck(seen and seen.t == now and seen.n == 1, "ticking the garden's pick marks who was seen outside")
+        ck(State.outsideLog()[1].who == pick.who, "and the log says who")
+        State.toggleOutside(1)
+        ck(State.seenOutside(pick.who) == nil, "unticking takes the mark away")
+    else
+        ck(false, "a week with the garden's pick for the test")
+    end
+    -- notes
+    reset("spring")
+    now = T0
+    ck(State.noteOutside(2, "heard a wren") == false, "a note needs a ticked thing")
+    State.toggleOutside(2)
+    ck(State.noteOutside(2, "  heard a wren  ") and State.outsideWeek()[2].note == "heard a wren" and State.outsideLog()[1].note == "heard a wren", "a note is kept with the tick and in the log")
+    ck(State.noteOutside(2, ("x"):rep(300)) and #State.outsideWeek()[2].note == 140, "a note is cut at 140 characters")
+    ck(State.noteOutside(2, "") and State.outsideWeek()[2].note == nil, "a blank note takes it away")
+    -- firsts: tick one, and a year on the garden says the date
+    reset("winter")
+    local first_i
+    for i = 1, #Prompts.LIST.winter do if Prompts.first("winter", i) then first_i = i break end end
+    ck(first_i ~= nil and Prompts.first("winter", 12) == "the first snowdrop or catkin", "some things are firsts to remember the date of")
+    local d = State.get()
+    d.outside_log = { { t = T0 - 300 * DAY, w = Prompts.week(T0 - 300 * DAY), s = "winter", i = 12 } }
+    d.outside_now = { w = Prompts.week(T0), s = "winter", picks = { { i = 1 }, { i = 2 }, { i = 12 } } }
+    local item = State.outsideWeek()[3]
+    ck(item.first and item.last == T0 - 300 * DAY, "a year on, the thing says when it was last ticked")
+    ck(#State.outsideFirsts() == 1 and State.outsideFirsts()[1].label == "the first snowdrop or catkin", "the firsts are listed")
+    -- the summary and a thing ticked before the week's things were made
+    reset("spring")
+    now = T0
+    ck(State.outsideSummary().done == 0 and State.outsideSummary().next ~= nil and not State.outsideSummary().full, "a new week has all three to do")
+    State.get().outside_now = nil
+    State.get().outside_log = { { t = T0, w = Prompts.week(T0), s = "spring", i = 5 } }
+    ck(State.outsideWeek()[2].done and State.outsideWeek()[2].i == 5, "a thing ticked before the week was made stays in it")
+    ck(State.outsideSummary().done == 1 and State.outsideSummary().next.k == 1, "and the summary counts it")
 end
 
 -- ---------------------------------------------------------------- the pictures
@@ -801,6 +876,15 @@ do
         ck(type(line) == "string" and #line > 5, id .. " says something on home")
         ck(Voice.react() ~= nil, id .. " answers a tap")
         ck(#Voice.beats(id) == 12, id .. " has twelve memories")
+        local ctx = Voice.context(Pet.get())
+        ck(ctx.left == 3 and ctx.next ~= "", id .. ": three things are left outdoors at first")
+        for _, m in ipairs({ "outside_ask", "outside_done", "outside_week" }) do
+            ck(Voice.pick(m, ctx, true) ~= nil, id .. " has lines for " .. m)
+        end
+        State.toggleOutside(1); Pet.outside(false); Voice.current()
+        ck(Pet.get().now.moment == "outside_done", id .. " answers a thing ticked outdoors")
+        State.toggleOutside(2); State.toggleOutside(3); Pet.outside(true); Voice.current()
+        ck(Pet.get().now.moment == "outside_week", id .. " answers a week done outdoors")
         reading.total = 5000
         Pet.refresh(Voice.beats(id))
         ck(Pet.get().level == 5 and Pet.waiting() > 0, id .. " reaches the top of the bond and has things to tell")

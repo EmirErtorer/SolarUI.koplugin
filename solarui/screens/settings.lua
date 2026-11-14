@@ -187,6 +187,8 @@ function SettingsScreen:home()
             end })),
         row(_("Companion dialogue"), _("The companion speaks in written lines on home and on their page, and tells memories as you read. Turn it off for a quiet companion with a bigger window"),
             Controls.Toggle:new({ on = Pet.talks(), on_change = function(on) save("companion_talk", on) end })),
+        row(_("Outdoors on home"), _("A small card on home with this week's three things to do outdoors, one to look at, one to listen to and one to do"),
+            Controls.Toggle:new({ on = Settings.get("home_outside", true), on_change = function(on) save("home_outside", on) end })),
         row(_("Seasons on home"), _("The vines blossom in spring, turn gold in autumn and go pale in winter"),
             Controls.Toggle:new({ on = Settings.get("home_season", true), on_change = function(on) save("home_season", on) end })),
         row(_("Sleep picture"), _("Draws a picture in the garden's style to choose as KOReader's sleep screen (Settings, Screen, Sleep screen, Wallpaper, Custom image)"),
