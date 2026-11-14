@@ -81,33 +81,42 @@ function Air.bee(c, second)
     return group(0, second and 4 or 0, 0, body)
 end
 
--- Seven-spot ladybird walking along a blade of grass, seen from the side and
--- a little above, heading right: a red domed shell with a light on it, three
--- spots on the near side, two peeping over the top and one where the cases
--- meet, a black shield with its white patch, a small dark head and short
--- jointed legs. In pose two the shell is lifted open and the wings unfold.
-function Air.ladybug(c, second)
-    local blade = Flora.leaf(c, 0, 46, -4, 60, 5, c.leaf)
-    local legs = line("M20 36 L17 40 L14 43.5 M28 37 L28 41 L26 44 M36 36 L39 40 L41 43", c.ink, 1.6)
-        .. line("M24 37 L23 41 M33 37 L35 41", c.ink, 1.2)
-    local shield = path("M42 16 C48 16 53 21 53 28 C52 32 48 34 45 33 C47 27 46 21 42 16Z", c.ink, c.ink, 1.2)
-        .. path("M49 20 C51 21 52 24 51.5 26 C50 25 49 23 49 20Z", c.cream)
-    local head = ellipse(53.5, 31.5, 4.2, 3.4, 10, c.ink) .. circle(55, 30.2, 1, c.cream)
-        .. line("M56.5 29.5 Q58.5 27 58 24.5", c.ink, 1)
-    local shell = path("M12 35 C10 22 20 13 31 13 C40 13 46 19 47 31 C38 36 21 37 12 35Z", c.bloom, c.ink, 1.6)
-        .. path("M19 21 C22 17 27 15 31 15.5 C27 17 23 19 21 23Z", mix(c.bloom, c.cream, .6))
+-- One wing case of the ladybird seen from the side, hinged at the shield:
+-- the red dome in `fill`, with its spots and the light on it when `spots`.
+local function wingCase(c, fill, spots)
+    local out = path("M12 35 C10 22 20 13 31 13 C40 13 46 19 47 31 C38 36 21 37 12 35Z", fill, c.ink, 1.6)
+    if not spots then return out end
+    return out .. path("M19 21 C22 17 27 15 31 15.5 C27 17 23 19 21 23Z", mix(fill, c.cream, .6))
         .. line("M43 17 Q30 14 15 29", c.ink, 1.2)
         .. ellipse(31, 16.6, 2.6, 1.5, -8, c.ink) .. ellipse(22, 20, 2.3, 1.5, -30, c.ink)
         .. circle(41.5, 17.6, 2.2, c.ink)
         .. ellipse(36, 26, 3.4, 3, 0, c.ink) .. ellipse(25.5, 28, 3.8, 3.3, 0, c.ink) .. ellipse(17, 30.5, 2.6, 2.4, 0, c.ink)
+end
+
+-- Seven-spot ladybird walking along a blade of grass, seen from the side and
+-- a little above, heading right: a red domed shell with a light on it, three
+-- spots on the near side, two peeping over the top and one where the cases
+-- meet, a black shield running on from the dome with a white patch at its
+-- front corner, the small head tucked under it with short clubbed antennae,
+-- and short jointed legs. In pose two both wing cases are raised, the far one
+-- higher, and the clear hind wings reach up and back behind them.
+function Air.ladybug(c, second)
+    local blade = Flora.leaf(c, 0, 46, -4, 60, 5, c.leaf)
+    local legs = line("M20 36 L17 40 L14 43.5 M28 37 L28 41 L26 44 M36 36 L39 40 L41 43", c.ink, 1.6)
+        .. line("M24 37 L23 41 M33 37 L35 41", c.ink, 1.2)
+    local head = ellipse(53.2, 30.6, 3.3, 3.6, -10, c.ink) .. circle(55.2, 31.4, .7, c.cream)
+        .. line("M55.4 28 Q57 26.6 58.4 26.8", c.ink, .9) .. ellipse(58.6, 26.9, 1.1, .8, -10, c.ink)
+    local shield = path("M43.5 17 C47.5 17 50.8 19.6 51.6 23.6 C52.2 26.8 52 29.6 50.6 31.8 C49 33.2 47.2 33.4 46.4 33 C46.6 27 46 21.4 43.5 17Z", c.ink, c.ink, 1.2)
+        .. path("M49.2 23.4 C50.6 23.8 51.4 25.4 51.4 27.6 C51.2 29.4 50.4 30.6 49.6 30.8 C49.2 28.4 49.2 25.6 49.2 23.4Z", c.cream)
     if second then
-        local w = mix(c.cream, c.sky, .3)
         return blade .. legs
-            .. group(31, 23, -72, clearWing(c, 30, 7.5, mix(c.cream, c.sky, .55))) .. group(30, 25, -100, clearWing(c, 28, 8, w))
+            .. about(44, 18, 48, wingCase(c, mix(c.bloom, c.ink, .2), false))
+            .. group(39, 23, -86, clearWing(c, 34, 8.5, mix(c.cream, c.sky, .55)))
             .. path("M14 34 C14 26 24 21 34 21 C41 21 46 25 47 31 C38 36 22 37 14 34Z", mix(c.ink, c.bloom, .25), c.ink, 1.4)
-            .. about(44, 20, 30, shell) .. shield .. head
+            .. group(38, 26, -110, clearWing(c, 33, 9, mix(c.cream, c.sky, .3)))
+            .. about(44, 18, 36, wingCase(c, c.bloom, true)) .. head .. shield
     end
-    return blade .. legs .. shell .. shield .. head
+    return blade .. legs .. wingCase(c, c.bloom, true) .. head .. shield
 end
 
 -- One side of a swallowtail, body along the upright: yellow wings with black
