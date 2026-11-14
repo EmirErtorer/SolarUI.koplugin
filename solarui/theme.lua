@@ -51,7 +51,7 @@ function Theme.px(n)
 end
 
 -- The colour roles of living things, which keep their real colours.
-Theme.NATURAL_ROLES = { "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
+Theme.NATURAL_ROLES = { "ink", "muted", "line", "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream" }
 
 -- Work out every role, size and face for the current settings.
 local function resolve()
