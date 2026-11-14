@@ -17,6 +17,7 @@ local ArtView = require("solarui/ui/artview")
 local Theme = require("solarui/theme")
 local navrow = require("solarui/ui/navrow")
 local tile = require("solarui/ui/stattile")
+local Screen = require("device").screen
 local _ = require("solarui/gettext")
 
 local GoalTab = {}
@@ -37,6 +38,12 @@ local function ladder(l)
         rows[#rows + 1] = Layout.Row:new({ gap = th.space.xs, children = kids })
     end
     return Layout.Column:new({ gap = th.space.xs, children = rows })
+end
+
+-- The tree's height: tall on a tall screen, and on a short one low enough that the
+-- shelf under the achievements still has room for a row and its pager.
+function GoalTab.treeHeight()
+    return math.min(Theme.px(300), math.max(Theme.px(130), math.floor(Screen:getHeight() * .14)))
 end
 
 -- Build the tab; `screen.goal_back` is how many years back from this one.
@@ -67,7 +74,7 @@ function GoalTab.build(screen)
         } }),
     } })
     local goal = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
-        ArtView:new({ name = "goal_tree", param = percent, grow = true, height = Theme.px(300) }),
+        ArtView:new({ name = "goal_tree", param = percent, grow = true, height = GoalTab.treeHeight() }),
         numbers_col,
     } })
     local body = { nav, goal }
