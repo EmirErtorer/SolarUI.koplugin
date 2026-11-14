@@ -8,8 +8,10 @@ local Flora = require("solarui/art/flora")
 local Kit = require("solarui/art/plantkit")
 local Rest = require("solarui/art/plantrest")
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
 local n, group, path, line, petal, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Flora.petal, Svg.circle, Svg.ellipse
+local mix = Wash.mix
 
 local Meadow = {}
 
@@ -175,6 +177,31 @@ local function pansyPod(p, s)
     return Flora.around(0, 0, 0, 3, petal(p.c, s, s * .3, p.c.pale, 1.2) .. Svg.dots(0, -s * .5, s * .12, 2, s * .14, p.c.ink), 60)
 end
 
+-- A garden pansy's face on the origin, `R` to the edge: two violet petals
+-- above, and two at the sides and a broad lip below in yellow, each with a
+-- dark blotch and fine rays running to the small golden eye.
+local function pansyFace(p, R)
+    local c = p.c
+    local dark = mix(c.violet, c.ink, .55)
+    -- one rounded petal `L` long and `W` half across, turned by `rot`
+    local function round(rot, L, W, fill, mark)
+        local function lobe(l, w) return string.format("M0 0 C%s %s %s %s 0 %s C%s %s %s %s 0 0Z", n(-w * 1.25), n(-l * .15), n(-w * 1.3), n(-l), n(-l), n(w * 1.3), n(-l), n(w * 1.25), n(-l * .15)) end
+        local body = path(lobe(L, W), fill, c.ink, 1.5)
+        if mark then
+            local rays = {}
+            for _i, a in ipairs({ -30, -15, 0, 15, 30 }) do
+                local x, y = Svg.pol(L * (.78 - math.abs(a) / 150), a)
+                rays[#rays + 1] = string.format("M0 %s L%s %s", n(-L * .3), n(x), n(y))
+            end
+            body = body .. path(lobe(L * .6, W * .62), dark) .. line(table.concat(rays, " "), dark, .9)
+        end
+        return group(0, 0, rot, body)
+    end
+    return round(-34, R * 1.05, R * .56, c.violet) .. round(34, R * 1.05, R * .56, c.violet)
+        .. round(-102, R * .92, R * .5, c.pale, true) .. round(102, R * .92, R * .5, c.pale, true) .. round(180, R, R * .68, c.pale, true)
+        .. circle(0, R * .04, R * .14, c.gold, c.ink, 1)
+end
+
 -- Pansy: a low clump of leaves under flat five-petalled faces.
 local function pansy(p)
     local c, st = p.c, p.st
@@ -189,9 +216,9 @@ local function pansy(p)
         local x, y, ang = Kit.on(stem, 1)
         out = out .. wire(p, stem, 2.2)
         if st == 3 then
-            heads = heads .. Flora.rosebud(c, x, y, ang + 90 + f[1], f[3] * .5, c.glass)
+            heads = heads .. Flora.rosebud(c, x, y, ang + 90 + f[1], f[3] * .5, c.violet)
         elseif st == 4 then
-            heads = heads .. group(x, y - 2, p.wilt and (ang + 90) or f[1] * .4, Blooms.pansy(c, 0, 0, f[3]), 1, p.wilt and .7 or 1)
+            heads = heads .. group(x, y - 2, p.wilt and (ang + 90) or f[1] * .4, pansyFace(p, f[3]), 1, p.wilt and .7 or 1)
         else
             heads = heads .. group(x, y, ang + 90, pansyPod(p, f[3] * .8))
         end
