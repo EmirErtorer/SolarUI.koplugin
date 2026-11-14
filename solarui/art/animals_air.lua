@@ -5,8 +5,11 @@
 
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
 local n, group, path, line, circle, ellipse, petal = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse, Flora.petal
+
+local mix = Wash.mix
 
 local Air = {}
 
@@ -20,36 +23,91 @@ local function both(body)
     return body .. group(0, 0, 0, body, -1, 1)
 end
 
--- Honey bee from the side: head, furry thorax, banded abdomen with a sting,
--- four wings and legs with a pollen basket. Its wings beat down in pose two.
-function Air.bee(c, second)
-    local wings = about(62, 32, second and 12 or 0, ellipse(52, 13, 21, 7.5, -12, c.sky, c.ink, 1.2) .. ellipse(40, 24, 14, 5.5, 8, c.sky, c.ink, 1.1)
-        .. ellipse(44, 14, 23, 8.5, 20, c.cream, c.ink, 1.4) .. line("M60 30 Q46 20 26 9 M56 28 Q44 16 34 8", c.ink, .8) .. ellipse(40, 27, 15, 6, 14, c.cream, c.ink, 1.3))
-    local body = line("M58 46 L54 56 L57 62 M65 47 L65 57 L69 62 M50 48 L43 57 L46 65", c.ink, 1.6) .. ellipse(44, 58, 3.4, 2.4, -30, c.gold, c.ink, 1)
-        .. path("M21 42 L11 47 L21 48Z", c.ink) .. ellipse(37, 42, 20, 12.5, -8, c.gold, c.ink, 1.7)
-        .. line("M28 33 Q24 43 28 52 M37 30.5 Q33 42 37 54 M46 30 Q43 41 46 52", c.ink, 4.6)
-        .. circle(62, 38, 11, c.pale, c.ink, 1.7) .. line("M56 33 l-3 -3 M61 30 l-1 -4 M67 31 l2 -4 M55 40 l-4 0 M58 46 l-2 3 M65 46 l1 3", c.ink, 1)
-        .. ellipse(77, 40, 7.5, 8.6, 0, c.ink) .. ellipse(79, 38, 2.4, 3.4, 0, c.cream) .. line("M79 33 L85 25 L93 26 M76 32 L80 22 L88 20", c.ink, 1.4)
-    return group(second and 3 or 0, second and 6 or 1, 0, about(55, 40, second and 8 or 0, wings .. body))
+-- An outline of soft fur round an ellipse at (cx, cy): `k` small tufts
+-- bulging out from it, filled with `fill`.
+local function fuzz(c, cx, cy, rx, ry, k, fill)
+    local d = {}
+    for i = 0, k do
+        local a = 2 * math.pi * i / k
+        local x, y = cx + rx * math.cos(a), cy + ry * math.sin(a)
+        if i == 0 then d[1] = string.format("M%s %s", n(x), n(y))
+        else
+            local m = 2 * math.pi * (i - .5) / k
+            d[#d + 1] = string.format("Q%s %s %s %s", n(cx + rx * 1.18 * math.cos(m)), n(cy + ry * 1.18 * math.sin(m)), n(x), n(y))
+        end
+    end
+    return path(table.concat(d, " ") .. "Z", fill, c.ink, 1.4)
 end
 
--- Seven-spot ladybird from above on a blade of grass. In pose two it lifts
--- its wing cases and shows the wings beneath.
+-- A clear insect wing from the origin, `L` long and `W` wide, pointing up,
+-- with two veins.
+local function clearWing(c, L, W, fill)
+    return path(string.format("M0 0 C%s %s %s %s %s %s C%s %s %s %s 0 0Z", n(W), n(-L * .22), n(W * 1.05), n(-L * .82), n(W * .15), n(-L), n(-W * .55), n(-L * .96), n(-W * .45), n(-L * .38)), fill, c.ink, 1.2)
+        .. line(string.format("M0 %s Q%s %s %s %s M%s %s Q%s %s %s %s", n(-L * .05), n(W * .5), n(-L * .4), n(W * .35), n(-L * .86), n(W * .1), n(-L * .2), n(-W * .1), n(-L * .55), n(-W * .2), n(-L * .8)), c.ink, .7)
+end
+
+-- Honey bee in flight seen from the side and a little above, heading right:
+-- a dark head with its big compound eye and elbowed antennae, a furry thorax,
+-- an amber abdomen banded in brown that hangs a little, two pairs of clear
+-- wings and jointed legs, the hind pair carrying pollen. Pose one has the
+-- wings raised, pose two has them swept down and the body bobbed lower.
+function Air.bee(c, second)
+    local amber, band = mix(c.gold, c.bloom, .18), mix(c.ink, c.bloom, .25)
+    local thorax, head = mix(c.gold, c.muted, .45), mix(c.ink, c.muted, .45)
+    local glass, far = mix(c.cream, c.sky, .25), mix(c.cream, c.sky, .55)
+    local beat = second and -46 or 0
+    local wings_far = about(62, 26, beat, group(62, 26, -30, clearWing(c, 30, 9, far)) .. group(60, 28, -62, clearWing(c, 21, 7, far)))
+    local wings_near = about(64, 27, beat, group(64, 27, -44, clearWing(c, 36, 11, glass)) .. group(61, 29, -78, clearWing(c, 25, 8, glass)))
+    -- abdomen, tilted down at the back, its bands following the round of the body
+    local bands = {}
+    for _i, u in ipairs({ -.1, .22, .52 }) do
+        local h = 12.4 * math.sqrt(1 - u * u) * .96
+        bands[#bands + 1] = string.format("M%s %s Q%s 0 %s %s", n(u * 22), n(-h), n(u * 22 - 5), n(u * 22), n(h))
+    end
+    local abdomen = group(36, 44, -18, ellipse(0, 0, 22, 12.4, 0, amber)
+        .. line(table.concat(bands, " "), band, 4.2)
+        .. path("M-19 -6 C-24 -3 -24 3 -19 6 C-17 2 -17 -2 -19 -6Z", band)
+        .. ellipse(0, 0, 22, 12.4, 0, nil, c.ink, 1.6)
+        .. path("M-22 -1.4 L-28 .4 L-22 1.6Z", c.ink, c.ink, .8))
+    local legs = line("M70 40 L73 48 L71 56 M64 42 L63 51 L59 58 M57 41 L50 49 L49 59 M66 41 L68 47 L74 52", c.ink, 1.5)
+        .. ellipse(50.5, 53, 3.6, 4.6, 12, mix(c.gold, c.bloom, .5), c.ink, 1.1)
+    local face = path("M75 25 C81 20 88 22 90 29 C92 37 88 45 83 45 C78 44 74 36 75 25Z", head, c.ink, 1.5)
+        .. path("M77.5 24.5 C81 22.5 84.5 25 84.5 31 C84.5 37 82 40.5 79.8 38.5 C77.8 35.5 76.8 29 77.5 24.5Z", c.ink)
+        .. ellipse(80, 27.5, .9, 1.6, -15, c.cream)
+        .. line("M87 25 L91 16 L99 13 M85 24 L87 15 L94 10", c.ink, 1.4)
+        .. line("M85 44 L87 48", c.ink, 1.6)
+    local body = wings_far .. legs .. abdomen .. fuzz(c, 63, 35, 12, 11, 16, thorax)
+        .. face .. wings_near
+    return group(0, second and 4 or 0, 0, body)
+end
+
+-- Seven-spot ladybird walking along a blade of grass, seen from the side and
+-- a little above, heading right: a red domed shell with a light on it, three
+-- spots on the near side, two peeping over the top and one where the cases
+-- meet, a black shield with its white patch, a small dark head and short
+-- jointed legs. In pose two the shell is lifted open and the wings unfold.
 function Air.ladybug(c, second)
-    local legs = line("M38 14 L42 8 M28 12 L28 6 M18 15 L14 10 M38 40 L42 46 M28 42 L28 48 M18 39 L14 44", c.ink, 1.5)
-    local head = ellipse(46, 27, 6, 10, 0, c.ink) .. circle(47, 21.5, 1.8, c.cream) .. circle(47, 32.5, 1.8, c.cream) .. circle(52, 27, 3.6, c.ink)
-        .. line("M54 25 Q58 22 59 19 M54 29 Q58 32 59 35", c.ink, 1.2)
-    -- one wing case, hinged at the neck, with its three spots
-    local function case(side)
-        return path(string.format("M42 27 C42 %s 34 %s 26 %s C16 %s 10 %s 10 27Z", n(27 + side * 9), n(27 + side * 15), n(27 + side * 15), n(27 + side * 15), n(27 + side * 8)), c.bloom, c.ink, 1.6)
-            .. circle(34, 27 + side * 8, 3.2, c.ink) .. circle(24, 27 + side * 9.5, 3.4, c.ink) .. circle(15, 27 + side * 5, 2.6, c.ink)
-    end
-    local blade = Flora.leaf(c, 2, 47, -5, 56, 6, c.leaf)
+    local blade = Flora.leaf(c, 0, 46, -4, 60, 5, c.leaf)
+    local legs = line("M20 36 L17 40 L14 43.5 M28 37 L28 41 L26 44 M36 36 L39 40 L41 43", c.ink, 1.6)
+        .. line("M24 37 L23 41 M33 37 L35 41", c.ink, 1.2)
+    local shield = path("M42 16 C48 16 53 21 53 28 C52 32 48 34 45 33 C47 27 46 21 42 16Z", c.ink, c.ink, 1.2)
+        .. path("M49 20 C51 21 52 24 51.5 26 C50 25 49 23 49 20Z", c.cream)
+    local head = ellipse(53.5, 31.5, 4.2, 3.4, 10, c.ink) .. circle(55, 30.2, 1, c.cream)
+        .. line("M56.5 29.5 Q58.5 27 58 24.5", c.ink, 1)
+    local shell = path("M12 35 C10 22 20 13 31 13 C40 13 46 19 47 31 C38 36 21 37 12 35Z", c.bloom, c.ink, 1.6)
+        .. path("M19 21 C22 17 27 15 31 15.5 C27 17 23 19 21 23Z", mix(c.bloom, c.cream, .6))
+        .. line("M43 17 Q30 14 15 29", c.ink, 1.2)
+        .. ellipse(31, 16.6, 2.6, 1.5, -8, c.ink) .. ellipse(22, 20, 2.3, 1.5, -30, c.ink)
+        .. circle(41.5, 17.6, 2.2, c.ink)
+        .. ellipse(36, 26, 3.4, 3, 0, c.ink) .. ellipse(25.5, 28, 3.8, 3.3, 0, c.ink) .. ellipse(17, 30.5, 2.6, 2.4, 0, c.ink)
     if second then
-        return blade .. legs .. ellipse(22, 20, 17, 5, 22, c.cream, c.ink, 1.1) .. ellipse(22, 34, 17, 5, -22, c.cream, c.ink, 1.1) .. ellipse(27, 27, 12, 7, 0, c.ink)
-            .. about(42, 27, 26, case(-1)) .. about(42, 27, -26, case(1)) .. head
+        local w = mix(c.cream, c.sky, .3)
+        return blade .. legs
+            .. group(31, 23, -72, clearWing(c, 30, 7.5, mix(c.cream, c.sky, .55))) .. group(30, 25, -100, clearWing(c, 28, 8, w))
+            .. path("M14 34 C14 26 24 21 34 21 C41 21 46 25 47 31 C38 36 22 37 14 34Z", mix(c.ink, c.bloom, .25), c.ink, 1.4)
+            .. about(44, 20, 30, shell) .. shield .. head
     end
-    return blade .. legs .. case(-1) .. case(1) .. circle(39, 27, 3, c.ink) .. head
+    return blade .. legs .. shell .. shield .. head
 end
 
 -- One side of a swallowtail, body along the upright: yellow wings with black
