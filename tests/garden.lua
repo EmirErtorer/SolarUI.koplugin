@@ -517,10 +517,13 @@ end
 -- the weekly things to do outdoors
 do
     local Prompts = require("solarui/garden/prompts")
-    for _, season in ipairs(Season.ALL) do Kit.ok(#Prompts.LIST[season] == 12, "twelve to choose from for " .. season) end
-    local a, b = Prompts.of(1700000000, "spring"), Prompts.of(1700000000 + 7 * DAY, "spring")
-    Kit.ok(#a.items == 3 and a.items[1].text ~= b.items[1].text and a.week ~= b.week, "three things, and different ones the next week")
-    Kit.ok(Prompts.of(1700000000, "spring").items[2].text == a.items[2].text, "and the same all week")
+    for _, season in ipairs(Season.ALL) do
+        Kit.ok(#Prompts.LIST[season] == 37, "thirty-seven to choose from for " .. season)
+        local kinds = { look = 0, listen = 0, ["do"] = 0 }
+        for i = 1, #Prompts.LIST[season] do kinds[Prompts.kind(season, i)] = kinds[Prompts.kind(season, i)] + 1 end
+        Kit.ok(kinds.look == 12 and kinds.listen == 12 and kinds["do"] == 13, season .. " has twelve to look at, twelve to listen to and thirteen to do")
+    end
+    Kit.ok(Prompts.LIST.spring[1]:find("three leaves", 1, true) and Prompts.LIST.winter[12]:find("snowdrop", 1, true), "the first twelve of each season are where they were")
     local Settings = require("solarui/settings")
     Settings.set("garden", nil)
     State.unload()
@@ -534,6 +537,9 @@ do
     Kit.ok(State.outsideTotals().full_weeks == 1 and State.outsideTotals().since == now, "three done is a full week")
     now = now + 7 * DAY
     Kit.ok(not State.outsideWeek()[1].done and State.outsideTotals().done == 3, "the next week is fresh, and the log is kept")
+    local kinds = {}
+    for k, item in ipairs(State.outsideWeek()) do kinds[k] = item.kind end
+    Kit.ok(kinds[1] == "look" and kinds[2] == "listen" and kinds[3] == "do", "a week has one to look at, one to listen to and one to do")
     State.unload()
     Kit.ok(#State.outsideLog() == 3, "the log survives a reload")
     Settings.set("garden", nil)

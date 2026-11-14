@@ -73,6 +73,11 @@ function GardenPage:items()
     end
     local e = State.entry(self.who)
     add(section(_("Now"), GardenCard.status(e, kind)))
+    local seen = State.seenOutside(self.who)
+    if seen then
+        add(section(_("Seen outside"), string.format(seen.n > 1 and _("You first looked for them outdoors on %s, and have been out to look %d times since.")
+            or _("You looked for them outdoors on %s, and found them."), os.date("%d %B %Y", seen.t), seen.n)))
+    end
     add(section(_("About"), Lore.get(self.who)))
     add(section(_("The name"), page.name))
     if tier >= 2 then

@@ -6,6 +6,7 @@
 -- numbers come through State.clock and State.source so tests can set them.
 
 local Cast = require("solarui/garden/cast")
+local _ = require("solarui/gettext")
 local Care = require("solarui/garden/care")
 local Progress = require("solarui/garden/progress")
 local Prompts = require("solarui/garden/prompts")
@@ -229,16 +230,135 @@ function State.claimPeek()
     return who
 end
 
--- This week's things to do outdoors: a list of { i, season, text, done }.
-function State.outsideWeek()
-    local p = Prompts.of(State.clock())
-    local log, out = State.get().outside_log or {}, {}
-    for _i, item in ipairs(p.items) do
-        local done = false
-        for _j, e in ipairs(log) do
-            if e.w == p.week and e.s == p.season and e.i == item.i then done = true; break end
+-- The plants and animals the garden could point at this week (not the animals
+-- asleep for the season), in the cast's order.
+local function pickable()
+    local out, season = {}, Season.now()
+    for _i, id in ipairs(Cast.ids()) do
+        if State.rec(id) then
+            local _e, kind = State.entry(id)
+            if not (kind == "animal" and Season.rests(Cast.find(id), season)) then out[#out + 1] = id end
         end
-        out[#out + 1] = { i = item.i, season = p.season, text = item.text, done = done }
+    end
+    return out
+end
+
+-- When each thing was last offered: what the weeks have recorded, with
+-- everything in the log too (a log from before the weeks were kept still counts).
+local function offeredWeeks()
+    local d = State.get()
+    local out = {}
+    for k, w in pairs(d.outside_hist or {}) do out[k] = w end
+    for _j, e in ipairs(d.outside_log or {}) do
+        local key = e.who and ("who:" .. e.who) or (e.s .. ":" .. tostring(e.i))
+        if (out[key] or -1) < e.w then out[key] = e.w end
+    end
+    return out
+end
+
+-- The one in the garden the garden points at: someone never seen outdoors
+-- first, then whoever was offered longest ago (and among equals a shuffle by
+-- the week). Nil when the garden is empty.
+local function gardenPick(week, offered)
+    local best, best_seen, best_at, best_tie
+    for n, id in ipairs(pickable()) do
+        local seen = State.seenOutside(id) and 1 or 0
+        local at = offered["who:" .. id] or -1
+        local tie = (week * 7 + n * 13) % 53
+        if not best or seen < best_seen or (seen == best_seen and (at < best_at or (at == best_at and tie < best_tie))) then
+            best, best_seen, best_at, best_tie = id, seen, at, tie
+        end
+    end
+    return best
+end
+
+-- This week's three things (a table { w, s, picks = { { i } or { who } x 3 } }, made
+-- once for the week and kept, so they stay the same all week). A thing already
+-- ticked this week stays among them.
+local function weekRecord()
+    local d = State.get()
+    local week, season = Prompts.week(State.clock()), Season.now()
+    local cur = d.outside_now
+    if cur and cur.w == week and cur.s == season then return cur end
+    local offered = offeredWeeks()
+    local picks = {}
+    for _j, e in ipairs(d.outside_log or {}) do   -- (ticked already this week, before the record was made)
+        if e.w == week and e.s == season then
+            local kind = e.who and "look" or Prompts.kind(season, e.i)
+            for k, name in ipairs(Prompts.KINDS) do
+                if name == kind and not picks[k] then picks[k] = e.who and { who = e.who } or { i = e.i }; break end
+            end
+        end
+    end
+    for k, kind in ipairs(Prompts.KINDS) do
+        if not picks[k] then
+            local who = kind == "look" and Prompts.gardenWeek(week) and gardenPick(week, offered) or nil
+            if who then picks[k] = { who = who }
+            else
+                local skip = {}
+                for _k, pk in pairs(picks) do if pk.i then skip[pk.i] = true end end
+                picks[k] = { i = Prompts.choose(season, week, kind, offered, skip) }
+            end
+        end
+    end
+    d.outside_hist = d.outside_hist or {}
+    for _k, pk in pairs(picks) do d.outside_hist[pk.who and ("who:" .. pk.who) or (season .. ":" .. tostring(pk.i))] = week end
+    d.outside_now = { w = week, s = season, picks = picks }
+    State.save()
+    return d.outside_now
+end
+
+-- The words of a thing the garden points at: the one to look for in the world.
+local function gardenText(id)
+    local Almanac = require("solarui/garden/almanac")   -- (not at the top: the almanac needs the state)
+    local page, name = Almanac.page(id), Cast.find(id).en
+    if page and page.look and Almanac.tier(id) >= 3 then return string.format(_("From your garden: %s. %s"), name, page.look) end
+    return string.format(_("From your garden: %s. Can you find a real one outdoors this week?"), name)
+end
+
+-- The log entry of this week's thing `pk`, or nil.
+local function logged(pk, rec)
+    for j, e in ipairs(State.get().outside_log or {}) do
+        if e.w == rec.w and e.s == rec.s and ((pk.who and e.who == pk.who) or (pk.i and e.i == pk.i)) then return e, j end
+    end
+    return nil
+end
+
+-- When the thing `season`, `i` was last ticked more than a season ago ("last
+-- year's date" of a first), as a time, or nil.
+local function lastYear(season, i)
+    local best
+    for _j, e in ipairs(State.get().outside_log or {}) do
+        if e.s == season and e.i == i and State.clock() - e.t > 200 * 86400 and (not best or e.t > best) then best = e.t end
+    end
+    return best
+end
+
+-- Who has been seen outdoors, the first time and how often: { t, n } or nil.
+function State.seenOutside(id)
+    local first, n
+    for _j, e in ipairs(State.get().outside_log or {}) do
+        if e.who == id then first = math.min(first or e.t, e.t); n = (n or 0) + 1 end
+    end
+    return first and { t = first, n = n } or nil
+end
+
+-- This week's things to do outdoors: a list of { kind, i or who, season, text,
+-- done, note, first (what to remember the date of), last (when it was last
+-- ticked a year ago) }.
+function State.outsideWeek()
+    local rec = weekRecord()
+    local out = {}
+    for k, pk in ipairs(rec.picks) do
+        local e = logged(pk, rec)
+        local item = { kind = Prompts.KINDS[k], i = pk.i, who = pk.who, season = rec.s, done = e ~= nil, note = e and e.note or nil }
+        if pk.who then item.text = gardenText(pk.who)
+        else
+            item.text = Prompts.text(rec.s, pk.i) or ""
+            item.first = Prompts.first(rec.s, pk.i)
+            if item.first then item.last = lastYear(rec.s, pk.i) end
+        end
+        out[#out + 1] = item
     end
     return out
 end
@@ -248,30 +368,64 @@ end
 -- when it is now ticked.
 function State.toggleOutside(k)
     local d = State.get()
-    local p = Prompts.of(State.clock())
-    local item = p.items[k]
-    if not item then return false end
+    local rec = weekRecord()
+    local pk = rec.picks[k]
+    if not pk then return false end
     d.outside_log = d.outside_log or {}
-    for j, e in ipairs(d.outside_log) do
-        if e.w == p.week and e.s == p.season and e.i == item.i then
-            table.remove(d.outside_log, j)
-            State.save()
-            return false
-        end
+    local _e, j = logged(pk, rec)
+    if j then
+        table.remove(d.outside_log, j)
+        State.save()
+        return false
     end
-    d.outside_log[#d.outside_log + 1] = { t = State.clock(), w = p.week, s = p.season, i = item.i }
-    note("outside", "water_lily")
+    d.outside_log[#d.outside_log + 1] = { t = State.clock(), w = rec.w, s = rec.s, i = pk.i, who = pk.who }
+    note("outside", pk.who or "water_lily")
     State.save()
     return true
 end
 
--- Everything ever ticked, newest first: { t, text }.
+-- Put a line of the reader's own on the `k`th of this week's things when it is
+-- ticked (blank takes it away). Returns true when it was kept.
+function State.noteOutside(k, text)
+    local rec = weekRecord()
+    local pk = rec.picks[k]
+    local e = pk and logged(pk, rec)
+    if not e then return false end
+    text = (text or ""):gsub("^%s+", ""):gsub("%s+$", "")
+    e.note = text ~= "" and text:sub(1, 140) or nil
+    State.save()
+    return true
+end
+
+-- Everything ever ticked, newest first: { t, text, note, who }.
 function State.outsideLog()
     local out, log = {}, State.get().outside_log or {}
     for j = #log, 1, -1 do
-        out[#out + 1] = { t = log[j].t, text = Prompts.text(log[j].s, log[j].i) or "" }
+        local e = log[j]
+        out[#out + 1] = { t = e.t, text = e.who and gardenText(e.who) or Prompts.text(e.s, e.i) or "", note = e.note, who = e.who }
     end
     return out
+end
+
+-- The firsts remembered, newest first: { t, label, note }. Each time one comes
+-- round is a line, so the years sit side by side.
+function State.outsideFirsts()
+    local out, log = {}, State.get().outside_log or {}
+    for j = #log, 1, -1 do
+        local e = log[j]
+        local label = not e.who and Prompts.first(e.s, e.i)
+        if label then out[#out + 1] = { t = e.t, label = label, note = e.note } end
+    end
+    return out
+end
+
+-- Where the week stands: { done, total, next (the first thing left, or nil), full }.
+function State.outsideSummary()
+    local week, done, nxt = State.outsideWeek(), 0, nil
+    for k, item in ipairs(week) do
+        if item.done then done = done + 1 elseif not nxt then nxt = item; nxt.k = k end
+    end
+    return { done = done, total = #week, next = nxt, full = done == #week }
 end
 
 -- How many things have been done outdoors, and in how many weeks all of that

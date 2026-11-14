@@ -11,6 +11,7 @@ local Button = require("solarui/ui/button")
 local Cast = require("solarui/garden/cast")
 local Frame = require("solarui/screens/frame")
 local Label = require("solarui/ui/label")
+local OutsideCard = require("solarui/ui/outsidecard")
 local Layout = require("solarui/ui/layout")
 local ListRow = require("solarui/ui/listrow")
 local Screen = require("solarui/screens/screen")
@@ -24,7 +25,7 @@ local GardenNotes = Screen:extend()
 local TABS = { { "meet", _("Meet") }, { "calendar", _("Year") }, { "links", _("Links") }, { "outside", _("Outside") }, { "about", _("About") } }
 
 -- Start on the first page of the first tab.
-function GardenNotes:init() self.page, self.tab = 1, "meet" end
+function GardenNotes:init(params) self.page, self.tab = 1, params and params.tab or "meet" end
 
 -- How well someone is known, in a word.
 local function knowing(tier)
@@ -88,22 +89,32 @@ local function milestone(done)
     end
 end
 
--- One thing to do this week: a round box to tick and the words beside it.
+local KIND = OutsideCard.KIND
+
+-- One thing to do this week: a round box to tick, its kind and the words beside it,
+-- and under a ticked one the reader's own line (or a button to add one).
 local function thing(k, item)
     local th = Theme.get()
+    local words = { Label:new({ text = KIND[item.kind] or "", kind = "micro", color = "muted" }),
+        Label:new({ text = item.text, kind = "body", lines = 5, color = item.done and "muted" or nil }) }
+    if item.first and item.last then
+        words[#words + 1] = Label:new({ text = string.format(_("Last year: %s."), os.date("%d %B", item.last)), kind = "small", lines = 2 })
+    elseif item.first then
+        words[#words + 1] = Label:new({ text = string.format(_("Remember the date of %s."), item.first), kind = "small", color = "muted", lines = 2 })
+    end
+    if item.done then
+        words[#words + 1] = OutsideCard.noteButton(item, function() OutsideCard.writeNote(k, item, App.update) end)
+        if item.note then words[#words + 1] = Label:new({ text = "\u{201C}" .. item.note .. "\u{201D}", kind = "small", lines = 3 }) end
+    end
     return Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
         Button:new({ variant = "icon", icon = item.done and "check" or nil, label = item.done and nil or " ", width = th.size.touch,
-            on_tap = function()
-                local on = State.toggleOutside(k)
-                App.toast(on and _("Ticked off, and kept in your log.") or _("Unticked."))
-                App.update()
-            end }),
-        Label:new({ text = item.text, kind = "body", lines = 4, grow = true, color = item.done and "muted" or nil }),
+            on_tap = function() OutsideCard.tick(k, App.update) end }),
+        Layout.Column:new({ gap = th.space.xs, grow = true, children = words }),
     } })
 end
 
--- The Outside tab: this week's three things with a box to tick each, then
--- the log of everything ever done outdoors, kept for good.
+-- The Outside tab: this week's three things with a box to tick each, the
+-- firsts of the year, then the log of everything ever done outdoors, kept for good.
 local function outside()
     local th = Theme.get()
     local items = { Layout.Column:new({ gap = th.space.xs, pad = { 0, 0, th.space.s, 0 }, children = {
@@ -111,6 +122,21 @@ local function outside()
         Label:new({ text = _("Three small things to do outdoors: one to look at, one to listen to and one to do. Tick each one when done. Nothing is earned, and nothing is lost if you skip a week."), kind = "small", color = "muted", lines = 4 }),
     } }) }
     for k, item in ipairs(State.outsideWeek()) do items[#items + 1] = thing(k, item) end
+    local firsts = State.outsideFirsts()
+    if #firsts > 0 then
+        items[#items + 1] = Layout.Column:new({ gap = th.space.xs, pad = { th.space.m, 0, th.space.xs, 0 }, children = {
+            Label:new({ text = _("Firsts"), kind = "heading" }),
+            Label:new({ text = _("The dates you saw or heard something for the first time that year. Next year the garden will remind you."), kind = "small", color = "muted", lines = 3 }),
+        } })
+        for _i, f in ipairs(firsts) do
+            local words = { Label:new({ text = f.label:sub(1, 1):upper() .. f.label:sub(2), kind = "body", lines = 2 }) }
+            if f.note then words[#words + 1] = Label:new({ text = "\u{201C}" .. f.note .. "\u{201D}", kind = "small", lines = 2 }) end
+            items[#items + 1] = Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
+                Label:new({ text = os.date("%d %b %Y", f.t), kind = "small", color = "muted", width = Theme.px(96) }),
+                Layout.Column:new({ gap = 0, grow = true, children = words }),
+            } })
+        end
+    end
     local totals, log = State.outsideTotals(), State.outsideLog()
     local head = { Label:new({ text = _("Your log"), kind = "heading" }) }
     if totals.done == 0 then
@@ -124,7 +150,10 @@ local function outside()
     for _i, e in ipairs(log) do
         items[#items + 1] = Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
             Label:new({ text = os.date("%d %b", e.t), kind = "small", color = "muted", width = Theme.px(64) }),
-            Label:new({ text = e.text, kind = "body", lines = 3, grow = true }),
+            Layout.Column:new({ gap = 0, grow = true, children = e.note and {
+                Label:new({ text = e.text, kind = "body", lines = 3 }),
+                Label:new({ text = "\u{201C}" .. e.note .. "\u{201D}", kind = "small", lines = 2 }),
+            } or { Label:new({ text = e.text, kind = "body", lines = 3 }) } }),
         } })
     end
     return items
