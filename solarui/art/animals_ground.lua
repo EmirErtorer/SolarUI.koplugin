@@ -166,21 +166,24 @@ function Ground.fox(c, second)
     local tail = about(40, 40, second and -10 or 0, path("M41 37 C30 35 16 43 8 55 C3.6 62 6 68.6 12 68.4 C20 67 31 57 43 47Z", c.bloom, c.ink, 1.6)
         .. path("M8 55 C3.6 62 6 68.6 12 68.4 C14.6 64 13.4 58.6 10.6 54.4 C9.6 54 8.6 54.4 8 55Z", c.cream, c.ink, 1.1)
         .. line("M38 40 C28 41 18 48 12 56", c.ink, .8))
-    local head = path("M100 21 L101.4 9 L108 18Z", c.ink, c.ink, 1.4)
-        .. path("M104 19 L109.6 7.4 L115 18.6Z", c.bloom, c.ink, 1.5) .. path("M106.6 17.6 L109.4 10.6 L111.6 17.6Z", c.cream) .. line("M109.6 7.4 L115 18.6", c.ink, 2.4)
-        .. path("M88 35 C92 28 98 22 104 19 C110 16.6 115.6 18.6 118.4 23 L127.4 29.6 C128.6 31.2 127.4 32.8 125 33 L113.6 35.2 C107.6 37.4 102.6 42.6 100.6 49 C95.6 46.6 91.4 41 88 35Z", c.bloom, c.ink, 1.6)
-        .. path("M125 33 L113.6 35.2 C107.6 37.4 102.6 42.6 100.6 49 C98 45 98.6 39.4 103 35.4 C108.6 30.6 117.6 30.8 125 33Z", c.cream, c.ink, 1.1)
-        .. circle(126.8, 30.4, 2, c.ink) .. line("M124.6 33 Q120 34.4 116.6 33.6", c.ink, .9)
-        .. ellipse(112.4, 25.2, 2.4, 1.5, -18, c.gold, c.ink, .9) .. line("M112.6 24 L112.2 26.4", c.ink, 1)
+    -- the neck grows out of the shoulders: its fill reaches into the body and only its outer edges are inked, so there is no seam
+    local ears = path("M101.4 19.4 L103.6 7.6 L109.4 17Z", c.ink, c.ink, 1.4)
+        .. path("M106 17 L110.6 6.6 L115.6 16.2Z", c.bloom, c.ink, 1.5) .. path("M108.2 15.8 L110.6 9.6 L112.8 15.8Z", c.cream) .. line("M110.6 6.6 L115.6 16.2", c.ink, 2.4)
+    local edge = "M84 31.6 C90 27 96 22 101 19.6 C104 16.4 109 14.4 113.4 16 C116 17 117.4 19 118.6 20.6 C121.6 22.4 125 24.6 128 26.6 C129.6 27.8 129 30 127 30.4 C123.6 31 120 31.6 117 32.6 C114 34 111 35.4 108 36 L104.6 38.6 C103 42 102 45.6 101.4 49.6"
+    local head = ears .. path(edge .. " L90 53 L78 36Z", c.bloom) .. line(edge, c.ink, 1.6)
+        .. path("M127 30.4 C123.6 31 120 31.6 117 32.6 C114 34 111 35.4 108 36 L104.6 38.6 C103 42 102 45.6 101.4 49.6 C99 46 99.4 41 102 37.6 C104 34.6 107 31.4 110.6 29.6 C115 27.6 120 27.6 124 28.6 C125.6 29 126.6 29.6 127 30.4Z", c.cream)
+        .. line("M127 30.4 C126.6 29.6 125.6 29 124 28.6 C120 27.6 115 27.6 110.6 29.6 C107 31.4 104 34.6 102 37.6 C100 40.6 99.6 44 100.4 47.6", c.ink, .9)
+        .. circle(128.2, 27.8, 2, c.ink) .. line("M126 30.8 Q122 31.6 119 31.2", c.ink, .8)
+        .. path("M110.4 22.6 C112 20.6 115.4 20 117.6 20.8 C116 22.8 113 23.6 110.4 22.6Z", c.gold, c.ink, 1) .. ellipse(114.2, 21.7, .7, 1.3, 0, c.ink)
+        .. line("M117.6 20.8 L119.4 21.6", c.ink, .9)
     local stride = second and -1 or 1
     local farlegs = leg(c, { { 52, 40 }, { 47 - 3 * stride, 58 }, { 50 - 5 * stride, 72 } }, true)
         .. leg(c, { { 91, 40 }, { 92 + 3 * stride, 57 }, { 94 + 6 * stride, 72 } }, true)
     local nearlegs = leg(c, { { 47, 40 }, { 41 + 4 * stride, 58 }, { 45 + 6 * stride, 72 } })
         .. leg(c, { { 95, 40 }, { 95 - 2 * stride, 57 }, { 92 - 6 * stride, 72 } })
     local body = path("M38 42 C40 33 50 30.6 60 31.6 C70 32.6 84 31 95 34 C101 37 103 44 100.6 50 C97 55.4 89 55.6 83 53.6 C73 51.4 63 49.6 55 51.6 C45 54.6 36 50 38 42Z", c.bloom, c.ink, 1.6)
-        .. line("M45 38.6 C52 41 55 48 51.6 54 M88.6 37 C93 41 94 47 92 53", c.ink, .9)
-        .. path("M100.6 49 C101.6 53 99.6 56 96.4 56.4 C97.4 53 98.6 51 100.6 49Z", c.cream, c.ink, 1)
-    return farlegs .. nearlegs .. group(0, -6, 0, tail .. body .. about(92, 38, second and 18 or 0, head))
+        .. line("M45 38.6 C52 41 55 48 51.6 54", c.ink, .9)
+    return farlegs .. nearlegs .. group(0, -6, 0, tail .. body .. about(88, 34, second and 14 or 0, head))
 end
 
 -- One eye of a peacock's train feather at (x, y), pointing away from the
