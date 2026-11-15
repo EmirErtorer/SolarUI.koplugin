@@ -72,16 +72,26 @@ function Ground.snail(c, second)
     return line("M2 53 L78 53", c.line, 1.6) .. group(second and 1 or -1, 0, 0, horns .. foot .. shell)
 end
 
--- European robin: a round bird with an orange-red face and breast, a pale
--- belly and thin legs. In pose two it bobs forward with its tail cocked.
+-- European robin standing on the ground, facing right: a plump upright bird,
+-- olive brown above, the orange-red of its face and breast edged with a band
+-- of blue-grey, a white belly, a folded wing over the flank, a short tail
+-- angled down, a fine dark bill, a big dark eye and thin legs. In pose two it
+-- bobs forward with its tail cocked up, the way a robin does.
 function Ground.robin(c, second)
-    local tail = about(27, 45, second and -34 or -6, path("M30 40 L3 38 L2 46 L30 50Z", c.muted, c.ink, 1.5) .. line("M6 42 L26 44", c.ink, .8))
-    local bird = tail .. path("M24 44 C22 26 40 14 58 16 C66 9 80 9 86 19 C90 25 90 32 87 36 C88 50 78 64 60 66 C42 68 26 60 24 44Z", c.muted, c.ink, 1.8)
-        .. path("M36 57 C44 66 60 69 71 62 C66 58 63 54 62 47 C56 55 46 59 36 57Z", c.cream, c.ink, 1)
-        .. path("M79 12 C87 15 91 25 88 35 C89 48 82 58 71 62 C63 56 60 46 64 38 C66 30 69 23 72 17 C74 13 76 12 79 12Z", c.bloom, c.ink, 1.3)
-        .. path("M31 38 C38 28 54 27 62 35 C59 46 46 54 28 52 C30 47 30 42 31 38Z", c.muted, c.ink, 1.5) .. line("M36 44 C44 44 52 41 57 37 M34 48 C42 49 50 47 55 43", c.ink, .9)
-        .. circle(80, 23, 3, c.ink) .. circle(81, 22, .9, c.cream) .. path("M88 25 L98 28 L88 31Z", c.ink, c.ink, 1)
-    return line("M52 65 L51 76 M63 64 L65 76 M51 76 L45 77 M51 76 L57 77 M65 76 L59 77 M65 76 L71 77", c.ink, 1.6) .. about(58, 68, second and 13 or 0, bird)
+    local brown, dark = c.muted, mix(c.muted, c.ink, .25)
+    local orange, grey = mix(c.bloom, c.gold, .2), mix(c.sky, c.muted, .45)
+    local tail = about(48, 53, second and 46 or 0, path("M49 50 L21 61 L23 67 L51 57Z", dark, c.ink, 1.5) .. line("M46 53 L24 63", c.ink, .8))
+    local body = path("M46 53 C44 40 52 28 64 20 C68 12 79 9 86 14 C90 17 92 22 91 28 C96 37 95 51 86 59 C78 66 62 67 54 61 C50 58 47 56 46 53Z", brown, c.ink, 1.8)
+    local breast = path("M87 14.5 C90 17 92 22 91 28 C94.4 34 95.2 41.4 93.6 48 C88 52.6 79 54 71 52.6 C70.6 46 71 40 71.5 35 C72 29 73 25 76 21 C78 17 82 14.5 87 14.5Z", orange, c.ink, 1.1)
+        .. line("M86 13.6 C80 13 75.4 16.4 73.4 21 C71 26.6 70 32 69.6 38 C69.4 43 69.4 48 70 52.4", grey, 2.6)
+    local belly = path("M93.6 48 C92 52.6 89.6 56.4 86 59 C78 66 62 67 54 61 C60 59.4 65.6 55.6 70 52.4 C78 54.2 87.6 52.6 93.6 48Z", c.cream, c.ink, 1.1)
+    local wing = path("M61 28 C71 30 75 40 71 50 C65 56 53 58 41 57.6 C47 50 53 40 61 28Z", dark, c.ink, 1.4)
+        .. line("M63 33 C68 38 68 45 65 51 M57 37 C61 43 60 49 56 54.6 M51 47 C53 51 51 54 48 57", c.ink, .8)
+    local face = circle(81, 21, 2.7, c.ink) .. circle(82, 20.2, .8, c.cream) .. path("M90.4 23 L99 25.6 L90.4 27.6Z", c.ink, c.ink, .8)
+    local legc = mix(c.bloom2, c.muted, .5)
+    local legs = line("M66 64 L64.4 77 M74 64.4 L75.6 77", c.ink, 2.4) .. line("M66 64 L64.4 77 M74 64.4 L75.6 77", legc, 1)
+        .. line("M64.4 77 L58.6 77.6 M64.4 77 L69 77.6 M75.6 77 L70.6 77.6 M75.6 77 L81.4 77.6", c.ink, 1.3)
+    return legs .. about(70, 66, second and 14 or 0, tail .. body .. wing .. breast .. belly .. face)
 end
 
 -- European hedgehog: a dome of spines over a pale pointed face and small
