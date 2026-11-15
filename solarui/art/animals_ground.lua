@@ -94,30 +94,48 @@ function Ground.robin(c, second)
     return legs .. about(70, 66, second and 14 or 0, tail .. body .. wing .. breast .. belly .. face)
 end
 
--- European hedgehog: a dome of spines over a pale pointed face and small
--- feet. In pose two it lifts its snout to sniff and takes a step.
+-- European hedgehog trundling to the right: a low mound of spines, dark
+-- with pale tips and lying back towards the rump, a shaggy fringe of brown
+-- fur beneath, a brown face with a tapering snout, a black nose, a bead of an
+-- eye and a small round ear tucked at the edge of the spines, and short legs
+-- with clawed feet. In pose two it lifts its snout to sniff and takes a step.
 function Ground.hedgehog(c, second)
-    local dome, ticks = { { 8, 54 } }, {}
-    for k = 0, 30 do
-        local a = math.rad(180 - k * 5.4)
-        local r = (k % 2 == 0 and 44 or 39) * (second and 1.02 or 1)
-        dome[#dome + 1] = { 46 + r * math.cos(a) * .98, 54 - r * math.sin(a) * .98 }
+    local spine, tip, fur = mix(c.muted, c.ink, .35), mix(c.cream, c.pale, .3), mix(c.muted, c.cream, .48)
+    local cx, cy, rx, ry = 46, 52, 41, 34
+    local function at(deg, k) local a = math.rad(deg); return cx + rx * k * math.cos(a), cy - ry * k * math.sin(a) end
+    local edge = { { 6, 52 } }
+    for k = 0, 44 do
+        local x, y = at(184 - k * 4.1 + (k % 2 == 0 and 2.4 or 0), k % 2 == 0 and 1.05 or .93)
+        edge[#edge + 1] = { x, y }
     end
-    dome[#dome + 1] = { 82, 54 }
-    for _r, ring in ipairs({ { 31, 9 }, { 21, 7 }, { 11, 4 } }) do
-        for k = 1, ring[2] do
-            local a = math.rad(172 - k * 150 / ring[2])
-            local x, y = 46 + ring[1] * math.cos(a), 54 - ring[1] * math.sin(a)
-            ticks[#ticks + 1] = string.format("M%s %s l-4 -5 M%s %s l2 -6", n(x), n(y), n(x), n(y))
+    edge[#edge + 1] = { 87, 52 }
+    local dark, pale = {}, {}
+    for _r, row in ipairs({ { .88, 18 }, { .74, 15 }, { .6, 13 }, { .46, 10 }, { .32, 7 }, { .18, 4 } }) do
+        for k = 0, row[2] - 1 do
+            local deg = 172 - (k + (row[1] * 10 % 1)) * 158 / row[2]
+            local x0, y0 = at(deg, row[1] - .1)
+            local x1, y1 = at(deg + 9, row[1] + .1)
+            local xm, ym = x0 + (x1 - x0) * .74, y0 + (y1 - y0) * .74
+            dark[#dark + 1] = string.format("M%s %sL%s %s", n(x0), n(y0), n(xm), n(ym))
+            pale[#pale + 1] = string.format("M%s %sL%s %s", n(xm), n(ym), n(x1), n(y1))
         end
     end
-    local face = path("M76 31 C89 32 101 42 106 48 C105 52 99 55 91 55 L72 55 C69 46 71 36 76 31Z", c.cream, c.ink, 1.6) .. circle(105.5, 48.5, 2.8, c.ink)
-        .. circle(90, 42, 2.2, c.ink) .. ellipse(79, 35, 4.6, 5.6, -10, c.bloom2, c.ink, 1.3) .. line("M96 53 Q100 52 103 50", c.ink, 1)
-    local step = second and 5 or 0
-    local feet = ellipse(24 + step, 58, 5.4, 3.2, 0, c.bloom2, c.ink, 1.3) .. ellipse(40 - step, 58, 5.4, 3.2, 0, c.bloom2, c.ink, 1.3) .. ellipse(64 + step, 58, 5.4, 3.2, 0, c.bloom2, c.ink, 1.3)
-        .. ellipse(80 - step * .6, 58, 5.4, 3.2, 0, c.bloom2, c.ink, 1.3)
-    return feet .. path(Svg.poly(dome, true), c.muted, c.ink, 1.6) .. line(table.concat(ticks, " "), c.ink, 1.1)
-        .. path("M14 54 C30 50 60 50 78 54 C60 58 30 58 14 54Z", c.cream, c.ink, 1.2) .. about(76, 46, second and -16 or 0, face)
+    local skirt = { { 9, 50 } }
+    for k = 0, 19 do skirt[#skirt + 1] = { 11 + k * 3.9, 55.4 + (k % 2 == 0 and 1.8 or 0) } end
+    skirt[#skirt + 1] = { 86, 50 }
+    local face = path("M73 28 C83 28.6 95 37 103.6 43.6 C106.6 45.6 106.6 48.6 103.6 49.8 C97.6 52.8 89 54.4 80 54.4 L71 54.4 C67 44 68 34 73 28Z", fur, c.ink, 1.6)
+        .. ellipse(105, 46.6, 2.6, 2.2, 20, c.ink) .. circle(91, 40.4, 2, c.ink) .. circle(91.6, 39.8, .6, c.cream)
+        .. line("M97 51 Q100.6 50.4 103 48.8", c.ink, .9)
+    local step = second and 4 or 0
+    local function foot(x, far)
+        local f = far and mix(spine, c.muted, .5) or spine
+        return path(string.format("M%s 52 L%s 59.6 L%s 60.4 L%s 52Z", n(x - 2.8), n(x - 3.4), n(x + 3.8), n(x + 2.8)), f, c.ink, 1.2)
+            .. line(string.format("M%s 60.4 l1.6 .8 M%s 60.4 l1.6 .8", n(x + 1), n(x + 3)), c.ink, .9)
+    end
+    local legs = foot(34 - step, true) .. foot(74 - step * .6, true) .. foot(24 + step) .. foot(82 + step)
+    return legs .. about(76, 44, second and -14 or 0, face) .. path(Svg.poly(skirt, true), fur, c.ink, 1.1)
+        .. path(Svg.poly(edge, true), spine) .. line(Svg.poly(edge), c.ink, 1.6) .. line(table.concat(dark, " "), c.ink, 1.3) .. line(table.concat(pale, " "), tip, 1.4)
+        .. ellipse(81.6, 33.4, 3.4, 3.8, -20, mix(c.bloom2, c.muted, .4), c.ink, 1.2)
 end
 
 -- One leg of the fox through the given points, with its black sock.
