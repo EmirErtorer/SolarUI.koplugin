@@ -77,11 +77,12 @@ Layout.EXTRAS = {
 -- be dealt any free place in the garden or the sky; the two that live in the
 -- pond keep to their paths there (PATHS, top-left corners to hop or swim to).
 Layout.ANIMAL_SCALE = 1.3
-Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85, fox = 1.1, peacock = 1.0 }
+Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85, fox = 1.1, peacock = 1.0, yuzsuz = 1.2 }
 Layout.ANIMALS = {
     bee = box(0, 0, 110, 70), butterfly = box(0, 0, 80, 70), moth = box(0, 0, 80, 70), robin = box(0, 0, 110, 80),
     dragonfly = box(0, 0, 100, 64), ladybug = box(0, 0, 60, 50), snail = box(0, 0, 80, 56), hedgehog = box(0, 0, 110, 64),
     fox = box(0, 0, 130, 76), peacock = box(0, 0, 150, 86), frog = box(0, 0, 70, 60), koi = box(0, 0, 100, 56),
+    yuzsuz = box(0, 0, 120, 84),
 }
 Layout.FLIES = { bee = true, butterfly = true, moth = true, dragonfly = true }
 Layout.PATHS = {
