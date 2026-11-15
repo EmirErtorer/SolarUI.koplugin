@@ -76,11 +76,12 @@ end
 -- olive brown above, the orange-red of its face and breast edged with a band
 -- of blue-grey, a white belly, a folded wing over the flank, a short tail
 -- angled down, a fine dark bill, a big dark eye and thin legs. In pose two it
--- bobs forward with its tail cocked up, the way a robin does.
+-- is in flight: the same bird tipped level, legs tucked, both wings raised and
+-- the tail spread.
 function Ground.robin(c, second)
     local brown, dark = c.muted, mix(c.muted, c.ink, .25)
     local orange, grey = mix(c.bloom, c.gold, .2), mix(c.sky, c.muted, .45)
-    local tail = about(48, 53, second and 46 or 0, path("M49 50 L21 61 L23 67 L51 57Z", dark, c.ink, 1.5) .. line("M46 53 L24 63", c.ink, .8))
+    local tail = path("M49 50 L21 61 L23 67 L51 57Z", dark, c.ink, 1.5) .. line("M46 53 L24 63", c.ink, .8)
     local body = path("M46 53 C44 40 52 28 64 20 C68 12 79 9 86 14 C90 17 92 22 91 28 C96 37 95 51 86 59 C78 66 62 67 54 61 C50 58 47 56 46 53Z", brown, c.ink, 1.8)
     local breast = path("M87 14.5 C90 17 92 22 91 28 C94.4 34 95.2 41.4 93.6 48 C88 52.6 79 54 71 52.6 C70.6 46 71 40 71.5 35 C72 29 73 25 76 21 C78 17 82 14.5 87 14.5Z", orange, c.ink, 1.1)
         .. line("M86 13.6 C80 13 75.4 16.4 73.4 21 C71 26.6 70 32 69.6 38 C69.4 43 69.4 48 70 52.4", grey, 2.6)
@@ -91,7 +92,15 @@ function Ground.robin(c, second)
     local legc = mix(c.bloom2, c.muted, .5)
     local legs = line("M66 64 L64.4 77 M74 64.4 L75.6 77", c.ink, 2.4) .. line("M66 64 L64.4 77 M74 64.4 L75.6 77", legc, 1)
         .. line("M64.4 77 L58.6 77.6 M64.4 77 L69 77.6 M75.6 77 L70.6 77.6 M75.6 77 L81.4 77.6", c.ink, 1.3)
-    return legs .. about(70, 66, second and 14 or 0, tail .. body .. wing .. breast .. belly .. face)
+    if not second then return legs .. tail .. body .. wing .. breast .. belly .. face end
+    -- a spread wing from the shoulder at the origin, reaching up and back, its flight feathers fingered at the tip
+    local function spread(fill)
+        return path("M2 2 C0 -8 -6 -20 -16 -30 C-19 -32.6 -23 -31.6 -22 -28.4 C-25.6 -29 -27.6 -25.6 -24.6 -23.6 C-27.6 -23 -28.4 -19.4 -25.4 -18.2 C-27.4 -16.6 -26.6 -13.4 -23.4 -13.4 C-19 -8 -12 -2 -4 4Z", fill, c.ink, 1.4)
+            .. line("M-2 -2 C-8 -10 -13 -18 -18 -26 M-5 0 C-11 -7 -16 -13 -21 -18 M-8 2 C-13 -3 -17 -7 -21 -11", c.ink, .8)
+    end
+    local fan = path("M49 50 L22 56 L20 62 L24 67 L51 57Z", dark, c.ink, 1.5) .. line("M47 53 L23 61.6 M47 55 L22 57.4 M48 55 L24 65", c.ink, .8)
+    local tucked = line("M68 64 L62 67 M74 64 L68 67.6", c.ink, 2.2) .. line("M68 64 L62 67 M74 64 L68 67.6", legc, .9)
+    return group(62, 36, -14, spread(mix(dark, c.ink, .2)), 1) .. about(70, 52, 22, fan .. tucked .. body .. breast .. belly .. face) .. group(70, 39, 6, spread(dark), 1.12)
 end
 
 -- European hedgehog trundling to the right: a low mound of spines, dark
