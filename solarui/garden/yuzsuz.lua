@@ -131,6 +131,23 @@ function Yuzsuz.ate(food)
     return "food_" .. food
 end
 
+-- Every pose she has (see art/animals_yuzsuz.lua).
+Yuzsuz.POSES = { "sit", "loaf", "walk", "slouch", "sleep", "belly", "glare", "chatter", "stare", "bite", "eat", "lizard", "butt", "throne",
+    "sprint", "play", "hiss" }
+
+-- A tap on her picture: a pose chosen at random, never the one she is in
+-- (`prev`, "loaf.b"...), with her tail somewhere new. She stays in it while a
+-- touch's pose holds. Returns the pose.
+function Yuzsuz.shuffle(prev)
+    local was = tostring(prev or ""):match("^([%w_]+)")
+    if forced and State.clock() - forced.at < Yuzsuz.HOLD then was = forced.pose:match("^([%w_]+)") end
+    local name
+    repeat name = Yuzsuz.POSES[1 + math.floor(random() * #Yuzsuz.POSES) % #Yuzsuz.POSES] until name ~= was
+    local pose = name .. "." .. ({ "a", "b", "c" })[1 + math.floor(random() * 3) % 3]
+    show(pose)
+    return pose
+end
+
 -- The pose she was put in by a touch, while it holds, else `pose`.
 function Yuzsuz.shown(pose)
     if forced and State.clock() - forced.at < Yuzsuz.HOLD then return forced.pose end

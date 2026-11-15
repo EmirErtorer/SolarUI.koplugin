@@ -280,7 +280,14 @@ function Garden:focused(scene)
         local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
             function() return GardenView.animalParam(GardenView.posed(self.focus, self.pose[self.focus] or "1"), flip, false, Sky.now()) end)
         self.sprites[self.focus] = pic
-        scene:touch(fit.x, fit.y, fit.w, fit.h, function() self:move(self.focus) end)
+        scene:touch(fit.x, fit.y, fit.w, fit.h, function()
+            -- a tap on the queen's picture shows her in another pose, chosen at random
+            if Yuzsuz.is(self.focus) then
+                self.pose.yuzsuz = Yuzsuz.shuffle(self.pose.yuzsuz)
+                return App.repaint(pic, "fast")
+            end
+            self:move(self.focus)
+        end)
     end
     scene:place(GardenCard.build(self.focus, self:actions(self.focus)), CARD.x, CARD.y + oy, CARD.w, CARD.h)
 end

@@ -773,6 +773,15 @@ do
         Kit.ok(hungry[Yuzsuz.next("loaf.a", { mood = "hiding" }):match("^(%a+)")], "hungry, she demands")
         Kit.ok(night[Yuzsuz.next("loaf.a", { phase = "night", mood = "content" }):match("^(%a+)")], "at night, she sleeps")
     end
+    -- a tap on her picture: a random pose, never the one she is in, always one she has
+    local art = require("solarui/art/animals_yuzsuz").POSES
+    for _, name in ipairs(Yuzsuz.POSES) do Kit.ok(art[name] ~= nil, "her pose " .. name .. " is drawn") end
+    local was = "sit.a"
+    for _ = 1, 20 do
+        local nxt = Yuzsuz.shuffle(was)
+        Kit.ok(nxt:match("^%a+") ~= was:match("^%a+") and art[nxt:match("^%a+")] ~= nil and Yuzsuz.shown("loaf.a") == nxt, "a tap changes her pose: " .. was .. " to " .. nxt)
+        was = nxt
+    end
     -- she has a line for every one of her own moments
     for _, mo in ipairs({ "pat_left", "pat_left_milestone", "pat_left_done", "pat_left_over", "pat_right_1", "pat_right_2", "pat_right_3", "pat_right_bite",
         "rub", "rub_bite", "food_salami", "food_kebab", "food_chicken", "food_mince", "food_cheese", "food_yogurt", "food_full" }) do

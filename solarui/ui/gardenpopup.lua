@@ -19,15 +19,16 @@ local Theme = require("solarui/theme")
 
 local GardenPopup = {}
 
--- The picture: the arch with the plant or animal standing in it.
-local function picture(id, e, kind)
+-- The picture: the arch with the plant or animal standing in it. With
+-- `on_tap` the picture answers a tap (the queen changes pose).
+local function picture(id, e, kind, on_tap)
     local ph = Theme.px(220)
     local aw = math.floor(ph * 1.2)
     local size = kind == "plant" and Layout.PLANTS[id] or Layout.ANIMALS[id]
     local k = math.min(aw * .76 / size.w, ph * .66 / size.h)
     local bw, bh = math.floor(size.w * k), math.floor(size.h * k)
     local param = kind == "plant" and GardenView.plantParam(e, false, Sky.now()) or GardenView.animalParam(GardenView.posed(id, GardenView.stillPose(e)), false, false, Sky.now())
-    return LayoutUI.Overlay:new({ height = ph, children = {
+    return LayoutUI.Overlay:new({ height = ph, on_tap = on_tap, children = {
         ArtView:new({ name = "garden_arch", width = aw, height = ph, unit = aw / 600, place = "c" }),
         ArtView:new({ name = (kind == "plant" and "plant_" or "animal_") .. id, param = param, width = bw, height = bh, unit = k, place = "c", dy = math.floor(ph * .13) }),
     } })
@@ -57,7 +58,9 @@ function GardenPopup.card(id, w, list)
     else
         a.on_open = function() App.closeDialog(); App.push("garden") end
     end
-    return Dialog.card({ top = picture(id, e, kind), tag = e.def.latin, title = State.name(id),
+    -- a tap on the queen's picture shows her in another pose, chosen at random
+    local shuffle = id == "yuzsuz" and function() require("solarui/garden/yuzsuz").shuffle(); again() end or nil
+    return Dialog.card({ top = picture(id, e, kind, shuffle), tag = e.def.latin, title = State.name(id),
         detail = GardenCard.status(e, kind), text = Lore.get(id), lines = 7, rows = GardenCard.rows(id, a) }, w)
 end
 
