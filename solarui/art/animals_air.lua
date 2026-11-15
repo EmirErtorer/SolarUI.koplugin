@@ -162,42 +162,74 @@ function Air.butterfly(c, second)
         .. line("M-1 -11 Q-3 -19 -7 -23 M1 -11 Q3 -19 7 -23", c.ink, 1.1) .. circle(-7, -23, 1.3, c.ink) .. circle(7, -23, 1.3, c.ink), .8)
 end
 
--- Elephant hawk-moth: olive and pink, its wings swept back at rest and
--- raised to hover, tongue out, in pose two.
+-- The right forewing of the elephant hawk-moth from its root at the origin,
+-- the body along the upright and the head up: olive with a pink front edge,
+-- two pink bands slanting across and a pink outer border.
+local function hawkFore(c, olive, pink)
+    return path("M1 -6 C7 1 14 11 19 22 C16 24.4 13 25.4 10 25.2 C7 18 4 11 0.6 5Z", olive, c.ink, 1.4)
+        .. line("M2.8 -3.4 C8 3 13.4 11.4 17 19.6", pink, 1.2)
+        .. line("M3 6 C6.6 11 9.4 16 11.4 22.6 M5.4 2.4 C9 7.6 12.2 13 14.6 19.6", pink, 1.1)
+        .. line("M17.6 22.8 C15.6 24 13 24.6 10.8 24.4", pink, 1.4)
+end
+
+-- The right hindwing: rose pink with a black base and a pale fringe.
+local function hawkHind(c, pink)
+    return path("M1 2 C6 5 10.6 10 13 16 C10.6 19.4 7 20.6 3.6 19.6 C2 13.6 1 8 1 2Z", pink, c.ink, 1.3)
+        .. path("M1 2 C4 4 6.4 6.6 7.6 9.6 C5.4 11.4 3.4 12.2 2.4 12 C1.4 9 1 6 1 2Z", c.ink)
+end
+
+-- Elephant hawk-moth seen from above, heading up and to the right: at rest
+-- its olive and pink forewings are swept back into a dart over the pink
+-- hindwings; in pose two it hovers with the same wings spread wide, the
+-- hindwings showing, and its long tongue out to reach a flower.
 function Air.moth(c, second)
-    local fore = path("M3 -10 C14 -15 30 -5 37 8 C28 9 16 7 4 5Z", c.sage, c.ink, 1.5) .. path("M37 8 C28 9 16 7 4 5 L5 1 C16 3 26 5 33 5Z", c.bloom2, c.ink, .9)
-        .. line("M6 -8 C16 -10 26 -3 32 4", c.bloom2, 2.2)
-    local hind = path("M3 2 L24 9 L11 18 C6 14 4 8 3 2Z", c.bloom2, c.ink, 1.4) .. path("M3 2 L13 5.5 L7 11 C5 8 4 5 3 2Z", c.ink)
-    local wings = both(hind) .. both(about(3, -6, second and -34 or 0, fore))
-    local body = path("M0 -16 C7 -14 8 -2 5 8 C3 16 1 22 0 26 C-1 22 -3 16 -5 8 C-8 -2 -7 -14 0 -16Z", c.sage, c.ink, 1.5)
-        .. line("M-2.6 -12 L-2.6 -2 M2.6 -12 L2.6 -2 M0 2 L0 22", c.bloom2, 1.8) .. line("M-4.6 7 L4.6 7 M-3.6 13 L3.6 13 M-2.4 19 L2.4 19", c.ink, .8)
-        .. circle(-3.4, -16, 2.4, c.ink) .. circle(3.4, -16, 2.4, c.ink) .. line("M-2 -18 L-8 -25 M2 -18 L8 -25", c.cream, 2.4) .. line("M-2 -18 L-8 -25 M2 -18 L8 -25", c.ink, .9)
-        .. (second and line("M0 -18 C0 -24 3 -28 6 -27 C9 -26 8 -22 5 -23", c.ink, 1.1) or "")
-    return group(second and 36 or 38, second and 42 or 40, 38, wings .. body, second and .84 or 1)
+    local olive, pink = mix(c.sage, c.leaf, .3), mix(c.bloom2, c.bloom, .25)
+    local hind = about(0, 2, second and -40 or 0, hawkHind(c, pink))
+    local fore = about(1, -6, second and -64 or 0, hawkFore(c, olive, pink))
+    local body = path("M0 -15 C5 -13 6.4 -3 5 8 C3.6 17 1.6 24 0 27 C-1.6 24 -3.6 17 -5 8 C-6.4 -3 -5 -13 0 -15Z", olive, c.ink, 1.4)
+        .. line("M0 -9 L0 24", pink, 1.6) .. line("M-3.4 -6 C-4 2 -3.6 10 -2 18 M3.4 -6 C4 2 3.6 10 2 18", pink, 1.2)
+        .. line("M-4.6 6 L4.6 6 M-4 12 L4 12 M-2.8 18 L2.8 18", c.ink, .7)
+        .. circle(-3, -14.6, 2.2, c.ink) .. circle(3, -14.6, 2.2, c.ink)
+        .. line("M-1.6 -17 C-3 -21 -5 -23 -7.6 -24 M1.6 -17 C3 -21 5 -23 7.6 -24", c.ink, 1.6) .. line("M-1.6 -17 C-3 -21 -5 -23 -7.6 -24 M1.6 -17 C3 -21 5 -23 7.6 -24", c.cream, .7)
+        .. (second and line("M0 -17 L0 -30", c.ink, 1) or "")
+    return group(40, 36, 36, both(hind) .. both(fore) .. body, second and .92 or 1.05)
 end
 
--- One dragonfly wing growing up from the origin, `L` long, with its dark mark.
-local function gauze(c, L, fill)
-    return petal(c, L, L * .16, fill, 1.2) .. line(string.format("M0 0 Q%s %s %s %s M%s %s L%s %s", n(-L * .09), n(-L * .5), n(-L * .02), n(-L * .92), n(-L * .05), n(-L * .8), n(-L * .03), n(-L * .9)), c.ink, 1.1)
+-- One dragonfly wing from the origin pointing up, `L` long and `W` wide
+-- (broader at the root for a hind wing): clear, with a few veins and the
+-- amber pterostigma near the tip of its front edge, which faces right.
+local function gauze(c, L, W, hind)
+    local root = hind and W * 1.3 or W * .5
+    return path(string.format("M%s 0 C%s %s %s %s %s %s C%s %s %s %s %s 0Z", n(-root), n(-root * 1.1), n(-L * .4), n(-W * .6), n(-L * .92), n(W * .1), n(-L), n(W * .7), n(-L * .96), n(W * .65), n(-L * .4), n(W * .45)),
+        mix(c.cream, c.sky, .35), c.ink, 1.1)
+        .. line(string.format("M%s 0 L%s %s M0 0 Q%s %s %s %s M%s 0 Q%s %s %s %s", n(W * .3), n(W * .45), n(-L * .86), n(-W * .05), n(-L * .5), n(-W * .1), n(-L * .9), n(-root * .6), n(-root * .7), n(-L * .5), n(-W * .35), n(-L * .8)), c.ink, .6)
+        .. ellipse(W * .48, -L * .86, .9, 2.6, 4, mix(c.gold, c.bloom, .35), c.ink, .6)
 end
 
--- Emperor dragonfly: green thorax, long blue abdomen in rings, four wings
--- held high, or beaten level as it lifts in pose two.
+-- Emperor dragonfly seen from above as it hunts, heading right: big
+-- blue-green eyes meeting on top of the head, an apple-green thorax, a long
+-- sky-blue abdomen with a black stripe along its back and dark rings, and
+-- four clear wings held flat out to the sides. In pose two the fore and
+-- hind wings swing apart in their beat.
 function Air.dragonfly(c, second)
-    local tail = Svg.spline({ { 68, 50 }, { 44, 51 }, { 24, 54 }, { 6, 53 } }, 8)
+    local blue, green = mix(c.sky, c.glass, .3), mix(c.leaf, c.pale, .3)
+    local beat = second and 12 or 0
+    local function pair(x, L, W, hind, tilt)
+        local one = group(x, -2.6, tilt, gauze(c, L, W, hind))
+        return one .. group(0, 0, 0, one, 1, -1)
+    end
+    local wings = pair(26, 33, 7.6, true, -12 - beat) .. pair(34, 35, 6.4, false, 9 + beat)
+    local tail = { { 24, 0 }, { 0, 0 }, { -26, 0 }, { -52, 0 } }
     local rings = {}
-    for i = 1, 8 do
-        local x, y = Svg.along(tail, Svg.length(tail) * i / 9)
-        rings[#rings + 1] = string.format("M%s %s l.6 5", n(x - .3), n(y - 2.5))
-    end
-    local wings = ""
-    for _i, w in ipairs(second and { { 46, 40 }, { -86, 38 }, { 30, 44 }, { -72, 42 } } or { { 40, 40 }, { -50, 38 }, { 20, 44 }, { -30, 42 } }) do
-        wings = wings .. group(73, 46, w[1], gauze(c, w[2], _i < 3 and c.sky or c.cream))
-    end
-    local body = Svg.stem(tail, Svg.taper(5.4, 3.4), c.sky, c.ink, 1.3) .. line(Svg.poly(tail), c.ink, 1) .. line(table.concat(rings, " "), c.ink, 1)
-        .. line("M72 53 L70 60 L73 62 M76 53 L77 60 L80 61 M80 52 L83 58 L86 58", c.ink, 1.2) .. wings
-        .. ellipse(75, 49, 9, 6, -6, c.leaf, c.ink, 1.5) .. line("M70 47 L79 45 M71 51 L80 49", c.ink, .8) .. ellipse(87, 47, 5.6, 5.2, 0, c.glass, c.ink, 1.4) .. circle(89, 45.6, 1.2, c.cream)
-    return group(second and -6 or 0, second and -5 or 0, 0, about(75, 49, second and -6 or 0, body))
+    for i = 1, 8 do rings[#rings + 1] = string.format("M%s -2.6 L%s 2.6", n(18 - i * 8.6), n(18 - i * 8.6 - .6)) end
+    local body = Svg.stem(Svg.spline(tail, 8), Svg.taper(6.4, 4), blue, c.ink, 1.3)
+        .. ellipse(20, 0, 5.2, 4.2, 0, blue, c.ink, 1.2)
+        .. line("M24 0 L-51 0", c.ink, 1.6) .. line(table.concat(rings, " "), c.ink, .9)
+        .. path("M-52 -1.8 L-56.4 -3 L-55 0 L-56.4 3 L-52 1.8Z", c.ink, c.ink, .8)
+        .. ellipse(31, 0, 7.4, 6.2, 0, green, c.ink, 1.4) .. line("M27 -3.4 L34 -1.6 M27 3.4 L34 1.6", c.ink, .9)
+        .. path("M37 -6.4 C42.4 -7.2 45.6 -3 45.6 0 C45.6 3 42.4 7.2 37 6.4 C38.4 3 38.4 -3 37 -6.4Z", mix(c.glass, c.sky, .4), c.ink, 1.3)
+        .. line("M39 0 L45 0", c.ink, .8)
+    return group(54, 34, -8, wings .. body, .8)
 end
 
 return Air
