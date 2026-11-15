@@ -3,8 +3,11 @@
 -- takes the colours and whether it is in its second pose, and returns SVG.
 
 local Svg = require("solarui/art/svg")
+local Wash = require("solarui/art/wash")
 
 local n, group, path, line, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse
+
+local mix = Wash.mix
 
 local Ground = {}
 
@@ -13,17 +16,60 @@ local function about(x, y, deg, body)
     return group(x, y, deg, group(-x, -y, 0, body))
 end
 
--- Garden snail: a banded spiral shell on a soft foot. In pose two it has
--- drawn its head and horns half in.
+-- A snail shell's coil about (cx, cy): `r0` from the centre at `a0` degrees,
+-- shrinking by `k` each radian over `turns` turns towards the tip, as a line.
+local function coil(cx, cy, r0, a0, turns, k)
+    local pts = {}
+    for i = 0, 72 do
+        local t = i / 72 * turns * 2 * math.pi
+        local r, a = r0 * math.exp(-k * t), math.rad(a0) - t
+        pts[#pts + 1] = { cx + r * math.cos(a), cy + r * math.sin(a) }
+    end
+    return Svg.poly(pts)
+end
+
+-- The pale lip of a snail's shell, a crescent inside the lower right of its
+-- outline (the ellipse at (cx, cy), rx by ry, turned by `rot`).
+local function lip(c, cx, cy, rx, ry, rot)
+    local outer, inner = {}, {}
+    local cr, sr = math.cos(math.rad(rot)), math.sin(math.rad(rot))
+    for i = 0, 12 do
+        local a = math.rad(12 + 64 * i / 12)
+        for _j, side in ipairs({ { outer, 1 }, { inner, .84 + .06 * math.sin(math.pi * i / 12) * -1 } }) do
+            local x, y = rx * side[2] * math.cos(a), ry * side[2] * math.sin(a)
+            table.insert(side[1], { cx + x * cr - y * sr, cy + x * sr + y * cr })
+        end
+    end
+    local pts = {}
+    for i = 1, #outer do pts[#pts + 1] = outer[i] end
+    for i = #inner, 1, -1 do pts[#pts + 1] = inner[i] end
+    return path(Svg.poly(pts, true), c.cream, c.ink, 1)
+end
+
+-- Garden snail gliding to the right: a tawny shell with dark brown bands
+-- following its whorls and a pale lip where the body comes out, on a long
+-- grey-brown foot with grooved skin. The head carries two long eye stalks and
+-- one short feeler below. In pose two the head dips and the stalks draw in.
 function Ground.snail(c, second)
-    local top = second and 31 or 19
-    local foot = path(string.format("M5 50 C5 44 13 42 25 42 L50 42 C57 42 59 %s 60 %s C61 %s 63 %s 67 %s C72 %s 73 %s 71 %s C70 %s 75 45 75 48 C75 51 73 52 69 52 L9 52 C6 52 5 51 5 50Z",
-        n(top + 14), n(top + 9), n(top + 3), n(top), n(top), n(top), n(top + 6), n(top + 11), n(top + 17)), c.cream, c.ink, 1.7)
-        .. line("M14 48 l3 0 M24 47 l3 0 M56 47 l3 0 M64 44 l2 1", c.ink, .9)
-    local horns = second and (line(string.format("M65 %s L63 %s M69 %s L71 %s", n(top + 1), n(top - 5), n(top + 1), n(top - 5)), c.ink, 1.5) .. circle(63, top - 6, 1.6, c.ink) .. circle(71, top - 6, 1.6, c.ink))
-        or (line("M65 20 Q62 12 60 6 M69 20 Q70 12 73 6 M72 30 L77 33", c.ink, 1.5) .. circle(60, 5, 1.8, c.ink) .. circle(73, 5, 1.8, c.ink))
-    local shell = circle(35, 27, 19, c.gold, c.ink, 1.8) .. line(Svg.poly(Svg.spiral(35, 27, 16.4, 1.75, 90)), c.muted, 3) .. line(Svg.poly(Svg.spiral(35, 27, 13.6, 1.9, 90)), c.ink, 1.5)
-    return line("M2 53 L78 53", c.line, 1.6) .. group(second and 2 or -1, 0, 0, horns .. foot .. shell)
+    local skin, shellc = mix(c.muted, c.cream, .42), mix(c.gold, c.muted, .45)
+    local band = mix(shellc, mix(c.ink, c.bloom, .3), .75)
+    local top = second and 33 or 24
+    local foot = path(string.format("M3 51.5 C9 48.6 18 46.4 30 46 L51 45.4 C56 45.2 58 %s 59.5 %s C61 %s 64 %s 68 %s C72.5 %s 74 %s 72.5 %s C71.5 %s 76 45 76 48.5 C76 51.5 73.5 52.5 69 52.5 L8 52.5 C5 52.5 3 52.2 3 51.5Z",
+        n(top + 15), n(top + 9), n(top + 3), n(top), n(top), n(top + .5), n(top + 6), n(top + 11), n(top + 16)), skin, c.ink, 1.6)
+        .. line(string.format("M10 50.2 l3 -.6 M18 49.2 l3 -.4 M46 48.6 l3 -.2 M60.5 %s l2 -1.4", n(top + 13)), c.ink, .8)
+    local reach = second and { { 65, -3 }, { 67, -6.5 }, { 71, -3 }, { 73.5, -5.5 } } or { { 63.5, -6 }, { 62, -12.5 }, { 70.5, -6 }, { 73, -11.5 } }
+    local function stalk(x0, mid, tip)
+        local pts = Svg.spline({ { x0, top + 1.5 }, { mid[1], top + mid[2] }, { tip[1], top + tip[2] } }, 6)
+        return Svg.stem(pts, Svg.taper(2.8, 1.7), skin, c.ink, 1) .. circle(tip[1], top + tip[2], 1.6, c.ink)
+    end
+    local horns = stalk(64.5, reach[1], reach[2]) .. stalk(68.5, reach[3], reach[4])
+        .. Svg.stem(Svg.spline({ { 72.5, top + 9 }, { 75, top + 9.6 }, { 77, top + 10.8 } }, 4), Svg.taper(2.2, 1.3), skin, c.ink, .9)
+    local shell = ellipse(33, 28, 19, 18, -10, shellc, c.ink, 1.8)
+        .. line(coil(30.5, 25.5, 12.8, 64, 1.6, .15), band, 2.8)
+        .. line(coil(30.5, 25.5, 10.2, 64, 1.4, .15), band, 1.2)
+        .. line(coil(30.5, 25.5, 15.6, 64, 1.95, .15), c.ink, 1.3)
+        .. lip(c, 33, 28, 19, 18, -10)
+    return line("M2 53 L78 53", c.line, 1.6) .. group(second and 1 or -1, 0, 0, horns .. foot .. shell)
 end
 
 -- European robin: a round bird with an orange-red face and breast, a pale
