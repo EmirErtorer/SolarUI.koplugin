@@ -174,37 +174,73 @@ function Ground.fox(c, second)
     return farlegs .. nearlegs .. group(0, -6, 0, tail .. body .. about(92, 38, second and 18 or 0, head))
 end
 
--- The train of the peafowl: feathers with eyes at the given places, their
--- quills running back to the rump at (rx, ry).
-local function train(c, rx, ry, eyes)
-    local out = ""
-    for _i, e in ipairs(eyes) do
-        out = out .. line(string.format("M%s %s L%s %s", n(rx), n(ry), n(e[1]), n(e[2])), c.stem, 1.4)
-            .. group(e[1], e[2], math.deg(math.atan2(-(rx - e[1]), ry - e[2])), ellipse(0, 0, 4.6, 6, 0, c.gold, c.ink, 1) .. ellipse(0, .6, 3, 3.8, 0, c.glass) .. ellipse(0, 1.6, 1.6, 1.9, 0, c.ink))
-    end
-    return out
+-- One eye of a peacock's train feather at (x, y), pointing away from the
+-- rump at `rot` degrees, `k` its size: a bronze-green outer field, a
+-- bronze ring, a turquoise ring and a dark blue heart.
+local function ocellus(c, x, y, rot, k)
+    return group(x, y, rot, ellipse(0, 0, 4.4 * k, 6.2 * k, 0, mix(c.leaf, c.gold, .45), c.ink, .9)
+        .. ellipse(0, .8 * k, 3.2 * k, 4.2 * k, 0, mix(c.gold, c.bloom, .35))
+        .. ellipse(0, 1.3 * k, 2.4 * k, 3 * k, 0, mix(c.glass, c.sky, .35))
+        .. path(string.format("M0 %s C%s %s %s %s 0 %s C%s %s %s %s 0 %sZ", n(-.2 * k), n(1.8 * k), n(.4 * k), n(1.6 * k), n(2.8 * k), n(3.4 * k), n(-1.6 * k), n(2.8 * k), n(-1.8 * k), n(.4 * k), n(-.2 * k)), mix(c.ink, c.violet, .45)))
 end
 
--- Indian peafowl: a blue neck and crest, a barred wing and a long train of
--- eyed feathers, trailing on the ground or raised into a fan in pose two.
+-- The train: a feather from the rump at (rx, ry) to each eye in `eyes`
+-- ({ x, y, size }), the far ones first.
+local function train(c, rx, ry, eyes)
+    local quills, out = {}, ""
+    for _i, e in ipairs(eyes) do
+        quills[#quills + 1] = string.format("M%s %s L%s %s", n(rx), n(ry), n(e[1]), n(e[2]))
+        out = out .. ocellus(c, e[1], e[2], math.deg(math.atan2(-(rx - e[1]), ry - e[2])), e[3] or 1)
+    end
+    return line(table.concat(quills, " "), mix(c.leaf, c.ink, .3), .8) .. out
+end
+
+-- Indian peafowl, the cock, facing right: a slender S of a neck and a breast
+-- of deep peacock blue, a small head with white stripes above and below the
+-- eye and a crest of bare quills tipped with little fans, a wing barred black
+-- and buff with cinnamon flight feathers, a bronze-green scaled back, long
+-- grey legs and a long train of eyed feathers trailing on the ground, or in
+-- pose two raised behind it into a great fan.
 function Ground.peacock(c, second)
+    local blue, bronze = mix(c.glass, c.violet, .35), mix(c.leaf, c.gold, .35)
     local tail
     if second then
         local fan, eyes = { { 98, 54 } }, {}
-        for a = -96, 12, 9 do fan[#fan + 1] = { Svg.pol(50 + (a % 18 == 0 and 2 or 0), a, 98, 54) } end
-        for _i, e in ipairs({ { -84, 40 }, { -58, 41 }, { -32, 41 }, { -6, 40 }, { -72, 24 }, { -45, 25 }, { -18, 24 } }) do eyes[#eyes + 1] = { Svg.pol(e[2], e[1], 98, 54) } end
-        tail = path(Svg.poly(fan, true), c.leaf, c.ink, 1.6) .. train(c, 98, 54, eyes)
+        for a = -100, 14, 6 do fan[#fan + 1] = { Svg.pol(51 + (a % 12 == 0 and 1.6 or 0), a, 98, 54) } end
+        for _r, row in ipairs({ { 45, 12, 1 }, { 34, 9, .9 }, { 23, 6, .78 } }) do
+            for k = 0, row[2] - 1 do
+                local a = -94 + (k + (row[2] % 2 == 0 and .5 or 0)) * 104 / row[2]
+                local x, y = Svg.pol(row[1], a, 98, 54)
+                eyes[#eyes + 1] = { x, y, row[3] }
+            end
+        end
+        tail = path(Svg.poly(fan, true), bronze, c.ink, 1.6) .. train(c, 98, 54, eyes)
     else
-        tail = path("M96 44 C72 40 32 52 6 66 C3 74 9 81 20 81 C50 79 82 68 98 58Z", c.leaf, c.ink, 1.6)
-            .. train(c, 96, 50, { { 15, 73 }, { 30, 63 }, { 38, 75 }, { 50, 56 }, { 58, 68 }, { 72, 51 }, { 78, 62 } })
+        local eyes = {}
+        for k = 0, 9 do
+            local x = 10 + k * 8.4
+            local top = 62 - k * 1.6
+            eyes[#eyes + 1] = { x, top + (k % 2 == 0 and 3.4 or 9.4) - k * .4, 1 - k * .045 }
+        end
+        tail = path("M96 45 C72 42 36 52 6 66 C2 72 5 80 14 81 C46 80 80 69 98 57Z", bronze, c.ink, 1.6) .. train(c, 97, 50, eyes)
     end
-    return tail .. line("M106 62 L104 81 M114 61 L117 81 M104 81 L98 82 M104 81 L110 82 M117 81 L111 82 M117 81 L123 82", c.ink, 1.6)
-        .. Svg.stem(Svg.spline({ { 116, 50 }, { 128, 38 }, { 124, 26 }, { 130, 16 } }, 8), Svg.taper(13, 5.4), c.glass, c.ink, 1.5)
-        .. ellipse(108, 51, 20, 12.5, -10, c.glass, c.ink, 1.6) .. path("M92 48 C98 42 112 42 120 48 C114 58 100 60 92 48Z", c.cream, c.ink, 1.3)
-        .. line("M98 48 q3 3 6 0 M105 47 q3 3 6 0 M101 52 q3 3 6 0 M109 51 q3 3 6 0", c.ink, 1)
-        .. line("M130 10 L126 2 M131 10 L130 1 M132 10 L134 2 M133 11 L138 4", c.ink, 1) .. circle(126, 2, 1.4, c.glass) .. circle(130, 1.4, 1.4, c.glass) .. circle(134, 2, 1.4, c.glass) .. circle(138, 4, 1.4, c.glass)
-        .. circle(131.5, 14.5, 5.4, c.glass, c.ink, 1.5) .. line("M129 12 Q132 10 135 12 M129 17 Q132 18 134 17", c.cream, 1.4) .. circle(132.6, 14, 1.2, c.ink)
-        .. path("M136 13 L143 16 L136 17.5Z", c.pale, c.ink, 1)
+    local legc = mix(c.muted, c.cream, .3)
+    local legs = line("M106 61 L104 82 M114 60 L117 82", c.ink, 2.8) .. line("M106 61 L104 82 M114 60 L117 82", legc, 1.2)
+        .. line("M104 82 L97.6 83 M104 82 L110 83 M117 82 L111 83 M117 82 L123.4 83", c.ink, 1.4)
+    local body = ellipse(108, 50, 20, 12.5, -10, blue, c.ink, 1.6)
+        .. path("M90 46 C96 40 108 39 118 43 C116 50 108 56 96 56 C92 54 90 50 90 46Z", mix(c.pale, c.muted, .4), c.ink, 1.3)
+        .. line("M95 44 C97 48 97 52 95 55 M100 42 C102 47 102 52 100 56 M105 41 C107 46 107 51 105 55.6 M110 41 C112 45 112 49 110 53", c.ink, 1.1)
+        .. path("M90 46 C88 50 88 54 91 56.6 L96 56 C92 54 90 50 90 46Z", mix(c.bloom, c.gold, .35), c.ink, 1)
+        .. line("M92 42 q2 -2 4 0 M97 40 q2 -2 4 0", mix(bronze, c.ink, .3), .9)
+    local neck = Svg.stem(Svg.spline({ { 112, 50 }, { 126, 39 }, { 123, 26 }, { 130, 16 } }, 8), Svg.taper(13, 5), blue, c.ink, 1.5)
+    local crest = line("M129.6 10 L126.6 3 M130.6 9.6 L129.6 2.4 M131.6 9.6 L132.6 2.4 M132.6 10 L135.6 3.2", c.ink, .9)
+    for _i, t in ipairs({ { 126.6, 3, -22 }, { 129.6, 2.4, -8 }, { 132.6, 2.4, 8 }, { 135.6, 3.2, 22 } }) do
+        crest = crest .. group(t[1], t[2], t[3], ellipse(0, -.6, 1.7, 1.2, 0, mix(c.glass, c.sky, .2), c.ink, .6))
+    end
+    local head = crest .. circle(131.5, 14.5, 5.2, blue, c.ink, 1.5)
+        .. path("M128.4 12.6 Q132 10.2 135.4 12.4 Q132 11.6 128.4 12.6Z", c.cream, c.cream, 1) .. path("M128.6 16.6 Q131.8 18.6 134.6 16.8 Q131.8 17.4 128.6 16.6Z", c.cream, c.cream, 1)
+        .. circle(132.4, 14.4, 1.2, c.ink) .. path("M136 13.4 L142.6 15.6 L136 17Z", mix(c.pale, c.muted, .3), c.ink, 1)
+    return tail .. legs .. neck .. body .. head
 end
 
 return Ground
