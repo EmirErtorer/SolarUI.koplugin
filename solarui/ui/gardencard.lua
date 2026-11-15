@@ -101,15 +101,15 @@ end
 -- already) opens their page; nil when neither applies.
 local function companion(id, o)
     if Pet.is(id) then
-        return Button:new({ label = _("Their page"), variant = "secondary", grow = true, height = Theme.get().size.touch, on_tap = o.on_pet })
+        return Button:new({ label = _("Their page"), variant = "secondary", height = Theme.get().size.touch, on_tap = o.on_pet })
     end
     if Pet.remembered(id) and not Pet.get() and o.on_return then
-        return Button:new({ label = string.format(_("Ask %s to come back"), State.name(id)), variant = "secondary", grow = true,
+        return Button:new({ label = string.format(_("Ask %s to come back"), State.name(id)), variant = "secondary",
             height = Theme.get().size.touch, on_tap = o.on_return })
     end
     if not Pet.get() and not Pet.remembered(id) and o.on_companion then
         local label = id == "yuzsuz" and string.format(_("Serve %s for life"), State.name(id)) or string.format(_("Make %s my companion"), State.name(id))
-        return Button:new({ label = label, variant = "secondary", grow = true,
+        return Button:new({ label = label, variant = "secondary",
             height = Theme.get().size.touch, on_tap = o.on_companion })
     end
     return nil
@@ -139,10 +139,10 @@ function GardenCard.build(id, o)
     local e, kind = State.entry(id)
     local def, rec = e.def, State.rec(id)
     local status, care = (kind == "plant" and plantStatus or animalStatus)(e)
-    local names = (rec.nick and (def.en .. " · ") or "") .. def.latin
+    local names = (rec.nick and (def.en .. " · ") or "") .. def.latin .. (def.aka and (" · " .. def.aka) or "")
     local kids = {
         Label:new({ text = State.name(id), kind = "title" }),
-        Label:new({ text = names, kind = "small", color = "muted" }),
+        Label:new({ text = names, kind = "small", color = "muted", lines = def.aka and 2 or 1 }),
         Label:new({ text = status .. ". " .. care, kind = "small" }),
         Label:new({ text = Lore.get(id), kind = "body", lines = 4 }),
         Layout.Spacer:new({ grow = true }),

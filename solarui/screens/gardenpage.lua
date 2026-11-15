@@ -65,7 +65,7 @@ function GardenPage:items()
     local th = Theme.get()
     add(Layout.Column:new({ gap = 0, pad = { 0, 0, th.space.s, 0 }, children = {
         Label:new({ text = State.name(self.who), kind = "title" }),
-        Label:new({ text = def.latin, kind = "small", color = "muted" }),
+        Label:new({ text = def.latin .. (def.aka and (" · " .. def.aka) or ""), kind = "small", color = "muted", lines = def.aka and 2 or 1 }),
     } }))
     if tier == 0 then
         add(section(_("Not met yet"), require("solarui/garden/visitors").hint(def)))

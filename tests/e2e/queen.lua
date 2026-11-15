@@ -1,5 +1,5 @@
 -- Yüzsüz The Magnificent in the garden: the garden with her in it, her card
--- with its four buttons, a tap on her picture (another pose), a pat on the
+-- with its four buttons and her many names, a tap on her picture (another pose), a pat on the
 -- right side too many (the bite), her food menu, her popup over home and a tap
 -- on her picture there, and her as the companion on home.
 local H = ...
@@ -20,7 +20,15 @@ H.step(.5, function()
     screen.focus = "yuzsuz"
     H.app().update()
 end)
-H.step(1.2, function() paint(); H.shot("q-card") end)
+H.step(1.2, function()
+    paint(); H.shot("q-card")
+    -- under her name, the card says she is known by many, many names, in full
+    local label
+    H.findWhere(function(el) if el.text and tostring(el.text):find("many, many names", 1, true) then label = el end return false end)
+    H.check(label ~= nil, "her card says she is known by many, many names across the multiverse")
+    local shown = label and table.concat(label.shown or { label.text }, " ") or ""
+    H.check(shown:find("multiverse", 1, true) and not shown:find("\226\128\166", 1, true), "and the line is not cut: " .. shown)
+end)
 -- a tap on her big picture shows her in another pose
 H.step(.5, function()
     local Yuzsuz = require("solarui/garden/yuzsuz")
@@ -36,6 +44,9 @@ H.step(1, function()
     H.check(now:match("^%a+") ~= tostring(H.queen_was):match("^%a+"), "and she is in another pose: " .. tostring(H.queen_was) .. " to " .. now)
     paint(); H.shot("q-card-tapped")
 end)
+-- an ordinary animal's card, for comparison: the snail
+H.step(.5, function() H.app().current().focus = "snail"; H.app().update() end)
+H.step(1.2, function() paint(); H.shot("q-snail-card"); H.app().current().focus = "yuzsuz"; H.app().update() end)
 H.step(.5, function()
     local a = require("solarui/ui/gardenactions").of("yuzsuz", function() H.app().update() end)
     for _ = 1, 4 do a.queen.on_right() end

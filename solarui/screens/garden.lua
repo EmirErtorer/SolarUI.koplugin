@@ -37,7 +37,7 @@ local _ = require("solarui/gettext")
 local Garden = Screen:extend()
 
 local ARCH = { x = 236, y = 118, w = 600, h = 500 }   -- the frame of the big picture
-local CARD = { x = 166, y = 640, w = 740, h = 660 }   -- the card under it
+local CARD = { x = 166, y = 640, w = 740, h = 710 }   -- the card under it
 
 local TICK = 45          -- seconds between two small movements
 local FULL_EVERY = 10    -- movements between two full refreshes that clear the ghosts
