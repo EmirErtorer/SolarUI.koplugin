@@ -38,31 +38,48 @@ function Water.frog(c, second)
     return ellipse(35, 54, 33, 5, 0, c.sage, c.ink, 1.5) .. line("M35 54 L14 52 M35 54 L56 52 M35 54 L30 58", c.ink, .8) .. group(second and -2 or 0, second and -2 or 0, second and -4 or 0, frog)
 end
 
--- Koi from above: a white body with red saddles and black flecks, fins and a
--- fan of a tail. It bends the other way in pose two.
+-- Koi seen from above, swimming to the right: a white body with red patches
+-- lying inside its outline and a red cap on the head, a few black flecks, a
+-- fin ridge along the back, clear rayed pectoral and pelvic fins, a forked
+-- tail with its rays, eyes on the sides of the head and two pairs of barbels
+-- at the mouth. It bends the other way in pose two.
 function Water.koi(c, second)
     local k = second and -1 or 1
+    local red, fin = mix(c.bloom, c.gold, .12), mix(c.cream, c.sky, .3)
     local spine = Svg.spline({ { 24, 28 + 5 * k }, { 42, 28 - 4 * k }, { 62, 28 + 3 * k }, { 80, 28 - 2 * k }, { 93, 28 } }, 8)
-    local count = #spine
+    local count, len = #spine, Svg.length(spine)
     -- how wide the body is `t` of the way from tail to nose
     local function girth(t) return 4.5 * (1 - t) ^ .4 + 16 * math.sin(math.pi * t ^ .78) ^ .62 end
-    -- the part of the body between two places along it, as its own outline
-    local function saddle(t0, t1, narrow)
-        local part = {}
-        for i = math.floor(1 + (count - 1) * t0), math.floor(1 + (count - 1) * t1) do part[#part + 1] = spine[i] end
-        return Svg.ribbon(part, function(t) return girth(t0 + (t1 - t0) * t) * (narrow or 1) end)
+    -- the points of the spine between two places along it
+    local function part(t0, t1)
+        local pts = {}
+        for i = math.floor(1 + (count - 1) * t0), math.floor(1 + (count - 1) * t1) do pts[#pts + 1] = spine[i] end
+        return pts
+    end
+    -- a patch of colour between two places, `w` of the body's width, rounded at both ends and set off the middle by `off`
+    local function patch(t0, t1, w, off)
+        return group(0, off or 0, 0, path(Svg.ribbon(part(t0, t1), function(u) return girth(t0 + (t1 - t0) * u) * w * math.sin(math.pi * (.08 + .84 * u)) ^ .5 end), red))
+    end
+    -- a pair of fins `t` along, swept back by `sweep`, `s` long
+    local function fins(t, s, sweep)
+        local x, y, ang = Svg.along(spine, len * t)
+        local one = string.format("M3 0 C%s %s %s %s %s %s C%s %s %s %s 0 2Z", Svg.n(s * .5), Svg.n(s * .2), Svg.n(s * .9), Svg.n(s * .7), Svg.n(s * .7), Svg.n(s * 1.1), Svg.n(s * .3), Svg.n(s), Svg.n(-s * .1), Svg.n(s * .6))
+        local rays = string.format("M2 1 L%s %s M2 1 L%s %s M2 1 L%s %s", Svg.n(s * .7), Svg.n(s * .9), Svg.n(s * .4), Svg.n(s * .9), Svg.n(s * .1), Svg.n(s * .7))
+        local f = path(one, fin, c.ink, 1.1) .. line(rays, c.ink, .6)
+        local girthy = girth(t) * .42
+        return group(x, y, ang + 180 - sweep, group(0, girthy, 0, f)) .. group(x, y, ang + 180 + sweep, group(0, -girthy, 0, f, 1, -1))
     end
     local tx, ty = spine[1][1], spine[1][2]
-    local tail = group(tx + 2, ty, -12 * k, path("M0 0 C-8 -3 -15 -12 -21 -13 C-18 -7 -17 -3 -15 0 C-17 3 -18 7 -21 13 C-15 12 -8 3 0 0Z", c.bloom2, c.ink, 1.4) .. line("M-3 0 L-14 0 M-4 -2 L-16 -8 M-4 2 L-16 8", c.ink, .8))
-    local fx, fy, fang = Svg.along(spine, Svg.length(spine) * .7)
-    local fins = group(fx, fy, fang + 90, path("M-6 0 C-16 2 -20 10 -17 15 C-11 13 -7 7 -5 2Z M6 0 C16 2 20 10 17 15 C11 13 7 7 5 2Z", c.bloom2, c.ink, 1.2))
-    local hx, hy, hang = Svg.along(spine, Svg.length(spine) * .93)
-    local face = group(hx, hy, hang, circle(0, -4.6, 1.5, c.ink) .. circle(0, 4.6, 1.5, c.ink) .. line("M6 -2.4 L10 -4.4 M6 2.4 L10 4.4", c.ink, 1) .. circle(-4, 0, 3.4, c.bloom, c.ink, .8))
-    local mx, my = Svg.along(spine, Svg.length(spine) * .5)
+    local tail = group(tx + 2, ty, -12 * k, path("M0 0 C-8 -3 -14 -12 -22 -15 C-19 -8 -16 -4 -13 0 C-16 4 -19 8 -22 15 C-14 12 -8 3 0 0Z", mix(fin, c.bloom2, .35), c.ink, 1.4)
+        .. line("M-2 0 L-12 0 M-3 -1.6 L-18 -11 M-3 1.6 L-18 11 M-3 -1 L-15 -6 M-3 1 L-15 6", c.ink, .6))
+    local hx, hy, hang = Svg.along(spine, len * .93)
+    local face = group(hx, hy, hang, circle(-1, -5.8, 1.5, c.ink) .. circle(-1, 5.8, 1.5, c.ink) .. line("M6.6 -2.2 L10.6 -4.6 M6.6 2.2 L10.6 4.6 M5 -3.4 L8 -6.6 M5 3.4 L8 6.6", c.ink, .9))
+    local mx, my = Svg.along(spine, len * .5)
     return line(string.format("M%s %s q8 -4 16 0 M70 %s q7 3 14 0", Svg.n(4), Svg.n(8 + (second and 38 or 0)), Svg.n(second and 8 or 49)), c.ink, 1)
-        .. tail .. fins .. path(saddle(0, 1), c.cream, c.ink, 1.7) .. path(saddle(.2, .44), c.bloom, c.ink, .9) .. path(saddle(.56, .72, .98), c.bloom, c.ink, .9)
-        .. ellipse(mx - 1, my - 4 * k, 4, 2.6, 20, c.ink) .. ellipse(mx - 26, my + 1, 2.6, 1.8, 0, c.ink) .. ellipse(mx + 22, my + 3 * k, 2.4, 1.8, 0, c.ink)
-        .. line(Svg.poly(Svg.head(spine, Svg.length(spine) * .56)), c.ink, .9) .. path(saddle(0, 1), nil, c.ink, 1.7) .. face
+        .. tail .. fins(.38, 12, 34) .. fins(.72, 19, 46) .. path(Svg.ribbon(spine, girth), c.cream, c.ink, 1.7)
+        .. patch(.18, .4, .78, -1.4 * k) .. patch(.5, .68, .7, 1.6 * k) .. patch(.8, .97, .62)
+        .. ellipse(mx - 2, my - 4 * k, 2.6, 1.8, 20, c.ink) .. ellipse(mx - 24, my + 2.4 * k, 1.8, 1.3, 0, c.ink) .. ellipse(mx + 20, my + 3.6 * k, 1.6, 1.2, 0, c.ink)
+        .. line(Svg.poly(part(.3, .62)), c.ink, 1.1) .. path(Svg.ribbon(spine, girth), nil, c.ink, 1.7) .. face
 end
 
 return Water
