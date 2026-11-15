@@ -138,29 +138,40 @@ function Ground.hedgehog(c, second)
         .. ellipse(81.6, 33.4, 3.4, 3.8, -20, mix(c.bloom2, c.muted, .4), c.ink, 1.2)
 end
 
--- One leg of the fox through the given points, with its black sock.
-local function leg(c, way)
+-- One slim leg of the fox through the given points, the lower part in its
+-- black stocking, ending in a small paw; `far` legs are drawn a shade darker.
+local function leg(c, way, far)
     local pts = Svg.spline(way, 8)
     local sock = {}
-    for i = math.floor(#pts * .5), #pts do sock[#sock + 1] = pts[i] end
-    return Svg.stem(pts, Svg.taper(8, 4.2), c.bloom, c.ink, 1.4) .. Svg.stem(sock, Svg.taper(5.6, 4.2), c.ink, c.ink, 1)
+    for i = math.floor(#pts * .55), #pts do sock[#sock + 1] = pts[i] end
+    local tip = way[#way]
+    return Svg.stem(pts, Svg.taper(6.4, 3.4), far and mix(c.bloom, c.ink, .25) or c.bloom, c.ink, 1.3) .. Svg.stem(sock, Svg.taper(4.4, 3.4), c.ink, c.ink, 1)
+        .. ellipse(tip[1] + 1.6, tip[2] + .6, 3.4, 1.8, 0, c.ink)
 end
 
--- Red fox: pointed muzzle, black-backed ears and socks, a white bib and a
--- white tip to its brush. In pose two it lowers its head and strides on.
+-- Red fox walking to the right: a slender body on long legs in black
+-- stockings, a narrow pointed muzzle, tall black-backed ears, an amber eye,
+-- white cheeks, throat and bib, and a long full brush held low with a white
+-- tip. In pose two it lowers its head and the legs swap their stride.
 function Ground.fox(c, second)
-    local tail = about(32, 40, second and -24 or 0, path("M34 36 C20 32 6 42 4 56 C4 64 9 70 15 68 C22 62 32 52 42 46Z", c.bloom, c.ink, 1.6)
-        .. path("M4 56 C4 64 9 70 15 68 C17 62 14 56 10 52 C7 52 5 54 4 56Z", c.cream, c.ink, 1.2))
-    local head = path("M98 20 L97 7 L106 16Z", c.ink, c.ink, 1.5) .. path("M104 18 L108 4 L115 17Z", c.bloom, c.ink, 1.5) .. path("M107 16 L108.6 8 L112 16Z", c.ink)
-        .. path("M82 34 C88 26 94 20 100 16 C106 13 113 15 115 21 L126 29 C127 31 125 33 122 33 L111 35 C105 38 100 44 98 52 C92 52 84 46 82 34Z", c.bloom, c.ink, 1.6)
-        .. path("M122 33 L111 35 C105 38 100 44 98 52 C94 48 95 40 101 34 C107 31 116 31 122 33Z", c.cream, c.ink, 1.1)
-        .. circle(125.6, 30, 2.2, c.ink) .. path("M108 22 Q111 20 113 23 Q110 24 108 22Z", c.ink) .. line("M118 33 Q114 34 112 33", c.ink, .9)
-    local legs = second and (leg(c, { { 44, 48 }, { 34, 60 }, { 28, 72 } }) .. leg(c, { { 86, 48 }, { 80, 60 }, { 74, 72 } }))
-        or (leg(c, { { 44, 48 }, { 50, 60 }, { 46, 72 } }) .. leg(c, { { 86, 48 }, { 90, 60 }, { 92, 72 } }))
-    local near = second and (leg(c, { { 40, 48 }, { 50, 58 }, { 54, 72 } }) .. leg(c, { { 90, 48 }, { 96, 60 }, { 100, 72 } }))
-        or (leg(c, { { 40, 48 }, { 32, 60 }, { 36, 72 } }) .. leg(c, { { 90, 48 }, { 84, 60 }, { 82, 72 } }))
-    return tail .. legs .. near .. path("M32 38 C44 28 72 28 90 32 C99 35 100 46 95 52 C84 58 56 57 40 55 C30 52 27 44 32 38Z", c.bloom, c.ink, 1.6)
-        .. path("M48 55 C60 57 78 57 92 53 C80 52 62 52 48 55Z", c.cream, c.ink, 1) .. about(88, 36, second and 26 or 0, head)
+    local tail = about(40, 40, second and -10 or 0, path("M41 37 C30 35 16 43 8 55 C3.6 62 6 68.6 12 68.4 C20 67 31 57 43 47Z", c.bloom, c.ink, 1.6)
+        .. path("M8 55 C3.6 62 6 68.6 12 68.4 C14.6 64 13.4 58.6 10.6 54.4 C9.6 54 8.6 54.4 8 55Z", c.cream, c.ink, 1.1)
+        .. line("M38 40 C28 41 18 48 12 56", c.ink, .8))
+    local head = path("M100 21 L101.4 9 L108 18Z", c.ink, c.ink, 1.4)
+        .. path("M104 19 L109.6 7.4 L115 18.6Z", c.bloom, c.ink, 1.5) .. path("M106.6 17.6 L109.4 10.6 L111.6 17.6Z", c.cream) .. line("M109.6 7.4 L115 18.6", c.ink, 2.4)
+        .. path("M88 35 C92 28 98 22 104 19 C110 16.6 115.6 18.6 118.4 23 L127.4 29.6 C128.6 31.2 127.4 32.8 125 33 L113.6 35.2 C107.6 37.4 102.6 42.6 100.6 49 C95.6 46.6 91.4 41 88 35Z", c.bloom, c.ink, 1.6)
+        .. path("M125 33 L113.6 35.2 C107.6 37.4 102.6 42.6 100.6 49 C98 45 98.6 39.4 103 35.4 C108.6 30.6 117.6 30.8 125 33Z", c.cream, c.ink, 1.1)
+        .. circle(126.8, 30.4, 2, c.ink) .. line("M124.6 33 Q120 34.4 116.6 33.6", c.ink, .9)
+        .. ellipse(112.4, 25.2, 2.4, 1.5, -18, c.gold, c.ink, .9) .. line("M112.6 24 L112.2 26.4", c.ink, 1)
+    local stride = second and -1 or 1
+    local farlegs = leg(c, { { 52, 40 }, { 47 - 3 * stride, 58 }, { 50 - 5 * stride, 72 } }, true)
+        .. leg(c, { { 91, 40 }, { 92 + 3 * stride, 57 }, { 94 + 6 * stride, 72 } }, true)
+    local nearlegs = leg(c, { { 47, 40 }, { 41 + 4 * stride, 58 }, { 45 + 6 * stride, 72 } })
+        .. leg(c, { { 95, 40 }, { 95 - 2 * stride, 57 }, { 92 - 6 * stride, 72 } })
+    local body = path("M38 42 C40 33 50 30.6 60 31.6 C70 32.6 84 31 95 34 C101 37 103 44 100.6 50 C97 55.4 89 55.6 83 53.6 C73 51.4 63 49.6 55 51.6 C45 54.6 36 50 38 42Z", c.bloom, c.ink, 1.6)
+        .. line("M45 38.6 C52 41 55 48 51.6 54 M88.6 37 C93 41 94 47 92 53", c.ink, .9)
+        .. path("M100.6 49 C101.6 53 99.6 56 96.4 56.4 C97.4 53 98.6 51 100.6 49Z", c.cream, c.ink, 1)
+    return farlegs .. nearlegs .. group(0, -6, 0, tail .. body .. about(92, 38, second and 18 or 0, head))
 end
 
 -- The train of the peafowl: feathers with eyes at the given places, their
