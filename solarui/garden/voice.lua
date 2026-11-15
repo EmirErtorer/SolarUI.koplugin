@@ -120,6 +120,8 @@ local function holds(when, ctx)
     return true
 end
 
+Voice.holds = holds
+
 -- The text of a line with its [a|b|c] parts chosen and its {words} filled in.
 local function fill(text, ctx, p)
     text = text:gsub("%[([^%]]-)%]", function(set)

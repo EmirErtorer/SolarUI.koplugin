@@ -789,6 +789,31 @@ do
         Kit.ok(line and line ~= "" and not line:find("{", 1, true), "she says something for " .. mo)
     end
     Kit.ok(#Voice.of("yuzsuz").beats >= 12, "and has memories to tell")
+    -- as the bond grows she has more to say, and keeps everything she said before
+    local qv = Voice.of("yuzsuz").moments
+    local function open(pool, level)
+        local out = {}
+        for i, l in ipairs(pool) do
+            local when = type(l) == "table" and l.when or nil
+            if not when or (not when.hour and not when.season and not when.weather and not when.away and not when.pages and not when.streak
+                and Voice.holds(when, { level = level })) then out[i] = true end
+        end
+        return out
+    end
+    for _, mo in ipairs({ "greet", "idle", "tap", "read_today", "welcome_back" }) do
+        for level = 2, 5 do
+            local before, now_ = open(qv[mo], level - 1), open(qv[mo], level)
+            local kept, more = true, 0
+            for i in pairs(before) do kept = kept and now_[i] == true end
+            for i in pairs(now_) do if not before[i] then more = more + 1 end end
+            Kit.ok(kept and more > 0, string.format("at bond level %d her %s lines keep the earlier ones and add %d", level, mo, more))
+        end
+    end
+    for level = 2, 5 do
+        local count, own = 0, true
+        for i in pairs(open(qv.level, level)) do count = count + 1; own = own and qv.level[i].when.level == level end
+        Kit.ok(count >= 2 and own, "reaching bond level " .. level .. ", she speaks of that level (" .. count .. " lines)")
+    end
     Yuzsuz.useRandom(nil)
     Yuzsuz.reset()
     State.unload()
