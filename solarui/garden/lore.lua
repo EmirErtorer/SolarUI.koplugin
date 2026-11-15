@@ -36,6 +36,7 @@ local TEXT = {
     hedgehog = _("A hedgehog has five to seven thousand spines, and rolls into a ball when afraid. Hedgehogs wander at night looking for beetles and slugs. In winter they sleep in a nest of leaves until spring."),
     moth = _("The elephant hawk-moth is pink and olive green. At dusk the moths hover at flowers like tiny hummingbirds, drinking nectar. The caterpillar has a trunk-like front end, which is how the moth got the name."),
     fox = _("The red fox listens for mice under the grass, then leaps and pounces from above. Foxes are mostly active at night and sleep in a den by day. In midwinter the vixen calls with a strange scream."),
+    yuzsuz = _("Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."),
     peacock = _("What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."),
 }
 

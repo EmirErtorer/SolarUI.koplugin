@@ -24,6 +24,8 @@ Web.LINKS = {
     { "robin", "ivy", _("Ivy berries ripen in late winter and feed birds when other food is scarce.") },
     { "bee", "three_sisters", _("Squash flowers open early in the morning, and bees gather their pollen before the heat of the day.") },
     { "peacock", "sunflower", _("Peafowl eat seeds, and will take the seeds from the heads of fallen sunflowers.") },
+    { "yuzsuz", "robin", _("She watches the robin for hours, and answers the robin's song with a chattering version of her own.") },
+    { "yuzsuz", "peacock", _("The peacock believes he is the most magnificent creature in the garden. Nobody has told him about Yüzsüz yet.") },
 }
 
 -- The links whose two members are both in `present` (a set of ids): { a, b, text }.

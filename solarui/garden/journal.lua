@@ -32,6 +32,10 @@ local LINES = {
     planted = { _("A new bed was laid out: %s."), _("%s was planted in the corner of the lawn."), _("The ground was ready, and %s went in.") },
     share = { _("The harvest of %s was shared round the garden."), _("%s was picked, and nobody went hungry."), _("The harvest from %s fed the garden's visitors.") },
     season = { _("%s began."), _("The garden turned to %s."), _("%s came round again, on time.") },
+    queen = { _("%s was here all along. The garden has only now noticed."), _("%s has always ruled this garden, and today the garden said so."),
+        _("%s looked the garden over and allowed the garden to go on.") },
+    demand = { _("%s is hungry and is not hiding. She is demanding."), _("%s waited by the dish, and the waiting had teeth."), _("%s stared at the kitchen door until somebody felt guilty.") },
+    bite = { _("%s bit someone. There was blood."), _("%s drew blood, and regrets nothing."), _("A hand went too far, and %s answered with teeth.") },
     back = { _("%s came back out for a meal."), _("%s was fed and showed up at once."), _("%s is back, and no questions asked.") },
 }
 

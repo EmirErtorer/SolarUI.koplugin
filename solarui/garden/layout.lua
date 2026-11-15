@@ -187,15 +187,17 @@ function Layout.static(vh)
 end
 
 -- A free place for an animal that flies: anywhere in the garden or the sky
--- that overlaps nothing in `taken` (a list of boxes), or nil.
-local function sky(rand, size, taken)
+-- that overlaps nothing in `taken` (a list of boxes) with `margin` to spare
+-- (6 by default), or nil.
+local function sky(rand, size, taken, margin)
     local hit = hitOf(box(0, 0, size.w, size.h))
+    local m = margin or 6
     for _try = 1, 3000 do
         local x, y = 44 + rand() * (984 - hit.w), 128 + rand() * (1340 - hit.h - 128)
         local b = box(math.floor(x), math.floor(y), hit.w, hit.h)
         local clear = true
         for _i, t in ipairs(taken) do
-            if overlap(b, { x = t.x - 6, y = t.y - 6, w = t.w + 12, h = t.h + 12 }) then clear = false; break end
+            if overlap(b, { x = t.x - m, y = t.y - m, w = t.w + 2 * m, h = t.h + 2 * m }) then clear = false; break end
         end
         if clear then return b end
     end
@@ -241,7 +243,7 @@ function Layout.spread(seed)
     end
     for _i, id in ipairs(flyers) do
         local size = Layout.shown(id)
-        local hit = sky(rand, size, taken) or table.remove(free, 1) or box(44, 128, Layout.HIT, Layout.HIT)
+        local hit = sky(rand, size, taken) or sky(rand, size, taken, 0) or table.remove(free, 1) or box(44, 128, Layout.HIT, Layout.HIT)
         out[id] = box(hit.x + math.floor((hit.w - size.w) / 2), hit.y + math.floor((hit.h - size.h) / 2), size.w, size.h)
         out[id].hit = box(hit.x, hit.y, hit.w, hit.h)
         out[id].flip = rand() < .5

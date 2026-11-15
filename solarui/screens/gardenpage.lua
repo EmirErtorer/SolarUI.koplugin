@@ -38,7 +38,7 @@ end
 local function locked(id, tier)
     local rec, wait = State.rec(id), Almanac.waiting(id)
     if tier == 1 then return string.format(_.n("A closed bud. The bud opens in %d day.", "A closed bud. The bud opens in %d days.", math.max(1, wait)), math.max(1, wait)) end
-    if not rec.nick then return _("A closed bud. Give them a nickname and stay a month, and the bud opens.") end
+    if not rec.nick and id ~= "yuzsuz" then return _("A closed bud. Give them a nickname and stay a month, and the bud opens.") end
     return string.format(_.n("A closed bud. The bud opens in %d day.", "A closed bud. The bud opens in %d days.", math.max(1, wait)), math.max(1, wait))
 end
 

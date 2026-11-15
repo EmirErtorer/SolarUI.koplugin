@@ -106,11 +106,18 @@ function State.save()
 end
 
 -- Add a line to the journal: what happened ("sown", "sprout", "bud", "bloom",
--- "seedhead", "wilt", "back", "hide", "found") to whom.
+-- "seedhead", "wilt", "back", "hide", "found", and the queen's "queen",
+-- "demand" and "bite") to whom.
 local function note(kind, id, with, n)
     local j = State.get().journal
     j[#j + 1] = { t = State.clock(), k = kind, id = id, with = with, n = n }
     while #j > State.JOURNAL_MAX do table.remove(j, 1) end
+end
+
+-- Write a journal line from outside (the queen's bites) and save.
+function State.mark(kind, id)
+    note(kind, id)
+    State.save()
 end
 
 -- Dew in hand: a gift to begin with and a drop for every page read since.
@@ -179,7 +186,7 @@ function State.refresh()
         if Season.rests(Cast.animal(id), Season.calendar()) then rec.fed, dirty = math.max(rec.fed or 0, now), true end
         local hiding = Care.hunger(rec, Cast.animal(id), now) == Care.HIDING
         if hiding ~= (rec.noted == "hide") then
-            if hiding then note("hide", id) end
+            if hiding then note(Cast.animal(id).queen and "demand" or "hide", id) end
             rec.noted, dirty = hiding and "hide" or nil, true
         end
     end
@@ -200,7 +207,7 @@ function State.refresh()
     for _i, id in ipairs(Visitors.foundAll(facts)) do
         if not d.animals[id] then
             d.animals[id] = { found = now, fed = now }
-            note("found", id)
+            note(Cast.animal(id).queen and "queen" or "found", id)
             dirty = true
         end
     end
@@ -497,8 +504,9 @@ function State.animals(hour)
         if rec then
             local resting = Season.rests(def, season)
             local mood = resting and Care.CONTENT or Care.hunger(rec, def, now)
+            -- the queen never hides: hungry, she stays where she is and demands
             out[#out + 1] = { def = def, rec = rec, mood = mood, resting = resting, season = season,
-                here = not resting and mood ~= Care.HIDING and Visitors.about(def, hour) }
+                here = not resting and (def.queen or mood ~= Care.HIDING) and Visitors.about(def, hour) }
         end
     end
     return out
@@ -624,6 +632,8 @@ end
 function State.rename(id, text)
     local rec = State.rec(id)
     if not rec then return nil end
+    local def = Cast.find(id)
+    if def and def.queen then return nil end   -- her name cannot be changed
     text = (text or ""):gsub("^%s+", ""):gsub("%s+$", "")
     local kept = {}
     for ch in text:gmatch("[%z\1-\127\194-\244][\128-\191]*") do

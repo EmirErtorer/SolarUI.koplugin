@@ -52,6 +52,9 @@ local ANIMALS = {
     { id = "moth", en = _("Elephant hawk-moth"), latin = "Deilephila elpenor", about = "night", hours = 36, eats = _("nectar"), rests = { "winter" }, find = { kind = "night", n = 60 } },
     { id = "fox", en = _("Red fox"), latin = "Vulpes vulpes", about = "night", hours = 72, eats = _("field mice"), find = { kind = "books", n = 5 } },
     { id = "peacock", en = _("Indian peafowl"), latin = "Pavo cristatus", about = "any", hours = 96, eats = _("seeds and berries"), find = { kind = "streak", n = 14 } },
+    -- the queen: here from the start and never hiding (see garden/yuzsuz.lua); her name is never translated or changed
+    { id = "yuzsuz", en = "Yüzsüz The Magnificent", latin = "Felis catus", about = "any", hours = 24,
+        eats = _("salami above all, then kebab, chicken, minced meat, cheese and yogurt"), find = { kind = "start" }, queen = true },
 }
 
 local plant_by_id, animal_by_id = {}, {}

@@ -26,6 +26,13 @@ function Almanac.page(id)
     return Plants[id] or Animals[id]
 end
 
+-- Has this one a name of their own: a nickname, or (the queen) the name she came with?
+local function named(id, rec)
+    if rec.nick then return true end
+    local def = Cast.find(id)
+    return def and def.queen or false
+end
+
 -- How well the garden knows this plant or animal: 0 not in the garden yet, 1
 -- seen, 2 known, 3 befriended.
 function Almanac.tier(id)
@@ -33,7 +40,7 @@ function Almanac.tier(id)
     if not rec then return 0 end
     local since = rec.found or State.get().created
     local days = (State.clock() - since) / DAY
-    if rec.nick and days >= Almanac.FRIEND_DAYS then return 3 end
+    if named(id, rec) and days >= Almanac.FRIEND_DAYS then return 3 end
     if days >= Almanac.KNOWN_DAYS or (rec.gen or 1) > 1 then return 2 end
     return 1
 end
@@ -45,7 +52,7 @@ function Almanac.waiting(id)
     local tier = Almanac.tier(id)
     local days = (State.clock() - (rec.found or State.get().created)) / DAY
     if tier == 1 then return math.ceil(Almanac.KNOWN_DAYS - days) end
-    if tier == 2 then return rec.nick and math.max(0, math.ceil(Almanac.FRIEND_DAYS - days)) or 0 end
+    if tier == 2 then return named(id, rec) and math.max(0, math.ceil(Almanac.FRIEND_DAYS - days)) or 0 end
     return 0
 end
 

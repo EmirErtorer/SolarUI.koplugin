@@ -78,4 +78,10 @@ return {
         story = _("Peafowl have been kept in gardens since antiquity. The peacock is the national bird of India. The long train of feathers is used to attract mates, not to fly."),
         look = _("Look at the eye on each long feather and count how many there are on a full train."),
     },
+    yuzsuz = {
+        name = _("Yüzsüz is Turkish for shameless, literally without a face: one who does exactly as she likes and is never sorry. She is known by many, many names across the multiverse. This is the one that stuck."),
+        habitat = _("The known and unknown universe, which she rules. Most often found in a patch of sun on a bed, or on whichever cushion you were about to sit on."),
+        story = _("Cats have lived with people for some ten thousand years, since the first grain stores drew mice. Yüzsüz took the arrangement further: the people live with her. She hates lizards above all things and other cats only slightly less, and she sprints out of the litter box every time, as if something were after her."),
+        look = _("Look for a cat outdoors watching one spot without moving, for a very long time. Do not ask what is there. Nobody knows."),
+    },
 }
