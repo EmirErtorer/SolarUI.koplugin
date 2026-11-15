@@ -20,14 +20,19 @@ function Plaque.readable(text)
 end
 
 -- The highlights short enough for the plaque from the last books read:
--- { text, title, author }.
+-- { text, title, author, path, chapter, pageno, date, note, page, pos0 }
+-- (page and pos0 are the place in the book, to open it there).
 function Plaque.candidates()
     local out = {}
     for _i, item in ipairs(History.recent(8)) do
         local path = item.path
         for _j, a in ipairs(Annotations.kinds(path).highlights) do
             local n = select(2, a.text:gsub("[^\128-\191]", ""))   -- letters, not bytes
-            if n >= MIN and n <= MAX and Plaque.readable(a.text) then out[#out + 1] = { text = a.text, title = Books.info(path).title, author = Books.info(path).author } end
+            if n >= MIN and n <= MAX and Plaque.readable(a.text) then
+                local info = Books.info(path)
+                out[#out + 1] = { text = a.text, title = info.title, author = info.author, path = path, chapter = a.chapter, pageno = a.pageno,
+                    date = a.date, note = a.note, page = a.page, pos0 = a.pos0 }
+            end
         end
     end
     return out

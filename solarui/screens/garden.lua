@@ -9,6 +9,7 @@ local ArtView = require("solarui/ui/artview")
 local Button = require("solarui/ui/button")
 local Care = require("solarui/garden/care")
 local GardenActions = require("solarui/ui/gardenactions")
+local GardenBook = require("solarui/ui/gardenbook")
 local GardenCard = require("solarui/ui/gardencard")
 local Yuzsuz = require("solarui/garden/yuzsuz")
 local GardenClock = require("solarui/ui/gardenclock")
@@ -292,35 +293,18 @@ function Garden:focused(scene)
     scene:place(GardenCard.build(self.focus, self:actions(self.focus)), CARD.x, CARD.y + oy, CARD.w, CARD.h)
 end
 
--- The open book over the faded garden: a passage from the reader's books on
--- its right page and where it comes from on its left, and a button for
--- another one.
+-- The open book over the faded garden (see ui/gardenbook.lua): the pages
+-- turn through this visit's passages, and "Read on" opens the passage's
+-- book at the highlight.
 function Garden:book(scene)
-    local oy = math.max(0, (scene.vh - Layout.HEIGHT) / 2)
-    local art = Layout.BOOK_ART
-    local box = { x = 156, y = 150 + oy, w = 760 }
-    box.h = box.w * art.h / art.w
-    local k = box.w / art.w
-    scene:backdrop("garden_book", box.x, box.y, box.w, box.h, Sky.now())
-    local function page(side) local p = Layout.BOOKPAGE[side]; return box.x + p.x * k, box.y + p.y * k, p.w * k, p.h * k end
     local q = self:quote()
-    local lines = function(h) return math.max(1, math.floor(scene:px(h) / Text.height("body"))) end
-    local rx, ry, rw, rh = page("right")
-    scene:place(Label:new({ text = q and ("\u{201C}" .. q.text .. "\u{201D}") or _("Nothing is written in this book yet. Highlight a passage in one of your books and the passage will appear here."),
-        kind = "body", lines = lines(rh) }), rx, ry, rw, rh)
-    if q then
-        local lx, ly, lw, lh = page("left")
-        scene:place(LayoutUI.Column:new({ gap = scene:px(8), children = {
-            Label:new({ text = q.title or "", kind = "heading", lines = 3 }),
-            Label:new({ text = q.author or "", kind = "small", color = "muted", lines = 2 }),
-        } }), lx, ly, lw, lh)
-    end
-    local th = Theme.get()
-    scene:place(LayoutUI.Row:new({ gap = th.space.s, children = {
-        Button:new({ label = _("Another passage"), variant = "primary", grow = true, disabled = not q,
-            on_tap = function() self.quote_at = self.quote_at + 1; App.update() end }),
-        Button:new({ label = _("Back to the garden"), grow = true, on_tap = function() self.focus = nil; App.update() end }),
-    } }), 166, box.y + box.h + 30, 740)
+    local count = #(self.quotes or {})
+    local function turn(by) return function() self.quote_at = self.quote_at + by; App.update() end end
+    GardenBook.place(scene, {
+        quote = q, at = (self.quote_at - 1) % math.max(1, count) + 1, count = count,
+        on_prev = turn(-1), on_next = turn(1), on_close = function() self.focus = nil; App.update() end,
+        on_read = q and q.path and function() require("solarui/actions").openAt(q.path, q) end or nil,
+    })
 end
 
 -- The garden alone, filling the screen: no heading, no tab bar, nothing
