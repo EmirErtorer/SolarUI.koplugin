@@ -163,8 +163,11 @@ do
     Kit.ok(all:find("hiding") or all:find("hidden") or all:find("hungry"), "and who went hiding")
     local hid = 0
     for _, a in ipairs(State.animals(12)) do if a.mood == Care.HIDING then hid = hid + 1 end end
-    Kit.ok(hid == 3, "hungry animals hide")
-    Kit.ok(State.feed("bee") and #State.animals(12) == 6, "a meal brings one back, and the new arrivals are not hungry")
+    Kit.ok(hid == 4, "hungry animals hide")
+    local queen = State.entry("yuzsuz", 12)
+    Kit.ok(queen and queen.mood == Care.HIDING and queen.here, "except the queen, who stays where she is and demands")
+    Kit.ok(all:find("demand") or all:find("dish") or all:find("guilty"), "and the journal says she is demanding")
+    Kit.ok(State.feed("bee") and #State.animals(12) == 7, "a meal brings one back, and the new arrivals are not hungry")
     local bee
     for _, a in ipairs(State.animals(12)) do if a.def.id == "bee" then bee = a end end
     Kit.ok(bee.here and not (State.animals(23)[1].here and State.animals(23)[1].def.id == "bee"), "and the bee is about by day only")
@@ -709,6 +712,78 @@ do
     State.unload()
     require("solarui/settings").set("garden", nil)
     reading.books, reading.streak = 2, 0
+end
+
+-- the queen: here from the start, never hiding, her name kept, her pats counted and her bites felt
+do
+    require("solarui/settings").set("garden", nil)
+    State.unload()
+    local Yuzsuz = require("solarui/garden/yuzsuz")
+    local Voice = require("solarui/garden/voice")
+    local seq, k = { .1, .9, .5, .3, .7, .2, .8, .4, .6, 0 }, 0
+    Yuzsuz.useRandom(function() k = k % #seq + 1; return seq[k] end)
+    Yuzsuz.reset()
+    State.refresh()
+    Kit.ok(State.rec("yuzsuz") ~= nil, "Yüzsüz lives in the garden from the start")
+    Kit.ok(State.name("yuzsuz") == "Yüzsüz The Magnificent", "and is called Yüzsüz The Magnificent")
+    Kit.ok(State.rename("yuzsuz", "Fluffy") == nil and State.name("yuzsuz") == "Yüzsüz The Magnificent", "and her name cannot be changed")
+    -- left side: a hundred and forty pats, the milestones remarked on, then she has had enough
+    local m, n = Yuzsuz.patLeft()
+    Kit.ok(m == "pat_left_milestone" and n == 1, "the first left pat is remarked on")
+    for _ = 2, 139 do m, n = Yuzsuz.patLeft() end
+    Kit.ok(m == "pat_left_milestone" and n == 139, "the hundred and thirty-ninth too")
+    m, n = Yuzsuz.patLeft()
+    Kit.ok(m == "pat_left_done" and n == 140, "the hundred and fortieth is the last")
+    Kit.ok(Yuzsuz.patLeft() == "pat_left_over", "and after that she has walked off")
+    Kit.ok(Yuzsuz.shown("loaf.a") == "walk", "walking off, in her pose")
+    -- right side: three pats, then teeth
+    for i = 1, 3 do Kit.ok(Yuzsuz.patRight() == "pat_right_" .. i, "right pat " .. i .. " is allowed") end
+    Kit.ok(Yuzsuz.patRight() == "pat_right_bite" and Yuzsuz.bites() == 1, "the fourth draws blood, and the blood is counted")
+    Kit.ok(Yuzsuz.shown("loaf.a") == "bite", "and she is shown biting")
+    -- belly: rubs until she decides you deserve death
+    local rubs = 0
+    repeat m = Yuzsuz.rub(); rubs = rubs + 1 until m == "rub_bite" or rubs > 20
+    Kit.ok(m == "rub_bite" and rubs >= 3 and rubs <= 10, "belly rubs end in a bite, between the third and the tenth")
+    Kit.ok(Yuzsuz.bites() == 2, "two bites now")
+    -- a session ends after half an hour without a touch
+    now = now + Yuzsuz.SESSION + 1
+    Kit.ok(select(2, Yuzsuz.patLeft()) == 1, "a new session after half an hour, the count starts again")
+    now = now + Yuzsuz.HOLD + 1
+    Kit.ok(Yuzsuz.shown("loaf.a") == "loaf.a", "a pose from a touch wears off")
+    -- the journal tells of the bites
+    local all = {}
+    for _, l in ipairs(Journal.lines()) do all[#all + 1] = l.text end
+    Kit.ok(table.concat(all, "|"):find("blood") or table.concat(all, "|"):find("teeth"), "the journal tells of the bites")
+    -- her poses: the tail always moves, a stare holds, play ends lazily, hunger glares, night sleeps
+    local tails = { a = "b", b = "c", c = "a" }
+    local pose = "loaf.a"
+    for _ = 1, 30 do
+        local nxt = Yuzsuz.next(pose, { phase = "day", mood = "content" })
+        Kit.ok(nxt:match("%.(%a)$") == tails[pose:match("%.(%a)$")], "her tail moves on: " .. pose .. " to " .. nxt)
+        Kit.ok(require("solarui/art/animals_yuzsuz").POSES[nxt:match("^(%a+)")] ~= nil, "a pose she has: " .. nxt)
+        pose = nxt
+    end
+    for _, p in ipairs({ "play.a", "sprint.b" }) do
+        local after = Yuzsuz.next(p, {}):match("^(%a+)")
+        Kit.ok(after == "loaf" or after == "sleep", "a burst of " .. p .. " ends in a loaf or a nap")
+    end
+    local hungry = { glare = true, walk = true, sit = true, hiss = true }
+    local night = { sleep = true, belly = true, loaf = true, stare = true }
+    for _ = 1, 12 do
+        Kit.ok(hungry[Yuzsuz.next("loaf.a", { mood = "hiding" }):match("^(%a+)")], "hungry, she demands")
+        Kit.ok(night[Yuzsuz.next("loaf.a", { phase = "night", mood = "content" }):match("^(%a+)")], "at night, she sleeps")
+    end
+    -- she has a line for every one of her own moments
+    for _, mo in ipairs({ "pat_left", "pat_left_milestone", "pat_left_done", "pat_left_over", "pat_right_1", "pat_right_2", "pat_right_3", "pat_right_bite",
+        "rub", "rub_bite", "food_salami", "food_kebab", "food_chicken", "food_mince", "food_cheese", "food_yogurt", "food_full" }) do
+        local line = Voice.say("yuzsuz", mo, { n = 7, name = "Yüzsüz The Magnificent" })
+        Kit.ok(line and line ~= "" and not line:find("{", 1, true), "she says something for " .. mo)
+    end
+    Kit.ok(#Voice.of("yuzsuz").beats >= 12, "and has memories to tell")
+    Yuzsuz.useRandom(nil)
+    Yuzsuz.reset()
+    State.unload()
+    require("solarui/settings").set("garden", nil)
 end
 
 -- wording of every voice: nobody in the garden is called "it"

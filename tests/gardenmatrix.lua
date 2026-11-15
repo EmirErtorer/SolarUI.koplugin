@@ -285,6 +285,10 @@ for _, id in ipairs(ids) do
     if Cast.plant(id) then plant(id, 4) else animal(id) end
     local def = Cast.find(id)
     ck(State.name(id) == def.en, id .. " goes by the common name at first")
+    if def.queen then
+        ck(State.rename(id, "  Pip  ") == nil and State.name(id) == def.en, id .. " keeps her name: the queen cannot be renamed")
+        goto continue
+    end
     ck(State.rename(id, "  Pip  ") == "Pip" and State.name(id) == "Pip", id .. " takes a nickname, trimmed")
     local long = State.rename(id, string.rep("a", 30))
     ck(long and #long == State.NICK_MAX, id .. " keeps at most " .. State.NICK_MAX .. " letters")
@@ -293,6 +297,7 @@ for _, id in ipairs(ids) do
     for _ in uni:gmatch("[%z\1-\127\194-\244][\128-\191]*") do count = count + 1 end
     ck(count == State.NICK_MAX, id .. " counts letters, not bytes, in a nickname")
     ck(State.rename(id, "   ") == nil and State.name(id) == def.en, id .. " goes back to the common name when the nickname is cleared")
+    ::continue::
 end
 ck(State.rename("nothingthere", "x") == nil, "naming someone who is not in the garden does nothing")
 
@@ -354,7 +359,11 @@ for _, def in ipairs(Cast.ANIMALS) do
     Season.calendar = function() return "spring" end
     State.refresh()
     local e = State.entry(def.id, 12)
-    ck(e.mood == Care.HIDING and not e.here and State.get().animals[def.id].noted == "hide", def.id .. " hides and the journal says so")
+    if def.queen then
+        ck(e.mood == Care.HIDING and e.here and State.get().animals[def.id].noted == "hide", def.id .. " never hides: hungry, she stays and demands")
+    else
+        ck(e.mood == Care.HIDING and not e.here and State.get().animals[def.id].noted == "hide", def.id .. " hides and the journal says so")
+    end
     State.feed(def.id)
     State.refresh()
     e = State.entry(def.id, 12)

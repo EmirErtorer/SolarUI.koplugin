@@ -78,7 +78,7 @@ do
     paint(first):free()
     local n = 0
     for _ in pairs(first.sprites) do n = n + 1 end
-    Kit.ok(n == 12, "every animal is on show, foxes too (" .. n .. ")")
+    Kit.ok(n == #require("solarui/garden/cast").ANIMALS, "every animal is on show, foxes and the queen too (" .. n .. ")")
     for i = 1, 6 do
         local ok, err = pcall(function() local card = Guide.card(W, i, function() end); card:layout(nil, nil) end)
         Kit.ok(ok, "guide page " .. i .. " builds: " .. tostring(err))

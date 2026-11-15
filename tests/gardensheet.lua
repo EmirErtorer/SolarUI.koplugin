@@ -45,6 +45,18 @@ for _, a in ipairs(Cast.ANIMALS) do
     put("animal_" .. a.id, box.w, box.h, "1")
     put("animal_" .. a.id, box.w, box.h, "2")
 end
+-- every pose of the queen, with each place of her tail, facing both ways
+do
+    local box = Layout.ANIMALS.yuzsuz
+    local names = {}
+    for name in pairs(require("solarui/art/animals_yuzsuz").POSES) do if not name:match("^%d$") then names[#names + 1] = name end end
+    table.sort(names)
+    x, y, row_h = 20, y + row_h + 16, 0
+    for _, name in ipairs(names) do
+        for _, t in ipairs({ "a", "b", "c" }) do put("animal_yuzsuz", box.w, box.h, name .. "." .. t) end
+        put("animal_yuzsuz", box.w, box.h, name .. ".a:flip")
+    end
+end
 -- each plant at stage 4 in every season and died back, then at stage 2 and 3 died back
 for _, p in ipairs(Cast.PLANTS) do
     local box = Layout.PLANTS[p.id]
