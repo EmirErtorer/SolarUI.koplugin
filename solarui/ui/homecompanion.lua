@@ -113,8 +113,10 @@ function HomeCompanion.header(scene, item, w, budget)
     local px = scene:px(w)
     local narrow = w < 200   -- (units: a companion who does not speak has a narrow column)
     local lines = narrow and 2 or 1
-    local name = Label:new({ text = State.name(item.id), kind = "heading", lines = lines })
-    local sub = item.pet and Label:new({ text = string.format(_("%s \u{B7} day %d"), item.entry.def.en, Pet.days()), kind = "micro", color = "muted", lines = lines })
+    -- the queen's name is long: her name above, her title below
+    local def = item.entry.def
+    local name = Label:new({ text = def.short or State.name(item.id), kind = "heading", lines = lines })
+    local sub = item.pet and Label:new({ text = string.format(_("%s \u{B7} day %d"), def.title or def.en, Pet.days()), kind = "micro", color = "muted", lines = lines })
         or Label:new({ text = item.entry.def.latin, kind = "micro", color = "muted" })
     local how = Label:new({ text = mood(item), kind = "micro", lines = item.pet and lines or 2 })
     local p = item.pet and Pet.get()

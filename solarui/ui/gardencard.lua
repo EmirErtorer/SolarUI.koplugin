@@ -77,10 +77,10 @@ local function actions(e, kind, o)
     if e.def.queen and o.queen then
         -- the queen is fed from a menu and patted with care; her name cannot be changed
         local q = o.queen
-        add(Button:new({ label = _("Feed"), sub = _("her menu"), variant = "primary", grow = true, on_tap = q.on_feed }))
-        add(Button:new({ label = _("Left side"), sub = _("pat, up to 140"), grow = true, on_tap = q.on_left }))
-        add(Button:new({ label = _("Right side"), sub = _("pat, 3 at most"), grow = true, on_tap = q.on_right }))
-        add(Button:new({ label = _("Belly"), sub = _("rub, at your risk"), grow = true, on_tap = q.on_rub }))
+        add(Button:new({ label = _("Feed"), sub = _("menu"), variant = "primary", grow = true, on_tap = q.on_feed }))
+        add(Button:new({ label = _("Left"), sub = _("140 pats"), grow = true, on_tap = q.on_left }))
+        add(Button:new({ label = _("Right"), sub = _("3 pats"), grow = true, on_tap = q.on_right }))
+        add(Button:new({ label = _("Belly"), sub = _("risky"), grow = true, on_tap = q.on_rub }))
         return Layout.Row:new(row)
     end
     if kind == "plant" and e.rec.stage == 5 then
