@@ -12,6 +12,7 @@
 
 local Flora = require("solarui/art/flora")
 local GardenSky = require("solarui/art/garden_sky")
+local Decor = require("solarui/art/garden_decor")
 local GardenWeather = require("solarui/art/garden_weather")
 local Kit = require("solarui/art/plantkit")
 local Layout = require("solarui/garden/layout")
@@ -64,8 +65,10 @@ end
 -- the hedge's foot, then blades of grass over it, three to a tuft, all of
 -- similar height and leaning this way and that, and what the season and
 -- the weather leave on it.
-local function lawn(c, floor, top, season, weather, x0, x1)
-    local fill = Wash.mix(c.sage, c.bg, .5)
+local function lawn(c, floor, top, season, weather, x0, x1, extra)
+    -- in winter the lawn lies under snow, only the tips of the grass showing through
+    local winter = season == "winter"
+    local fill = winter and Wash.mix(GardenWeather.snow(), c.sky, .22) or Wash.mix(c.sage, c.bg, .5)
     local ground = path(string.format("M%s %s C%s %s %s %s %s %s L%s %s L%s %s Z", n(x0), n(top), n(x0 + (x1 - x0) * .26), n(top - 5), n(x0 + (x1 - x0) * .7),
         n(top + 5), n(x1), n(top), n(x1), n(floor), n(x0), n(floor)), fill)
     local dark, light = {}, {}
@@ -76,16 +79,18 @@ local function lawn(c, floor, top, season, weather, x0, x1)
     for gy = 0, math.floor((floor - top - 20) / 34) do
         for gx = 0, math.floor((x1 - x0 - 24) / 34) do
             local x, y = x0 + 12 + gx * 34 + 22 * Svg.vary(gx, gy), top + 30 + gy * 34 + 18 * Svg.vary(gy, gx + 5)
-            if y < floor - 4 then
+            if y < floor - 4 and (not winter or (gx * 3 + gy) % 3 == 0) then
                 for k = -1, 1 do
                     local v = Svg.vary(gx * 7 + k, gy)
-                    blade((gx + gy + k) % 3 == 0 and light or dark, x + k * 4, y, 12 + 11 * v, (k * 5 + 8 * (v - .5)), 1.7)
+                    blade((gx + gy + k) % 3 == 0 and light or dark, x + k * 4, y, (12 + 11 * v) * (winter and .5 or 1), (k * 5 + 8 * (v - .5)) * (winter and .6 or 1), 1.7)
                 end
             end
         end
     end
+    -- in winter snow lies on the lawn every day, deeper when snow is falling
+    local drifts = weather == "snow" and 70 or (season == "winter" and 44 or 0)
     return ground .. GardenWeather.lawn(c, season, x0, x1, top, floor) .. path(table.concat(dark, " "), c.leaf) .. path(table.concat(light, " "), c.sage)
-        .. (weather == "snow" and GardenWeather.drifts(c, x0, x1, top, floor) or "")
+        .. (extra or "") .. (drifts > 0 and GardenWeather.drifts(c, x0, x1, top, floor, drifts) or "")
 end
 
 -- A nest of fallen leaves `s` large on the ground at (m, base) where an
@@ -212,16 +217,34 @@ function Garden.garden_ground(c, vw, vh, mode)
     pond, tab = moved(pond), moved(tab)
     local sky = GardenSky.draw(c, mode, x0, Layout.SKY.y, x1, base, arch)
     local season, weather = PlantSeason.of(mode), GardenWeather.of(mode)
-    c = Wash.apply(GardenWeather.palette(PlantSeason.palette(c, season), weather), mode)
-    local snow = weather == "snow"
-    local out = sky .. lawn(c, vh - edge, base, season, weather, x0, x1) .. hedge(c, x0, arch - ivy.w / 2 + 46, base, snow)
+    c = Wash.apply(GardenWeather.palette(PlantSeason.palette(c, season), weather, season), mode)
+    -- snow lies all winter, not only on the days it falls
+    local snow = weather == "snow" or season == "winter"
+    -- the stepping stones and the lawn's flowers, in the poster's units moved onto this canvas
+    local k = Layout.stretch(vh)
+    local function place(x, y) return fan.at(x), y * k end
+    local standing = Layout.static(Layout.HEIGHT)
+    standing.pond = Layout.PROPS.pond
+    local function free(x, y)
+        for _id, b in pairs(standing) do
+            if x > b.x - 8 and x < b.x + b.w + 8 and y > b.y - 4 and y < b.y + b.h + 6 then return false end
+        end
+        return true
+    end
+    local ground = Decor.path(c, place, snow) .. Decor.flowers(c, season, free, place, Layout.LAWN_TOP, Layout.HEIGHT - edge)
+        .. (season == "winter" and Decor.tracks(c, place) or "")
+    local out = sky .. lawn(c, vh - edge, base, season, weather, x0, x1, ground) .. hedge(c, x0, arch - ivy.w / 2 + 46, base, snow)
         .. hedge(c, arch + ivy.w / 2 - 46, x1, base, snow) .. group(arch, base, 0, Trellis.frame(c))
     if weather == "mist" then out = out .. GardenWeather.mist(c, x0, x1, base) end
-    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h)) .. (snow and GardenWeather.rim(c, pond) or "")
-        .. group(tab.x, tab.y, 0, Props.table(c), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
-    for id, b in pairs(Layout.EXTRAS) do
-        local at, small = moved(Layout.at(b, vh)), Props.small(id)
-        out = out .. group(at.x, at.y, 0, small.draw(c), at.w / small.w, at.h / small.h)
+    out = out .. group(pond.x, pond.y, 0, Props.pond(c, pond.w, pond.h, season == "winter")) .. (snow and GardenWeather.rim(c, pond) or "")
+        .. group(tab.x, tab.y, 0, Props.table(c, snow), tab.w / Layout.TABLE_ART.w, tab.h / Layout.TABLE_ART.h)
+    -- the small things, the far ones first so the near ones stand in front
+    local order = {}
+    for id in pairs(Layout.EXTRAS) do order[#order + 1] = id end
+    table.sort(order, function(a, b) return Layout.EXTRAS[a].y + Layout.EXTRAS[a].h < Layout.EXTRAS[b].y + Layout.EXTRAS[b].h end)
+    for _i, id in ipairs(order) do
+        local at, small = moved(Layout.at(Layout.EXTRAS[id], vh)), Props.small(id)
+        out = out .. group(at.x, at.y, 0, small.draw(c, snow), at.w / small.w, at.h / small.h)
     end
     return out .. GardenWeather.fall(c, weather, x0, x1, Layout.SKY.y + 30, vh - edge - 4)
 end

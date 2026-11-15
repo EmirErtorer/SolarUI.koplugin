@@ -42,8 +42,8 @@ end
 Layout.PLANTS = {
     maple = box(34, 124, 262, 332), ivy = box(330, 124, 436, 332), ginkgo = box(776, 124, 262, 332),
     lily = box(250, 484, 136, 196), poppy = box(781, 484, 119, 187), rose = box(45, 558, 153, 204),
-    narcissus = box(753, 693, 110, 158), sunflower = box(882, 701, 144, 201), iris = box(251, 762, 128, 187),
-    chamomile = box(54, 814, 119, 170), honesty = box(629, 872, 102, 99), tulip = box(744, 881, 119, 167),
+    narcissus = box(765, 693, 110, 158), sunflower = box(882, 701, 144, 201), iris = box(251, 762, 128, 187),
+    chamomile = box(54, 814, 119, 170), honesty = box(629, 878, 102, 99), tulip = box(744, 881, 119, 167),
     bracken = box(899, 933, 128, 99), bellflower = box(255, 971, 110, 99), crocus = box(149, 1001, 85, 76),
     pansy = box(310, 1128, 85, 76), dandelion = box(644, 1255, 94, 85),
     water_lily = box(434, 1031, 124, 110), three_sisters = box(110, 1085, 160, 140),
@@ -52,7 +52,7 @@ Layout.PLANTS = {
 -- Scenery: the pond (which holds the water lily, the frog and the koi) and
 -- the table with its chairs, drawn at TABLE_ART units and fitted to its box.
 Layout.PROPS = {
-    pond = box(418, 1007, 300, 215), table = box(438, 663, 300, 195),
+    pond = box(418, 1007, 300, 215), table = box(400, 640, 360, 234),
 }
 Layout.TABLE_ART = { w = 340, h = 220 }
 Layout.INSIDE_POND = { "water_lily", "frog", "koi" }
@@ -62,13 +62,22 @@ Layout.INSIDE_POND = { "water_lily", "frog", "koi" }
 Layout.BOOK = box(80, 45, 140, 100)
 
 -- The open book a passage is shown in, in its own units (the drawing is
--- BOOK_ART big): where the words go on the left and right page.
-Layout.BOOK_ART = { w = 640, h = 420 }
-Layout.BOOKPAGE = { left = box(62, 64, 236, 262), right = box(344, 64, 236, 262) }
+-- BOOK_ART big): where the words go on the left and right page, and the
+-- height of the vine across the left page, between the book's name above
+-- and its details below.
+Layout.BOOK_ART = { w = 640, h = 470 }
+Layout.BOOKPAGE = { left = box(58, 70, 236, 316), right = box(346, 70, 236, 316) }
+Layout.BOOKDIVIDE = 202
 
--- The small things of the lawn that cannot be tapped.
+-- The small things of the lawn that cannot be tapped: the skep, the
+-- fountain, the lantern and the can, and the ornaments of garden_decor.lua
+-- in the free patches along the hedge, between the beds, beside the pond
+-- and at the foot (the gap by the hedge between the bug hotel and the lily
+-- is left for the face that peeks out of the grass).
 Layout.EXTRAS = {
-    skep = box(50, 1006, 64, 67), birdbath = box(956, 531, 72, 69), lantern = box(752, 1097, 35, 61), can = box(936, 1264, 83, 51),
+    skep = box(50, 1006, 64, 67), fountain = box(912, 556, 112, 138), lantern = box(752, 1097, 35, 61), can = box(936, 1264, 83, 51),
+    bughotel = box(52, 464, 78, 88), sundial = box(175, 862, 74, 86), birdhouse = box(952, 458, 56, 94),
+    feeder = box(369, 1004, 44, 120), log = box(170, 1352, 124, 46), pots = box(640, 1356, 68, 44),
 }
 
 -- The size each animal is drawn at (its art's own units); it is shown

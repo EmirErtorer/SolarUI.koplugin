@@ -34,9 +34,16 @@ function Weather.of(mode)
 end
 
 -- The ground's palette `c` under the weather: grey-blue in the rain, the
--- greens whitened under snow, or as it is.
-function Weather.palette(c, weather)
-    if weather ~= "rain" and weather ~= "snow" then return c end
+-- greens whitened under snow (and a little on any winter day, when old snow
+-- lies), or as it is.
+function Weather.palette(c, weather, season)
+    if weather ~= "rain" and weather ~= "snow" then
+        if season ~= "winter" then return c end
+        local out = {}
+        for role, hex in pairs(c) do out[role] = hex end
+        out.sage, out.leaf = mix(c.sage, P(GREY.snow), .2), mix(c.leaf, P(GREY.snow), .1)
+        return out
+    end
     local out = {}
     for role, hex in pairs(c) do out[role] = hex end
     if weather == "rain" then
@@ -124,10 +131,15 @@ function Weather.lawn(c, season, x0, x1, top, floor)
     return table.concat(out)
 end
 
--- Snow lying in drifts over the lawn, between `top` and `floor`.
-function Weather.drifts(c, x0, x1, top, floor)
+-- The colour of snow, as seen.
+function Weather.snow()
+    return P(GREY.snow)
+end
+
+-- Snow lying in `count` drifts (70 by default) over the lawn, between `top` and `floor`.
+function Weather.drifts(c, x0, x1, top, floor, count)
     local snow, edge, out = P(GREY.snow), mix(c.sky, c.ink, .25), {}
-    for i = 1, 70 do
+    for i = 1, count or 70 do
         local x, y = x0 + 30 + (x1 - x0 - 60) * vary(i, 81), top + 22 + (floor - top - 40) * vary(i, 82)
         local rx = 10 + 22 * vary(i, 83)
         out[#out + 1] = path(string.format("M%s %s Q%s %s %s %s Q%s %s %s %sZ", n(x - rx), n(y), n(x - rx * .3), n(y - rx * .3), n(x + rx), n(y), n(x), n(y + rx * .08), n(x - rx), n(y)), snow)
