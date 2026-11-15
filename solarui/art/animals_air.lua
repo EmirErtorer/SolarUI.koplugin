@@ -7,7 +7,7 @@ local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
 
-local n, group, path, line, circle, ellipse, petal = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse, Flora.petal
+local n, group, path, line, circle, ellipse = Svg.n, Svg.group, Svg.path, Svg.line, Svg.circle, Svg.ellipse
 
 local mix = Wash.mix
 
