@@ -13,7 +13,7 @@ local GardenAdopt = {}
 -- and then the home screen opens, where the companion greets you.
 function GardenAdopt.start(id, after)
     if Pet.get() then return App.toast(_("There is a companion already. Say goodbye to them first.")) end
-    App.input(_("Name your companion"), State.rec(id).nick or "", function(text)
+    local function ask(text)
         local name = (text and text ~= "") and text or State.name(id)
         App.confirm({ title = string.format(_("%s, for life?"), name),
             text = _("A companion stays with you for life. You can say goodbye one day, and they will live on in the orchard."),
@@ -30,7 +30,10 @@ function GardenAdopt.start(id, after)
                     App.toast(_("That did not work."))
                 end
             end })
-    end, _("Next"), { placeholder = State.name(id) })
+    end
+    -- the queen's name cannot be changed, so she is not asked for one
+    if id == "yuzsuz" then return ask(nil) end
+    App.input(_("Name your companion"), State.rec(id).nick or "", ask, _("Next"), { placeholder = State.name(id) })
 end
 
 -- Say goodbye to the companion: they go to the orchard, where they stay and are remembered.

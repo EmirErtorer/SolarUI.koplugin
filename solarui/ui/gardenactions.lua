@@ -31,6 +31,7 @@ function GardenActions.of(id, after)
         on_companion = function() require("solarui/ui/gardenadopt").start(id, after) end,
         on_return = function() require("solarui/ui/gardenreturn").ask(id, after) end,
         on_pet = function() App.closeDialog(); App.push("gardenpet") end,
+        queen = id == "yuzsuz" and require("solarui/ui/gardenqueen").actions(after) or nil,
     }
 end
 

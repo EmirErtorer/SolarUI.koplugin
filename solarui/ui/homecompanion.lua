@@ -76,7 +76,7 @@ local function picture(scene, item, x, y, aw, ah)
     local w, h = size.w * k, size.h * k
     local px, py = x + (aw - w) / 2, y + ah - 12 - h
     if item.kind == "plant" then scene:backdrop("plant_" .. item.id, px, py, w, h, GardenView.plantParam(item.entry))
-    else scene:backdrop("animal_" .. item.id, px, py, w, h, GardenView.animalParam("1", false)) end
+    else scene:backdrop("animal_" .. item.id, px, py, w, h, GardenView.animalParam(GardenView.posed(item.id, GardenView.stillPose(item.entry)), false)) end
 end
 
 -- How the companion is doing in a few words: a plant that needs a drink says

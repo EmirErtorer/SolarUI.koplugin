@@ -220,7 +220,7 @@ function Voice.say(id, moment, words)
         if not empty then usable[#usable + 1] = l end
     end
     if #usable > 0 then pool = usable end
-    local p = { rng = (os.time() % 100000) + #id }
+    local p = { rng = (os.time() % 100000) + #id + (words.salt or 0) * 7919 }
     local line = pool[roll(p, #pool)]
     return (fill(type(line) == "table" and line.t or line, words, p))
 end

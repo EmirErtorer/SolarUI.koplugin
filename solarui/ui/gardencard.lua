@@ -38,8 +38,18 @@ local function plantStatus(e)
     return line, string.format(_("Fine for another %s."), span(e.thirsty_in))
 end
 
+-- How the queen is doing, in one line: she never hides, and her card keeps
+-- count of the blood she has drawn.
+local function queenStatus(e)
+    local mood = ({ content = _("Content, for now"), hungry = _("Demanding food"), hiding = _("Furious, and not hiding: the queen never hides") })[e.mood]
+    local bites = e.rec.bites or 0
+    local blood = bites > 0 and (" " .. string.format(_.n("She has drawn blood %d time.", "She has drawn blood %d times.", bites), bites)) or ""
+    return mood .. " · " .. _("rules day and night"), string.format(_("Eats %s."), e.def.eats) .. blood
+end
+
 -- How an animal is doing, in one line.
 local function animalStatus(e)
+    if e.def.queen then return queenStatus(e) end
     if e.resting then return _("Asleep"), Season.wakes(e.def) or _("Resting until the season turns.") end
     local mood = ({ content = _("Content"), hungry = _("Hungry"), hiding = _("Hiding, hungry") })[e.mood]
     local when = ({ day = _("out by day"), night = _("out at night"), any = _("out day and night") })[e.def.about]
@@ -64,6 +74,15 @@ local function actions(e, kind, o)
     local th = Theme.get()
     local row = { gap = th.space.s, children = {} }
     local function add(b) row.children[#row.children + 1] = b end
+    if e.def.queen and o.queen then
+        -- the queen is fed from a menu and patted with care; her name cannot be changed
+        local q = o.queen
+        add(Button:new({ label = _("Feed"), sub = _("her menu"), variant = "primary", grow = true, on_tap = q.on_feed }))
+        add(Button:new({ label = _("Left side"), sub = _("pat, up to 140"), grow = true, on_tap = q.on_left }))
+        add(Button:new({ label = _("Right side"), sub = _("pat, 3 at most"), grow = true, on_tap = q.on_right }))
+        add(Button:new({ label = _("Belly"), sub = _("rub, at your risk"), grow = true, on_tap = q.on_rub }))
+        return Layout.Row:new(row)
+    end
     if kind == "plant" and e.rec.stage == 5 then
         add(Button:new({ label = e.def.id == "three_sisters" and _("Harvest") or _("Cut back"), sub = e.def.id == "three_sisters" and _("share or keep") or _("seeds, birds or beds"), variant = "primary", grow = true, on_tap = o.on_collect }))
     elseif kind == "plant" then
@@ -89,7 +108,8 @@ local function companion(id, o)
             height = Theme.get().size.touch, on_tap = o.on_return })
     end
     if not Pet.get() and not Pet.remembered(id) and o.on_companion then
-        return Button:new({ label = string.format(_("Make %s my companion"), State.name(id)), variant = "secondary", grow = true,
+        local label = id == "yuzsuz" and string.format(_("Serve %s for life"), State.name(id)) or string.format(_("Make %s my companion"), State.name(id))
+        return Button:new({ label = label, variant = "secondary", grow = true,
             height = Theme.get().size.touch, on_tap = o.on_companion })
     end
     return nil

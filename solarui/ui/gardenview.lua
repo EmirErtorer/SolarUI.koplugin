@@ -40,6 +40,22 @@ function GardenView.seasonToken(entry, season)
     return ":" .. (entry.dormant and season == "winter" and "dormant" or season)
 end
 
+-- The pose an animal is shown in: the one asked for, except that the queen
+-- may still be in a pose a touch put her in (see garden/yuzsuz.lua).
+function GardenView.posed(id, pose)
+    if id == "yuzsuz" then return require("solarui/garden/yuzsuz").shown(pose) end
+    return pose
+end
+
+-- The pose for a still picture of the animal of `entry` (home, popups):
+-- hers by her mood and the hour, "1" for everyone else.
+function GardenView.stillPose(entry)
+    if entry and entry.def and entry.def.queen then
+        return require("solarui/garden/yuzsuz").still({ mood = entry.mood, phase = Sky.phase(Sky.hour()) })
+    end
+    return "1"
+end
+
 -- The pose param of an animal's drawing: pose, turning, fading and light.
 function GardenView.animalParam(pose, flip, faded, phase)
     return pose .. (flip and ":flip" or "") .. (faded and ":wash" or "") .. (phase and (":" .. phase) or "")
@@ -121,12 +137,12 @@ function GardenView.compose(scene, o)
                 end
                 local b = Layout.at(base, vh)
                 if a.here then
-                    local function param() return GardenView.animalParam(o.pose and o.pose[id] or "1", b.flip, false, phase) end
+                    local function param() return GardenView.animalParam(GardenView.posed(id, o.pose and o.pose[id] or GardenView.stillPose(a)), b.flip, false, phase) end
                     if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
                     else
                         local el = scene:sprite("animal_" .. id, b.x, b.y, b.w, b.h, nil, param)
                         el.variants = function()
-                            local pose = o.pose and o.pose[id] or "1"
+                            local pose = GardenView.posed(id, o.pose and o.pose[id] or GardenView.stillPose(a))
                             return { GardenView.animalParam(pose, false, false, phase), GardenView.animalParam(pose, true, false, phase) }
                         end
                         if o.sprites then o.sprites[id] = el end

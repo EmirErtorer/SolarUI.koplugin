@@ -10,6 +10,7 @@ local Button = require("solarui/ui/button")
 local Care = require("solarui/garden/care")
 local GardenActions = require("solarui/ui/gardenactions")
 local GardenCard = require("solarui/ui/gardencard")
+local Yuzsuz = require("solarui/garden/yuzsuz")
 local GardenClock = require("solarui/ui/gardenclock")
 local GardenGive = require("solarui/ui/gardengive")
 local GardenGuide = require("solarui/ui/gardenguide")
@@ -50,6 +51,7 @@ function Garden:init()
     self.at = {}   -- where on its path each pond animal is
     self.ticks = 0
     self.seed = os.time()   -- deals the animals a new place and the book a new passage on every visit
+    self.pose.yuzsuz = Yuzsuz.next(nil, self:queenMood())
     self.quote_at = 1
 end
 
@@ -77,13 +79,26 @@ function Garden:hop(id)
     App.repaintMoved(el, scene:px((now.x - was.x) * fx), scene:px((now.y - was.y) * k), "fast")
 end
 
+-- What the queen's next pose depends on: the hour, her hunger and whether
+-- the robin is about.
+function Garden:queenMood()
+    local ctx = { phase = Sky.now() }
+    for _i, a in ipairs(State.animals()) do
+        if a.def.id == "yuzsuz" then ctx.mood = a.mood end
+        if a.def.id == "robin" and a.here then ctx.robin = true end
+    end
+    return ctx
+end
+
 -- Make a small movement: flip an animal between its two poses and repaint
--- just its own patch, or (in the pond) swim or hop it on.
+-- just its own patch, or (in the pond) swim or hop it on. The queen chooses
+-- her own next pose.
 function Garden:move(id)
     if Layout.PATHS[id] then return self:hop(id) end
     local el = self.sprites[id]
     if not el then return end
-    self.pose[id] = self.pose[id] == "2" and "1" or "2"
+    if Yuzsuz.is(id) then self.pose[id] = Yuzsuz.next(self.pose[id], self:queenMood())
+    else self.pose[id] = self.pose[id] == "2" and "1" or "2" end
     App.repaint(el, "fast")
 end
 
@@ -98,7 +113,14 @@ function Garden:tick()
     local ids = {}
     for id in pairs(self.sprites) do ids[#ids + 1] = id end
     table.sort(ids)
-    for i = 0, math.min(1, #ids - 1) do self:move(ids[(self.ticks + i * 3) % #ids + 1]) end
+    local moved = {}
+    for i = 0, math.min(1, #ids - 1) do
+        local id = ids[(self.ticks + i * 3) % #ids + 1]
+        moved[id] = true
+        self:move(id)
+    end
+    -- her tail is never still: she moves on every tick
+    if self.sprites.yuzsuz and not moved.yuzsuz then self:move("yuzsuz") end
     if self.ticks % FULL_EVERY == 0 then return App.render("full") end
     self:schedule()
 end
@@ -256,7 +278,7 @@ function Garden:focused(scene)
         local flip = Layout.spread(self.seed)[self.focus].flip
         local k = math.min(fit.w / b.w, fit.h / b.h)
         local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
-            function() return GardenView.animalParam(self.pose[self.focus] or "1", flip, false, Sky.now()) end)
+            function() return GardenView.animalParam(GardenView.posed(self.focus, self.pose[self.focus] or "1"), flip, false, Sky.now()) end)
         self.sprites[self.focus] = pic
         scene:touch(fit.x, fit.y, fit.w, fit.h, function() self:move(self.focus) end)
     end

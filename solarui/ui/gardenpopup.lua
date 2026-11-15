@@ -26,7 +26,7 @@ local function picture(id, e, kind)
     local size = kind == "plant" and Layout.PLANTS[id] or Layout.ANIMALS[id]
     local k = math.min(aw * .76 / size.w, ph * .66 / size.h)
     local bw, bh = math.floor(size.w * k), math.floor(size.h * k)
-    local param = kind == "plant" and GardenView.plantParam(e, false, Sky.now()) or GardenView.animalParam("1", false, false, Sky.now())
+    local param = kind == "plant" and GardenView.plantParam(e, false, Sky.now()) or GardenView.animalParam(GardenView.posed(id, GardenView.stillPose(e)), false, false, Sky.now())
     return LayoutUI.Overlay:new({ height = ph, children = {
         ArtView:new({ name = "garden_arch", width = aw, height = ph, unit = aw / 600, place = "c" }),
         ArtView:new({ name = (kind == "plant" and "plant_" or "animal_") .. id, param = param, width = bw, height = bh, unit = k, place = "c", dy = math.floor(ph * .13) }),

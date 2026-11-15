@@ -116,12 +116,15 @@ function GardenPet:build()
             line and Label:new({ text = line, kind = "body", align = "center", lines = 4 }) or Layout.Spacer:new({}),
         } })
         body[#body + 1] = bond()
-        body[#body + 1] = Layout.Row:new({ gap = th.space.s, children = {
-            Button:new({ label = _("Rename"), icon = "edit", icon_size = 18, grow = true, on_tap = function()
+        local row = {}
+        -- the queen's name cannot be changed
+        if p.id ~= "yuzsuz" then
+            row[#row + 1] = Button:new({ label = _("Rename"), icon = "edit", icon_size = 18, grow = true, on_tap = function()
                 App.input(_("Choose a name"), State.rec(p.id).nick or "", function(text) Pet.rename(text); App.update() end, _("Save"))
-            end }),
-            Button:new({ label = _("Say goodbye"), grow = true, on_tap = function() GardenAdopt.goodbye(function() App.update() end) end }),
-        } })
+            end })
+        end
+        row[#row + 1] = Button:new({ label = _("Say goodbye"), grow = true, on_tap = function() GardenAdopt.goodbye(function() App.update() end) end })
+        body[#body + 1] = Layout.Row:new({ gap = th.space.s, children = row })
         if Pet.talks() then
             body[#body + 1] = heading(_("Memories"))
             body[#body + 1] = memories(p)
