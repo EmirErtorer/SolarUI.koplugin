@@ -394,7 +394,7 @@ function POSES.lizard(k, o)
     return lizard .. group(-6, 0, 0, hunter)
 end
 
--- Bottom up for a pat: front low, back legs straight, tail straight up, and
+-- Tail end up for a pat: front low, back legs straight, tail straight up, and
 -- her head turned to you with her eyes half shut. The left side is for pats
 -- (up to a hundred and forty); the right side allows three.
 function POSES.butt(k, o)
