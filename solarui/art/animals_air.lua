@@ -119,26 +119,47 @@ function Air.ladybug(c, second)
     return blade .. legs .. wingCase(c, c.bloom, true) .. head .. shield
 end
 
--- One side of a swallowtail, body along the upright: yellow wings with black
--- bars and borders, blue spots and a red eye by the tail.
-local function swallowWing(c)
-    return path("M2 0 C12 -3 24 -1 28 2 C31 10 27 20 21 24 L20 33 L15 25 C10 26 5 18 2 9Z", c.pale, c.ink, 1.5)
-        .. path("M28 2 C31 10 27 20 21 24 L20 33 L15 25 C19 22 23 14 22 5Z", c.ink) .. circle(23.5, 9, 1.7, c.sky) .. circle(22.5, 15, 1.7, c.sky) .. circle(19.5, 20.5, 1.6, c.sky)
-        .. circle(7, 19, 2.6, c.bloom, c.ink, 1)
-        .. path("M2 -6 C10 -26 28 -32 37 -28 C35 -18 31 -8 27 -1 C17 -2 8 -3 2 -2Z", c.pale, c.ink, 1.5)
-        .. path("M37 -28 C35 -18 31 -8 27 -1 L22 -2 C26 -10 29 -19 30 -29Z", c.ink) .. circle(31, -22, 1.5, c.pale) .. circle(29, -15, 1.5, c.pale) .. circle(26.5, -8, 1.5, c.pale)
-        .. line("M10 -21 L12 -11 M18 -27 L20 -15", c.ink, 3) .. line("M3 -4 L22 -4 M3 3 L20 8 M3 6 L14 20", c.ink, .8)
+-- The right pair of a swallowtail's wings seen from above, the body along the
+-- upright through the origin and the head up: a yellow forewing with a black
+-- base, black bars along its front edge and a black outer band holding a row
+-- of yellow spots, and a yellow hindwing with a black band of blue spots, a
+-- black tail and a red eye with a blue fleck at its inner corner. Both poses
+-- are made of this one drawing, so the wings look the same in each.
+local function swallowWings(c)
+    local hind = path("M1 0 C10 -1 20 0 25 2 C27 8 25 15 21 20 L16 21 L13 22 C9 22 6 20 4 16 C2 12 1 6 1 0Z", c.pale, c.ink, 1.5)
+        .. path("M1 0 C1 6 2 12 4 16 L7.5 14 C5.5 10 4.5 5 4.5 1Z", c.ink)
+        .. path("M25 2 C27 8 25 15 21 20 L16 21 C18.5 15 20.5 9 20 3Z", c.ink)
+        .. path("M18.6 20.8 Q17.6 25 16.4 29.4 Q15.4 29.8 14.8 29 Q15.6 25 15.8 21.2Z", c.ink, c.ink, 1)
+        .. circle(22.6, 7, 1.4, c.sky) .. circle(22, 12, 1.4, c.sky) .. circle(19.4, 16.6, 1.3, c.sky)
+        .. circle(9.6, 15, 1.4, c.sky) .. circle(7, 18.4, 2.5, c.bloom, c.ink, 1)
+        .. line("M4 2 L21 5 M4 3.5 L19 12 M4.5 5 L15 18", c.ink, .7)
+    local fore = path("M1 -6 C10 -18 24 -28 36 -31 C35 -22 31 -9 26 -2 C18 -1 8 -1 2 -1Z", c.pale, c.ink, 1.5)
+        .. path("M1 -6 C4 -10 7 -12 10 -14 L7 -1.4 L2 -1Z", c.ink)
+        .. path("M36 -31 C35 -22 31 -9 26 -2 L21 -2 C25 -9 28 -20 30 -28.4Z", c.ink)
+        .. circle(31.2, -24, 1.3, c.pale) .. circle(29.6, -17.5, 1.3, c.pale) .. circle(27.4, -11, 1.3, c.pale) .. circle(24.6, -5.4, 1.2, c.pale)
+        .. line("M13.5 -16.5 L15.5 -10 M19.5 -22 L21.5 -15 M25.5 -26 L26.8 -19.5", c.ink, 2.8)
+        .. line("M4 -3 L22 -4 M5 -6 L25 -11 M7 -9 L27 -18 M9 -12 L29 -24", c.ink, .7)
+    return hind .. fore
 end
 
--- Swallowtail: wings spread in flight, or folded up over its back at rest.
+-- A swallowtail's body along the upright, head up: a black abdomen striped
+-- yellow down its sides, the thorax and the head.
+local function swallowBody(c)
+    return ellipse(0, 3, 2.7, 11.5, 0, c.ink) .. line("M-1.6 -1 L-1.4 11 M1.6 -1 L1.4 11", c.pale, .7) .. circle(0, -9.5, 2.6, c.ink)
+end
+
+-- Swallowtail, the old world kind: basking with its wings spread flat seen
+-- from above, or in pose two resting with them closed over its back, seen
+-- from the side, legs on a grass tip and antennae forward.
 function Air.butterfly(c, second)
     if second then
-        local wing = group(0, 0, 0, swallowWing(c), -1, 1)
-        return group(34, 56, 0, about(0, 0, 100, wing) .. line("M4 2 L2 10 M8 2 L9 10 M12 1 L15 9", c.ink, 1.2) .. ellipse(4, 0, 13, 2.8, -4, c.ink) .. circle(18, -2, 2.8, c.ink)
-            .. line("M19 -4 Q24 -12 30 -13 M20 -3 Q27 -8 32 -7", c.ink, 1.1) .. circle(30, -13, 1.3, c.ink) .. circle(32, -7, 1.3, c.ink))
+        local folded = group(0, 0, 90, swallowWings(c) .. swallowBody(c), -1, 1)
+        return line("M4 68 Q30 62 52 66", c.leaf, 2.2)
+            .. group(44, 58, 0, line("M2 2 L0 7.6 M6 2 L7 7.4 M-3 1.6 L-7 7.2", c.ink, 1.1) .. folded
+                .. line("M11 -1.4 Q18 -8 24 -10 M11 -.6 Q19 -5 26 -6", c.ink, 1) .. circle(24, -10, 1.2, c.ink) .. circle(26, -6, 1.2, c.ink))
     end
-    return group(39, 33, 24, both(swallowWing(c)) .. ellipse(0, 3, 2.7, 11, 0, c.ink) .. circle(0, -9.5, 2.6, c.ink)
-        .. line("M-1 -11 Q-3 -19 -7 -23 M1 -11 Q3 -19 7 -23", c.ink, 1.1) .. circle(-7, -23, 1.3, c.ink) .. circle(7, -23, 1.3, c.ink), .82)
+    return group(40, 36, 18, both(swallowWings(c)) .. swallowBody(c)
+        .. line("M-1 -11 Q-3 -19 -7 -23 M1 -11 Q3 -19 7 -23", c.ink, 1.1) .. circle(-7, -23, 1.3, c.ink) .. circle(7, -23, 1.3, c.ink), .8)
 end
 
 -- Elephant hawk-moth: olive and pink, its wings swept back at rest and
