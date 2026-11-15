@@ -789,7 +789,7 @@ do
         Kit.ok(line and line ~= "" and not line:find("{", 1, true), "she says something for " .. mo)
     end
     Kit.ok(#Voice.of("yuzsuz").beats >= 12, "and has memories to tell")
-    -- as the bond grows every animal (her too) has more to say, and keeps everything said before
+    -- as the bond grows every plant and animal (her too) has more to say, and keeps everything said before
     local function open(pool, level)
         local out = {}
         for i, l in ipairs(pool) do
@@ -799,7 +799,9 @@ do
         end
         return out
     end
-    for _, a in ipairs(Cast.ANIMALS) do
+    local everyone = {}
+    for _, group in ipairs({ Cast.PLANTS, Cast.ANIMALS }) do for _, c in ipairs(group) do everyone[#everyone + 1] = c end end
+    for _, a in ipairs(everyone) do
         local qv = Voice.of(a.id).moments
         for _, mo in ipairs({ "greet", "idle", "tap", "read_today", "welcome_back" }) do
             for level = 2, 5 do
