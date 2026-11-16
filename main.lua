@@ -107,6 +107,7 @@ function SolarUI:onShow()
         if App.isOpen() or App.isHome() or SolarUI.isHome() then App.raise() end
     elseif first and SolarUI.isHome() then
         App.open()
+        require("solarui/twin").announceSoon()
     end
 end
 
@@ -150,6 +151,7 @@ function SolarUI:onSolarUIHome()
         App.homeFromBook(self.ui)
     else
         App.open()
+        require("solarui/twin").announceSoon()
     end
     return true
 end
