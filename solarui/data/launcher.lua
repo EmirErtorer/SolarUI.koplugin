@@ -8,7 +8,7 @@ local Launcher = {}
 
 -- The built-in buttons, in their default order, and the one that always
 -- stays so the settings can always be reached.
-Launcher.BUILTIN = { "notebooks", "history", "collections", "garden", "library", "inkaway", "settings", "search" }
+Launcher.BUILTIN = { "history", "notebooks", "collections", "garden", "library", "inkaway", "settings", "search" }
 
 -- Built-in buttons that start hidden (the reader can show them in the editor):
 -- the search, whose place the notebook shelf took (the library searches too).

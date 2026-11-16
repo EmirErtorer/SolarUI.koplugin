@@ -172,13 +172,14 @@ function Scene:border(inset, t)
 end
 
 -- Ornaments for the corners of a ruled border and the middle of its foot.
-function Scene:frameOrnaments()
+function Scene:frameOrnaments(no_bud)
     local left, right = -self.ox / self.k, (self.width - self.ox) / self.k - 90
     local bottom = self.vh - 90
     self:backdrop("frame_corner", left, 0, 90, 90, 0)
     self:backdrop("frame_corner", right, 0, 90, 90, 1)
     self:backdrop("frame_corner", right, bottom, 90, 90, 2)
     self:backdrop("frame_corner", left, bottom, 90, 90, 3)
+    if no_bud then return end
     self:backdrop("frame_bud", (self.width / 2 - self.ox) / self.k - 30, self.vh - 52, 60, 30)
 end
 

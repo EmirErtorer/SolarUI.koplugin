@@ -118,6 +118,55 @@ function Dock.dock_rose(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .5, 5) .. foot(c, vw, vh) .. Flora.rose(c, vw * .5, vh * .36, vh * .3, 10)
 end
 
+-- Lavender: a bunch of flowering stems fanned from a tuft of narrow
+-- grey-green leaves, the two shorter ones behind; each ends in a spike of
+-- tiny lilac and violet florets set in whorls, the lowest whorl standing
+-- apart below the rest and the spike closing into a pointed bud.
+function Dock.dock_lavender(c, vw, vh)
+    local foot_x, foot_y = vw * .5, vh * .95
+    local leaves = {}
+    for _i, l in ipairs({ { -150, .3 }, { -134, .36 }, { -118, .4 }, { -62, .4 }, { -46, .36 }, { -30, .3 }, { -104, .3 }, { -76, .3 } }) do
+        leaves[#leaves + 1] = Flora.leaf(c, foot_x, foot_y, l[1], vh * l[2], vh * .045, c.sage, true)
+    end
+    -- one stem and its spike: the bud ends at (tx, ty), the spike `len` long and `wide` at its foot
+    local function sprig(tx, ty, len, wide)
+        local way = { { foot_x, foot_y }, { foot_x + (tx - foot_x) * .45, vh * .58 }, { tx, ty } }
+        local pts = Svg.spline(way, 10)
+        local stem = Svg.stem(pts, Svg.taper(3.2, 2), c.stem, c.ink, 1.1)
+        local total = Svg.length(pts)
+        local whorls = {}
+        local N = 9
+        for k = 0, N - 1 do
+            local t = k / (N - 1)
+            -- the lowest whorl a little apart, the rest close, the tip a bud
+            local along = total - len * (1 - t) + (k == 0 and -len * .12 or 0)
+            local x, y, ang = Svg.along(pts, along)
+            local lean = (ang or -90) + 90   -- the florets follow the stem
+            local r = vh * wide * (1 - .5 * t)
+            local a, b = c.violet, c.lilac
+            if k % 2 == 1 then a, b = b, a end
+            if k == N - 1 then
+                whorls[#whorls + 1] = Svg.ellipse(x, y - r * .4, r * .55, r * 1.2, lean, c.violet, c.ink, 1)
+            else
+                whorls[#whorls + 1] = Svg.ellipse(x - r * .75, y, r * .6, r * .92, lean - 28, a, c.ink, 1)
+                    .. Svg.ellipse(x + r * .75, y, r * .6, r * .92, lean + 28, a, c.ink, 1)
+                    .. Svg.ellipse(x, y - r * .3, r * .62, r, lean, b, c.ink, 1)
+            end
+        end
+        return stem, table.concat(whorls)
+    end
+    local back, front = {}, {}
+    for _i, sp in ipairs({ { vw * .33, vh * .07, vh * .26, .042 }, { vw * .67, vh * .09, vh * .26, .042 } }) do
+        local st, wh = sprig(sp[1], sp[2], sp[3], sp[4])
+        back[#back + 1] = st .. wh
+    end
+    for _i, sp in ipairs({ { vw * .12, vh * .22, vh * .29, .05 }, { vw * .5, vh * .02, vh * .34, .055 }, { vw * .88, vh * .22, vh * .29, .05 } }) do
+        local st, wh = sprig(sp[1], sp[2], sp[3], sp[4])
+        front[#front + 1] = st .. wh
+    end
+    return table.concat(back) .. table.concat(leaves) .. table.concat(front)
+end
+
 -- A single tulip.
 function Dock.dock_tulip(c, vw, vh)
     return stalk(c, vw, vh, vw * .5, vh * .6, 5) .. foot(c, vw, vh) .. Flora.tulip(c, vw * .5, vh * .62, 0, vh * .34, c.bloom2)

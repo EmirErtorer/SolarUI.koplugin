@@ -231,7 +231,8 @@ end
 
 -- The ornaments of the border, the sun or moon of the hour and a butterfly.
 function Home:ornaments(scene)
-    scene:frameOrnaments()
+    -- (no bud at the foot: it would sit on the dock's names)
+    scene:frameOrnaments(true)
     scene:group("home.dayphase", "Sun or moon of the hour", function()
         scene:sprite("dayphase", 268, 24, 64, 44, nil, function()
             local h = tonumber(os.date("%H")) or 12
