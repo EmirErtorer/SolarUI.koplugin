@@ -26,9 +26,9 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
 
 <table>
   <tr>
-    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="Yüzsüz on home (moving picture coming soon)"><br><sub>Yüzsüz on home: tap her, pat her, feed her.</sub></td>
-    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="A day in the garden (moving picture coming soon)"><br><sub>The garden through the hours, seasons and weather; water a wilted plant and watch them recover.</sub></td>
-    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="The twin switch (moving picture coming soon)"><br><sub>One tap hands home over to CyberUI, and back.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/companions.gif"><img src="assets/screenshots/companions.gif" alt="Companions on home"></a><br><sub>A companion on home: a plant or an animal of your garden, with something to say.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/garden.gif"><img src="assets/screenshots/garden.gif" alt="A day in the garden"></a><br><sub>Water a wilted plant back to life; change the hour, the season and the weather.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/twin.gif"><img src="assets/screenshots/twin.gif" alt="The twin switch"></a><br><sub>One tap hands home over to CyberUI, and back.</sub></td>
   </tr>
   <tr>
     <td width="33%" valign="top"><a href="assets/screenshots/01-home.png"><img src="assets/screenshots/01-home.png" alt="Home"></a><br><sub>Home: your book in a halo of roses, your reading as flowers, a dock of plants.</sub></td>
@@ -43,7 +43,10 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
   <tr>
     <td width="33%" valign="top"><a href="assets/screenshots/07-log.png"><img src="assets/screenshots/07-log.png" alt="Reading log"></a><br><sub>The reading log, a flower for each day.</sub></td>
     <td width="33%" valign="top"><a href="assets/screenshots/08-goal.png"><img src="assets/screenshots/08-goal.png" alt="Goal tree"></a><br><sub>The year's goal as an apple tree, an apple for each book.</sub></td>
-    <td width="33%" valign="top"><a href="assets/screenshots/09-settings.png"><img src="assets/screenshots/09-settings.png" alt="Settings"></a><br><sub>Colour schemes, fonts, and the switch to its twin, CyberUI.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/09-menu.png"><img src="assets/screenshots/09-menu.png" alt="KOReader's menu"></a><br><sub>KOReader's menu in the garden's style, with quick controls.</sub></td>
+  </tr>
+  <tr>
+    <td colspan="3"><a href="assets/screenshots/10-schemes.png"><img src="assets/screenshots/10-schemes.png" alt="Home in the five colour schemes, light and dark"></a></td>
   </tr>
 </table>
 
@@ -71,7 +74,7 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
 
 The fonts are under the SIL Open Font License; the licence texts are in `fonts/`.
 See NOTICE.md.
-- `tools/readme/shots.sh` takes the screenshots above, and `tools/readme/banners.py` draws the title, the divider and the button.
+- `tools/readme/shots.sh` takes the screenshots above and the colour scheme collage, `tools/readme/gif.sh <companions|garden|twin> <out.gif>` makes the moving pictures, and `tools/readme/banners.py` draws the title, the divider and the button.
 
 </details>
 

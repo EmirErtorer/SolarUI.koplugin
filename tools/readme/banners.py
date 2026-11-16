@@ -1,5 +1,5 @@
 """Draw the README's banners in SolarUI's garden style: the gilt title, the vine
-divider, the download plaque and the card that holds a moving picture's place. Text is turned into paths so GitHub shows it
+divider and the download plaque. Text is turned into paths so GitHub shows it
 exactly, with no font to load; the colours read on GitHub's light and dark pages.
 Needs fontTools:
     python3 tools/readme/banners.py
@@ -83,23 +83,10 @@ def download(ui_font):
     return svg(W, H, f'{plaque}{arrow}<path d="{d}" fill="{CREAM}"/>', "Download the latest release")
 
 
-def placeholder(ui_font):
-    """A card holding a moving picture's place until it is made."""
-    W, H = 640, 864
-    d, w = text_path(ui_font, "Moving picture coming soon", 34, 0, 0, 0.4)
-    card = (f'<path d="M40 {H - 30} V250 A280 220 0 0 1 {W - 40} 250 V{H - 30} Z" fill="{CREAM}" stroke="{GOLD}" stroke-width="6"/>'
-            f'<path d="M60 {H - 50} V256 A260 200 0 0 1 {W - 60} 256 V{H - 50} Z" fill="none" stroke="{DEEP}" stroke-width="2"/>')
-    vine = "M90 700 C200 660 300 740 420 690 C470 670 520 680 560 650"
-    leaves = leaf(170, 676, -150, 30) + leaf(300, 712, 20, 28) + leaf(430, 686, -150, 26)
-    return svg(W, H, card + sun(W / 2, 360, 110) + f'<path d="{vine}" fill="none" stroke="{STEM}" stroke-width="5" stroke-linecap="round"/>' + leaves
-               + f'<path d="{d}" fill="{DEEP}" transform="translate({(W - w) / 2:.1f} 580)"/>', "Moving picture coming soon")
-
-
 if __name__ == "__main__":
     fonts = os.path.join(REPO, "fonts")
     os.makedirs(OUT, exist_ok=True)
     for name, data in [("solarui-title.svg", title(os.path.join(fonts, "Griffy-Regular.ttf"))), ("readme-divider.svg", divider()),
-                       ("readme-download.svg", download(os.path.join(fonts, "Gabriela-Regular.ttf"))),
-                       ("gif-coming-soon.svg", placeholder(os.path.join(fonts, "Gabriela-Regular.ttf")))]:
+                       ("readme-download.svg", download(os.path.join(fonts, "Gabriela-Regular.ttf")))]:
         open(os.path.join(OUT, name), "w").write(data)
         print("wrote assets/" + name, len(data), "bytes")
