@@ -83,11 +83,27 @@ local function fresh()
     return d
 end
 
--- The saved garden, made on first use.
+-- The saved garden, made on first use. A garden is never thrown away: one
+-- saved in a shape this version does not know (a newer or an older SolarUI)
+-- is kept under "garden_v<n>" before a new one is started, and a plant that
+-- grows from the start but came with a later version is planted in an old
+-- garden too.
 function State.get()
     if not data then
         data = Settings.get("garden", nil)
-        if type(data) ~= "table" or data.v ~= 2 then data = fresh(); Settings.save("garden", data) end
+        if type(data) == "table" and data.v ~= 2 then
+            Settings.save("garden_v" .. tostring(data.v or 0), data)
+            data = nil
+        end
+        if type(data) ~= "table" then data = fresh(); Settings.save("garden", data) end
+        local now, added = State.clock(), false
+        for _i, p in ipairs(Cast.PLANTS) do
+            if not p.find and not data.plants[p.id] then
+                data.plants[p.id] = { stage = 1, grown = 0, at = now, watered = now, gen = 1 }
+                added = true
+            end
+        end
+        if added then Settings.save("garden", data) end
     end
     return data
 end
