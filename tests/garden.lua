@@ -421,9 +421,11 @@ do
     Plaque.candidates = function() return { { text = "One", title = "T", author = "A" }, { text = "Two", title = "T", author = "A" }, { text = "Three", title = "T", author = "A" } } end
     Season.set("autumn")
     local dealt = Plaque.deal(5)
-    Kit.ok(#dealt == 3 + 12 and dealt[3].title == "From the garden" and dealt[1].title == "T", "every third passage is a line about the season")
+    Kit.ok(#dealt == 3 and dealt[1].title == "T", "the highlights part holds only the reader's highlights")
+    local lines = Plaque.deal(5, Plaque.GARDEN)
+    Kit.ok(#lines == 12 and lines[1].title == "From the garden", "the garden's part holds only its lines for the season")
     Plaque.candidates = function() return {} end
-    Kit.ok(#Plaque.deal(5) == 12, "with no highlights the lines go on alone")
+    Kit.ok(#Plaque.deal(5) == 0 and #Plaque.deal(5, Plaque.GARDEN) == 12, "with no highlights the garden's part still has its lines")
     Plaque.candidates = candidates
     Season.set("spring")
 end

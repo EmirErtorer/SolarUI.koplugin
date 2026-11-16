@@ -53,14 +53,32 @@ function Garden:init()
     self.ticks = 0
     self.seed = os.time()   -- deals the animals a new place and the book a new passage on every visit
     self.pose.yuzsuz = Yuzsuz.next(nil, self:queenMood())
-    self.quote_at = 1
+    self.quote_at = {}
+    self.part = nil   -- the book's part shown: Plaque.HIGHLIGHTS or Plaque.GARDEN (highlights first, when there are any)
+end
+
+-- The passages of the book's part shown, dealt once a visit.
+function Garden:passages()
+    self.quotes = self.quotes or {}
+    if not self.part then
+        self.quotes[Plaque.HIGHLIGHTS] = Plaque.deal(self.seed, Plaque.HIGHLIGHTS)
+        self.part = #self.quotes[Plaque.HIGHLIGHTS] > 0 and Plaque.HIGHLIGHTS or Plaque.GARDEN
+    end
+    self.quotes[self.part] = self.quotes[self.part] or Plaque.deal(self.seed, self.part)
+    return self.quotes[self.part]
+end
+
+-- Where the reader is in the part shown: 1 for the first passage.
+function Garden:quoteAt()
+    self:passages()
+    return self.quote_at[self.part] or 1
 end
 
 -- The passage shown in the book now, or nil when there are none: the first
 -- of this visit's order, or the one the reader moved on to.
 function Garden:quote()
-    self.quotes = self.quotes or Plaque.deal(self.seed)
-    return self.quotes[(self.quote_at - 1) % math.max(1, #self.quotes) + 1]
+    local list = self:passages()
+    return list[(self:quoteAt() - 1) % math.max(1, #list) + 1]
 end
 
 -- Move the frog or the koi on to the next place of its path in the pond,
@@ -303,10 +321,11 @@ end
 -- book at the highlight.
 function Garden:book(scene)
     local q = self:quote()
-    local count = #(self.quotes or {})
-    local function turn(by) return function() self.quote_at = self.quote_at + by; App.update() end end
+    local count = #self:passages()
+    local function turn(by) return function() self.quote_at[self.part] = self:quoteAt() + by; App.update() end end
     GardenBook.place(scene, {
-        quote = q, at = (self.quote_at - 1) % math.max(1, count) + 1, count = count,
+        part = self.part, on_part = function(part) self.part = part; App.update() end,
+        quote = q, at = (self:quoteAt() - 1) % math.max(1, count) + 1, count = count,
         on_prev = turn(-1), on_next = turn(1), on_close = function() self.focus = nil; App.update() end,
         on_read = q and q.path and function() require("solarui/actions").openAt(q.path, q) end or nil,
     })
@@ -355,7 +374,7 @@ function Garden:cacheKey(ctx)
     table.sort(pose); table.sort(at)
     return table.concat({ State.version, math.floor(State.clock() / 60), Sky.phase(Sky.hour()), Season.now(), State.weather(), Theme.get().version,
         ctx.w, ctx.h, tostring(self.focus), tostring(self.showcase), tostring(self.sitting), tostring(self.seed), table.concat(pose, ","), table.concat(at, ","),
-        tostring(self.quote_at), State.owed(), tostring(self.asked), State.dew(), State.progress().vine.days, State.progress().year.books }, "|")
+        tostring(self.part), tostring(self.part and self.quote_at[self.part]), State.owed(), tostring(self.asked), State.dew(), State.progress().vine.days, State.progress().year.books }, "|")
 end
 
 -- Build the garden.

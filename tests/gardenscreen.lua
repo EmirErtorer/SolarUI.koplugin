@@ -232,7 +232,7 @@ do
     local ok, err = pcall(function() local p = paint(book); Kit.png(p, OUT .. "-book.png"); p:free() end)
     Kit.ok(ok, "the book view draws: " .. tostring(err))
     local first = book:quote().title
-    book.quote_at = book.quote_at + 1
+    book.quote_at[book.part] = book:quoteAt() + 1
     Kit.ok(book:quote().title ~= first, "another passage is another passage")
     Plaque.deal = function() return {} end
     local empty = Garden:new({})

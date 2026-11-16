@@ -1,5 +1,7 @@
--- The passages shown in the book on the garden's table: the reader's own
--- highlights from recently read books, in a different order on each visit.
+-- The passages shown in the book on the garden's table, in two parts the
+-- reader switches between: their own highlights, drawn at random from every
+-- book they have highlighted in, and lines the garden writes about the
+-- season. Each comes in a different order on each visit.
 
 local Annotations = require("solarui/data/annotations")
 local Books = require("solarui/data/books")
@@ -19,21 +21,35 @@ function Plaque.readable(text)
     return lower >= 15 and lower > upper * 2
 end
 
--- The highlights short enough for the plaque from the last books read:
+-- What one book gives the plaque: its highlights short enough for a page,
 -- { text, title, author, path, chapter, pageno, date, note, page, pos0 }
 -- (page and pos0 are the place in the book, to open it there).
-function Plaque.candidates()
-    local out = {}
-    for _i, item in ipairs(History.recent(8)) do
-        local path = item.path
-        for _j, a in ipairs(Annotations.kinds(path).highlights) do
-            local n = select(2, a.text:gsub("[^\128-\191]", ""))   -- letters, not bytes
-            if n >= MIN and n <= MAX and Plaque.readable(a.text) then
-                local info = Books.info(path)
-                out[#out + 1] = { text = a.text, title = info.title, author = info.author, path = path, chapter = a.chapter, pageno = a.pageno,
-                    date = a.date, note = a.note, page = a.page, pos0 = a.pos0 }
-            end
+local function fromBook(path)
+    local out, info = {}, nil
+    for _j, a in ipairs(Annotations.kinds(path).highlights) do
+        local n = select(2, a.text:gsub("[^\128-\191]", ""))   -- letters, not bytes
+        if n >= MIN and n <= MAX and Plaque.readable(a.text) then
+            info = info or Books.info(path)
+            out[#out + 1] = { text = a.text, title = info.title, author = info.author, path = path, chapter = a.chapter, pageno = a.pageno,
+                date = a.date, note = a.note, page = a.page, pos0 = a.pos0 }
         end
+    end
+    return out
+end
+
+-- Each book's passages as read this session, by path: a book's reading data
+-- is read once, except for the few read last, where new highlights land.
+local seen = {}
+
+-- The highlights short enough for the plaque from every book in the
+-- reading history.
+function Plaque.candidates()
+    local out, fresh = {}, {}
+    for _i, item in ipairs(History.recent(3)) do fresh[item.path] = true end
+    for _i, item in ipairs(History.recent(math.huge)) do
+        local path = item.path
+        if fresh[path] or not seen[path] then seen[path] = fromBook(path) end
+        for _j, q in ipairs(seen[path]) do out[#out + 1] = q end
     end
     return out
 end
@@ -49,21 +65,19 @@ local function shuffled(list, s)
     return list
 end
 
--- The passages in an order shuffled by `seed` (the same seed, the same
--- order), so each visit to the garden starts at a different one. Every third
--- one is a line about the season, written for the garden (see garden/nature.lua);
--- with no highlights the lines go on alone.
-function Plaque.deal(seed)
-    local own = shuffled(Plaque.candidates(), seed)
-    local lines = shuffled(Nature.passages(Season.now(), Season.NAMES[Season.now()]), (seed or 1) + 7)
-    local out, a, b = {}, 1, 1
-    while a <= #own or b <= #lines do
-        for _i = 1, 2 do
-            if own[a] then out[#out + 1] = own[a]; a = a + 1 end
-        end
-        if lines[b] then out[#out + 1] = lines[b]; b = b + 1 end
+-- The two parts of the book.
+Plaque.HIGHLIGHTS = "highlights"
+Plaque.GARDEN = "garden"
+
+-- The passages of one part (`which`, Plaque.HIGHLIGHTS by default) in an
+-- order shuffled by `seed` (the same seed, the same order), so each visit to
+-- the garden starts at a different one: the reader's highlights, or the lines
+-- about the season written for the garden (see garden/nature.lua).
+function Plaque.deal(seed, which)
+    if which == Plaque.GARDEN then
+        return shuffled(Nature.passages(Season.now(), Season.NAMES[Season.now()]), (seed or 1) + 7)
     end
-    return out
+    return shuffled(Plaque.candidates(), seed)
 end
 
 return Plaque
