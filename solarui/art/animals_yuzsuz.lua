@@ -34,7 +34,8 @@ local function coat(c)
         cushion = mix(c.violet, c.bloom, .35), gold = c.gold, dish = mix(c.sky, c.cream, .4), meat = mix(c.bloom, c.bloom2, .4),
         lizard = mix(c.leaf, c.gold, .3), stone = mix(c.muted, c.cream, .5), bird = mix(c.muted, c.ink, .1),
         sheen = mix(mix(c.ink, c.muted, .2), c.cream, .24), shade = mix(c.cream, c.muted, .22), whisker = mix(c.ink, c.cream, .5),
-        iris = mix(mix(c.gold, c.leaf, .42), c.ink, .35), ground = mix(c.cream, c.muted, .3) }
+        iris = mix(mix(c.gold, c.leaf, .42), c.ink, .35), ground = mix(c.cream, c.muted, .3),
+        skin = mix(mix(c.bloom2, c.gold, .45), c.cream, .5) }
 end
 
 -- `body` turned by `deg` degrees about (x, y).
@@ -80,6 +81,30 @@ local function leg(k, way, w, far, heel)
         .. ellipse(tip[1] + dir * 1.6, tip[2] - 1, w * .62, w * .36, 0, fill, k.ink, 1.2)
         .. line(string.format("M%s %s l0 1.6 M%s %s l0 1.6", n(tip[1] + dir * 1), n(tip[2] - 1.6), n(tip[1] + dir * 3), n(tip[2] - 1.6)), k.ink, .6)
         .. (heel and ellipse(tip[1] - dir * 2.2, tip[2] - 3.4, 1.8, 2.6, 0, k.black) or "")
+end
+
+-- A leg that grows out of her body, through the joints in `way` and as wide
+-- at each as `ws` says: no line across its top, the edges inked from `a` and
+-- `b` of the way down (see Svg.limb), ending in a paw that points forward
+-- (`dir` 1), back (-1) or hangs with no paw drawn (0). `fill` is its colour;
+-- with `sock` the leg is that colour down to there (0 to 1) and white below,
+-- as her hind legs are on her left side.
+local function limb(k, way, ws, fill, a, b, dir, sock)
+    local pts = Svg.spline(way, 8)
+    local w = Svg.widths(ws)
+    local tip = way[#way]
+    local foot = sock and k.white or fill
+    local out = Svg.limb(pts, w, fill, k.ink, 1.3, a, b)
+    if sock then
+        local low = {}
+        for i = math.floor(#pts * sock) + 1, #pts do low[#low + 1] = pts[i] end
+        out = out .. Svg.limb(low, function(t) return w(sock + t * (1 - sock)) end, k.white, k.ink, 1.3, .08)
+    end
+    dir = dir or 1
+    if dir == 0 then return out end
+    local s = ws[#ws]
+    return out .. ellipse(tip[1] + dir * s * .24, tip[2] - s * .16, s * .64, s * .4, 0, foot, k.ink, 1.2)
+        .. line(string.format("M%s %s l0 1.6 M%s %s l0 1.6", n(tip[1] + dir * s * .2), n(tip[2] - s * .22), n(tip[1] + dir * s * .5), n(tip[2] - s * .22)), k.ink, .6)
 end
 
 -- A paw seen from the front or underneath at (x, y), `s` across, with its
@@ -274,40 +299,58 @@ local function mask(o)
     return o.flip and "left" or "right"
 end
 
--- Loafing, seen from the front, paws tucked and peeking out, her head sunk
--- into her shoulders (her photos on the sofa and the bed, looking at you).
+-- Loafing: a compact round loaf seen from her side with her face turned to
+-- you, the front paws tucked under her chest so only their round ends show,
+-- the haunch a soft curve at the back and her tail brought round along her
+-- side (her photos on the sofa and the bed, looking at you).
 function POSES.loaf(k, o)
+    local left = o.side == "left"
     local t = wag(o.tail, {
-        a = { { 90, 74 }, { 100, 79 }, { 108, 74 }, { 106, 66 } },
-        b = { { 90, 76 }, { 102, 81.6 }, { 112, 80 }, { 116, 74 } },
-        c = { { 88, 70 }, { 98, 64 }, { 103, 54 }, { 99, 46 } } })
-    local body = "M18 82 C16 70 21 58 31 52 C39 47.4 47 46 52 46 L68 46 C73 46 81 47.4 89 52 C99 58 104 70 102 82Z"
-    local bib = "M45 47 C42 56 41 69 43 82 L77 82 C79 69 78 56 75 47 C67 45 53 45 45 47Z"
-    local fur = line("M24 70 C26 62 30 57 36 53 M96 70 C94 62 90 57 84 53", k.sheen, 1)
-        .. line("M52 56 l1.4 1.8 M58 60 l1.4 1.8 M64 56 l1.4 1.8 M68 62 l1.4 1.8 M50 64 l1.4 1.8 M60 68 l1.4 1.8", k.shade, .7)
-    return ellipse(60, 82.6, 44, 2.4, 0, k.ground) .. tail(k, t, 9, 7.4)
-        .. path(body, k.black, k.ink, 1.6) .. path(bib, k.white) .. fur .. path(body, nil, k.ink, 1.6)
-        .. line("M49 82 C48.4 77 49.4 72.6 52 70 M71 82 C71.6 77 70.6 72.6 68 70", k.shade, .9)
-        .. paw(k, 51, 80.2, 11.4) .. paw(k, 69, 80.2, 11.4)
-        .. face(k, 60, 34, 0, 1.12, { mask = mask(o), eye = o.eye or "open", mouth = o.mouth or "shut" })
+        a = { { 17.4, 65 }, { 20, 74.6 }, { 33, 78.4 }, { 51, 77.4 } },
+        b = { { 24, 74 }, { 16, 78.4 }, { 8, 78 }, { 3.6, 73 } },
+        c = { { 22, 70 }, { 12, 66 }, { 8, 56 }, { 12, 48 } } })
+    local body = "M24 82 C17 76 16.6 62 24 54 C31 46.6 42 44 54 43.6 C64 43.2 74 44 80 46 C88 50 92.4 58 92 68 C91.8 74 89.6 79 86 82Z"
+    local under = "M62 45 C60.6 54 60.6 62 62.6 69 C63.6 72.6 62 75.6 58 77 C50 79 40 79.6 32 82 L86 82 C89.6 79 91.8 74 92 68 C92.4 58 88 50 80 46 C74 44.4 68 44.2 62 45Z"
+        .. " M56.6 43.8 C58 47.6 60.6 50.6 64 52.4 L65.6 48 C63.4 46.8 61.6 45.4 60.4 43.6Z"
+    local patches = "M29.4 49.6 C36 45.6 45 43.9 54 43.6 C56 48 54 53 48 55.6 C41 58 33.6 55.4 29.4 49.6Z M60 43.5 C66 43.4 72 43.8 77 45 C77.4 50.6 73 55 67.6 55 C63 54.6 60 49.6 60 43.5Z"
+    local front = (o.tail or "a") == "a"
+    local fur = line("M27 77 C25 67 33 59.4 45 59.8 C52 60 57 64 58.6 70", left and k.sheen or k.shade, 1)
+        .. line("M35 50.6 C41 47.8 47 46.6 53 46.4", left and k.sheen or k.shade, 1)
+        .. line("M70 54 l1.4 1.8 M77 56 l1.4 1.8 M83 58 l1.4 1.8 M73 61 l1.4 1.8 M80 64 l1.4 1.8 M86 65 l1.2 1.8 M70 67 l1.4 1.8", k.shade, .7)
+        .. line("M64 71 C67 73.6 71 75 76 75.4 M79.6 75.6 C83 75.4 86 76 88.6 77.4", k.shade, .9)
+    local paws = ellipse(72, 79.2, 7.6, 3.3, 0, k.white, k.ink, 1.2) .. line("M74.6 78 l0 2 M77 78.4 l0 1.8", k.ink, .6)
+        .. ellipse(85, 79.6, 5.6, 3, 0, k.white, k.ink, 1.2) .. line("M86.6 78.6 l0 1.8 M88.6 79 l0 1.6", k.ink, .6)
+    local hind = front and "" or (ellipse(47, 80.4, 6.6, 2.6, 0, k.white, k.ink, 1.2) .. line("M49.6 79.6 l0 1.6 M51.6 79.8 l0 1.4", k.ink, .6))
+    -- brought round, the tail comes out from behind her rump before it lies along her side
+    local root = { { 32, 60 }, { 22, 58.6 }, { 17, 63 }, { 17.6, 70 } }
+    return ellipse(56, 82.6, 42, 2.4, 0, k.ground) .. tail(k, front and root or t, 9, front and 8.6 or 7.4)
+        .. coatSide(k, o, body, under, patches) .. fur .. hind .. paws .. (front and tail(k, t, 8.6, 7) or "")
+        .. face(k, 76, 34.6, 0, 1.1, { mask = mask(o), eye = o.eye or "open", mouth = o.mouth or "shut" })
 end
 
 -- Walking, seen from the side, her tail up in a curl (her photos on the
--- radiator, the carved table and across the bed).
+-- radiator, the carved table and across the bed): the near foreleg straight
+-- under the shoulder, the far one reaching for the next step, the near hind
+-- leg pushing off behind with its hock bent back, the far one drawn up under
+-- the belly.
 function POSES.walk(k, o)
     local left = o.side == "left"
     local t = wag(o.tail, {
-        a = { { 33, 45 }, { 24, 31 }, { 25, 15 }, { 34, 8 } },
-        b = { { 33, 45 }, { 22, 35 }, { 16, 21 }, { 18, 10 } },
-        c = { { 33, 45 }, { 26, 29 }, { 32, 15 }, { 42, 12 } } })
-    local body = "M30 50 C30 40 40 34 54 34 C66 34 76 34 82 38 C86 42 87 50 84 56 C80 60 74 62 68 63 C56 67 42 65 36 60 C32 58 30 54 30 50Z"
-    local under = "M82 38 C86 42 87 50 84 56 C80 60 74 62 68 63 C56 67 42 65 36 60 C44 61.6 54 62 62 60.4 C70 58.6 76 55 79.6 50 C79.4 45.6 80.2 41.4 82 38Z"
-    local patches = "M56 34.2 C64 34 70 34.6 76 36.4 C73.6 41 68 43.4 61.6 42.6 C57.6 41.6 55.6 38 56 34.2Z M30 50 C30 40 40 34 50 34.2 C48.4 38.6 43 42 37.6 44.6 C34 46.4 31.6 48.4 30.4 52Z"
-    return ellipse(58, 82.6, 30, 2, 0, k.ground) .. tail(k, t, 8.6, 7.2)
-        .. leg(k, { { 74, 56 }, { 71, 70 }, { 70, 81 } }, 7, true) .. leg(k, { { 46, 58 }, { 49, 70 }, { 48, 81 } }, 7.4, true)
-        .. leg(k, { { 79, 54 }, { 81, 68 }, { 82, 81 } }, 7.4) .. leg(k, { { 40, 56 }, { 36, 68 }, { 38, 81 } }, 8, false, left)
-        .. coatSide(k, o, body, under, patches) .. line("M36 56 C40 50 46 46 52 45", left and k.sheen or k.shade, 1)
-        .. headSide(k, 91, 34, 6, 1.02, { side = o.side, eye = "open", mouth = o.mouth or "blep" })
+        a = { { 32, 45 }, { 23, 32 }, { 24, 16 }, { 33, 8 } },
+        b = { { 32, 45 }, { 21, 36 }, { 15, 22 }, { 17, 10 } },
+        c = { { 32, 45 }, { 25, 30 }, { 31, 16 }, { 41, 12 } } })
+    local body = "M29 49 C28 41 36 35.4 48 34.8 C60 34.2 72 33.6 80 36 C85.6 38 88 43.6 88 50 C88 56 85 60.6 80 62.6 C72 65.6 60 66.6 50 65.6 C42 64.8 35 62.6 31.6 58 C29.6 55.4 29.2 52 29 49Z"
+    local under = "M84.6 38.6 C87 42 88 46 88 50 C88 56 85 60.6 80 62.6 C72 65.6 60 66.6 50 65.6 C46 65.2 42 64.4 38.6 63 C46 63.8 56 63.6 63 62.6 C68 61.8 71.6 59.6 73.4 56 C75 52 75.6 47 76 42 C76.2 40 76.6 38.4 77.4 37 L78.6 36.4 C80.6 37.4 82.6 38 84.6 38.6Z"
+    local patches = "M56 34.4 C64 34 70 34 76 35 C75.4 41 69.6 44.4 63 43.6 C58.4 42.6 55.6 38.6 56 34.4Z M29 49 C28 41 36 35.4 47 34.8 C46 40 41.6 44 36.6 46.6 C33 48.4 30.8 50.6 29.8 53.6Z"
+    local far = mix(k.white, k.lid, .4)
+    return ellipse(58, 82.6, 32, 2, 0, k.ground) .. tail(k, t, 8.6, 7.2)
+        .. limb(k, { { 47, 58 }, { 54, 67 }, { 48, 74 }, { 51, 80.8 } }, { 11, 8.4, 6.6, 6.4 }, far, 0, 0)
+        .. limb(k, { { 81, 56 }, { 85, 66 }, { 88.6, 74 }, { 90.6, 80.8 } }, { 9, 7.6, 6.6, 6.4 }, far, 0, 0)
+        .. coatSide(k, o, body, under, patches)
+        .. limb(k, { { 40, 50 }, { 45, 62 }, { 34, 70 }, { 32, 80.8 } }, { 17, 12, 7.6, 7 }, left and k.black or k.white, .22, .3, 1, left and .66 or nil)
+        .. limb(k, { { 79, 58 }, { 79, 66 }, { 79, 74 }, { 79.2, 80.8 } }, { 10, 9, 8, 7.6 }, k.white, .2, .2)
+        .. line("M36 55 C39 49 45 45.6 52 45", left and k.sheen or k.shade, 1)
+        .. headSide(k, 92, 33, 5, 1.02, { side = o.side, eye = "open", mouth = o.mouth or "blep" })
 end
 
 -- Her body sitting up seen from the front: black flanks either side of a
@@ -411,46 +454,68 @@ function POSES.stare(k, o)
     return POSES.sit(k, { side = o.side, tail = "a", flip = o.flip, head = { eye = "wide", mouth = "shut" } })
 end
 
--- Attacking: low and bunched, ears flat, fangs bared, one paw lashing out
--- with every claw, her tail fluffed up twice its size.
-function POSES.bite(k, o)
+-- Her body sitting up on her haunches seen from the side, facing right: the
+-- round haunch on the ground with the hind foot out in front of it, the back
+-- rising to the shoulders and a deep chest. The forelegs and head are the
+-- pose's own.
+local function sitSide(k, o)
     local left = o.side == "left"
-    local t = wag(o.tail, {
-        a = { { 30, 60 }, { 18, 50 }, { 12, 36 }, { 16, 24 } },
-        b = { { 30, 60 }, { 16, 56 }, { 6, 44 }, { 6, 32 } },
-        c = { { 30, 60 }, { 20, 46 }, { 22, 32 }, { 30, 24 } } })
-    local body = "M28 66 C26 56 36 50 50 50 C64 50 76 52 82 58 C84 64 82 72 76 76 C64 80 46 80 36 76 C30 74 28 70 28 66Z"
-    local under = "M82 58 C84 64 82 72 76 76 C64 80 46 80 36 76 C46 76 58 75.4 68 73.4 C74 71.6 78 67 79 62 C80 60.6 81 59 82 58Z"
-    local patches = "M52 50 C62 50 70 51 76 53.6 C72 57.6 64 59 57 58 C53 57 51 54 52 50Z M28 66 C26 56 36 50 46 50.2 C44 55 38 59 32 62.4Z"
-    local claws = path("M108.6 46.6 L111.6 44.6 L109.6 47.8Z M109.2 49.8 L112.6 49.2 L109.6 51Z M108.2 52.8 L111.2 53.4 L108.2 54.2Z", k.white, k.ink, .6)
-    return ellipse(56, 82, 30, 2, 0, k.ground) .. tail(k, t, 13, 10.6)
-        .. leg(k, { { 40, 70 }, { 34, 76 }, { 36, 81 } }, 8.4, true) .. leg(k, { { 74, 70 }, { 76, 76 }, { 78, 81 } }, 7.4, true)
-        .. leg(k, { { 46, 72 }, { 42, 78 }, { 44, 81 } }, 8.8, false, left)
-        .. coatSide(k, o, body, under, patches)
-        .. Svg.stem(Svg.spline({ { 80, 62 }, { 94, 56 }, { 104, 51 } }, 6), Svg.taper(8, 7), k.white, k.ink, 1.3) .. ellipse(105.6, 50.4, 4.6, 3.6, -20, k.white, k.ink, 1.2) .. claws
-        .. headSide(k, 88, 47, 8, 1.02, { side = o.side, eye = "squint", mouth = "fangs", ears = "back" })
+    local body = "M36 82 C27 80.6 23.6 71 26.6 62 C29.6 52 38 44 48 39.6 C53 37.4 58 36.4 63 36.6 L72 40 C76.6 45 78 53 76.4 61 C75.4 66 74 71 73.4 76 L72.6 82Z"
+    local under = "M66.6 37.8 L72 40 C76.6 45 78 53 76.4 61 C75.4 66 74 71 73.4 76 L72.6 82 L58 82 C62.6 76 65 69 65.4 62 C65.8 54 64.6 46 62.6 40.6 C63.6 39 65 38 66.6 37.8Z"
+    local patches = "M51 38.4 C55 36.9 59 36.4 63 36.6 L67 38.2 C68 43.6 66 48.4 61 50 C55.6 51 51.6 46 51 38.4Z M26.6 62 C28.6 55 34.6 48 41.6 43.4 C45 47.6 45 53.6 41 58 C37 61.8 31 63.2 26.6 62Z"
+    return coatSide(k, o, body, under, patches)
+        .. line("M31 79 C28 68 35 60.4 46 60.4 C54 60.4 59.6 65 61 72", left and k.sheen or k.shade, 1)
+        .. line("M36 51 C40 47 45 44 50 42", left and k.sheen or k.shade, 1)
+        .. ellipse(63, 80.2, 8.4, 2.8, 0, k.white, k.ink, 1.2) .. line("M66.6 79.4 l0 1.6 M69 79.6 l0 1.4", k.ink, .6)
+        .. (left and ellipse(56.6, 79.6, 2, 1.8, 0, k.black) or "")
 end
 
--- Eating: crouched over her dish, head down, eyes shut with joy, the salami
--- going fast (her photo at the yogurt dish). Salami is her favourite thing
--- in the known universe.
+-- Biting the hand that patted her once too often: sitting up, she has the
+-- arm held fast between both forepaws, claws out, and her teeth in the hand,
+-- ears flat, eyes narrowed and her tail fluffed up and lashing.
+function POSES.bite(k, o)
+    local t = wag(o.tail, {
+        a = { { 29, 73 }, { 18, 68 }, { 11, 56 }, { 14, 44 } },
+        b = { { 29, 74 }, { 17, 76 }, { 7, 70 }, { 4, 60 } },
+        c = { { 29, 72 }, { 20, 62 }, { 20, 50 }, { 27, 42 } } })
+    local far = mix(k.white, k.lid, .4)
+    local arm = Svg.stem(Svg.spline({ { 119, 60 }, { 110, 54.6 }, { 102, 49.6 } }, 6), Svg.taper(9.6, 8.4), k.skin, k.ink, 1.3)
+        .. Svg.stem({ { 119.4, 60.2 }, { 112.4, 56 } }, 12, k.dish, k.ink, 1.3)
+        .. ellipse(104, 42, 2.8, 5, 30, k.skin, k.ink, 1.2) .. ellipse(98.6, 46.6, 8, 5.6, 28, k.skin, k.ink, 1.3)
+    local claws = path("M100.4 50.6 L101.6 53.4 L102.4 50.8Z M103 51 L104.4 53.6 L105 51Z M105.6 51.6 L107.2 53.8 L107.4 51.4Z", k.white, k.ink, .6)
+    local ouch = line("M104 35 L106 30.6 M108.6 38 L112.6 34.6 M111 42.6 L116 41.4", k.ink, 1)
+    return ellipse(56, 82.6, 34, 2.2, 0, k.ground) .. tail(k, t, 12.4, 10)
+        .. limb(k, { { 70, 57 }, { 81, 64 }, { 93, 62 }, { 103, 58.6 } }, { 9, 8, 7, 6.8 }, far, 0, 0)
+        .. sitSide(k, o) .. arm
+        .. limb(k, { { 68, 52 }, { 79, 57.6 }, { 91, 54 }, { 101, 50.4 } }, { 10, 8.6, 7.6, 7.2 }, k.white, .2, .2) .. claws
+        .. headSide(k, 81, 36, 16, 1.02, { side = o.side, eye = "squint", mouth = "fangs", ears = "back" }) .. ouch
+end
+
+-- Eating: crouched low over her dish with her shoulders up and her haunches
+-- folded under her, head down, eyes shut with joy, the salami going fast
+-- (her photo at the yogurt dish). Salami is her favourite thing in the
+-- known universe.
 function POSES.eat(k, o)
     local left = o.side == "left"
     local t = wag(o.tail, {
-        a = { { 26, 64 }, { 16, 54 }, { 16, 40 }, { 24, 34 } },
-        b = { { 26, 64 }, { 14, 60 }, { 8, 50 }, { 10, 40 } },
-        c = { { 26, 64 }, { 18, 50 }, { 24, 40 }, { 32, 38 } } })
-    local body = "M24 72 C22 62 30 56 44 55 C58 54 72 56 80 62 C84 66 84 74 80 78 C72 82 52 82 38 81 C28 80 24 77 24 72Z"
-    local under = "M80 62 C84 66 84 74 80 78 C72 82 52 82 38 81 C48 80 60 79 70 77 C76 75 78.6 71 79 66 C79.2 64.6 79.6 63 80 62Z"
-    local patches = "M46 55 C56 54.2 66 55 74 58 C70 62 62 63.6 54 63 C49 62.4 46 59 46 55Z M24 72 C22 62 30 56 40 55.2 C38 60 34 64 28 67.6Z"
+        a = { { 26, 70 }, { 15, 62 }, { 12, 48 }, { 19, 39 } },
+        b = { { 26, 72 }, { 14, 74 }, { 6, 68 }, { 4, 58 } },
+        c = { { 26, 70 }, { 17, 58 }, { 21, 46 }, { 30, 42 } } })
+    local body = "M26 79 C20 71 22 59 31 53 C39 47.6 50 46 60 47 C63 45.4 67 45.4 70 47.6 C76 50 81 54.6 83 60 C85 66 84 73 80.6 78 C79 80.6 76 82 72 82 L32 82 C29 82 27 80.6 26 79Z"
+    local under = "M83 60 C85 66 84 73 80.6 78 C79 80.6 76 82 72 82 L38 82 C48 80.8 58 79.6 66 77.4 C71.6 75.6 75 71.6 76.4 66.6 C77.4 63.6 79.6 61 83 60Z"
+    local patches = "M31 53 C39 47.6 48 46 56 46.6 C56.6 52 52 56.6 45 57.6 C39 58 34 56.6 31 53Z M61 46.6 C64 45.3 67.6 45.6 70 47.6 C73 49 75.6 51 77.6 53.6 C76 58 71 60 66.6 58.6 C62 57 60 52 61 46.6Z"
     local dish = path("M86 74 L114 74 C113 79 109 82 100 82 C91 82 87 79 86 74Z", k.dish, k.ink, 1.3) .. ellipse(100, 74, 14, 2.6, 0, k.dish, k.ink, 1.1)
         .. ellipse(95, 72.6, 4, 1.6, 0, k.meat, k.ink, .8) .. ellipse(104, 72.4, 4, 1.6, 0, k.meat, k.ink, .8)
         .. circle(94, 72.4, .5, k.white) .. circle(96.4, 72.8, .5, k.white) .. circle(103, 72.2, .5, k.white) .. circle(105.4, 72.6, .5, k.white)
-    return ellipse(56, 82.6, 30, 2, 0, k.ground) .. tail(k, t, 8.6, 7.2)
-        .. leg(k, { { 34, 74 }, { 30, 78 }, { 32, 81 } }, 8, true) .. leg(k, { { 74, 72 }, { 78, 77 }, { 80, 81 } }, 7.2, true)
-        .. leg(k, { { 38, 76 }, { 36, 79 }, { 38, 81 } }, 8.6, false, left) .. leg(k, { { 78, 74 }, { 82, 78 }, { 84, 81 } }, 7.6)
+    return ellipse(58, 82.6, 34, 2, 0, k.ground) .. tail(k, t, 8.6, 7.2)
+        .. ellipse(84.6, 80.2, 5, 2.6, 0, mix(k.white, k.lid, .4), k.ink, 1.2)
         .. coatSide(k, o, body, under, patches)
-        .. dish .. headSide(k, 90, 64, 36, .98, { side = o.side, eye = "shut", mouth = "chew" })
+        .. line("M30 79 C27 69 33 61.4 44 61 C52 60.8 57.6 65 59 72", left and k.sheen or k.shade, 1)
+        .. line("M62 50 C65 48.4 68 48.6 70.6 50.4", left and k.sheen or k.shade, 1)
+        .. ellipse(57, 80.2, 8, 2.7, 0, k.white, k.ink, 1.2) .. line("M60.4 79.4 l0 1.6 M62.8 79.6 l0 1.4", k.ink, .6)
+        .. (left and ellipse(51, 79.6, 2, 1.8, 0, k.black) or "")
+        .. limb(k, { { 71.6, 61 }, { 73.6, 69 }, { 75.6, 76 }, { 76.6, 80.8 } }, { 3, 9.6, 8.2, 7.6 }, k.white, .12, .12)
+        .. dish .. headSide(k, 91, 63, 36, .98, { side = o.side, eye = "shut", mouth = "chew" })
 end
 
 -- Hunting her enemy, the lizard: flat to the ground, eyes wide, ears up and
@@ -532,22 +597,25 @@ function POSES.sprint(k, o)
         .. headSide(k, 95, 40, 8, 1, { side = o.side, eye = "wide", mouth = "shut", ears = "back" })
 end
 
--- Playing, in a short burst: on her side, one paw up at a feather on a
--- string. Three swats, then she remembers how tiring play is.
+-- Playing, in a short burst: sitting up on her haunches, eyes on a feather
+-- on a string, one paw high to bat at it and the other on its way. Three
+-- swats, then she remembers how tiring play is.
 function POSES.play(k, o)
     local t = wag(o.tail, {
-        a = { { 22, 66 }, { 12, 60 }, { 6, 52 }, { 8, 44 } },
-        b = { { 22, 66 }, { 12, 66 }, { 4, 60 }, { 3, 52 } },
-        c = { { 22, 66 }, { 14, 56 }, { 16, 46 }, { 22, 42 } } })
-    local toy = line("M114 0 C112 14 108 26 104 36", k.ink, .7)
-        .. group(104, 38, 24, path("M0 0 C-3 4 -3 10 0 14 C3 10 3 4 0 0Z", k.gold, k.ink, .9) .. line("M0 1 L0 13", k.ink, .5))
-        .. group(104, 38, -10, path("M0 0 C-2.4 3 -2.4 8 0 11 C2.4 8 2.4 3 0 0Z", k.meat, k.ink, .8))
-    return ellipse(56, 82, 46, 2, 0, k.ground) .. toy .. tail(k, t, 8.6, 7.2)
-        .. leg(k, { { 28, 74 }, { 16, 77 }, { 6, 77 } }, 7.4, true) .. leg(k, { { 30, 77 }, { 18, 80 }, { 8, 81 } }, 7.8, false, o.side == "left")
-        .. coatSide(k, o, SLEEPER, SLEEPER_UNDER, SLEEPER_PATCHES)
-        .. leg(k, { { 84, 74 }, { 98, 78 }, { 110, 79 } }, 7.4)
-        .. Svg.stem(Svg.spline({ { 82, 68 }, { 94, 60 }, { 101, 50 } }, 6), Svg.taper(7.4, 6.8), k.white, k.ink, 1.3) .. paw(k, 102, 47.6, 8, true)
-        .. headSide(k, 84, 61, -24, .96, { side = o.side, eye = "up", mouth = "blep" })
+        a = { { 29, 74 }, { 18, 78 }, { 9, 74.6 }, { 5.6, 65 } },
+        b = { { 29, 73 }, { 17, 70 }, { 10, 60 }, { 12, 49 } },
+        c = { { 29, 75 }, { 18, 79 }, { 9, 78.6 }, { 4, 73 } } })
+    local far = mix(k.white, k.lid, .4)
+    local toy = line("M116 3 C115 9 113 14 110 18", k.ink, .8)
+        .. group(110, 18, 30, path("M0 0 C-3.6 4.6 -3.6 12 0 17 C3.6 12 3.6 4.6 0 0Z", k.gold, k.ink, 1) .. line("M0 1 L0 16 M0 6 l-2 -1.6 M0 6 l2 -1.6 M0 10.6 l-2.2 -1.6 M0 10.6 l2.2 -1.6", k.ink, .5))
+        .. group(110, 18, -4, path("M0 0 C-2.8 3.6 -2.8 9.6 0 13.6 C2.8 9.6 2.8 3.6 0 0Z", k.meat, k.ink, .9) .. line("M0 1 L0 12.6", k.ink, .5))
+        .. circle(110, 18, 1.5, k.dish, k.ink, .8)
+    local swish = line("M104 44 C106.6 42.6 108.6 40.6 110 38 M107 48 C110 46.4 112.6 44 114 41", k.ink, .8)
+    return ellipse(56, 82.6, 34, 2.2, 0, k.ground) .. toy .. tail(k, t, 8.6, 7.2)
+        .. limb(k, { { 70, 56 }, { 81, 62.6 }, { 91, 60 }, { 97, 54 } }, { 9, 8, 7, 6.8 }, far, 0, 0, 0) .. paw(k, 98, 52.4, 8, false, true)
+        .. sitSide(k, o)
+        .. limb(k, { { 68, 51 }, { 80, 55.6 }, { 92, 49 }, { 98.6, 40 } }, { 10, 8.6, 7.6, 7.2 }, k.white, .2, .2, 0) .. paw(k, 99.6, 37.6, 9, true)
+        .. headSide(k, 79, 31, -22, 1.02, { side = o.side, eye = "up", mouth = "open" }) .. swish
 end
 
 -- Hissing at another cat that dared to look at her: back arched high, legs

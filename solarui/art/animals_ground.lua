@@ -128,28 +128,74 @@ end
 -- fur beneath, a brown face with a tapering snout, a black nose, a bead of an
 -- eye and a small round ear tucked at the edge of the spines, and short legs
 -- with clawed feet. In pose two it lifts its snout to sniff and takes a step.
--- The hedgehog asleep, rolled into a ball of spines with only the tip of
--- the snout and the shut eye showing, on a bed of fallen leaves; in winter
--- the leaves are heaped over it into its nest for the long sleep.
+-- The hedgehog asleep, tucked into a round ball: the spines lie back from
+-- the brow over the whole of the back, a fringe of fur shows along the
+-- bottom, and the small face rests low at the front with the eye shut, the
+-- snout on the ground and the feet drawn in under the chin. In winter the
+-- ball lies deep in a nest of fallen leaves, heaped behind and in front
+-- with a few on top, for the long sleep.
 local function hedgehogAsleep(c, winter, spine, tip, fur)
-    local cx, cy, rx, ry = 54, 38, 30, 23
+    local cx, cy, rx, ry = 50, 37.6, 30, 24
+    local function at(deg, k) local a = math.rad(deg); return cx + rx * k * math.cos(a), cy - ry * k * math.sin(a) end
+    -- the spiny edge from the brow over the back and round under the rump, closed along the belly
+    local edge = {}
+    for k = 0, 50 do
+        local x, y = at(-24 + k * 5.2, k % 2 == 0 and .95 or 1.07)
+        edge[#edge + 1] = { x, y }
+    end
+    local ball = {}
+    for i, p in ipairs(edge) do ball[i] = p end
+    for k = 0, 8 do ball[#ball + 1] = { at(240 + k * 12, .8) } end
+    -- the spines, each lying away from the face
     local dark, pale = {}, {}
-    for r, ring in ipairs({ { .2, 8 }, { .36, 14 }, { .54, 22 }, { .72, 30 }, { .9, 34 }, { 1.06, 40 } }) do
-        for k = 0, ring[2] - 1 do
-            local a = math.rad(k * 360 / ring[2] + r * 5)
-            local x0, y0 = cx + rx * (ring[1] - .16) * math.cos(a), cy + ry * (ring[1] - .16) * math.sin(a)
-            local x1, y1 = cx + rx * (ring[1] + .1) * math.cos(a + .18), cy + ry * (ring[1] + .1) * math.sin(a + .18)
-            local xm, ym = x0 + (x1 - x0) * .72, y0 + (y1 - y0) * .72
-            dark[#dark + 1] = string.format("M%s %sL%s %s", n(x0), n(y0), n(xm), n(ym))
-            pale[#pale + 1] = string.format("M%s %sL%s %s", n(xm), n(ym), n(x1), n(y1))
+    local fx, fy = 80, 60
+    for row = 0, 8 do
+        for col = 0, 12 do
+            local x, y = 17 + col * 5.6 + (row % 2) * 2.8, 19 + row * 4.6
+            local ex, ey = (x - cx) / (rx * .9), (y - cy) / (ry * .88)
+            local gx, gy = (x - 70) / 15, (y - 53) / 13
+            if ex * ex + ey * ey < 1 and gx * gx + gy * gy > 1 and y < 56 then
+                local dx, dy = x - fx, (y - fy) * 1.5
+                local len = math.sqrt(dx * dx + dy * dy)
+                dx, dy = dx / len * 5.6, dy / len * 5.6
+                local x0, y0 = x - dx * .4, y - dy * .4
+                local xm, ym = x + dx * .3, y + dy * .3
+                dark[#dark + 1] = string.format("M%s %sL%s %s", n(x0), n(y0), n(xm), n(ym))
+                pale[#pale + 1] = string.format("M%s %sL%s %s", n(xm), n(ym), n(x + dx * .6), n(y + dy * .6))
+            end
         end
     end
-    local out = Asleep.leaves(c, 12, 98, 62, 7, 18)
-        .. ellipse(cx, cy, rx * 1.12, ry * 1.12, 0, spine, c.ink, 1.6) .. line(table.concat(dark, " "), c.ink, 1.3) .. line(table.concat(pale, " "), tip, 1.4)
-        .. path("M68 50 C74 45.6 83 46.4 88 51.6 C86 56 77 58.6 69 56.6 C67 54.4 67 52 68 50Z", fur, c.ink, 1.3) .. ellipse(88.4, 51.8, 2.2, 1.9, 20, c.ink)
-        .. Asleep.eye(c, 78.6, 50.6, 4) .. path("M70 57 L72 61 L76 61 L75 57Z", fur, c.ink, 1)
-    if winter then out = out .. Asleep.leaves(c, 22, 88, 30, 7, 16, true) .. Asleep.leaves(c, 30, 80, 20, 4, 14, true) end
-    return out .. Asleep.zs(c, 88, 18, 7)
+    -- the fur along the bottom of the ball, a shaggy fringe
+    local skirt = {}
+    for k = 0, 16 do skirt[#skirt + 1] = { at(226 + k * 6.4, k % 2 == 0 and 1.02 or .95) } end
+    for k = 0, 8 do skirt[#skirt + 1] = { at(328 - k * 12.6, .72) } end
+    local feet = ellipse(70, 60.6, 4.2, 1.9, 0, spine, c.ink, 1.1) .. line("M71.4 60.2 l0 1.4 M73 60.4 l0 1.2", c.ink, .7)
+        .. ellipse(80.4, 60.8, 3.8, 1.8, 0, spine, c.ink, 1.1) .. line("M81.6 60.4 l0 1.4 M83 60.6 l0 1.2", c.ink, .7)
+    local face = path("M66 45 C70 40.6 78 40 84 44 C89 47.4 93.6 52 96.4 56 C97.6 58 96.6 60 94.4 60 C88 60.4 80 60 74 58 C68 56 64.6 50 66 45Z", fur, c.ink, 1.5)
+        .. ellipse(96, 57.6, 2.3, 2, 20, c.ink) .. line("M88 59.6 Q91 59.6 93.4 58.6", c.ink, .8)
+        .. line("M79.6 50.6 q2.6 2.4 5.4 .4", c.ink, 1.2)
+    local ear = ellipse(73.4, 44.6, 3.2, 3.6, -30, mix(c.bloom2, c.muted, .4), c.ink, 1.1)
+    local hog = path(Svg.poly(skirt, true), fur, c.ink, 1.1) .. group(-4, 0, 0, feet)
+        .. path(Svg.poly(ball, true), spine) .. line(Svg.poly(edge), c.ink, 1.6) .. line(table.concat(dark, " "), c.ink, 1.3) .. line(table.concat(pale, " "), tip, 1.4)
+        .. group(-4, 0, 0, face .. ear)
+    if not winter then
+        return Asleep.leaf(c, 1, 20, 61.6, -172, 14) .. Asleep.leaf(c, 4, 100, 62.4, -8, 11) .. hog
+            .. Asleep.leaf(c, 3, 34, 62.6, -178, 13) .. Asleep.zs(c, 86, 30, 7)
+    end
+    local back, front = {}, {}
+    -- the heap behind: leaves lying along the round of the ball from side to side
+    for i = 0, 13 do
+        local deg = 200 - i * 17
+        local x, y = at(deg, i % 2 == 0 and 1.06 or .94)
+        local lie = math.deg(math.atan2(ry * math.cos(math.rad(deg)), rx * math.sin(math.rad(deg))))
+        back[#back + 1] = Asleep.leaf(c, i, x, math.min(y, 60), lie + (i % 2 == 0 and -14 or 10), 17 + (i % 3) * 2)
+    end
+    -- the leaves pulled up in front, lying low, and one fallen on top
+    for i, l in ipairs({ { 0, 61, -16, 18 }, { 109, 61, -164, 18 }, { 8, 55, 8, 19 }, { 50, 51, 172, 18 }, { 16, 49, 14, 16 }, { 28, 62.6, -6, 19 }, { 64, 62.4, -176, 17 },
+        { 38, 57.6, 6, 17 }, { 100, 62.8, -178, 13 }, { 34, 24, 16, 14 } }) do
+        front[#front + 1] = Asleep.leaf(c, i + 2, l[1], l[2], l[3], l[4])
+    end
+    return table.concat(back) .. hog .. table.concat(front) .. Asleep.zs(c, 92, 24, 7)
 end
 
 function Ground.hedgehog(c, second, name)
@@ -192,61 +238,137 @@ function Ground.hedgehog(c, second, name)
         .. ellipse(81.6, 33.4, 3.4, 3.8, -20, mix(c.bloom2, c.muted, .4), c.ink, 1.2)
 end
 
--- One slim leg of the fox through the given points, the lower part in its
--- black stocking, ending in a small paw; `far` legs are drawn a shade darker.
-local function leg(c, way, far)
+-- One leg of the fox through the joints in `way`, as wide at each as `ws`
+-- says: the top is part of the body (no line across it, the edges inked from
+-- `a` and `b` of the way down), the lower part in its black stocking, ending
+-- in a small paw. `far` legs are a shade darker; `down` turns the paw of a
+-- lifted leg to hang.
+local function foxLeg(c, way, ws, far, a, b, down)
     local pts = Svg.spline(way, 8)
+    local w = Svg.widths(ws)
+    local from = (#way - 2) / (#way - 1)
     local sock = {}
-    for i = math.floor(#pts * .55), #pts do sock[#sock + 1] = pts[i] end
+    for i = math.floor(#pts * from) + 1, #pts do sock[#sock + 1] = pts[i] end
     local tip = way[#way]
-    return Svg.stem(pts, Svg.taper(6.4, 3.4), far and mix(c.bloom, c.ink, .25) or c.bloom, c.ink, 1.3) .. Svg.stem(sock, Svg.taper(4.4, 3.4), c.ink, c.ink, 1)
-        .. ellipse(tip[1] + 1.6, tip[2] + .6, 3.4, 1.8, 0, c.ink)
+    local red = far and mix(c.bloom, c.ink, .28) or c.bloom
+    return Svg.limb(pts, w, red, c.ink, 1.4, a or 0, b or a or 0)
+        .. Svg.stem(sock, function(t) return w(from + t * (1 - from)) end, c.ink, c.ink, 1)
+        .. (down and ellipse(tip[1] + .4, tip[2] + 1, 2.2, 2.8, 20, c.ink) or ellipse(tip[1] + 1.8, tip[2] - .2, 3.6, 1.9, 0, c.ink))
+end
+
+-- The fox's haunch: the round of the thigh about (x, y), rx by ry and
+-- turned by `rot`, in the body's own red, inked all round but for the top,
+-- which melts into the back. The shin drawn over it grows out of it.
+local function haunch(c, x, y, rx, ry, rot)
+    local arc = {}
+    local cr, sr = math.cos(math.rad(rot)), math.sin(math.rad(rot))
+    for i = 0, 24 do
+        local a = math.rad(-66 + i * 11.4)
+        local px, py = rx * math.cos(a), ry * math.sin(a)
+        arc[#arc + 1] = { x + px * cr - py * sr, y + px * sr + py * cr }
+    end
+    return ellipse(x, y, rx, ry, rot, c.bloom) .. line(Svg.poly(arc), c.ink, 1.4)
+end
+
+-- The fox's brush along `way`: full in the middle, the last third white.
+-- With `a` and `b` its root has no line (see Svg.limb), to grow out of the body under it.
+local function foxBrush(c, way, w, a, b)
+    local pts = Svg.spline(way, 10)
+    local width = function(t) return math.max(1, w * math.sin(math.pi * (.1 + .9 * t)) ^ .6) end
+    local tip = {}
+    local from = .7
+    for i = math.floor(#pts * from) + 1, #pts do tip[#tip + 1] = pts[i] end
+    return (a and Svg.limb(pts, width, c.bloom, c.ink, 1.6, a, b) or Svg.stem(pts, width, c.bloom, c.ink, 1.6)) .. Svg.stem(tip, function(t) return width(from + t * (1 - from)) end, c.cream, c.ink, 1.3)
+end
+
+-- The fox's head in profile, facing right, its crown at (x, y), turned by
+-- `rot` and `s` times its size (a negative `sx` faces it left): the far ear
+-- black, the near ear red with a black tip and a pale inside, a narrow
+-- muzzle with a black nose, white along the jaw and the cheek ruff, and an
+-- amber eye, shut when `asleep`. The nape and throat have no line: the head
+-- grows out of the neck drawn under it, which must reach (-11.5, 2.9) and
+-- the tip of the ruff at (-2.4, 31).
+local function foxHead(c, x, y, rot, asleep, sx, s)
+    local far = path("M-4 2 C-3.4 -3.6 -.8 -7.4 2.8 -9.8 C5 -7 6 -3.6 6 .8Z", c.ink, c.ink, 1.5)
+    local near = path("M-11.5 5.3 C-11.5 -1.2 -9.1 -6.5 -5.3 -9.6 C-1.9 -6.2 0 -2.4 .5 1.7Z", c.bloom)
+        .. path("M-9.4 -3.8 C-8.2 -6.2 -6.7 -8.2 -5.3 -9.6 C-3.6 -7.9 -2.4 -6 -1.4 -4.1 C-4.1 -5 -6.7 -5 -9.4 -3.8Z", c.ink)
+        .. path("M-8.4 3.1 C-8.2 -.5 -7.2 -3.1 -5.5 -5 C-3.8 -2.9 -2.9 -.7 -2.4 1.9Z", c.cream)
+        .. line("M-11.5 5.3 C-11.5 -1.2 -9.1 -6.5 -5.3 -9.6 C-1.9 -6.2 0 -2.4 .5 1.7", c.ink, 1.6)
+    local edge = "M-11.5 2.9 C-9 .5 -4 -.7 0 0 C4.1 .7 6.7 3.4 8.4 6.5 L20.9 13.7 C23.5 14.9 24 17.5 22.1 18.7 C17.5 20.4 12.7 22.1 8.4 22.8 C5.5 23.5 3.1 24.7 1.2 26.4 L-2.4 31"
+    local white = "M22.1 18.7 C17.5 20.4 12.7 22.1 8.4 22.8 C5.5 23.5 3.1 24.7 1.2 26.4 L-2.4 31 C-4.2 30.7 -5.9 29.8 -7.4 28.4 C-8.6 27.4 -9.6 26.2 -10.3 25.1 C-10 24.2 -9.4 23.4 -8 22.6 C-4 20.2 5 17.9 11.6 16.9"
+        .. " C15.6 16.3 19.6 16.1 22.4 16.1 C23.2 17.1 23 17.9 22.1 18.7Z"
+    local eye = asleep and line("M2 10.2 q3.2 2.4 6.4 -.2", c.ink, 1.3)
+        or (path("M1.7 10.3 C3.4 7.7 6.7 7 9.1 8.2 C7.4 10.6 4.3 11.3 1.7 10.3Z", c.gold, c.ink, 1.2) .. ellipse(5.8, 9.2, 1, 1.6, 0, c.ink))
+    return group(x, y, rot, far .. path(edge .. " C-8 30 -14 22 -14 14 C-14 10 -13.4 6 -11.5 2.9Z", c.bloom) .. path(white, c.cream) .. line(edge, c.ink, 1.6)
+        .. near .. eye .. ellipse(22.1, 16.3, 2.4, 2.2, 0, c.ink) .. line("M20.4 19 C16.8 20.4 13.7 20.9 10.8 20.6", c.ink, 1), sx or 1, s or math.abs(sx or 1))
 end
 
 -- Red fox walking to the right: a slender body on long legs in black
--- stockings, a narrow pointed muzzle, tall black-backed ears, an amber eye,
--- white cheeks, throat and bib, and a long full brush held low with a white
--- tip. In pose two it lowers its head and the legs swap their stride.
--- The fox asleep by day, curled round in a ring: the head laid on the
--- body with the ears still up, the eye shut, and the long brush wrapped
--- round the front with its white tip over the nose.
+-- stockings, the shoulders and haunches part of the body, a narrow pointed
+-- muzzle, tall ears with black backs, an amber eye, a white muzzle, throat
+-- and chest, and a long full brush held low with a white tip. Poses one and
+-- two are two steps of the slow walk: in the second a forepaw is lifted,
+-- the hind legs have changed places and the brush has swung up a little.
+local function foxWalk(c, second)
+    local body = "M40 33 C46 27.6 56 27 64 28.4 C72 29.6 79 28.6 84 25.6 C87.6 23.4 90.4 18.4 92.9 14.4 L100 26 L102 42.5"
+        .. " C100.4 44 99.6 46 99.4 48.6 C99.2 52 96.6 54.6 92 54.6 C84 54.4 74 51.6 64 49.6 C58 48.6 54 48.4 50 49.6 C47 50.6 43.4 47.6 41 43 C39.6 40 39.4 36 40 33Z"
+    local white = "M94.1 36.6 L102 42.5 C100.4 44 99.6 46 99.4 48.6 C99.2 52 96.6 54.6 92 54.6 C91.4 48 91.6 40 94.1 36.6Z"
+    local brush = second and { { 44, 35 }, { 31, 34 }, { 17, 39 }, { 5, 49 } } or { { 44, 35 }, { 32, 37 }, { 18, 46 }, { 7, 59 } }
+    local hindW, shinW, foreW = { 15, 10, 5, 4.2 }, { 11, 5.4, 4.2 }, { 11, 7, 4.6, 4 }
+    local legs, near
+    if second then
+        legs = foxLeg(c, { { 49, 40 }, { 50, 52 }, { 41, 62 }, { 37, 72.2 } }, hindW, true)
+            .. foxLeg(c, { { 84, 40 }, { 84.6, 50 }, { 85.4, 61 }, { 86, 72.2 } }, foreW, true)
+        near = haunch(c, 51.6, 43, 10.6, 12.4, -24) .. foxLeg(c, { { 56, 49 }, { 50.6, 61.6 }, { 53.6, 72.2 } }, shinW, false, .28, .2)
+            .. foxLeg(c, { { 88, 38 }, { 90, 49 }, { 98, 55.6 }, { 96.4, 64 } }, foreW, false, .45, .3, true)
+    else
+        legs = foxLeg(c, { { 50, 40 }, { 59, 51 }, { 53, 62 }, { 56, 72.2 } }, hindW, true)
+            .. foxLeg(c, { { 84, 40 }, { 81, 50 }, { 76.6, 61 }, { 74, 72.2 } }, foreW, true)
+        near = haunch(c, 50, 43, 9.8, 12.4, 8) .. foxLeg(c, { { 51, 49 }, { 42, 61.6 }, { 38, 72.2 } }, shinW, false, .3, .28)
+            .. foxLeg(c, { { 88, 38 }, { 89, 49 }, { 90.6, 61 }, { 91.6, 72.2 } }, foreW, false, .45, .3)
+    end
+    return legs .. path(body, c.bloom, c.ink, 1.6) .. path(white, c.cream) .. path(body, nil, c.ink, 1.6)
+        .. foxBrush(c, brush, 18, .1, .22) .. near .. foxHead(c, 104.4, 11.5, 0)
+end
+
+-- The fox asleep by day in the classic curl: the back a round mound, the
+-- haunch drawn up, the head brought round to lie along the ground with the
+-- eye shut, and the brush wrapped round the front with its white tip laid
+-- over the nose.
 local function foxAsleep(c)
-    local brush = Svg.spline({ { 30, 46 }, { 26, 60 }, { 42, 70 }, { 66, 70 }, { 84, 63 } }, 10)
-    local tip = Svg.spline({ { 82, 64 }, { 90, 59 }, { 95, 53 } }, 6)
-    return ellipse(66, 70, 44, 4, 0, mix(c.sage, c.muted, .3))
-        .. path("M26 56 C22 38 40 24 64 24 C88 24 106 34 106 50 C106 62 92 68 70 68 C46 68 28 66 26 56Z", c.bloom, c.ink, 1.7)
-        .. line("M40 34 C50 30 62 30 72 33 M34 46 C44 40 56 40 64 44", c.ink, .8)
-        .. path("M90 30 C96 24 108 22 115 28 C119 32 118 38 114 41 C108 46 98 48 88 50 C84 46 84 36 90 30Z", c.bloom, c.ink, 1.6)
-        .. path("M95 28 L97 12 L105 25Z", c.ink, c.ink, 1.3) .. path("M103 26 L110 10 L115.6 26.6Z", c.bloom, c.ink, 1.4) .. path("M106 25 L110 15 L113.4 25.4Z", c.cream)
-        .. path("M88 50 C98 48 108 46 114 41 C112 48 104 53 94 54 C90 54 88 52 88 50Z", c.cream, c.ink, 1)
-        .. Asleep.eye(c, 106, 33, 5)
-        .. Svg.stem(brush, Svg.taper(15, 12), c.bloom, c.ink, 1.6) .. Svg.stem(tip, Svg.taper(12, 4), c.cream, c.ink, 1.3)
-        .. line("M34 56 C42 64 56 66 70 65", c.ink, .8) .. Asleep.zs(c, 112, 14, 8)
+    local body = "M18 63 C14 44 34 27 60 26.4 C80 26 98 33 105 46 C109.6 55 108 66 102 72.4 L28 72.4 C22 71.4 19 68 18 63Z"
+    return path(body, c.bloom, c.ink, 1.7)
+        .. line("M33 70 C29 57 39 47 53 47 C60 47 65.6 50 68 55", c.ink, 1.3) .. line("M40 36 C50 31.6 62 30.6 72 32", mix(c.bloom, c.ink, .3), 1)
+        .. foxHead(c, 87, 38, 3, true, -1.08)
+        .. foxBrush(c, { { 27, 52 }, { 22, 62 }, { 38, 65.4 }, { 58, 63 }, { 72, 55 } }, 15, .12, .36)
+        .. Asleep.zs(c, 104, 22, 8)
+end
+
+-- The fox in winter, awake and alert: sitting upright in the snow with the
+-- ears pricked, the forelegs straight under the white chest and the brush
+-- brought round over the paws, while the snow falls.
+local function foxWinter(c)
+    local body = "M70.5 14.4 C63 21 54 32 49 44 C44.6 55 44 65 49 72.4 L84 72.4 L85.6 54 C85.4 49 83 45.4 79.6 42.5 L78 26Z"
+    local white = "M71.7 36.6 L79.6 42.5 C83 45.4 85.4 49 85.6 54 C82 53.6 78.6 51.4 76.4 48 C74 44.6 72 40.6 71.7 36.6Z"
+    local snow = mix(c.cream, c.sky, .12)
+    local flakes = ""
+    for i, f in ipairs({ { 30, 14 }, { 44, 28 }, { 22, 42 }, { 104, 10 }, { 113, 36 }, { 100, 50 }, { 34, 56 }, { 58, 8 } }) do
+        flakes = flakes .. circle(f[1], f[2], i % 2 == 0 and 1.5 or 1.9, snow, c.ink, .6)
+    end
+    return foxLeg(c, { { 77.6, 46 }, { 77.4, 54 }, { 77.4, 63 }, { 77.8, 72.2 } }, { 8, 6, 4.8, 4.2 }, true)
+        .. path(body, c.bloom, c.ink, 1.6) .. path(white, c.cream) .. path(body, nil, c.ink, 1.6)
+        .. haunch(c, 58.6, 59.6, 13, 12.6, -14)
+        .. foxLeg(c, { { 81.6, 50 }, { 82.4, 58 }, { 83, 65 }, { 83.4, 72.2 } }, { 8.4, 6.6, 5, 4.4 }, false, .22, .12)
+        .. foxHead(c, 82, 11.5, 0)
+        .. foxBrush(c, { { 52, 56 }, { 45, 64 }, { 56, 68 }, { 72, 66.4 } }, 12, .12, .4)
+        .. path("M30 74.6 C40 71.4 50 72.6 60 72 C72 71.2 84 73 96 71.4 C102 70.6 108 72 113 74.6Z", snow) .. line("M30 74.6 C40 71.4 50 72.6 60 72 C72 71.2 84 73 96 71.4 C102 70.6 108 72 113 74.6", c.ink, 1.1)
+        .. flakes
 end
 
 function Ground.fox(c, second, name)
     if name == "sleep" then return foxAsleep(c) end
-    local tail = about(40, 40, second and -10 or 0, path("M41 37 C30 35 16 43 8 55 C3.6 62 6 68.6 12 68.4 C20 67 31 57 43 47Z", c.bloom, c.ink, 1.6)
-        .. path("M8 55 C3.6 62 6 68.6 12 68.4 C14.6 64 13.4 58.6 10.6 54.4 C9.6 54 8.6 54.4 8 55Z", c.cream, c.ink, 1.1)
-        .. line("M38 40 C28 41 18 48 12 56", c.ink, .8))
-    -- the neck grows out of the shoulders: its fill reaches into the body and only its outer edges are inked, so there is no seam
-    local ears = path("M101.4 19.4 L103.6 7.6 L109.4 17Z", c.ink, c.ink, 1.4)
-        .. path("M106 17 L110.6 6.6 L115.6 16.2Z", c.bloom, c.ink, 1.5) .. path("M108.2 15.8 L110.6 9.6 L112.8 15.8Z", c.cream) .. line("M110.6 6.6 L115.6 16.2", c.ink, 2.4)
-    local edge = "M84 31.6 C90 27 96 22 101 19.6 C104 16.4 109 14.4 113.4 16 C116 17 117.4 19 118.6 20.6 C121.6 22.4 125 24.6 128 26.6 C129.6 27.8 129 30 127 30.4 C123.6 31 120 31.6 117 32.6 C114 34 111 35.4 108 36 L104.6 38.6 C103 42 102 45.6 101.4 49.6"
-    local head = ears .. path(edge .. " L90 53 L78 36Z", c.bloom) .. line(edge, c.ink, 1.6)
-        .. path("M127 30.4 C123.6 31 120 31.6 117 32.6 C114 34 111 35.4 108 36 L104.6 38.6 C103 42 102 45.6 101.4 49.6 C99 46 99.4 41 102 37.6 C104 34.6 107 31.4 110.6 29.6 C115 27.6 120 27.6 124 28.6 C125.6 29 126.6 29.6 127 30.4Z", c.cream)
-        .. line("M127 30.4 C126.6 29.6 125.6 29 124 28.6 C120 27.6 115 27.6 110.6 29.6 C107 31.4 104 34.6 102 37.6 C100 40.6 99.6 44 100.4 47.6", c.ink, .9)
-        .. circle(128.2, 27.8, 2, c.ink) .. line("M126 30.8 Q122 31.6 119 31.2", c.ink, .8)
-        .. path("M110.4 22.6 C112 20.6 115.4 20 117.6 20.8 C116 22.8 113 23.6 110.4 22.6Z", c.gold, c.ink, 1) .. ellipse(114.2, 21.7, .7, 1.3, 0, c.ink)
-        .. line("M117.6 20.8 L119.4 21.6", c.ink, .9)
-    local stride = second and -1 or 1
-    local farlegs = leg(c, { { 52, 40 }, { 47 - 3 * stride, 58 }, { 50 - 5 * stride, 72 } }, true)
-        .. leg(c, { { 91, 40 }, { 92 + 3 * stride, 57 }, { 94 + 6 * stride, 72 } }, true)
-    local nearlegs = leg(c, { { 47, 40 }, { 41 + 4 * stride, 58 }, { 45 + 6 * stride, 72 } })
-        .. leg(c, { { 95, 40 }, { 95 - 2 * stride, 57 }, { 92 - 6 * stride, 72 } })
-    local body = path("M38 42 C40 33 50 30.6 60 31.6 C70 32.6 84 31 95 34 C101 37 103 44 100.6 50 C97 55.4 89 55.6 83 53.6 C73 51.4 63 49.6 55 51.6 C45 54.6 36 50 38 42Z", c.bloom, c.ink, 1.6)
-        .. line("M45 38.6 C52 41 55 48 51.6 54", c.ink, .9)
-    return farlegs .. nearlegs .. group(0, -6, 0, tail .. body .. about(88, 34, second and 14 or 0, head))
+    if name == "winter" then return foxWinter(c) end
+    return foxWalk(c, second)
 end
 
 -- One eye of a peacock's train feather at (x, y), pointing away from the

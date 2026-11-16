@@ -28,16 +28,22 @@ function Asleep.eye(c, x, y, w)
     return line(string.format("M%s %s q%s %s %s 0", n(x - w / 2), n(y), n(w / 2), n(w * .45), n(w)), c.ink, math.max(.9, w * .2))
 end
 
+-- One dry fallen leaf, its stalk at (x, y), pointing at `rot` degrees and
+-- `s` long, in the `i`-th of the four autumn tones.
+function Asleep.leaf(c, i, x, y, rot, s)
+    local tones = { mix(c.gold, c.muted, .35), mix(c.bloom, c.muted, .3), mix(c.muted, c.pale, .4), c.gold }
+    return Flora.leaf(c, x, y, rot, s, s * .26, tones[i % 4 + 1], true)
+end
+
 -- Dry fallen leaves lying in a low heap from x0 to x1 at the ground line y,
 -- `k` of them, `s` long; over = true lays a few more across the top.
 function Asleep.leaves(c, x0, x1, y, k, s, over)
-    local tones = { mix(c.gold, c.muted, .35), mix(c.bloom, c.muted, .3), mix(c.muted, c.pale, .4), c.gold }
     local out = {}
     for i = 1, k do
         local f = (i - .5) / k
         local x = x0 + (x1 - x0) * f
         local rise = math.sin(math.pi * f) * s * (over and .7 or .25)
-        out[#out + 1] = Flora.leaf(c, x, y - rise * vary(i, 7), (f < .5 and -160 or -20) + (vary(i, 8) - .5) * 70, s * (.7 + .5 * vary(i, 9)), s * .26, tones[i % 4 + 1], true)
+        out[#out + 1] = Asleep.leaf(c, i, x, y - rise * vary(i, 7), (f < .5 and -160 or -20) + (vary(i, 8) - .5) * 70, s * (.7 + .5 * vary(i, 9)))
     end
     return table.concat(out)
 end

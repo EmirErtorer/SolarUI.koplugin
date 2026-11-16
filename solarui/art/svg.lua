@@ -141,6 +141,47 @@ function Svg.ribbon(pts, width)
     return "M" .. table.concat(left, " L") .. " L" .. table.concat(right, " L") .. "Z"
 end
 
+-- The two edges of a stroke along `pts` whose width changes along the way,
+-- as point lists: `width` is a number, or a function of how far along (0 to 1).
+function Svg.edges(pts, width)
+    local left, right = {}, {}
+    local count = #pts
+    for i = 1, count do
+        local a, b = pts[math.max(1, i - 1)], pts[math.min(count, i + 1)]
+        local dx, dy = b[1] - a[1], b[2] - a[2]
+        local len = sqrt(dx * dx + dy * dy)
+        if len == 0 then len = 1 end
+        local t = (i - 1) / (count - 1)
+        local half = (type(width) == "function" and width(t) or width) / 2
+        local nx, ny = -dy / len * half, dx / len * half
+        left[i] = { pts[i][1] + nx, pts[i][2] + ny }
+        right[i] = { pts[i][1] - nx, pts[i][2] - ny }
+    end
+    return left, right
+end
+
+-- A limb along `pts` that grows out of the body drawn under it: filled
+-- whole, but inked only from `a` of the way along on its left edge and from
+-- `b` on its right (0 to 1), and round its far end. The start has no line,
+-- so it melts into a body of the same colour.
+function Svg.limb(pts, width, fill, ink, ow, a, b)
+    local left, right = Svg.edges(pts, width)
+    local count = #pts
+    local edge = {}
+    for i = math.max(1, math.floor((a or 0) * (count - 1) + 1.5)), count do edge[#edge + 1] = left[i] end
+    for i = count, math.max(1, math.floor((b or a or 0) * (count - 1) + 1.5)), -1 do edge[#edge + 1] = right[i] end
+    return Svg.path(Svg.ribbon(pts, width), fill) .. Svg.line(Svg.poly(edge), ink, ow or 1.6)
+end
+
+-- A width that follows the list `ws`, spread evenly along the way.
+function Svg.widths(ws)
+    return function(t)
+        local f = t * (#ws - 1)
+        local i = math.min(#ws - 2, math.floor(f)) + 1
+        return ws[i] + (ws[i + 1] - ws[i]) * (f - (i - 1))
+    end
+end
+
 -- A width that runs evenly from w0 to w1.
 function Svg.taper(w0, w1)
     return function(t) return w0 + (w1 - w0) * t end
