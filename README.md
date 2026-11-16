@@ -1,21 +1,59 @@
-# SolarUI
+<p><img src="assets/solarui-title.svg" width="45%" alt="SolarUI"><br>
+<img src="assets/readme-divider.svg" width="100%" alt=""></p>
 
-SolarUI is an Art Nouveau garden of a home screen for KOReader. The book you are
-reading stands in front of a halo of roses, with a progress vine growing along
-it. Your reading is shown as three flowers (today, the week and the year), the
-books you opened last stand on a shelf, and a dock of plants along the bottom
-takes you to the rest. Behind home are a library browser, collections, a reading
-log, and settings for colours, fonts and more.
+[![GitHub Release](https://img.shields.io/github/v/release/EmirErtorer/SolarUI.koplugin?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMyAzaDguNUwyMSAxMi41IDEyLjUgMjEgMyAxMS41ek03LjUgNS41YTIgMiAwIDEgMCAwIDQgMiAyIDAgMCAwIDAtNHoiLz48L3N2Zz4%3D&label=Latest%20Release&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://github.com/EmirErtorer/SolarUI.koplugin/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/EmirErtorer/SolarUI.koplugin/total?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTExIDNoMnY5LjE3bDMuNTktMy41OEwxOCAxMGwtNiA2LTYtNiAxLjQxLTEuNDFMMTEgMTIuMTd6TTQgMTloMTZ2Mkg0eiIvPjwvc3ZnPg%3D%3D&label=Total%20Downloads&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://github.com/EmirErtorer/SolarUI.koplugin/releases)
+[![Releases](https://img.shields.io/badge/Releases-What%27s%20new-white?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTEzIDNhOSA5IDAgMCAwLTkgOUgxbDMuODkgMy44OS4wNy4xNEw5IDEySDZjMC0zLjg3IDMuMTMtNyA3LTdzNyAzLjEzIDcgNy0zLjEzIDctNyA3Yy0xLjkzIDAtMy42OC0uNzktNC45NC0yLjA2bC0xLjQyIDEuNDJBOC45NTQgOC45NTQgMCAwIDAgMTMgMjFhOSA5IDAgMCAwIDAtMTh6bS0xIDV2NWw0LjI4IDIuNTQuNzItMS4yMS0zLjUtMi4wOFY4SDEyeiIvPjwvc3ZnPg%3D%3D&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://github.com/EmirErtorer/SolarUI.koplugin/releases)
+[![Buy me a coffee](https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-white?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTIwIDNINHYxMGMwIDIuMjEgMS43OSA0IDQgNGg2YzIuMjEgMCA0LTEuNzkgNC00di0zaDJjMS4xMSAwIDItLjg5IDItMlY1YzAtMS4xMS0uODktMi0yLTJ6bTAgNWgtMlY1aDJ2M3pNNCAxOWgxNnYySDR6Ii8%2BPC9zdmc%2B&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://buymeacoffee.com/emirertorer)
+
+SolarUI is an **Art Nouveau garden of a home screen** for KOReader. Read, and the garden grows.
+
+* **Home** with your book in a halo of roses and your reading as flowers.
+* **A living garden** of plants and animals you look after with the pages you read.
+* **Library, notebooks and a reading log**, all in the same garden style.
 
 ## Install
 
-1. Download SolarUI, or copy this folder.
-2. Put the folder in KOReader's `plugins` folder and name it `SolarUI.koplugin`.
-3. Restart KOReader.
-4. Open SolarUI with Settings > Home > Start with SolarUI, or from the Tools menu
-   entry.
+<a href="https://github.com/EmirErtorer/SolarUI.koplugin/releases/latest"><img src="assets/readme-download.svg" alt="Download the latest release"></a>
 
-## Development
+Unzip the download and copy the `SolarUI.koplugin` folder into KOReader's `plugins` directory, then restart KOReader:
+
+- Kindle: `koreader/plugins/`
+- Kobo: `.adds/koreader/plugins/`
+- Android: `koreader/plugins/` in app storage
+
+Then open the top menu, the first tab (the file browser's), **Start with**, **SolarUI**.
+
+<table>
+  <tr>
+    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="Yüzsüz on home (moving picture coming soon)"><br><sub>Yüzsüz on home: tap her, pat her, feed her.</sub></td>
+    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="A day in the garden (moving picture coming soon)"><br><sub>The garden through the hours, seasons and weather; water a wilted plant and watch them recover.</sub></td>
+    <td width="33%" valign="top"><img src="assets/gif-coming-soon.svg" alt="The twin switch (moving picture coming soon)"><br><sub>One tap hands home over to CyberUI, and back.</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><a href="assets/screenshots/01-home.png"><img src="assets/screenshots/01-home.png" alt="Home"></a><br><sub>Home: your book in a halo of roses, your reading as flowers, a dock of plants.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/02-garden.png"><img src="assets/screenshots/02-garden.png" alt="The garden"></a><br><sub>The garden: every page you read waters it.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/03-yuzsuz.png"><img src="assets/screenshots/03-yuzsuz.png" alt="Yüzsüz"></a><br><sub>Yüzsüz The Magnificent, queen of the garden.</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><a href="assets/screenshots/04-library.png"><img src="assets/screenshots/04-library.png" alt="Library"></a><br><sub>The library, in arched windows.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/05-notebooks.png"><img src="assets/screenshots/05-notebooks.png" alt="Notebooks"></a><br><sub>Your Ink Away notebooks, each in a cover of its own.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/06-garden-book.png"><img src="assets/screenshots/06-garden-book.png" alt="The garden's book"></a><br><sub>The book on the garden table: your highlights, or the garden's own lines.</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><a href="assets/screenshots/07-log.png"><img src="assets/screenshots/07-log.png" alt="Reading log"></a><br><sub>The reading log, a flower for each day.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/08-goal.png"><img src="assets/screenshots/08-goal.png" alt="Goal tree"></a><br><sub>The year's goal as an apple tree, an apple for each book.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/09-settings.png"><img src="assets/screenshots/09-settings.png" alt="Settings"></a><br><sub>Colour schemes, fonts, and the switch to its twin, CyberUI.</sub></td>
+  </tr>
+</table>
+
+## Notes
+
+- **Twin of [CyberUI](https://github.com/EmirErtorer/CyberUI.koplugin).** Install both and switch between them with one tap; each keeps its own settings.
+- **Works with [Ink Away](https://github.com/EmirErtorer/ink-away.koplugin)** for notebooks, drawings and writing on books.
+
+<details>
+<summary>Development</summary>
 
 - `tests/run.sh` runs the lint, luacheck and the headless test suites on
   KOReader's real drawing code. It needs a KOReader emulator build (set `KO_DIR`
@@ -33,3 +71,10 @@ log, and settings for colours, fonts and more.
 
 The fonts are under the SIL Open Font License; the licence texts are in `fonts/`.
 See NOTICE.md.
+- `tools/readme/shots.sh` takes the screenshots above, and `tools/readme/banners.py` draws the title, the divider and the button.
+
+</details>
+
+## License
+
+MIT (see [`LICENSE`](LICENSE)). The bundled fonts are under the SIL Open Font License; see [NOTICE.md](NOTICE.md).
