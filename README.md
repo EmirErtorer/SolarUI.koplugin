@@ -57,6 +57,7 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
 ## Notes
 
 - **Twin of [CyberUI](https://github.com/EmirErtorer/CyberUI.koplugin).** Install both and switch between them with one tap; each keeps its own settings.
+- **In eleven languages:** English, Turkish, German, French, Spanish, Italian, Brazilian and European Portuguese, Russian, Polish and Greek, following KOReader's language. The companions speak English for now.
 - **Works with [Ink Away](https://github.com/EmirErtorer/ink-away.koplugin)** for notebooks, drawings and writing on books.
 
 <details>
