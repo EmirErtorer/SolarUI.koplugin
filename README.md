@@ -78,6 +78,10 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
 
 </details>
 
+## Contributing
+
+Bug reports, testing builds on your reader, colour schemes, translations, ideas and pull requests are all welcome. [CONTRIBUTING.md](CONTRIBUTING.md) explains how to get started, and [SECURITY.md](SECURITY.md) how to report a security problem.
+
 ## License
 
 MIT (see [`LICENSE`](LICENSE)). The bundled fonts are under the SIL Open Font License; see [NOTICE.md](NOTICE.md).
