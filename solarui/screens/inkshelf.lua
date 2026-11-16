@@ -56,8 +56,8 @@ local function notReady(state)
     if state == "old" then
         local have = Addons.version(InkAway)
         return say(_("Update Ink Away"),
-            (have and string.format(_("These shelves need a newer Ink Away than the one you have (%s)."), have) or _("These shelves need a newer Ink Away than the one you have."))
-                .. " " .. _("Your notebooks and drawings stay just as they are."),
+            have and string.format(_("These shelves need a newer Ink Away than the one you have (%s). Your notebooks and drawings stay just as they are."), have)
+                or _("These shelves need a newer Ink Away than the one you have. Your notebooks and drawings stay just as they are."),
             _("Update Ink Away"), function() Addons.install(InkAway, true) end,
             string.format(_("Free, from github.com/%s. Needs Wi-Fi."), InkAway.repo))
     elseif state == "disabled" then

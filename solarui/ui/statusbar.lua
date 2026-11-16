@@ -38,7 +38,7 @@ StatusBar.ITEMS = {
         local Device = require("device")
         if not Device:hasFrontlight() then return nil end
         local ok, v = pcall(function() return Device:getPowerDevice():frontlightIntensity() end)
-        return ok and v and (_("Light") .. " " .. v) or nil
+        return ok and v and string.format(_("Light %s"), tostring(v)) or nil
     end },
     { id = "cpu", name = _("Processor load"), read = function() return pct(_("CPU"), require("solarui/data/sysinfo").cpuLoad()) end },
     { id = "mem", name = _("Memory"), read = function()

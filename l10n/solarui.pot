@@ -50,7 +50,7 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: solarui/actions.lua solarui/data/libgroups.lua solarui/screens/dossier.lua solarui/screens/library.lua
+#: solarui/actions.lua solarui/data/libgroups.lua solarui/screens/dossier.lua solarui/screens/library.lua ...
 msgid "Status"
 msgstr ""
 
@@ -74,11 +74,11 @@ msgstr ""
 msgid "That did not work"
 msgstr ""
 
-#: solarui/actions.lua solarui/screens/trash.lua solarui/screens/updates.lua solarui/ui/dialog.lua ...
+#: solarui/actions.lua solarui/apps/addons.lua solarui/menu.lua solarui/screens/trash.lua ...
 msgid "OK"
 msgstr ""
 
-#: solarui/actions.lua solarui/screens/collections.lua
+#: solarui/actions.lua solarui/screens/collections.lua solarui/screens/gardenpet.lua
 msgid "Rename"
 msgstr ""
 
@@ -196,7 +196,7 @@ msgid_plural "They wait in the trash for %d days."
 msgstr[0] ""
 msgstr[1] ""
 
-#: solarui/actions.lua solarui/screens/settings.lua
+#: solarui/actions.lua solarui/screens/settings.lua solarui/skin/network.lua
 msgid "Open"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Make library home"
 msgstr ""
 
-#: solarui/app.lua solarui/screens/settings.lua
+#: solarui/app.lua solarui/menu.lua solarui/screens/settings.lua
 msgid "Home"
 msgstr ""
 
@@ -240,12 +240,16 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: solarui/app.lua solarui/screens/settings.lua solarui/ui/launcher.lua
+#: solarui/app.lua solarui/menu.lua solarui/screens/settings.lua solarui/ui/launcher.lua
 msgid "Settings"
 msgstr ""
 
 #: solarui/app.lua
 msgid "Something went wrong; see crash.log"
+msgstr ""
+
+#: solarui/app.lua
+msgid "%s has something to tell you."
 msgstr ""
 
 #: solarui/apps/addons.lua
@@ -261,7 +265,15 @@ msgid "Free to get"
 msgstr ""
 
 #: solarui/apps/addons.lua
+msgid "Updating %s"
+msgstr ""
+
+#: solarui/apps/addons.lua
 msgid "Installing %s"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s was not updated"
 msgstr ""
 
 #: solarui/apps/addons.lua
@@ -277,6 +289,14 @@ msgid "1/3 Asking GitHub"
 msgstr ""
 
 #: solarui/apps/addons.lua
+msgid "%s is up to date"
+msgstr ""
+
+#: solarui/apps/addons.lua
+msgid "%s %s is the newest release, and you have it already. Check again once a newer one is out."
+msgstr ""
+
+#: solarui/apps/addons.lua
 msgid "2/3 Downloading %s %s (%.1f MB)"
 msgstr ""
 
@@ -288,11 +308,11 @@ msgstr ""
 msgid "%s %s is installed. Restart KOReader to use it."
 msgstr ""
 
-#: solarui/apps/addons.lua
+#: solarui/apps/addons.lua solarui/ui/twinswitch.lua
 msgid "%s is installed. Restart KOReader to use it."
 msgstr ""
 
-#: solarui/apps/addons.lua
+#: solarui/apps/addons.lua solarui/screens/inkshelf.lua
 msgid "Switch on"
 msgstr ""
 
@@ -308,11 +328,11 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-#: solarui/apps/addons.lua
+#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
 msgid "Not now"
 msgstr ""
 
-#: solarui/apps/addons.lua
+#: solarui/apps/addons.lua solarui/screens/inkshelf.lua
 msgid "Free, from github.com/%s. Needs Wi-Fi."
 msgstr ""
 
@@ -326,6 +346,90 @@ msgstr ""
 
 #: solarui/apps/inkaway.lua
 msgid "Open a book first"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Poet's narcissus"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Spring crocus"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Garden pansy"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Lavender"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Madonna lily"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Chamomile"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Rose, daisy and tulip posy"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Dandelion"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Norway maple leaf"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Garden rose"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Garden tulip"
+msgstr ""
+
+#: solarui/art/species.lua solarui/screens/inkpick.lua
+msgid "Ginkgo"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Bracken fern"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Dandelion seed head"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Honesty seed pod"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Sunflower"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "White water lily"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Harebell"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Bearded iris"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Corn poppy"
+msgstr ""
+
+#: solarui/art/species.lua
+msgid "Common ivy"
 msgstr ""
 
 #: solarui/data/achievements.lua
@@ -472,7 +576,7 @@ msgstr ""
 msgid "Minutes read, 12 weeks"
 msgstr ""
 
-#: solarui/data/metric.lua solarui/screens/log/period.lua
+#: solarui/data/metric.lua solarui/screens/log/period.lua solarui/skin/bookstatus.lua
 msgid "Pages read"
 msgstr ""
 
@@ -520,12 +624,2258 @@ msgstr ""
 msgid "%d min"
 msgstr ""
 
+#: solarui/garden/almanac.lua
+msgid "%s to %s"
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "From the Old English bēo. The Latin name Apis mellifera means the bee that carries honey."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Wild colonies live in hollow trees, and most honey bees now live in hives kept by people, across the world."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "People have kept bees for thousands of years, and robbed wild nests before that. A hive is one family: a single queen and tens of thousands of her daughters."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at a bee on a flower and notice the yellow baskets of pollen packed on the hind legs."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Ladybird is for Our Lady, the Virgin Mary: medieval farmers are said to have thanked her when the beetles ate the pests on their crops."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Gardens, hedges, grassland and farmland, anywhere that aphids live, across Europe."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Gardeners have welcomed ladybirds for centuries, and growers now release them to control aphids instead of spraying. The black spots do not tell the age, as the story goes."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look on the new growth of roses and nettles, where aphids gather, for ladybirds and their spiky larvae."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Snail is from the Old English snægl, related to a word for creeping. Cornu is Latin for horn, for the horns on the head."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Gardens, hedges and woodland edges, in damp places, native to the Mediterranean and spread by people to much of the world."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "The Romans kept snails for the table, and snails are still eaten in several countries. Every snail is both male and female, and a pair can swap eggs."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look after rain, or at dusk, and follow a silver trail to find where a snail has been."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "From the Old English butorfleoge, possibly for the yellow of the first butterflies of spring. The swallowtail is named for the tails, like those of a swallow."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Fens and wet meadows in Britain, and warm open country across Europe, where the caterpillar's food plants grow."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "The British swallowtail is a rare butterfly that lives only in the Norfolk Broads. The caterpillar eats milk-parsley, and conservationists work to keep the fens from drying out."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look for the caterpillar on a fennel or carrot plant: green with black bands and orange spots, and puts out a smelly orange horn when disturbed."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Called redbreast at first. Robin is a pet form of the name Robert, and the pet name won."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Woodland, hedges and gardens across Europe. In Britain robins are tame and sing near people."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "The robin is a favourite of British gardens, and was chosen as the national bird of Britain in a vote in 2015. The red breast gave rise to many folk tales."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at the red on the breast and face, and listen for a thin, wistful song on winter mornings."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "A dragon among flies, for the fierce hunter. Anax is Greek for lord and imperator is Latin for emperor."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Still, open water with plenty of plants, such as ponds, lakes and slow rivers, across Europe, Asia and Africa."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Dragonflies were flying before the dinosaurs, and some ancient ones had wings seventy centimetres across. In Japan the dragonfly is a symbol of strength and success."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look beside a pond in summer for a dragonfly that hovers, darts and returns to the same perch."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Frog is from the Old English frogga. Pelophylax is Greek for mud guard, and ridibundus is Latin for laughing."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Ponds, lakes and slow rivers with plenty of plants, across Europe and western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Frogs have been used in laboratories since the 1700s, and the study of frog legs helped lead to the discovery of electricity in nerves. Frog populations are now falling in many places."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at the water's edge on a warm summer evening, and listen for the loud laughing chorus."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Koi is the Japanese word for carp. The word sounds like another that means affection, so koi stand for love."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Koi were bred from the common carp in Japan, and live in ornamental ponds around the world."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Rice farmers in Niigata first bred carp with red and white patterns in the 1800s. A koi may live for decades; one in Japan was said to have reached two hundred years, though that is not proven."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at the mouth of a koi for the small whiskers, used to feel for food in the mud."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Hedge for where they look for food, and hog for the pig-like snout."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Gardens, hedgerows, woods and meadows across Europe, wherever they can find cover."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Hedgehogs are in decline across Britain and Europe, and gardens with small gaps in the fences are one of the things that help. They have been in folk tales for centuries."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at dusk, or listen for snuffling in the leaves, and leave a gap under the fence for passing hedgehogs."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "From the Old English moððe. The elephant hawk-moth is named for the caterpillar, which looks a little like an elephant's trunk."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Waste ground, gardens, woodland edges and railway banks, anywhere willowherb or bedstraw grows, across Europe and Asia."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Moths do much of the pollination of flowers at night, a job that we mostly notice only in butterflies. The caterpillar can swell the front end to look like a snake."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at honeysuckle or phlox after dusk, and wait for a pink moth to hover and drink."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Fox is the Old English fox, related to a word for tail. Vulpes is Latin for fox."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Woods, farmland, hedgerows and towns across the northern hemisphere. Red foxes have moved into many cities."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "The fox appears in folk tales across Europe and Asia as a trickster. Foxes have lived beside people for so long that they now share many cities with them."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at the ground at dawn or dusk for a track of four toes with claw marks, laid in a neat line."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Pea is from the Latin pavo, the peafowl, and the cock is for the male. The female is a peahen."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Indian peafowl are wild in forests and farmland in India and Sri Lanka, and are kept in parks around the world."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Peafowl have been kept in gardens since antiquity. The peacock is the national bird of India. The long train of feathers is used to attract mates, not to fly."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look at the eye on each long feather and count how many there are on a full train."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Yüzsüz is Turkish for shameless, literally without a face: one who does exactly as she likes and is never sorry. She is known by many, many names across the multiverse. This is the one that stuck."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "The known and unknown universe, which she rules. Most often found in a patch of sun on a bed, or on whichever cushion you were about to sit on."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Cats have lived with people for some ten thousand years, since the first grain stores drew mice. Yüzsüz took the arrangement further: the people live with her. She hates lizards above all things and other cats only slightly less, and she sprints out of the litter box every time, as if something were after her."
+msgstr ""
+
+#: solarui/garden/almanac_animals.lua
+msgid "Look for a cat outdoors watching one spot without moving, for a very long time. Do not ask what is there. Nobody knows."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Greek krokos, the old word for saffron."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Mountain meadows and open woods of Europe, often where snow has just melted."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Saffron, the most costly spice by weight, is made from the red threads of a different crocus. Each flower gives only three, and they are picked by hand."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look on a sunny day in late winter for crocuses open wide, and on a dull day for the same flowers shut tight."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the French pensée, a thought, because the flower seems to nod as if thinking."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The wild heartsease grows on grassland and field edges across Europe. Garden pansies were bred from heartsease."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Heartsease was once a folk remedy and a love charm. Breeders in England in the early 1800s crossed heartsease with other violas to make the large pansy."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at one pansy closely: the dark lines on the lower petals point towards the middle, guiding insects in."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Greek for ground apple, because the leaves smell of apples when crushed."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Fields, roadsides and waste ground across Europe and western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Chamomile tea is one of the oldest herbal drinks, used in ancient Egypt and Rome."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Crush a leaf between your fingers and smell the apple, then look for the hollow cone in the middle of the flower."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the French dent-de-lion, a lion's tooth, for the toothed edges of the leaves."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Almost anywhere there is open ground: lawns, verges, meadows and cracks in paving."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Every part can be eaten, and roasted roots have stood in for coffee in hard times. The first flowers of spring are one of the few meals bees can find then."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for a seed head, called a clock, and watch where the wind takes a few of the seeds."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Probably from a Persian word for turban, which the flower was said to resemble."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The wild species grow on the dry mountains and steppes of Central Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Ottoman gardeners made the tulip a symbol of the court, and in the 1600s Dutch buyers paid very high prices for single bulbs. The famous boom and crash is told often, though historians now think the legend is bigger than what happened."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at a tulip at midday and again in the evening: many open in warmth and close in the cold."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From an old Scandinavian word for fern, still found in Swedish as bräken."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Open woods, heaths and hillsides, mostly on acid soil, on almost every continent."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "People cut bracken for bedding and for roofing, and burned the fronds for the potash in the ashes. The young shoots are eaten in some places, but they are poisonous raw and are not safe to eat in quantity."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look in spring for a young frond unrolling from a tight coil, shaped like a bishop's crook."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Greek myth of a youth called Narcissus. Some ancient writers linked the name to a word for numbness, for the heavy scent."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Damp mountain meadows in southern Europe, from Spain to Greece."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The poet's narcissus has been grown since antiquity, and the flowers are used in perfumery. All parts are poisonous, so gardeners are careful not to mix the bulbs with food."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the small red-edged cup in the middle of the white petals, and smell the flower from a short way off."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Latin lilium, which came from a Greek word for the flower."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Probably from the eastern Mediterranean or the Balkans. The Madonna lily has been grown for so long that nobody is sure."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The Madonna lily appears on Minoan wall paintings more than three thousand years old, and later in paintings of the Annunciation. White, the flower came to stand for purity."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look inside the flower for the six golden anthers that dust anything touching them with orange pollen."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The name is Latin, rosa, and has passed with little change into most European languages."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The damask rose is a garden hybrid. The wild ancestors come from western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Roses have been grown for scent and for rose water for centuries. In Bulgaria and in Isparta in Turkey, the petals are picked by hand at dawn."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at the stem for the sharp points. Botanists call them prickles and not thorns, because they come off the skin of the stem and not from the wood."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The Latin name Helianthus is from the Greek for sun and flower."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The prairies of North America, where wild sunflowers still grow."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Native peoples of North America grew sunflowers for seed and oil for thousands of years before Europeans carried them home. In Russia the plant became a major crop in the 1800s."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at the middle of the head and count the spirals of seeds in both directions: the two numbers are neighbours in the Fibonacci series."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Iris is the Greek word for rainbow, and the name of the goddess who walked the rainbow."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Dry, sunny slopes around the Mediterranean and in western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Dried iris roots, called orris, were used to make perfume and to scent linen. The iris is also the flower of Florence, whose name is sometimes said to mean the city of flowers."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the fuzzy beard on the lower petals, which works as a landing strip for bees."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Old English popæg, which came from the Latin papaver."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Fields and disturbed ground, and wherever soil has been turned, across Europe and western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "After the First World War the red poppy that bloomed on the churned battlefields of Flanders became a symbol of remembrance. The seeds can lie in the soil for many years waiting for the ground to be disturbed."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the seed capsule after the petals fall, with small holes at the top, like a pepper pot."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Campanula, the botanical name, is Latin for little bell."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Dry grassland, dunes and rocky ground across the northern half of the world, where the plant is called the harebell, or the bluebell of Scotland."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The harebell is the flower the Scots call a bluebell, which is why two quite different plants share a name. Harebells tolerate thin, dry soils where little else flowers."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at how the thin stem bends in even a light wind, and the flowers nod and swing."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Honesty is for the pods, which hide nothing. The Latin Lunaria is from luna, the moon, for their round shape."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Hedgerows and waste ground in Europe, escaped from gardens."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The silver pods have long been dried for winter arrangements. They are also called the money plant, for the coin-like discs."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the papery pods in late summer: rub off the outer layers and the pale disc left behind is the wall between the seeds."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Maple is from the Old English mapol. Acer is the Latin for maple, and platanoides means like a plane tree."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Woods and hedgerows of Europe and western Asia, from the lowlands up into the hills."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Maple wood is hard and has been used for instruments, and the sap of some maples is boiled down into syrup. The Norway maple is also planted widely as a street tree."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for a pair of winged seeds, throw them up, and watch them spin as they fall."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Japanese for silver apricot. A European botanist wrote the name down as ginkgo in the 1700s, and the odd spelling stayed."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Wild only in a small part of China, though ginkgo has been grown in temple gardens for centuries."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Ginkgo is often called a living fossil, with relatives in the rocks of the age of the dinosaurs. A few trees in Hiroshima survived the bombing in 1945 and are still alive."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the fan-shaped leaf with veins that fork and never join. Where the leaves fall in autumn, they often fall in one night."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "From the Old English ifig. The Latin name Hedera is much older."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Woods, walls and rocks across Europe and western Asia."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Ivy was sacred to Dionysus in Greece and to the old holly and ivy of the winter festivals in northern Europe. The flowers are among the last of the year to feed insects."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look for the two kinds of leaves, lobed ones low down on climbing stems and plain ones on the flowering branches high up."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Nymphaea is from the Greek for nymph, because the flowers grow where water spirits live in the old stories."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Still, shallow ponds and slow rivers across Europe, rooted in the mud."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Painters have returned to the water lily again and again. Monet painted his own pond at Giverny for most of the last thirty years of his life."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at the floating leaf and the cut from the edge to the middle, and watch the flower open late in the morning and close by evening."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "The name comes from a Haudenosaunee (Iroquois) tradition, in which maize, beans and squash are three sisters who grow and feed together."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Fields and gardens in the Americas, where the three have been grown together for centuries."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Many Native peoples of the Americas planted maize, beans and squash together in one mound. The maize gives the bean a pole, the bean puts nitrogen in the soil, and the squash covers the ground and keeps weeds down. The botanist Robin Wall Kimmerer writes about the Three Sisters in Braiding Sweetgrass."
+msgstr ""
+
+#: solarui/garden/almanac_plants.lua
+msgid "Look at a bean plant's roots in the soil, if you can find one: the small round nodules hold bacteria that take nitrogen from the air."
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Three Sisters bed"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Honey bee"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "nectar"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Seven-spot ladybird"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "aphids"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Garden snail"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "tender leaves"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Swallowtail"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "European robin"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "worms and seeds"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Emperor dragonfly"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "midges"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Marsh frog"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "flies"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Koi carp"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "pond weed"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "European hedgehog"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "beetles and slugs"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Elephant hawk-moth"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Red fox"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "field mice"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "Indian peafowl"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "seeds and berries"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "The Magnificent"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "known by many, many names across the multiverse"
+msgstr ""
+
+#: solarui/garden/cast.lua
+msgid "salami above all, then kebab, chicken, minced meat, cheese and yogurt"
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was coaxed into bloom with a seed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A seed was spent on %s, and the flowers came at once."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s took the hint and bloomed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s came up."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s put out the first leaves."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s sprouted, with no fuss."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s made a bud."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s is thinking about flowering."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s has a bud and a plan."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s bloomed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s opened, and looked pleased."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s is in flower."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s has gone to seed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s let the seeds ripen."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s is done flowering, and can be cut back."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s wilted from thirst."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s drooped, plainly and on purpose."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s ran dry and gave up for now."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s found the garden."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s arrived, uninvited and welcome."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s turned up, as if the garden had always been home."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s went into hiding, hungry."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was not seen all day, and is hungry."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s has hidden away until someone brings a meal."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s visited %s."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s spent the afternoon at %s."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s called on %s, and left pollen behind."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "You read %d pages. %s drank from them."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%d pages came in, and %s was watered by them."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%d pages today, and %s has them to thank."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was cut back, and the seeds were kept."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was tidied, and a seed saved."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was cut back, and the seeds went into the jar."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The seeds of %s were left for the birds."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was left standing for the birds."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The birds found the seeds of %s."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The seeds of %s were scattered in the beds."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s dropped a few seeds a little further along."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Some seeds of %s were thrown to the wind."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A seed was left in the wild edge."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A seed went back to the wild."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Something was given back to the wild edge."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Rain came in the night, and the beds drank."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Rain fell, and the watering can stayed in the shed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A day of rain. Everything was given half a drink."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Snow lay on the beds."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "Snow came, and the garden went quiet."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The first snow settled on the lawn."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "You went outside and looked, and ticked the week off."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A week's walk was ticked off."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The garden was glad to hear you went out."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s peeked out of the grass, and you saw."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "You spotted %s watching from the grass."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was hiding in plain sight, and you found the spot."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A new bed was laid out: %s."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was planted in the corner of the lawn."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The ground was ready, and %s went in."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The harvest of %s was shared round the garden."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was picked, and nobody went hungry."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The harvest from %s fed the garden's visitors."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s began."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "The garden turned to %s."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s came round again, on time."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was here all along. The garden has only now noticed."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s has always ruled this garden, and today the garden said so."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s looked the garden over and allowed the garden to go on."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s is hungry and is not hiding. She is demanding."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s waited by the dish, and the waiting had teeth."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s stared at the kitchen door until somebody felt guilty."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s bit someone. There was blood."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s drew blood, and regrets nothing."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "A hand went too far, and %s answered with teeth."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s came back out for a meal."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s was fed and showed up at once."
+msgstr ""
+
+#: solarui/garden/journal.lua
+msgid "%s is back, and no questions asked."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The poet's narcissus flowers late in spring and grows wild in the mountain meadows of southern Europe. Their scent is heavy and sweet. Every part of the plant is poisonous, the bulb most of all."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The spring crocus grows from a small corm and often flowers through the last snow in the mountains of Europe. Their petals open in the sun and close at dusk. Saffron comes from a different crocus."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The garden pansy was bred in the nineteenth century from the wild heartsease. The name comes from the French word for a thought. Pansies like cool weather, and their flowers can be eaten."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The Madonna lily is one of the oldest garden plants there is, painted on Minoan walls more than three thousand years ago. They flower in early summer and smell strongly. Lilies of this kind are dangerous to cats."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Chamomile is a small annual cousin of the daisy. Dried, the flower heads make a calming tea. The cone in the middle of each flower is hollow, which tells chamomile from similar plants."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Each dandelion flower is a head of many tiny flowers. When they have set seed, every seed carries a parachute of fluff. The long taproot reaches deep, and the early blooms feed bees after winter."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The Norway maple has leaves with pointed lobes, and a torn stalk bleeds a milky sap. Their seeds are paired wings that spin down like small helicopters. In autumn the leaves turn yellow."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The damask rose is an old hybrid, grown for rose water and rose oil. Isparta in Turkey and the Rose Valley in Bulgaria are famous for roses. The petals are picked at dawn, before the sun draws out the scent."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The tulip came from the mountains of Central Asia. The Ottomans prized tulips so much that one age of their court is called the Tulip Era. Dutch growers later paid fortunes for single bulbs."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The ginkgo is the last survivor of a family of trees more than two hundred million years old. Their fan-shaped leaves have veins that fork and never join. In autumn the leaves turn gold and fall almost all at once."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Bracken is a fern, so bracken grows from spores and never makes a flower or a seed. The young fronds unroll slowly from tight coils. Bracken spreads underground and is one of the most widespread ferns on Earth."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Honesty gets the name from the seed pods, which are round, papery and so thin that the seeds show through. They shine like silver coins. The plant flowers purple in spring and lives for two years."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The sunflower came from North America. Young flower heads turn to follow the sun across the sky. The big head is really hundreds of small flowers, set in spirals that are counted by Fibonacci numbers."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The white water lily roots in the mud and sends up long stalks so the round leaves can float. The flowers open in the morning and close again in the afternoon. Water lilies need no watering."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The harebell has slender stems that tremble in the lightest wind. Small blue bells nod on them through summer. Harebells grow on dry grassland and dunes across the northern half of the world."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The bearded iris is named after the Greek goddess of the rainbow. The fuzzy beard on the lower petals guides insects in. Irises grow from thick roots called rhizomes, which are dried for perfume."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The seeds of the corn poppy can sleep in the soil for decades and wake when the ground is turned. That is why poppies covered the churned fields of old battlefields. Each flower lasts only a day or two."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Ivy climbs by tiny rootlets, not by tendrils, and stays green through winter. The flowers open late in autumn when little else does, so they feed insects, and the berries feed birds through the cold months."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Maize, climbing beans and squash are grown together in one mound by many Native peoples of the Americas, and the three plants are called the Three Sisters. The maize holds up the beans, the beans feed the soil with nitrogen, and the broad squash leaves shade the ground. Planted together, each helps the others."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "A honey bee tells the hive where the flowers are by dancing. The angle of the dance shows the direction and the length of the dance shows the distance. A worker lives only a few weeks in summer."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The seven-spot ladybird's bright red warns birds of a bad taste. Both the adults and their spiky larvae eat aphids, and a single ladybird can eat hundreds in a life. Ladybirds sleep through winter in a sheltered crack."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "A garden snail glides on one muscular foot over a trail of slime. Their tongues are covered with thousands of tiny teeth. In dry weather a snail seals the shell shut and waits for the rain."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The swallowtail's caterpillars eat fennel and other plants of the carrot family. The adults taste with their feet and drink nectar through a long tongue kept rolled up. The tails on the hind wings give the swallowtail the name."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The European robin sings nearly all year round, and sometimes at night near a lamp. Each robin guards a patch of ground, even in winter. Robins often follow a gardener who is digging, for the worms that turn up."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The emperor dragonfly spends the first year or two as a hunter under the water. The adults hunt on the wing and can move each of the four wings separately. The family has been flying for more than three hundred million years."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The marsh frog is the largest green frog of Europe. The eyes sit high on the head so a frog can watch from the water with only the face showing. In summer the males sing in loud choirs, with a balloon on each cheek."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Koi are carp that were bred in Japan for their colours. They live for decades, and they learn to know the person who feeds them. In winter they slow down and rest near the bottom of the pond."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "A hedgehog has five to seven thousand spines, and rolls into a ball when afraid. Hedgehogs wander at night looking for beetles and slugs. In winter they sleep in a nest of leaves until spring."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The elephant hawk-moth is pink and olive green. At dusk the moths hover at flowers like tiny hummingbirds, drinking nectar. The caterpillar has a trunk-like front end, which is how the moth got the name."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "The red fox listens for mice under the grass, then leaps and pounces from above. Foxes are mostly active at night and sleep in a den by day. In midwinter the vixen calls with a strange scream."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
+msgstr ""
+
+#: solarui/garden/lore.lua
+msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The first crocuses open on the sunny side of the hedge, and by afternoon a few bees have found them."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Day by day the light stays a little longer. The blackbird sings before anyone is up to hear."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A tulip does not hurry. The leaves come first, then a bud held low and tight, then a week of colour."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "After rain the ground smells sweet. Soil bacteria make the scent, and the damp air carries the scent up."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Dandelions are the first meal many bees find after winter, so leave a few in the grass."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Look for the pale new leaves on the maple: they are folded like small hands, and open within days."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The robin sings from the highest branch, which is how the neighbours learn whose ground this is."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Sparrows carry strands of dry grass back to the hedge. Every nest begins as a pile of small errands."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A snail leaves a trail of silver on the stones, and the rain wipes the trail away before supper."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Frogs gather in the pond on the first warm nights, and the spawn floats in a clear, trembling cloud."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Narcissus nods in the wind and holds on to the petals through all of April's rain."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "At the equinox day and night are almost the same length everywhere on Earth, and from then on the light has the upper hand."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "At midsummer the sun barely sets in the north, and the last light lingers on the lawn long after supper."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The lily opens in the morning and closes in the afternoon, as regular as a clock with no hands."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A bee on a flower is doing a day's work. She may visit hundreds of blossoms before she turns for home."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The dragonfly hovers, darts, and returns to the same perch. Each of the four wings can move separately."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Sunflowers follow the sun when they are young. Once they flower, the big heads settle facing east."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "At dusk the moths come out for the flowers that stayed open, and the garden begins the night shift."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The pond is quietest in the heat of the afternoon. By evening the frogs are ready to sing."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A poppy lasts a day or two, but the plant makes dozens of flowers, and thousands of seeds for the years ahead."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Shade is a gift in summer. Sit under the maple for ten minutes and notice how much cooler the air feels."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The ginkgo's leaves are a deep, glossy green now. In autumn they will turn gold and fall almost overnight."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Swifts scream across the sky in the warm evenings. They eat, drink and even sleep on the wing."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The bellflower trembles in the lightest breeze, and sheds tiny seeds from holes at the base of each capsule."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The maple turns first at the edges. The green fades as the tree takes back what the leaves can give before they fall."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Ivy flowers late, in the cool of October, and the bees that are still about are glad of the flowers."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A hedgehog needs to eat well now to last the winter. A pile of leaves in a quiet corner is a good place to sleep."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The ginkgo drops every leaf within a day or two of the first hard frost, and leaves a golden circle on the ground."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Spiders' webs show in the morning mist, every thread strung with a bead of water."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Honesty's flat pods turn silver and papery. Hold one up to the light and the seeds show through."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Geese fly south in loose skeins, calling to each other. Listen on a still evening and you will hear them before you see them."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The robin guards a patch of ground all winter, even from other robins, and sings from that patch in the cold."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The first frost does not kill the garden. The frost tells the plants that the time to rest has come."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Seeds are the garden's savings: tucked into the soil, they wait for the spring to come back."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "At the equinox day and night are almost equal. From now on the dark has the upper hand until midwinter."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The pond grows quiet. The frog settles into the mud, and the dragonfly's eggs wait under the water."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The year's shortest day is still a day. After that, the light comes back by a minute at a time."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The bare maple shows the bones of the tree: every branch that held a leaf in summer, drawn in ink against the sky."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A robin puffs up the feathers on a cold morning, and looks twice the size."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Frost writes on the window in ferns, and the ferns in the garden are waiting under the leaves."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The hedgehog sleeps in a nest of leaves. The heartbeat slows to a fraction of the summer rate, and the hedgehog wakes in spring."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Snow is a blanket. The soil beneath stays warmer than the air, and the bulbs sleep on."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The crocus corms are under the ground now, small and patient, waiting for the first warm day."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "A fox's tracks cross the frosty lawn in a neat line, four toes and the marks of claws."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Ivy berries ripen in the cold, and are one of the last things the birds can find."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "Seeds are not dead. They are asleep, and many of them need the cold to wake."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The pond may freeze over, but under the ice the fish drift slowly and the frogs lie in the mud."
+msgstr ""
+
+#: solarui/garden/nature.lua
+msgid "The first snowdrop is a promise. The plant has been growing under the snow the whole time."
+msgstr ""
+
+#: solarui/garden/nature.lua solarui/ui/gardenbook.lua
+msgid "From the garden"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "New friend"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "Friend"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "Close friend"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "Dear friend"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "Old friend"
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "%s became your companion."
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "The bond reached level %d: %s."
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "A book was finished together."
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "%d day of reading in a row."
+msgid_plural "%d days of reading in a row."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/garden/pet.lua
+msgid "%d days together."
+msgstr ""
+
+#: solarui/garden/pet.lua
+msgid "%s came back to you."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find three leaves with different edges: smooth, toothed and lobed. Lay them side by side."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Step outside around sunrise and count how many different bird songs you can tell apart."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sow one seed, even in a pot on a windowsill, and water the seed."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a flower that opened this week. Count the petals, then watch for who visits."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand under a tree on a breezy day and listen to the leaves."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk somewhere you usually ride or drive, and notice what has changed since last week."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Turn over a leaf gently and look underneath for tiny eggs or insects, then put the leaf back."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a place near water and listen for frogs, ducks or running water."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Smell the ground after rain, then crouch down and look closely at the soil."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Pick a tree you pass every day and find the buds at the end of a twig. Look again in a week."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sit still for five minutes and count the sounds you hear that people did not make."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Pick up three pieces of litter on a walk and put them in a bin."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a puddle after rain and look at the sky reflected there, then at who comes to drink."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for the first butterfly of the year and notice the colours of the wings."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first butterfly"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a bud that has just burst and look at how the new leaf is folded."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find moss on a wall or a tree and look at the moss up close, as if the moss were a tiny forest."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at the light through new leaves and notice how green the light has become."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a daisy and see whether the flower closes towards dusk."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for a bee at a flower early in the day, when the bees are slow with cold."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first bee"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Watch a hedge from a distance for a bird carrying twigs, and leave any nest alone."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for a bird singing before dawn, and count the singers."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to rain on leaves, on a roof and on the ground, and notice how each sounds different."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand quietly near blossom and listen for the buzz of insects."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to the wind in new leaves, and compare the sound with the wind in bare branches."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for a woodpecker drumming on a tree."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at dusk for the last bird to stop singing."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at a pond or a ditch for the first frog calling, and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first frog calling"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at a hedge for the rustle and chirps of birds looking for nest material."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Plant a seed or a bulb in a pot and write the date on a label beside the pot."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take your book outside and read one page under the open sky."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk a path near where you live that you have never taken."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Water a plant outdoors or on a sill and watch the water sink into the soil."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Put out a bowl of water for the birds and keep the bowl full for a week."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take a photograph of the same tree each week, starting now."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Spend a quarter of an hour outside without your phone."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sit on the ground and look closely at everything at the height of your hand."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take a deep breath outside and name three smells."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a flower with a bee on the petals and watch how long the bee stays and where the bee goes next."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at dusk for crickets, grasshoppers or birds settling for the night."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sit in the shade for ten minutes without your phone and notice everything that moves."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find three kinds of seeds and compare how each one is made to travel."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Close your eyes in a park or garden and listen for the nearest bird, then the next nearest."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Leave a shallow dish of water out for birds and insects, and see who comes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look early in the morning for a spider's web, when the dew makes every thread show."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand still near flowers and listen for the hum of bees."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Lie on the grass and look up through the branches of a tree for a few minutes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Watch the sky at dusk for swifts, swallows, bats or moths."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find the tallest tree near you and listen to the wind in the top."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk barefoot on grass, sand or soil for a few minutes, if the ground is safe."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a butterfly resting with closed wings and look at the underside, then wait for the wings to open."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at the sky and name the clouds: high wisps, fluffy heaps or a flat grey sheet."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Mark the shadow of a tree at noon and again two hours later, and see how far the shadow has moved."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look closely at a daisy or a dandelion and see that the one flower is really many small flowers."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a snail or a slug on a damp morning and follow the trail."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find the spot where a flower has fallen and a fruit is starting to form."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Watch an ant trail for a minute and see what the ants are carrying."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for the first ripe berry of the summer and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first ripe berry"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to a hot afternoon: what has gone quiet, and what has not?"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for a bird that sounds like a question, and try to find the singer."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to water: a stream, a fountain, a tap or a puddle. Which is the gentlest?"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sit near a hedge and listen for the small rustles of wrens and sparrows."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for the first swift screaming overhead, and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first swift"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to a storm arriving: the wind first, then the hush, then the rain."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at the edge of a field to the dry whisper of long grass."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at night through an open window to the sounds of the dark."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Water a thirsty plant in the cool of the evening, and watch the leaves lift."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Pick up a smooth stone and carry the stone for a day, then return the stone to where you found the stone."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Eat something outside, a piece of fruit if you can, and notice every taste."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Leave a patch of lawn unmown or a corner of a window box wild, and see who moves in."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take your book outside and read in the shade for twenty minutes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Go out an hour before sunset and walk until the light turns gold."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sit by water and put a hand in the water."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Press a flower or a leaf between the pages of a heavy book."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Draw a plant you can see, even badly, and put the date on the drawing."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Gather leaves of three colours and set them in a line from green to red."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for geese, starlings or other flocks passing overhead."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Leave a pile of leaves in a quiet corner, where a hedgehog or a beetle might shelter."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for a bird eating berries and notice which berries are chosen."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk on dry leaves and listen to how each kind crunches."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Collect three seeds or nuts, such as acorns, conkers or maple keys, and look at how each is made."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for mushrooms in the leaf litter. Look closely, and do not touch or taste."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "On a still evening, listen for an owl or a robin singing in the dusk."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Watch a sunset and notice how early the sun goes down now."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find one seed that flies on the wind, one that sticks to clothes and one that animals eat."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand under a tree as the leaves fall and listen for the small sound of each one landing."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Notice which trees have kept their leaves and which have let them go, and think about why."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a spider's web with the spider still at home, and look at how the threads are laid."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at a leaf that is half green and half red, and find where the colours meet."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at what the first frost or the first fog of the season has covered, and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first frost"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for a squirrel or a jay burying food, and notice where."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at how high the midday sun is, and compare the height with the summer sun."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a hedge full of berries and count the colours."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look up at a flock leaving or arriving, and count them in tens."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for an owl or another night bird after dark."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to the wind shaking seed pods and dry stems."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for the last cricket of the year, and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the last cricket"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for the call of a bird that has just arrived for the winter."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to rain on fallen leaves."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to your own steps on a muddy path, then on a dry one."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at dusk as the garden gets ready for night, and notice what goes quiet first."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand still and follow the faintest sound you can hear for a full minute."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Rake a few leaves into a heap and walk through the heap."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Plant a bulb for the spring, and mark the place."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Save the seeds of a flower you like in a paper envelope, and write the name on the envelope."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take a walk after rain with a bag for leaves and seeds."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Note the date the first tree in your street turns."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take your book outside and read in the last warm sun."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Buy or gather something of the season, such as apples, pumpkins or nuts, and taste the first bite outdoors."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Cut back what has finished in your pots or window box, and leave what is still flowering."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Go outside at dusk with a hot drink and watch the light go."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take a leaf from a tree and find out the name of the tree."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for tracks in frost, mud or snow, and follow one set for as far as the tracks go."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand outside after snow and listen to how quiet the world has become."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Hang up food for the birds, or put out fresh water, and watch who comes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find the bud at the end of a bare branch, small and tightly closed."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for a robin or a wren singing in the cold."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Go out on a clear night, let your eyes adjust for ten minutes, and find one constellation."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find something green in the middle of winter, and ask what the plant is doing."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to your own footsteps on frost, leaves or snow."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk for twenty minutes in daylight, however cold, and notice how long the shadows are."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Count the birds in a hedge or at a feeder for five minutes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Stand by a frozen puddle or pond and listen for the ice creaking."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for the first snowdrop or catkin of the year, and remember the date."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first snowdrop or catkin"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at your breath in the cold air and watch where the breath goes."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find an icicle or a pattern of frost and look closely at the shape."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look for a bird's nest in a bare tree, where the nest can now be seen, and leave the nest alone."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Look at the stars and find the brightest one. Does the star twinkle?"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Watch a sunrise or a sunset and notice where the sun comes up or goes down compared with last month."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Find a plant that has kept the berries and see who comes to eat them."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for the sound of snow falling, or for the quiet that comes with the snow."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for a bird calling on a frosty morning and try to find the singer."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for geese or other winter birds overhead at dusk."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to the wind on a cold night from indoors, and think where the wind has been."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen to wet leaves underfoot, and compare them with dry ones."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for tits and finches moving through the garden in a flock."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen at a window to the dawn and notice how late the first song starts now."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Listen for the first song of any bird other than a robin, and remember the day."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "the first new birdsong"
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Fill a bird feeder and keep the feeder full for a week."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Press a finger into frost or snow and look at the mark left behind."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take your book outside, wrapped up warm, and read one page in the cold."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Sow a seed on a windowsill and watch for the first green."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Put a pine cone, a seed head or a twig on a windowsill and draw the shape."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Go out at first light and be there for the sunrise."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Walk to a place where you can see far, and look at the shape of the land."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Warm your hands round a hot drink while standing outside."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Check on a plant you left outside and look for green at the base."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Leave a shallow dish of water out on a freezing day and see how thick the ice is in the morning."
+msgstr ""
+
+#: solarui/garden/prompts.lua
+msgid "Take a photograph of a tree in winter, and take the same one again in summer."
+msgstr ""
+
+#: solarui/garden/season.lua
+msgid "Spring"
+msgstr ""
+
+#: solarui/garden/season.lua
+msgid "Summer"
+msgstr ""
+
+#: solarui/garden/season.lua
+msgid "Autumn"
+msgstr ""
+
+#: solarui/garden/season.lua
+msgid "Winter"
+msgstr ""
+
+#: solarui/garden/season.lua
+msgid "Asleep in %s."
+msgstr ""
+
+#: solarui/garden/state.lua
+msgid "From your garden: %s. %s"
+msgstr ""
+
+#: solarui/garden/state.lua
+msgid "From your garden: %s. Can you find a real one outdoors this week?"
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Lives in the garden from the start."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Have %d plants in bloom."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Read %d pages in the early morning."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Read %d pages late at night."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Finish %d books."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Read %d days in a row."
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "a bud forms"
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "the flower opens"
+msgstr ""
+
+#: solarui/garden/visitors.lua
+msgid "Grow the %s until %s."
+msgstr ""
+
+#: solarui/garden/weather.lua
+msgid "Clear"
+msgstr ""
+
+#: solarui/garden/weather.lua
+msgid "Cloudy"
+msgstr ""
+
+#: solarui/garden/weather.lua
+msgid "Rain"
+msgstr ""
+
+#: solarui/garden/weather.lua
+msgid "Snow"
+msgstr ""
+
+#: solarui/garden/weather.lua
+msgid "Mist"
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Crocuses flower in late winter and give bees one of their first meals of the year."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Dandelions open early in spring, when few other flowers do, and feed bees after the winter."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Ivy flowers in autumn, when most other flowers are over, and bees and hoverflies feed on the flowers."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Bees gather pollen and nectar from the many small flowers of a sunflower head."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Butterflies sip nectar from harebells and other summer flowers."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Butterflies drink nectar from irises and look for warm, sheltered beds."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Roses attract aphids, and ladybirds and their larvae eat the aphids."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Strongly scented flowers that stay open into the evening feed the moths that come after the bees have gone."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Bees work the flowers by day and moths by night, so the flowers are visited round the clock."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Dragonflies rest on lily leaves, and lay their eggs in the water among the stems."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Frogs sit on lily leaves, with only the face above the water."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Dragonfly larvae eat tadpoles, and frogs catch adult dragonflies."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Lily leaves shade the pond, which keeps the water cooler for the fish."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Hedgehogs eat snails and slugs, and gardens with hedgehogs have fewer of them."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Ivy berries ripen in late winter and feed birds when other food is scarce."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Squash flowers open early in the morning, and bees gather their pollen before the heat of the day."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "Peafowl eat seeds, and will take the seeds from the heads of fallen sunflowers."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "She watches the robin for hours, and answers the robin's song with a chattering version of her own."
+msgstr ""
+
+#: solarui/garden/web.lua
+msgid "The peacock believes he is the most magnificent creature in the garden. Nobody has told him about Yüzsüz yet."
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Salami"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "her favourite"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Kebab"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Chicken"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Minced meat"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Cheese"
+msgstr ""
+
+#: solarui/garden/yuzsuz.lua
+msgid "Yogurt"
+msgstr ""
+
 #: solarui/gfx/icons.lua
 msgid "Reader"
 msgstr ""
 
 #: solarui/gfx/icons.lua
 msgid "KOReader"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/filepick.lua
+msgid "Files"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Tools"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/library.lua solarui/screens/search.lua solarui/ui/launcher.lua
+msgid "Search"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Main"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Navigation"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Typeset"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "View"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Controls"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/launcher.lua
+msgid "Launcher"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Quick"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Ink Away"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Plugin"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "ZenOS"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "That one cannot be used"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Button %d"
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/settings.lua solarui/skin/frontlight.lua
+msgid "Light"
+msgstr ""
+
+#: solarui/menu.lua solarui/skin/frontlight.lua
+msgid "Warmth"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Wi-Fi on"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Wi-Fi off"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Night mode"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Rotate"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Annotate"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Restart"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Restart KOReader?"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Exit"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Exit KOReader?"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Charging %d%%"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Battery %d%%"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Storage %d%% full"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Memory %d%%"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Up %dh %02dm"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Pick an entry"
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Tap an entry to use it. Hold a submenu to use the menu itself."
+msgstr ""
+
+#: solarui/menu.lua
+msgid "Nothing to show here yet."
+msgstr ""
+
+#: solarui/menu.lua solarui/screens/annotations.lua solarui/screens/collections.lua solarui/screens/flowerpick.lua ...
+msgid "Page"
 msgstr ""
 
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
@@ -552,8 +2902,8 @@ msgstr ""
 msgid "No bookmarks in this book yet. Tap the top corner of a page while reading to add one."
 msgstr ""
 
-#: solarui/screens/annotations.lua solarui/screens/collections.lua solarui/screens/launcher.lua solarui/screens/settings.lua
-msgid "Page"
+#: solarui/screens/annotations.lua solarui/ui/gardenbook.lua
+msgid "Page %s"
 msgstr ""
 
 #: solarui/screens/collections.lua
@@ -595,19 +2945,23 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: solarui/screens/collections.lua
-msgid "Pinned"
-msgstr ""
-
-#: solarui/screens/collections.lua
 msgid "Collection created"
 msgstr ""
 
 #: solarui/screens/collections.lua
-msgid "No series found yet. A series appears here once books with a series in their details have been read."
+msgid "No series yet"
 msgstr ""
 
 #: solarui/screens/collections.lua
-msgid "No other collections yet. Make one with + New."
+msgid "A series appears here once books with a series in their details have been read."
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "No other collections yet"
+msgstr ""
+
+#: solarui/screens/collections.lua
+msgid "Make one with + New."
 msgstr ""
 
 #: solarui/screens/collections.lua solarui/screens/library.lua
@@ -650,7 +3004,7 @@ msgstr ""
 msgid "Hue"
 msgstr ""
 
-#: solarui/screens/colourpick.lua solarui/ui/dialog.lua solarui/ui/textinput.lua
+#: solarui/screens/colourpick.lua solarui/skin/sort.lua solarui/ui/dialog.lua solarui/ui/textinput.lua
 msgid "Cancel"
 msgstr ""
 
@@ -662,11 +3016,37 @@ msgstr ""
 msgid "Colour"
 msgstr ""
 
+#: solarui/screens/dialogs.lua
+msgid "All KOReader dialogs"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "The main switch: off, every window is KOReader's own, whatever the kinds below say"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "The main switch is off"
+msgstr ""
+
+#: solarui/screens/dialogs.lua solarui/screens/settings.lua
+msgid "KOReader dialogs"
+msgstr ""
+
+#: solarui/screens/dialogs.lua
+msgid "A switch for each kind"
+msgstr ""
+
+#: solarui/screens/dossier.lua solarui/screens/gardenpet.lua solarui/screens/log/streaks.lua
+msgid "%d page"
+msgid_plural "%d pages"
+msgstr[0] ""
+msgstr[1] ""
+
 #: solarui/screens/dossier.lua
 msgid "Added %s · opened %s"
 msgstr ""
 
-#: solarui/screens/dossier.lua
+#: solarui/screens/dossier.lua solarui/skin/bookstatus.lua
 msgid "%d%% read"
 msgstr ""
 
@@ -683,11 +3063,15 @@ msgid "+ Collection"
 msgstr ""
 
 #: solarui/screens/dossier.lua
-msgid "Synopsis"
+msgid "Ex libris"
 msgstr ""
 
 #: solarui/screens/dossier.lua
 msgid "No description in this book's details."
+msgstr ""
+
+#: solarui/screens/dossier.lua
+msgid "Synopsis"
 msgstr ""
 
 #: solarui/screens/dossier.lua
@@ -698,16 +3082,12 @@ msgstr ""
 msgid "Edit details"
 msgstr ""
 
-#: solarui/screens/dossier.lua
+#: solarui/screens/dossier.lua solarui/skin/semantics.lua
 msgid "More"
 msgstr ""
 
 #: solarui/screens/filepick.lua solarui/screens/library.lua solarui/ui/cover.lua
 msgid "Folder"
-msgstr ""
-
-#: solarui/screens/filepick.lua
-msgid "Files"
 msgstr ""
 
 #: solarui/screens/filepick.lua
@@ -722,12 +3102,16 @@ msgstr ""
 msgid "No pictures or folders here."
 msgstr ""
 
-#: solarui/screens/filepick.lua
+#: solarui/screens/filepick.lua solarui/skin/list.lua
 msgid "Choose a folder"
 msgstr ""
 
 #: solarui/screens/filepick.lua
 msgid "Choose a file"
+msgstr ""
+
+#: solarui/screens/flowerpick.lua solarui/screens/launchedit.lua
+msgid "Flower"
 msgstr ""
 
 #: solarui/screens/fonts.lua
@@ -755,6 +3139,330 @@ msgid "%d available"
 msgid_plural "%d available"
 msgstr[0] ""
 msgstr[1] ""
+
+#: solarui/screens/garden.lua
+msgid "%s was peeking out of the grass. A drop of dew for the sharp eyes."
+msgstr ""
+
+#: solarui/screens/garden.lua solarui/screens/settings.lua solarui/ui/launcher.lua
+msgid "Garden"
+msgstr ""
+
+#: solarui/screens/garden.lua
+msgid "Dew %d"
+msgstr ""
+
+#: solarui/screens/garden.lua
+msgid "Seeds %d"
+msgstr ""
+
+#: solarui/screens/gardenjournal.lua
+msgid "Nothing has happened yet. Give the garden a day or two."
+msgstr ""
+
+#: solarui/screens/gardenjournal.lua
+msgid "Journal"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Meet"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua solarui/screens/log/period.lua solarui/skin/numbers.lua
+msgid "Year"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Links"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Outside"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua solarui/screens/gardenpage.lua solarui/screens/settings.lua
+msgid "About"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Not met"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Seen"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Known"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "A friend"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "%s · now"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "In flower: %s"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Asleep: %s"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Nothing is linked yet. As more arrive, the web grows."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "A hundred. The outdoors knows you by now."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Fifty things noticed and done. That is a lot of looking."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Twenty-five. You are really looking now."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Ten things done outside. That is a habit starting."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "The first one is in the log."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua solarui/ui/outsidecard.lua
+msgid "Last year: %s."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua solarui/ui/outsidecard.lua
+msgid "Remember the date of %s."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "This week"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Three small things to do outdoors: one to look at, one to listen to and one to do. Tick each one when done. Nothing is earned, and nothing is lost if you skip a week."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Firsts"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "The dates you saw or heard something for the first time that year. Next year the garden will remind you."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Your log"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Nothing here yet. Everything you tick off this week is kept here, so you can look back on everything."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "%d thing done outdoors since %s."
+msgid_plural "%d things done outdoors since %s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardennotes.lua
+msgid "%d week with all three done."
+msgid_plural "%d weeks with all three done."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Given back"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "%d seed left in the wild edge."
+msgid_plural "%d seeds left in the wild edge."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Why \"they\""
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Plants and animals here are \"they\" and \"who\", never \"it\". Words steer attention. Call a robin a thing and the robin turns into scenery; call the robin someone and you start to notice where they are going and what they want. The garden speaks about the neighbours the way you would speak about people you are fond of."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "A book to read"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Braiding Sweetgrass, by Robin Wall Kimmerer. She is a botanist and a member of the Citizen Potawatomi Nation, and she writes about strawberries, maples, sweetgrass, black ash, beans and squash with a scientist's eye and the warmth of someone who has loved these plants all her life. The book is about gratitude, about taking only what you need and giving something back, and about the living world as a gift and not a stockpile. Read a chapter by a window with something green in sight, and the lawn outside will never look quite the same."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Another book to read"
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "The Overstory, by Richard Powers. A novel in which trees are the main characters and people only slowly learn to notice them: nine lives that a chestnut, a mulberry, a banyan and a redwood quietly bend toward one another, until they meet in the fight for the last old forests. The novel won the Pulitzer Prize, and the story does what this garden tries to do in a small way: the living world becomes someone rather than scenery. Trees here talk to each other through their roots, remember, and take their time; you may never walk under one again without wondering what they are saying."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua
+msgid "Something went wrong showing this page. Please try another tab."
+msgstr ""
+
+#: solarui/screens/gardennotes.lua solarui/ui/outsidecard.lua
+msgid "Field notes"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "A closed bud. The bud opens in %d day."
+msgid_plural "A closed bud. The bud opens in %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardenpage.lua
+msgid "A closed bud. Give them a nickname and stay a month, and the bud opens."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "At their best in %s."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "At their best in %s. Needs no watering."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua solarui/ui/gardencard.lua
+msgid "Eats %s."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Not met yet"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Now"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Seen outside"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "You first looked for them outdoors on %s, and have been out to look %d times since."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "You looked for them outdoors on %s, and found them."
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "The name"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Where they live"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Through the year"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Linked to %s"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "How people have lived with them"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Look for them outdoors"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Their story"
+msgstr ""
+
+#: solarui/screens/gardenpage.lua
+msgid "Almanac"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "%d pages to %s"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "The bond cannot go deeper."
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Level %d: %s"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "%d page together"
+msgid_plural "%d pages together"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardenpet.lua solarui/ui/gardencard.lua
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Another memory in %d pages."
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Memories come as you read together."
+msgstr ""
+
+#: solarui/screens/gardenpet.lua solarui/ui/gardenactions.lua
+msgid "Choose a name"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua solarui/screens/launchedit.lua solarui/screens/libmenu.lua solarui/screens/metaedit.lua ...
+msgid "Save"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua solarui/ui/gardenadopt.lua
+msgid "Say goodbye"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Memories"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Diary"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "No companion yet. Open a plant or an animal in the garden and choose Make them my companion. A companion stays for life."
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "The orchard"
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Tap one to ask them to come back."
+msgstr ""
+
+#: solarui/screens/gardenpet.lua
+msgid "Companion"
+msgstr ""
 
 #: solarui/screens/history.lua
 msgid "Log"
@@ -811,34 +3519,6 @@ msgid "page %d of %d"
 msgstr ""
 
 #: solarui/screens/home.lua
-msgid "Last opened %s"
-msgstr ""
-
-#: solarui/screens/home.lua
-msgid "Not opened yet"
-msgstr ""
-
-#: solarui/screens/home.lua
-msgid "Your reading"
-msgstr ""
-
-#: solarui/screens/home.lua
-msgid "%d min today"
-msgstr ""
-
-#: solarui/screens/home.lua
-msgid "%d day in a row"
-msgid_plural "%d days in a row"
-msgstr[0] ""
-msgstr[1] ""
-
-#: solarui/screens/home.lua
-msgid "%d book this year"
-msgid_plural "%d books this year"
-msgstr[0] ""
-msgstr[1] ""
-
-#: solarui/screens/home.lua
 msgid "On the shelf"
 msgstr ""
 
@@ -858,6 +3538,158 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
+#: solarui/screens/inkpick.lua
+msgid "Verdure"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Tooled leather"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Nasturtium"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Peacock"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Iris"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Poppy"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Dragonfly"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "First page"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "First page, mounted"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Gilt"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Carved oak"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Iron and mat"
+msgstr ""
+
+#: solarui/screens/inkpick.lua solarui/screens/settings.lua
+msgid "Halo"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Lily"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Copper"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Pearl"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Frame"
+msgstr ""
+
+#: solarui/screens/inkpick.lua
+msgid "Cover"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Ink Away is not running"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Update Ink Away"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "These shelves need a newer Ink Away than the one you have (%s). Your notebooks and drawings stay just as they are."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "These shelves need a newer Ink Away than the one you have. Your notebooks and drawings stay just as they are."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Ink Away is switched off"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Switch it on in KOReader's plugins and your notebooks and drawings stand on these shelves."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Restart to finish"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Ink Away is ready. Restart KOReader and your notebooks and drawings stand on these shelves."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Restart now"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Restart KOReader to use Ink Away."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Get Ink Away"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Ink Away is a free plugin for drawing and writing by hand, with a finger or a stylus: notebooks with lined, grid and planner pages, drawings with layers, and ink on your books. Its notebooks and drawings stand on these shelves."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Install Ink Away"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "No drawings yet"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "No notebooks yet"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Drawings you make in Ink Away hang here, each in a frame of its own."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Notebooks you make in Ink Away stand here, each in a cover of its own."
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Open Ink Away"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua solarui/ui/launcher.lua
+msgid "Notebooks"
+msgstr ""
+
+#: solarui/screens/inkshelf.lua
+msgid "Drawings"
+msgstr ""
+
 #: solarui/screens/launchedit.lua
 msgid "Button"
 msgstr ""
@@ -866,11 +3698,11 @@ msgstr ""
 msgid "Gone"
 msgstr ""
 
-#: solarui/screens/launchedit.lua
+#: solarui/screens/launchedit.lua solarui/ui/gardencard.lua
 msgid "Name"
 msgstr ""
 
-#: solarui/screens/launchedit.lua solarui/screens/settings.lua solarui/screens/topbar.lua
+#: solarui/screens/launchedit.lua solarui/screens/settings.lua solarui/screens/topbar.lua solarui/skin/network.lua
 msgid "Edit"
 msgstr ""
 
@@ -878,11 +3710,7 @@ msgstr ""
 msgid "Button name"
 msgstr ""
 
-#: solarui/screens/launchedit.lua solarui/screens/libmenu.lua solarui/screens/metaedit.lua solarui/screens/topbar.lua
-msgid "Save"
-msgstr ""
-
-#: solarui/screens/launchedit.lua solarui/screens/settings.lua
+#: solarui/screens/launchedit.lua solarui/screens/settings.lua solarui/skin/choice.lua
 msgid "Choose"
 msgstr ""
 
@@ -912,10 +3740,6 @@ msgstr ""
 
 #: solarui/screens/launcher.lua
 msgid "The launcher is full"
-msgstr ""
-
-#: solarui/screens/launcher.lua
-msgid "Launcher"
 msgstr ""
 
 #: solarui/screens/libmenu.lua
@@ -1046,10 +3870,6 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: solarui/screens/library.lua solarui/screens/search.lua solarui/ui/launcher.lua
-msgid "Search"
-msgstr ""
-
 #: solarui/screens/library.lua
 msgid "New in %s"
 msgstr ""
@@ -1112,15 +3932,11 @@ msgstr ""
 msgid "Nothing here yet. Copy books in, or make a folder with + New."
 msgstr ""
 
-#: solarui/screens/library.lua
-msgid "Letters"
-msgstr ""
-
 #: solarui/screens/log/calendar.lua
 msgid "When you read, by hour: %s"
 msgstr ""
 
-#: solarui/screens/log/calendar.lua solarui/screens/log/period.lua solarui/screens/log/week.lua
+#: solarui/screens/log/calendar.lua solarui/screens/log/period.lua solarui/screens/log/week.lua solarui/skin/bookstatus.lua
 msgid "Time"
 msgstr ""
 
@@ -1178,12 +3994,8 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: solarui/screens/log/period.lua
+#: solarui/screens/log/period.lua solarui/skin/numbers.lua
 msgid "Month"
-msgstr ""
-
-#: solarui/screens/log/period.lua
-msgid "Year"
 msgstr ""
 
 #: solarui/screens/log/period.lua
@@ -1257,12 +4069,6 @@ msgid "Hours"
 msgstr ""
 
 #: solarui/screens/log/streaks.lua
-msgid "%d page"
-msgid_plural "%d pages"
-msgstr[0] ""
-msgstr[1] ""
-
-#: solarui/screens/log/streaks.lua
 msgid "Records"
 msgstr ""
 
@@ -1283,7 +4089,7 @@ msgid "Since"
 msgstr ""
 
 #: solarui/screens/log/streaks.lua
-msgid "Hours level %02d"
+msgid "Hours level %d"
 msgstr ""
 
 #: solarui/screens/log/streaks.lua
@@ -1368,7 +4174,7 @@ msgstr ""
 msgid "type to search"
 msgstr ""
 
-#: solarui/screens/settings.lua
+#: solarui/screens/settings.lua solarui/ui/outsidecard.lua
 msgid "Look"
 msgstr ""
 
@@ -1381,19 +4187,11 @@ msgid "Speed"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "About"
-msgstr ""
-
-#: solarui/screens/settings.lua
 msgid "Colour scheme"
 msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "Mode"
-msgstr ""
-
-#: solarui/screens/settings.lua solarui/ui/statusbar.lua
-msgid "Light"
 msgstr ""
 
 #: solarui/screens/settings.lua
@@ -1420,6 +4218,34 @@ msgstr ""
 msgid "Flowers and highlights"
 msgstr ""
 
+#: solarui/screens/settings.lua
+msgid "Plants and animals"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Keep their own colours, or wear the colour scheme everywhere or on home only (Yüzsüz always keeps hers)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Own colours"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Everywhere"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Home only"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Companion keeps their colours"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The companion on home stays in their own colours while the scheme paints the rest"
+msgstr ""
+
 #: solarui/screens/settings.lua solarui/ui/progress.lua solarui/ui/statusbar.lua
 msgid "Book progress"
 msgstr ""
@@ -1429,19 +4255,67 @@ msgid "How reading progress is drawn on inner pages and in a book's details"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Style"
+msgid "Original covers"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Image"
+msgid "The cover picture of each book, as it is"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Card"
+msgid "Stained glass"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Size in the library"
+msgid "Each cover remade as coloured glass panes"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Peacock scales"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Each cover remade as overlapping scales"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Blossom field"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Each cover remade as a field of small flowers"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Drawn card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "No picture: the title on a card with art behind it"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "How book covers look"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Art on the card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Glass"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Scales"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Lines"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Size of covers"
 msgstr ""
 
 #: solarui/screens/settings.lua
@@ -1479,6 +4353,18 @@ msgid "Open SolarUI when KOReader starts and after closing a book"
 msgstr ""
 
 #: solarui/screens/settings.lua
+msgid "Corner to home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "In a book, hold the bottom-right corner to come back to SolarUI's home (in place of what the corner did)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "KOReader's gestures are not set up yet"
+msgstr ""
+
+#: solarui/screens/settings.lua
 msgid "Garden buttons"
 msgstr ""
 
@@ -1500,6 +4386,66 @@ msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "The books you opened last, standing on a shelf on home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Garden companion"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Which plant or animal of the garden keeps you company on home. Left on automatic, whoever needs care most keeps you company"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Automatic"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Companion dialogue"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The companion speaks in written lines on home and on their page, and tells memories as you read. Turn it off for a quiet companion with a bigger window"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Outdoors on home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "A small card on home with this week's three things to do outdoors, one to look at, one to listen to and one to do"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Seasons on home"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The vines blossom in spring, turn gold in autumn and go pale in winter"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Sleep picture"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Draws a picture in the garden's style to choose as KOReader's sleep screen (Settings, Screen, Sleep screen, Wallpaper, Custom image)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Make"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Saved to %s"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The home poster"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "My garden as it is now"
 msgstr ""
 
 #: solarui/screens/settings.lua
@@ -1547,7 +4493,19 @@ msgid "KOReader menu"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Also opens with a swipe down from the top of the screen"
+msgid "In SolarUI's style, over home and in a book (off: KOReader's own); also opens with a swipe down from the top"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Notices, menus, lists, the keyboard, pickers and more in SolarUI's style; each kind has its own switch (off: KOReader's own)"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Menu height"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "How much of the screen KOReader's menu may take: taller shows more entries and needs fewer pages"
 msgstr ""
 
 #: solarui/screens/settings.lua solarui/targetlist.lua
@@ -1671,7 +4629,7 @@ msgid "New versions from GitHub, with their notes"
 msgstr ""
 
 #: solarui/screens/settings.lua
-msgid "Griffy, Milonga, Gabriela, Federo, Glass Antiqua and Share Tech Mono, SIL Open Font License"
+msgid "Griffy, Milonga, Gabriela, Federo and Glass Antiqua, SIL Open Font License"
 msgstr ""
 
 #: solarui/screens/settings.lua
@@ -1684,10 +4642,6 @@ msgstr ""
 
 #: solarui/screens/targetpick.lua
 msgid "Nothing here to pick."
-msgstr ""
-
-#: solarui/screens/targetpick.lua
-msgid "Items"
 msgstr ""
 
 #: solarui/screens/topbar.lua
@@ -1703,7 +4657,7 @@ msgid "Top bar tag"
 msgstr ""
 
 #: solarui/screens/topbar.lua
-msgid "Shown %d/%d"
+msgid "Shown"
 msgstr ""
 
 #: solarui/screens/topbar.lua
@@ -1739,8 +4693,12 @@ msgid "It goes for good, with its reading data. This cannot be undone."
 msgstr ""
 
 #: solarui/screens/trash.lua
-msgid "The trash is empty. Deleted books and folders wait here for %d day."
-msgid_plural "The trash is empty. Deleted books and folders wait here for %d days."
+msgid "The trash is empty"
+msgstr ""
+
+#: solarui/screens/trash.lua
+msgid "Deleted books and folders wait here for %d day."
+msgid_plural "Deleted books and folders wait here for %d days."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1828,6 +4786,234 @@ msgstr ""
 msgid "Tell me about prereleases (test builds, newer but less tried)"
 msgstr ""
 
+#: solarui/skin/bookstatus.lua
+msgid "Days"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "Rating"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "Statistics"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "Review"
+msgstr ""
+
+#: solarui/skin/bookstatus.lua
+msgid "Book status"
+msgstr ""
+
+#: solarui/skin/dictionary.lua
+msgid "Lookup"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "Start"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "End"
+msgstr ""
+
+#: solarui/skin/edithighlight.lua
+msgid "Highlight"
+msgstr ""
+
+#: solarui/skin/frontlight.lua
+msgid "Brightness"
+msgstr ""
+
+#: solarui/skin/frontlight.lua solarui/skin/network.lua solarui/skin/qr.lua solarui/skin/textviewer.lua ...
+msgid "Close"
+msgstr ""
+
+#: solarui/skin/frontlight.lua solarui/ui/statusbar.lua
+msgid "Frontlight"
+msgstr ""
+
+#: solarui/skin/fullpage.lua
+msgid "No items"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Notices and questions"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Messages, questions and the small notices at the bottom"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Selected text menu"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The menu after selecting words, and the one for a saved highlight"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Button menus"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The menus of buttons (long-press menus, gestures, plugins)"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Keyboard and text entry"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The on-screen keyboard and the windows you type into"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Lists"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Contents, bookmarks, history, details lists, sorting and the folder chooser"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Dictionary"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The pop-up with a word's meaning"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Pickers"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Choosing a number, a date, a time or one of several"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Viewers"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Notes, texts, QR codes, progress and the book status page"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Wi-Fi list"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The list of networks"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "Reader panels"
+msgstr ""
+
+#: solarui/skin/groups.lua
+msgid "The settings panel at the bottom of a book and the frontlight window"
+msgstr ""
+
+#: solarui/skin/highlightmenu.lua
+msgid "Selection"
+msgstr ""
+
+#: solarui/skin/inputdialog.lua
+msgid "Input"
+msgstr ""
+
+#: solarui/skin/keyboard.lua
+msgid "Keyboard"
+msgstr ""
+
+#: solarui/skin/keyboard.lua solarui/ui/launcher.lua
+msgid "Hide"
+msgstr ""
+
+#: solarui/skin/list.lua
+msgid "Choose this folder"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Secured"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Connected"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Disconnect"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "No networks found"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Retry"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Wi-fi"
+msgstr ""
+
+#: solarui/skin/network.lua
+msgid "Wi-Fi networks"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "Set"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "Day"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "Hour"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "Min"
+msgstr ""
+
+#: solarui/skin/numbers.lua
+msgid "Sec"
+msgstr ""
+
+#: solarui/skin/progress.lua
+msgid "Working"
+msgstr ""
+
+#: solarui/skin/qr.lua
+msgid "Scan"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "Warning"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "Confirm"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "Info"
+msgstr ""
+
+#: solarui/skin/specs.lua
+msgid "Message"
+msgstr ""
+
+#: solarui/skin/textviewer.lua
+msgid "Text"
+msgstr ""
+
 #: solarui/targetlist.lua
 msgid "General"
 msgstr ""
@@ -1872,8 +5058,666 @@ msgstr ""
 msgid "KOReader's own fonts, for the plainest reading"
 msgstr ""
 
-#: solarui/ui/dialog.lua
-msgid "Close"
+#: solarui/twin.lua
+msgid "Your home, as a cyberdeck"
+msgstr ""
+
+#: solarui/twin.lua
+msgid "CyberUI is the twin of SolarUI: the same home, library and reading tools, dressed as a neon cyberdeck instead of a garden. Switch between the two at any time; each keeps its own settings."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua solarui/ui/homecompanion.lua
+msgid "Not enough dew. Dew comes from the pages you read."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "This one needs no watering."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "Only just watered."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "Only just fed."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "No seeds. Finish a book, or cut back a plant that has gone to seed."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "Already in bloom."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "Not in the garden."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua solarui/ui/homecompanion.lua
+msgid "%s has had a drink."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua solarui/ui/homecompanion.lua
+msgid "%s has eaten."
+msgstr ""
+
+#: solarui/ui/gardenactions.lua
+msgid "%s is in bloom."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua solarui/ui/gardenreturn.lua
+msgid "There is a companion already. Say goodbye to them first."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "%s, for life?"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "A companion stays with you for life. You can say goodbye one day, and they will live on in the orchard."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "Yes, for life"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "Not yet"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "%s is your companion."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "That did not work."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "Name your companion"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua solarui/ui/gardenbook.lua solarui/ui/gardenguide.lua
+msgid "Next"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "Say goodbye to %s?"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "They will live in the orchard from now on, with their diary and memories. You can then choose a new companion."
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "Stay together"
+msgstr ""
+
+#: solarui/ui/gardenadopt.lua
+msgid "%s is in the orchard now."
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Highlighted on %s"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Your note: %s"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Your highlights"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Nothing is written here yet. Highlight a passage in any of your books and the passage may turn up on these pages."
+msgstr ""
+
+#: solarui/ui/gardenbook.lua solarui/ui/gardenguide.lua
+msgid "%d of %d"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "From"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Previous"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua
+msgid "Read on"
+msgstr ""
+
+#: solarui/ui/gardenbook.lua solarui/ui/gardencard.lua solarui/ui/gardensit.lua
+msgid "Back to the garden"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Seed"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Sprout"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Bud"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "In bloom"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Gone to seed"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/gardencard.lua
+msgid "generation %d"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Resting for the winter. The plant wakes in spring."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Needs no watering."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Wilted. A drink will bring them round."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Thirsty."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Fine for another %s."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Content, for now"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Demanding food"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Furious, and not hiding: the queen never hides"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Eats %s. She has drawn blood %d time."
+msgid_plural "Eats %s. She has drawn blood %d times."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/gardencard.lua
+msgid "%s · rules day and night"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Asleep"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Resting until the season turns."
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Content"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Hungry"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Hiding, hungry"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "out by day"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "out at night"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "out day and night"
+msgstr ""
+
+#: solarui/ui/gardencard.lua solarui/ui/homecompanion.lua
+msgid "Feed"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "menu"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Left"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "140 pats"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Right"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "3 pats"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Belly"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "risky"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Harvest"
+msgstr ""
+
+#: solarui/ui/gardencard.lua solarui/ui/gardencut.lua
+msgid "Cut back"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "share or keep"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "seeds, birds or beds"
+msgstr ""
+
+#: solarui/ui/gardencard.lua solarui/ui/homecompanion.lua
+msgid "Water"
+msgstr ""
+
+#: solarui/ui/gardencard.lua solarui/ui/homecompanion.lua
+msgid "%d dew"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Grow now"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "1 seed"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Their page"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Ask %s to come back"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Serve %s for life"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Make %s my companion"
+msgstr ""
+
+#: solarui/ui/gardencard.lua
+msgid "Open the garden"
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "AM"
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "PM"
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "Time in the garden"
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "Following your clock. Tap an hour to see the garden then."
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "Showing %d:00. Tap another hour, or follow your clock again."
+msgstr ""
+
+#: solarui/ui/gardenclock.lua
+msgid "Follow my clock"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid " You have %d more seed."
+msgid_plural " You have %d more seeds."
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/gardencut.lua
+msgid "%s has gone to seed. What becomes of the seeds?"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "%s has only just gone to seed. Let some seed ripen: cut back now and the harvest is smaller."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "The harvest"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "%s is ready to pick. Share the harvest with the garden's visitors, or keep everything."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Share the harvest"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "feeds three, and a seed for you"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Shared with the garden."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Keep everything"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "a seed for you"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Picked."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Keep the seeds"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "seeds for you"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Cut back."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Leave them for the birds"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "feeds a hungry visitor"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Left for the birds."
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Scatter some"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "half a seed for you"
+msgstr ""
+
+#: solarui/ui/gardencut.lua
+msgid "Scattered in the beds."
+msgstr ""
+
+#: solarui/ui/gardengive.lua
+msgid "A book is finished"
+msgstr ""
+
+#: solarui/ui/gardengive.lua
+msgid "The garden gave you a book's worth of quiet. Leave a seed in the wild edge, where nobody tends anything? The seed costs nothing and earns nothing: the gift is only a way of saying thanks."
+msgstr ""
+
+#: solarui/ui/gardengive.lua
+msgid "Leave a seed"
+msgstr ""
+
+#: solarui/ui/gardengive.lua
+msgid "A seed went into the wild edge."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Your garden"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Everything here is alive. Plants grow and bloom while they are watered, and animals visit and stay while they are fed. Tap anyone to meet them."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Dew and seeds"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Dew comes from reading: every page you read adds a drop. A drink costs %d dew and a meal %d. Seeds come from finishing books and from cutting back a plant that has gone to seed. A seed makes a growing plant bloom at once."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Looking after the garden"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "A plant that is not watered in time wilts and stops growing. An animal that is not fed hides in the grass. Nothing ever dies, and a drink or a meal brings them back."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Give and take"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Dew is taken from the pages you read, so the garden asks for something back. When a plant goes to seed you can keep the seeds, leave them for the birds or scatter some. Finish a book and you may leave a seed in the wild edge, which costs nothing and earns nothing. Bees and butterflies visit the flowers, and a flower they visited gives an extra seed."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "The seasons"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "The garden follows your calendar. In winter the plants that die back rest, most animals sleep, and plants want water half as often. Nothing is lost, and everyone wakes in spring. Rain waters the beds once a day, and snow only settles. The season button at the top shows the garden in any season, and weather there is the garden's own, not the sky outside."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Who, not what"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Nobody in this garden is called \"it\". Plants and animals are \"they\" and \"who\", because they are living neighbours, not objects. The botanist Robin Wall Kimmerer makes this point in her book Braiding Sweetgrass: English has one word for people and another for everything alive that is not, and speaking of the living as someone changes how we treat them."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Who visits"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "The bee, the ladybird and the snail live here from the start. The others come when you earn them:"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "And the rest:"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Day and night"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "The sky follows your clock. The hedgehog, the moth and the fox only come out in the dark, between ten at night and five in the morning, and the other animals are about by day. The clock button at the top lets you look at the garden at any other hour."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Notes and quiet"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "The field notes are an almanac: tap the name of anyone you have met. Pages open as you get to know them, after a week and again after a month with a nickname. Once a day a small face peeks out of the grass, and finding the face is worth a drop of dew. And you can simply sit in the garden for a few minutes, with nothing to do."
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Sit in the garden"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "for a few quiet minutes"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Back"
+msgstr ""
+
+#: solarui/ui/gardenguide.lua
+msgid "Start gardening"
+msgstr ""
+
+#: solarui/ui/gardenqueen.lua
+msgid "What does %s wish to eat?"
+msgstr ""
+
+#: solarui/ui/gardenqueen.lua
+msgid "A meal is %d dew. She will eat anything on the menu, but she will remember what you chose."
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "%d more page"
+msgid_plural "%d more pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "%d more day"
+msgid_plural "%d more days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/gardenreturn.lua
+msgid " and "
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "Welcome back"
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "%s is your companion again."
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "I will keep reading"
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "In the orchard"
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "Earned: they are ready to come back"
+msgstr ""
+
+#: solarui/ui/gardenreturn.lua
+msgid "To come back: %s"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Season in the garden"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Following the calendar: the season is %s. Tap a season to see the garden then."
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Showing %s. Tap another season, or follow the calendar again."
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Today in the garden: %s."
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Weather: on"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Weather: off"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Southern hemisphere: on"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Southern hemisphere: off"
+msgstr ""
+
+#: solarui/ui/gardenseason.lua
+msgid "Follow the calendar"
+msgstr ""
+
+#: solarui/ui/gardensit.lua
+msgid "Open my book"
+msgstr ""
+
+#: solarui/ui/gardensit.lua
+msgid "Sit a little longer"
+msgstr ""
+
+#: solarui/ui/gardensit.lua
+msgid "A good while"
+msgstr ""
+
+#: solarui/ui/gardensit.lua
+msgid "The garden kept still for you. Whenever you are ready, there is a book waiting."
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "Wilted"
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "Thirsty"
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "Only just cared for."
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "%s · day %d"
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "Tap to chat. Hold to open their page."
+msgstr ""
+
+#: solarui/ui/homecompanion.lua
+msgid "A memory came back to me: %s. Hold me to hear the story."
 msgstr ""
 
 #: solarui/ui/keyboard.lua
@@ -1896,8 +5740,76 @@ msgstr ""
 msgid "Delete this button?"
 msgstr ""
 
-#: solarui/ui/launcher.lua
-msgid "Hide"
+#: solarui/ui/outsidecard.lua
+msgid "Listen"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Do"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "All three done this week. Well walked."
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Ticked off, and kept in your log."
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Unticked."
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "What did you notice?"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Change the note"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Add a note"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
+msgid "Outdoors this week"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "All three done"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "%d of %d done"
+msgstr ""
+
+#: solarui/ui/outsidecard.lua
+msgid "Nothing is earned, and nothing is lost if you skip a week."
+msgstr ""
+
+#: solarui/ui/outsidechip.lua
+msgid "Next: look for %s"
+msgstr ""
+
+#: solarui/ui/outsidechip.lua
+msgid "Next: something to look at"
+msgstr ""
+
+#: solarui/ui/outsidechip.lua
+msgid "Next: something to listen to"
+msgstr ""
+
+#: solarui/ui/outsidechip.lua
+msgid "Next: something to do"
+msgstr ""
+
+#: solarui/ui/outsidechip.lua
+msgid "A whole week. Well walked."
+msgstr ""
+
+#: solarui/ui/pager.lua
+msgid "%s %d of %d"
 msgstr ""
 
 #: solarui/ui/progress.lua
@@ -1910,6 +5822,42 @@ msgstr ""
 
 #: solarui/ui/progress.lua
 msgid "Segments"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "Your reading"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "%d min today"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "goal reached"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "goal %d min"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "%d day in a row"
+msgid_plural "%d days in a row"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/readingstrip.lua
+msgid "read on %d of the last 7 days"
+msgstr ""
+
+#: solarui/ui/readingstrip.lua
+msgid "%d book this year"
+msgid_plural "%d books this year"
+msgstr[0] ""
+msgstr[1] ""
+
+#: solarui/ui/readingstrip.lua
+msgid "a petal for each book"
 msgstr ""
 
 #: solarui/ui/statusbar.lua
@@ -1929,7 +5877,7 @@ msgid "Battery"
 msgstr ""
 
 #: solarui/ui/statusbar.lua
-msgid "Frontlight"
+msgid "Light %s"
 msgstr ""
 
 #: solarui/ui/statusbar.lua
@@ -1966,6 +5914,18 @@ msgstr ""
 
 #: solarui/ui/textinput.lua
 msgid "Type here"
+msgstr ""
+
+#: solarui/ui/twinswitch.lua
+msgid "%s is not installed yet. Tap to get it."
+msgstr ""
+
+#: solarui/ui/twinswitch.lua
+msgid "%s is switched off. Tap to switch it on."
+msgstr ""
+
+#: solarui/ui/twinswitch.lua
+msgid "SolarUI is in charge. Tap to switch to %s."
 msgstr ""
 
 #: solarui/update/updater.lua

@@ -43,8 +43,9 @@ end
 local function queenStatus(e)
     local mood = ({ content = _("Content, for now"), hungry = _("Demanding food"), hiding = _("Furious, and not hiding: the queen never hides") })[e.mood]
     local bites = e.rec.bites or 0
-    local blood = bites > 0 and (" " .. string.format(_.n("She has drawn blood %d time.", "She has drawn blood %d times.", bites), bites)) or ""
-    return mood .. " · " .. _("rules day and night"), string.format(_("Eats %s."), e.def.eats) .. blood
+    local eats = bites > 0 and string.format(_.n("Eats %s. She has drawn blood %d time.", "Eats %s. She has drawn blood %d times.", bites), e.def.eats, bites)
+        or string.format(_("Eats %s."), e.def.eats)
+    return string.format(_("%s · rules day and night"), mood), eats
 end
 
 -- How an animal is doing, in one line.

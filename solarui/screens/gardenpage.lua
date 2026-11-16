@@ -47,8 +47,7 @@ end
 local function when(def, kind)
     if kind == "plant" then
         local months = Almanac.months(def.id)
-        local line = string.format(_("At their best in %s."), months)
-        return def.interval and line or line .. " " .. _("Needs no watering.")
+        return string.format(def.interval and _("At their best in %s.") or _("At their best in %s. Needs no watering."), months)
     end
     local line = string.format(_("Eats %s."), def.eats)
     local slept = Season.wakes(def)

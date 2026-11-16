@@ -57,11 +57,11 @@ local function calendar()
     local now = tonumber(os.date("%m")) or 1
     for m = 1, 12 do
         local flowers, asleep = Almanac.month(m)
-        local name = os.date("%B", os.time({ year = 2001, month = m, day = 1 }))
+        local name = require("solarui/format").date("%B", os.time({ year = 2001, month = m, day = 1 }))
         items[#items + 1] = Layout.Column:new({ gap = 0, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
-            Label:new({ text = m == now and (name .. " · " .. _("now")) or name, kind = "heading" }),
-            Label:new({ text = _("In flower: ") .. names(flowers), kind = "small", lines = 3 }),
-            Label:new({ text = _("Asleep: ") .. names(asleep), kind = "small", color = "muted", lines = 2 }),
+            Label:new({ text = m == now and string.format(_("%s · now"), name) or name, kind = "heading" }),
+            Label:new({ text = string.format(_("In flower: %s"), names(flowers)), kind = "small", lines = 3 }),
+            Label:new({ text = string.format(_("Asleep: %s"), names(asleep)), kind = "small", color = "muted", lines = 2 }),
         } })
     end
     return items

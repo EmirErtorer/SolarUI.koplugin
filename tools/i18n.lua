@@ -38,7 +38,8 @@ end
 -- The Lua source files that have texts, sorted.
 local function sourceFiles()
     local out = { "main.lua", "_meta.lua" }
-    local p = io.popen("find solarui -name '*.lua' | sort")
+    -- (the companions' voices, solarui/garden/voices/, are English writing of their own and not scanned)
+    local p = io.popen("find solarui -name '*.lua' -not -path 'solarui/garden/voices/*' | sort")
     for line in p:lines() do out[#out + 1] = line end
     p:close()
     table.sort(out)
