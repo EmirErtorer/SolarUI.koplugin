@@ -328,7 +328,7 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
+#: solarui/apps/addons.lua solarui/screens/settings.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua ...
 msgid "Not now"
 msgstr ""
 
@@ -3558,7 +3558,7 @@ msgstr ""
 msgid "Poppy"
 msgstr ""
 
-#: solarui/screens/inkpick.lua
+#: solarui/screens/inkpick.lua solarui/ui/progress.lua
 msgid "Dragonfly"
 msgstr ""
 
@@ -4394,6 +4394,18 @@ msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "Automatic"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "%s is your companion for life"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Open their page"
 msgstr ""
 
 #: solarui/screens/settings.lua
@@ -5813,11 +5825,7 @@ msgid "Vine"
 msgstr ""
 
 #: solarui/ui/progress.lua
-msgid "Bar"
-msgstr ""
-
-#: solarui/ui/progress.lua
-msgid "Segments"
+msgid "Pearls"
 msgstr ""
 
 #: solarui/ui/readingstrip.lua

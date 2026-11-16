@@ -1,7 +1,8 @@
 -- Progress bars. The plain one is a round-ended bar filled up to `value` (0
 -- to 1), used for gauges. A book's progress (book = true) is drawn in the
 -- reader's chosen style: a vine that has grown that far with a rose at its
--- tip, a rounded bar, or the cells.
+-- tip, a string of pearls turning gold, or a gold ribbon with a dragonfly at
+-- its tip (art/progressstyles.lua).
 
 local Art = require("solarui/gfx/art")
 local Element = require("solarui/ui/element")
@@ -15,20 +16,21 @@ local Progress = Element:extend({ value = 0, segments = 20, cell_h = 12, color =
 -- The styles a book's progress can be drawn in, and their heights (base px).
 Progress.STYLES = {
     { id = "vine", name = _("Vine"), h = 36 },
-    { id = "bar", name = _("Bar"), h = 12 },
-    { id = "segments", name = _("Segments"), h = 12 },
+    { id = "pearls", name = _("Pearls"), h = 30 },
+    { id = "ribbon", name = _("Dragonfly"), h = 36 },
 }
+local GAUGE = { id = "bar" }   -- (plain bars that are not a book's: gauges)
 local by_id = {}
 for _i, s in ipairs(Progress.STYLES) do by_id[s.id] = s end
 
 -- The style of a book's progress.
 function Progress.bookStyle()
-    return by_id[Settings.get("progress_style", "vine")] or Progress.STYLES[1]
+    return by_id[Settings.get("progress_style", "vine")] or Progress.STYLES[1]   -- (the old bar and cells come back as the vine)
 end
 
 -- The style this bar is drawn in.
 function Progress:style()
-    return self.book and Progress.bookStyle() or by_id.bar
+    return self.book and Progress.bookStyle() or GAUGE
 end
 
 -- One cell tall, or the style's height.
@@ -65,13 +67,15 @@ local function bar(self, bb, x, y, c)
     if w >= self.h then Paint.round(bb, x, y, w, self.h, r, "trbl", c) end
 end
 
--- The progress vine, drawn for the bar's size.
-local function vine(self, bb, x, y)
-    local k = self.h / 70
-    Art.draw(bb, "progress", x, y, self.w, self.h, math.floor(self.w / k + 0.5), 70, math.floor(self.v * 100 + 0.5))
+-- A drawing of the progress (the vine, the pearls, the ribbon) for the bar's size.
+local function drawn(name)
+    return function(self, bb, x, y)
+        local k = self.h / 70
+        Art.draw(bb, name, x, y, self.w, self.h, math.floor(self.w / k + 0.5), 70, math.floor(self.v * 100 + 0.5))
+    end
 end
 
-local DRAW = { segments = segments, bar = bar, vine = vine }
+local DRAW = { segments = segments, bar = bar, vine = drawn("progress"), pearls = drawn("progress_pearls"), ribbon = drawn("progress_ribbon") }
 
 -- Draw in the bar's style.
 function Progress:draw(bb, x, y)

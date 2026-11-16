@@ -329,7 +329,7 @@ msgstr "Το %s ενεργοποιήθηκε. Επανεκκινήστε το KO
 msgid "Install"
 msgstr "Εγκατάσταση"
 
-#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
+#: solarui/apps/addons.lua solarui/screens/settings.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua ...
 msgid "Not now"
 msgstr "Όχι τώρα"
 
@@ -3559,7 +3559,7 @@ msgstr "Ίρις"
 msgid "Poppy"
 msgstr "Παπαρούνα"
 
-#: solarui/screens/inkpick.lua
+#: solarui/screens/inkpick.lua solarui/ui/progress.lua
 msgid "Dragonfly"
 msgstr "Λιβελούλα"
 
@@ -4396,6 +4396,18 @@ msgstr "Ποιο φυτό ή ζώο του κήπου σου κάνει παρέ
 #: solarui/screens/settings.lua
 msgid "Automatic"
 msgstr "Αυτόματα"
+
+#: solarui/screens/settings.lua
+msgid "%s is your companion for life"
+msgstr "Ο σύντροφός σας για μια ζωή: %s"
+
+#: solarui/screens/settings.lua
+msgid "While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."
+msgstr "Όσο σας κάνει συντροφιά, η αρχική δείχνει αυτόν. Για να διαλέξετε κάποιον άλλον εδώ, αποχαιρετήστε τον πρώτα, στη σελίδα του."
+
+#: solarui/screens/settings.lua
+msgid "Open their page"
+msgstr "Άνοιγμα σελίδας"
 
 #: solarui/screens/settings.lua
 msgid "Companion dialogue"
@@ -5814,12 +5826,8 @@ msgid "Vine"
 msgstr "Κλήμα"
 
 #: solarui/ui/progress.lua
-msgid "Bar"
-msgstr "Μπάρα"
-
-#: solarui/ui/progress.lua
-msgid "Segments"
-msgstr "Τμήματα"
+msgid "Pearls"
+msgstr "Μαργαριτάρια"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"

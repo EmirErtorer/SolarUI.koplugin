@@ -194,7 +194,14 @@ function SettingsScreen:home()
         row(_("Shelf on home"), _("The books you opened last, standing on a shelf on home"),
             Controls.Toggle:new({ on = Settings.get("home_shelf", true), on_change = function(on) save("home_shelf", on) end })),
         row(_("Garden companion"), _("Which plant or animal of the garden keeps you company on home. Left on automatic, whoever needs care most keeps you company"),
-            Button:new({ label = HomeCompanion.pinned() == "auto" and _("Automatic") or State.name(HomeCompanion.pinned()), on_tap = function()
+            Button:new({ label = Pet.get() and State.name(Pet.get().id) or HomeCompanion.pinned() == "auto" and _("Automatic") or State.name(HomeCompanion.pinned()), on_tap = function()
+                -- a companion for life keeps the place on home until the reader says goodbye
+                local pet = Pet.get()
+                if pet then
+                    return App.confirm({ title = string.format(_("%s is your companion for life"), State.name(pet.id)),
+                        text = _("While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."),
+                        ok = _("Open their page"), cancel = _("Not now"), on_ok = function() App.push("gardenpet") end })
+                end
                 local options = { { label = _("Automatic"), checked = HomeCompanion.pinned() == "auto", on_tap = function() save("home_companion", "auto") end } }
                 for _i, item in ipairs(Companion.list()) do
                     options[#options + 1] = { label = State.name(item.id), checked = HomeCompanion.pinned() == item.id, on_tap = function() save("home_companion", item.id) end }

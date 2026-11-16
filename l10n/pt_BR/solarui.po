@@ -329,7 +329,7 @@ msgstr "%s foi ativado. Reinicie o KOReader para usar."
 msgid "Install"
 msgstr "Instalar"
 
-#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
+#: solarui/apps/addons.lua solarui/screens/settings.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua ...
 msgid "Not now"
 msgstr "Agora não"
 
@@ -3559,7 +3559,7 @@ msgstr "Íris"
 msgid "Poppy"
 msgstr "Papoula"
 
-#: solarui/screens/inkpick.lua
+#: solarui/screens/inkpick.lua solarui/ui/progress.lua
 msgid "Dragonfly"
 msgstr "Libélula"
 
@@ -4396,6 +4396,18 @@ msgstr "Qual planta ou animal do jardim lhe faz companhia no início. No automá
 #: solarui/screens/settings.lua
 msgid "Automatic"
 msgstr "Automático"
+
+#: solarui/screens/settings.lua
+msgid "%s is your companion for life"
+msgstr "%s é seu companheiro para a vida toda"
+
+#: solarui/screens/settings.lua
+msgid "While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."
+msgstr "Enquanto ele te faz companhia, o início mostra ele. Para escolher outro aqui, despeça-se dele primeiro, na página dele."
+
+#: solarui/screens/settings.lua
+msgid "Open their page"
+msgstr "Abrir a página"
 
 #: solarui/screens/settings.lua
 msgid "Companion dialogue"
@@ -5814,12 +5826,8 @@ msgid "Vine"
 msgstr "Videira"
 
 #: solarui/ui/progress.lua
-msgid "Bar"
-msgstr "Barra"
-
-#: solarui/ui/progress.lua
-msgid "Segments"
-msgstr "Segmentos"
+msgid "Pearls"
+msgstr "Pérolas"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"

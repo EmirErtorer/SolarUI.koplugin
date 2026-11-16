@@ -329,7 +329,7 @@ msgstr "%s açıldı. Kullanmak için KOReader'ı yeniden başlat."
 msgid "Install"
 msgstr "Kur"
 
-#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
+#: solarui/apps/addons.lua solarui/screens/settings.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua ...
 msgid "Not now"
 msgstr "Şimdi değil"
 
@@ -3559,7 +3559,7 @@ msgstr "Süsen"
 msgid "Poppy"
 msgstr "Gelincik"
 
-#: solarui/screens/inkpick.lua
+#: solarui/screens/inkpick.lua solarui/ui/progress.lua
 msgid "Dragonfly"
 msgstr "Yusufçuk"
 
@@ -4396,6 +4396,18 @@ msgstr "Bahçedeki hangi bitki ya da hayvan ana ekranda sana eşlik eder. Otomat
 #: solarui/screens/settings.lua
 msgid "Automatic"
 msgstr "Otomatik"
+
+#: solarui/screens/settings.lua
+msgid "%s is your companion for life"
+msgstr "%s ömür boyu yoldaşın"
+
+#: solarui/screens/settings.lua
+msgid "While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."
+msgstr "O sana yoldaşlık ettikçe ana ekranda o görünür. Burada başka birini seçmek için önce onun sayfasında onunla vedalaş."
+
+#: solarui/screens/settings.lua
+msgid "Open their page"
+msgstr "Sayfasını aç"
 
 #: solarui/screens/settings.lua
 msgid "Companion dialogue"
@@ -5814,12 +5826,8 @@ msgid "Vine"
 msgstr "Asma"
 
 #: solarui/ui/progress.lua
-msgid "Bar"
-msgstr "Çubuk"
-
-#: solarui/ui/progress.lua
-msgid "Segments"
-msgstr "Bölümler"
+msgid "Pearls"
+msgstr "İnciler"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"

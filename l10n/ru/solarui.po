@@ -338,7 +338,7 @@ msgstr "%s включён. Перезапустите KOReader, чтобы ис�
 msgid "Install"
 msgstr "Установить"
 
-#: solarui/apps/addons.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua solarui/ui/gardenqueen.lua ...
+#: solarui/apps/addons.lua solarui/screens/settings.lua solarui/ui/gardencut.lua solarui/ui/gardengive.lua ...
 msgid "Not now"
 msgstr "Не сейчас"
 
@@ -3579,7 +3579,7 @@ msgstr "Ирис"
 msgid "Poppy"
 msgstr "Мак"
 
-#: solarui/screens/inkpick.lua
+#: solarui/screens/inkpick.lua solarui/ui/progress.lua
 msgid "Dragonfly"
 msgstr "Стрекоза"
 
@@ -4423,6 +4423,18 @@ msgstr "Какое растение или животное сада соста�
 #: solarui/screens/settings.lua
 msgid "Automatic"
 msgstr "Автоматически"
+
+#: solarui/screens/settings.lua
+msgid "%s is your companion for life"
+msgstr "%s — ваш спутник на всю жизнь"
+
+#: solarui/screens/settings.lua
+msgid "While they keep you company, home shows them. To choose someone else here, say goodbye to them first, on their page."
+msgstr "Пока он с вами, главный экран показывает его. Чтобы выбрать здесь кого-то другого, сначала попрощайтесь с ним на его странице."
+
+#: solarui/screens/settings.lua
+msgid "Open their page"
+msgstr "Открыть страницу"
 
 #: solarui/screens/settings.lua
 msgid "Companion dialogue"
@@ -5851,12 +5863,8 @@ msgid "Vine"
 msgstr "Лоза"
 
 #: solarui/ui/progress.lua
-msgid "Bar"
-msgstr "Полоса"
-
-#: solarui/ui/progress.lua
-msgid "Segments"
-msgstr "Сегменты"
+msgid "Pearls"
+msgstr "Жемчуг"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"
