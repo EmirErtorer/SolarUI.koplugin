@@ -1,5 +1,4 @@
-<p><img src="assets/solarui-title.svg" width="45%" alt="SolarUI"><br>
-<img src="assets/readme-divider.svg" width="100%" alt=""></p>
+<p><img src="assets/solarui-header.svg" width="100%" alt="SolarUI"></p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/EmirErtorer/SolarUI.koplugin?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMyAzaDguNUwyMSAxMi41IDEyLjUgMjEgMyAxMS41ek03LjUgNS41YTIgMiAwIDEgMCAwIDQgMiAyIDAgMCAwIDAtNHoiLz48L3N2Zz4%3D&label=Latest%20Release&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://github.com/EmirErtorer/SolarUI.koplugin/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/EmirErtorer/SolarUI.koplugin/total?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTExIDNoMnY5LjE3bDMuNTktMy41OEwxOCAxMGwtNiA2LTYtNiAxLjQxLTEuNDFMMTEgMTIuMTd6TTQgMTloMTZ2Mkg0eiIvPjwvc3ZnPg%3D%3D&label=Total%20Downloads&labelColor=rgb(62%2C91%2C58)&color=rgb(212%2C169%2C70))](https://github.com/EmirErtorer/SolarUI.koplugin/releases)
@@ -75,7 +74,7 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
   in the poster's units, so one tweak fits every screen size. Parts are named
   in code with `scene:group(id, label, add)`.
 
-- `tools/readme/shots.sh` takes the screenshots above and the colour scheme collage, `tools/readme/gif.sh <companions|garden|twin> <out.gif>` makes the moving pictures, and `tools/readme/banners.py` draws the title, the divider and the button.
+- `tools/readme/shots.sh` takes the screenshots above and the colour scheme collage, `tools/readme/gif.sh <companions|garden|twin> <out.gif>` makes the moving pictures, and `tools/readme/header.lua` and `tools/readme/banners.py` draw the header and the button.
 
 </details>
 

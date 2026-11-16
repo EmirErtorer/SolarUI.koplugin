@@ -1,7 +1,7 @@
-"""Draw the README's banners in SolarUI's garden style: the gilt title, the vine
-divider and the download plaque. Text is turned into paths so GitHub shows it
+"""Draw the README's banners in SolarUI's garden style: the header (the gilt
+title over the home dock's runner and plants) and the download plaque. Text is turned into paths so GitHub shows it
 exactly, with no font to load; the colours read on GitHub's light and dark pages.
-Needs fontTools:
+Needs fontTools, and header-garden.svgpart from tools/readme/header.lua:
     python3 tools/readme/banners.py
 """
 import math, os
@@ -57,21 +57,17 @@ def sun(cx, cy, r):
             f'<circle cx="{cx}" cy="{cy}" r="{r*.12:.1f}" fill="{DEEP}"/>')
 
 
-def title(display_font):
-    d, w = text_path(display_font, "SolarUI", 118, 150, 118, 2)
-    W, H = int(w + 176), 160
-    gilt = f'<path d="{d}" fill="{GOLD}" stroke="{DEEP}" stroke-width="3" stroke-linejoin="round"/>'
-    vine = f'M150 146 C{150 + w*.25:.0f} 132 {150 + w*.55:.0f} 158 {150 + w*.85:.0f} 140 C{150 + w*.95:.0f} 134 {150 + w + 6:.0f} 126 {150 + w:.0f} 118'
-    leaves = leaf(150 + w * .2, 140, -160, 22) + leaf(150 + w * .45, 147, -20, 20) + leaf(150 + w * .7, 146, 160, 20)
-    return svg(W, H, sun(66, 82, 58) + f'<path d="{vine}" fill="none" stroke="{STEM}" stroke-width="4" stroke-linecap="round"/>' + leaves + gilt, "SolarUI")
-
-
-def divider():
-    W, H = 1000, 40
-    vine = "M0 22 C120 6 220 36 340 20 C440 8 520 30 600 22 C700 12 820 30 1000 20"
-    leaves = "".join(leaf(x, y, r, 18, LEAF) for x, y, r in [(90, 14, -150), (210, 30, 20), (330, 20, -140), (470, 22, 30), (660, 16, -150), (800, 26, 20), (920, 22, -160)])
-    bloom = sun(560, 22, 14)
-    return svg(W, H, f'<path d="{vine}" fill="none" stroke="{STEM}" stroke-width="3.5" stroke-linecap="round"/>{leaves}{bloom}')
+def header(display_font):
+    """The title over the home dock's runner, the dock's plants standing on it
+    (drawn by SolarUI itself: tools/readme/header.lua writes header-garden.svgpart)."""
+    garden = open(os.path.join(os.path.dirname(__file__), "header-garden.svgpart")).read()
+    W, H = 1000, 236
+    size = 104
+    d, w = text_path(display_font, "SolarUI", size, 0, 0, 2)
+    k = min(1, 330 / w)   # (the name ends well before the plants start)
+    tx, base = 138, 150
+    gilt = f'<path d="{d}" fill="{GOLD}" stroke="{DEEP}" stroke-width="{3 / k:.1f}" stroke-linejoin="round" transform="translate({tx} {base}) scale({k:.3f})"/>'
+    return svg(W, H, sun(68, 104, 54) + gilt + garden, "SolarUI")
 
 
 def download(ui_font):
@@ -86,7 +82,7 @@ def download(ui_font):
 if __name__ == "__main__":
     fonts = os.path.join(REPO, "fonts")
     os.makedirs(OUT, exist_ok=True)
-    for name, data in [("solarui-title.svg", title(os.path.join(fonts, "Griffy-Regular.ttf"))), ("readme-divider.svg", divider()),
+    for name, data in [("solarui-header.svg", header(os.path.join(fonts, "Griffy-Regular.ttf"))),
                        ("readme-download.svg", download(os.path.join(fonts, "Gabriela-Regular.ttf")))]:
         open(os.path.join(OUT, name), "w").write(data)
         print("wrote assets/" + name, len(data), "bytes")
