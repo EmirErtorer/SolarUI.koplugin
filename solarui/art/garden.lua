@@ -226,6 +226,7 @@ function Garden.garden_ground(c, vw, vh, mode)
     local standing = Layout.static(Layout.HEIGHT)
     standing.pond = Layout.PROPS.pond
     local function free(x, y)
+        if Decor.onPath(x, y) then return false end
         for _id, b in pairs(standing) do
             if x > b.x - 8 and x < b.x + b.w + 8 and y > b.y - 4 and y < b.y + b.h + 6 then return false end
         end

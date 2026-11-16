@@ -3,9 +3,9 @@
 -- fountain, a sundial, a bug hotel, a painted birdhouse on a post, a mossy
 -- log with mushrooms and a bird feeder. Every piece takes `winter` and then
 -- wears its snow: caps on rims, roofs and tops, the fountain's water frozen
--- with icicles under the upper bowl, and no mushrooms. Decor.path lays
--- stepping stones from the gate to the table and on to the pond, and
--- Decor.flowers scatters daisies and clover over the free grass.
+-- with icicles under the upper bowl, and no mushrooms. Decor.path lays a
+-- gravel path of flagstones from the gate to the table and on past the pond,
+-- and Decor.flowers scatters daisies and clover over the free grass.
 
 local Flora = require("solarui/art/flora")
 local Light = require("solarui/art/light")
@@ -177,34 +177,93 @@ Decor.PIECES = {
     birdhouse = { draw = birdhouse, w = 56, h = 94 }, log = { draw = log, w = 124, h = 46 }, feeder = { draw = feeder, w = 44, h = 120 },
 }
 
--- The stepping stones' way, in the poster's units: from the gate down to the
+-- The path's way, in the poster's units: in through the gate and down to the
 -- table, from under the table to the pond's rim, and from the pond's foot
--- towards the bottom of the lawn.
+-- off the bottom of the lawn.
 Decor.WAY = {
-    { { 548, 470 }, { 556, 530 }, { 570, 600 }, { 586, 690 } },
-    { { 600, 884 }, { 606, 944 }, { 612, 1000 } },
-    { { 562, 1232 }, { 567, 1290 }, { 574, 1344 } },
+    { { 548, 452 }, { 554, 520 }, { 568, 600 }, { 586, 700 } },
+    { { 600, 870 }, { 606, 940 }, { 612, 1004 } },
+    { { 562, 1218 }, { 567, 1300 }, { 575, 1410 } },
 }
 
--- Stepping stones along Decor.WAY, larger as they come nearer, each a flat
--- stone with a worn edge; `place(x, y)` turns a poster point into the
--- canvas's (the lawn may be spread and stretched). Snow dusts them in winter.
+-- How wide the path is at height y: narrow by the gate, wide near the eye.
+local function breadth(y) return 46 + (y - 452) * .07 end
+
+-- Is the poster point (x, y) on the path (or within `margin` of it)?
+function Decor.onPath(x, y, margin)
+    for _s, way in ipairs(Decor.WAY) do
+        if y >= way[1][2] - 10 and y <= way[#way][2] + 10 then
+            for _k, p in ipairs(Svg.spline(way, 12)) do
+                local half = breadth(p[2]) / 2 + (margin or 8)
+                if math.abs(p[1] - x) < half and math.abs(p[2] - y) < 14 then return true end
+            end
+        end
+    end
+    return false
+end
+
+-- An irregular flagstone round (cx, cy), rx by ry, its outline smoothed
+-- through eight points that wander in and out by `seed`.
+local function flag(cx, cy, rx, ry, seed)
+    local pts = {}
+    for k = 0, 7 do
+        local a = math.rad(k * 45 + vary(seed, k + 50) * 20)
+        local r = .84 + .26 * vary(seed, k + 60)
+        pts[#pts + 1] = { cx + math.cos(a) * rx * r, cy + math.sin(a) * ry * r }
+    end
+    local d = {}
+    for k = 1, 8 do
+        local p, q = pts[k], pts[k % 8 + 1]
+        local mx, my = (p[1] + q[1]) / 2, (p[2] + q[2]) / 2
+        d[#d + 1] = (k == 1 and string.format("M%s %s", n(mx), n(my)) or "") .. string.format(" Q%s %s %s %s", n(q[1]), n(q[2]), n((q[1] + pts[(k + 1) % 8 + 1][1]) / 2), n((q[2] + pts[(k + 1) % 8 + 1][2]) / 2))
+    end
+    return table.concat(d) .. "Z"
+end
+
+-- The path along Decor.WAY: a band of pale gravel widening as it comes
+-- nearer, edged with a fine line, and laid with big flat flagstones, each
+-- with its thickness showing beneath and a worn crack or two, in pairs where
+-- the path is wide. `place(x, y)` turns a poster point into the canvas's.
+-- In winter the gravel lies under the snow and only the stones show,
+-- dusted white.
 function Decor.path(c, place, winter)
     local t = tones(c)
+    local gravel, stone = mix(c.line, c.cream, .2), mix(c.cream, c.sky, .28)
     local out, i = {}, 0
     for _s, way in ipairs(Decor.WAY) do
         local pts = Svg.spline(way, 30)
-        local len, at = Svg.length(pts), 0
-        while at < len do
-            i = i + 1
+        local moved = {}
+        for k, p in ipairs(pts) do local x, y = place(p[1], p[2]); moved[k] = { x, y } end
+        if not winter then
+            local w0, w1 = breadth(way[1][2]), breadth(way[#way][2])
+            out[#out + 1] = path(Svg.ribbon(moved, Svg.taper(w0, w1)), gravel, mix(gravel, c.ink, .45), 1.1)
+            local dots = {}
+            for k = 1, #moved, 2 do
+                local p = moved[k]
+                local w = breadth(pts[k][2])
+                for j = 1, 3 do
+                    local dx = (vary(k * 3 + j, 31) - .5) * w * .8
+                    dots[#dots + 1] = string.format("M%s %s h1.6", n(p[1] + dx), n(p[2] + (vary(k + j, 32) - .5) * 6))
+                end
+            end
+            out[#out + 1] = line(table.concat(dots, " "), mix(gravel, c.ink, .4), 1.6)
+        end
+        local len, at = Svg.length(pts), 6
+        while at < len - 4 do
             local x, y = Svg.along(pts, at)
-            local rx = 13 + (y - 456) * .02
-            local px, py = place(x + (vary(i, 41) - .5) * rx * .5, y)
-            local ry, rot = rx * .4, (vary(i, 42) - .5) * 14
-            out[#out + 1] = ellipse(px, py + ry * .35, rx, ry, rot, t.shade) .. ellipse(px, py, rx, ry, rot, t.stone, c.ink, 1.2)
-                .. line(string.format("M%s %s q%s %s %s 0", n(px - rx * .5), n(py - ry * .25), n(rx * .3), n(-ry * .4), n(rx * .7)), c.ink, .7)
-            if winter then out[#out + 1] = ellipse(px - rx * .1, py - ry * .2, rx * .7, ry * .55, rot, t.snow) end
-            at = at + rx * 2.15
+            local w = breadth(y)
+            local ry = w * .2
+            local twin = w > 64
+            for side = twin and -1 or 0, twin and 1 or 0, 2 do
+                i = i + 1
+                local rx = twin and w * .25 or w * .42
+                local px, py = place(x + side * w * .23 + (vary(i, 41) - .5) * w * .08, y + (vary(i, 43) - .5) * ry * .4)
+                local d = flag(px, py, rx, ry, i)
+                out[#out + 1] = group(0, ry * .32, 0, path(d, t.shade)) .. path(d, stone, c.ink, 1.3)
+                    .. line(string.format("M%s %s q%s %s %s %s", n(px - rx * .45), n(py - ry * .1), n(rx * .25), n(-ry * .3), n(rx * .6), n(-ry * .12)), mix(stone, c.ink, .45), .9)
+                if winter then out[#out + 1] = path(flag(px - rx * .05, py - ry * .14, rx * .78, ry * .62, i + 7), t.snow) end
+            end
+            at = at + ry * 2 + 5
         end
     end
     return table.concat(out)
