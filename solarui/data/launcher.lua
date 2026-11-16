@@ -8,10 +8,11 @@ local Launcher = {}
 
 -- The built-in buttons, in their default order, and the one that always
 -- stays so the settings can always be reached.
-Launcher.BUILTIN = { "search", "history", "collections", "garden", "library", "inkaway", "settings" }
+Launcher.BUILTIN = { "notebooks", "history", "collections", "garden", "library", "inkaway", "settings", "search" }
 
--- Built-in buttons that start hidden (the reader can show them in the editor).
-Launcher.HIDDEN_AT_FIRST = {}
+-- Built-in buttons that start hidden (the reader can show them in the editor):
+-- the search, whose place the notebook shelf took (the library searches too).
+Launcher.HIDDEN_AT_FIRST = { search = true }
 Launcher.FIXED = "settings"
 
 local MAX = 12   -- buttons the home screen has room for
@@ -22,6 +23,8 @@ for _i, id in ipairs(Launcher.BUILTIN) do builtin[id] = true end
 -- The default order of earlier versions. A list saved in that order with nothing
 -- hidden or added was never edited, so it follows the new default.
 Launcher.OLD_DEFAULTS = {
+    -- (from before the notebook shelf took the search's place)
+    { "search", "history", "collections", "garden", "library", "inkaway", "settings" },
     { "library", "collections", "history", "search", "inkaway", "garden", "settings" },
     -- (from before the garden had a button of its own: it was added at the end)
     { "library", "collections", "history", "search", "inkaway", "settings", "garden" },
@@ -51,6 +54,17 @@ function Launcher.entries()
         if type(e) == "table" and (builtin[e.id] or e.custom) and not seen[e.id] then
             seen[e.id] = true
             out[#out + 1] = e
+        end
+    end
+    -- a list from before the notebook shelf: the shelf takes the search's place, the search is hidden
+    if not seen.notebooks then
+        for i, e in ipairs(out) do
+            if e.id == "search" and not e.hidden and not e.custom then
+                table.insert(out, i, { id = "notebooks" })
+                seen.notebooks = true
+                e.hidden = true
+                break
+            end
         end
     end
     for _i, id in ipairs(Launcher.BUILTIN) do

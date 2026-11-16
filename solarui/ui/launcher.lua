@@ -17,6 +17,7 @@ local BUILTIN = {
     library = function() return "dock_library", "library", _("Library"), function() App.go("library") end end,
     collections = function() return "dock_collections", "collections", _("Collections"), function() App.go("collections") end end,
     history = function() return "dock_history", "history", _("History"), function() App.go("history") end end,
+    notebooks = function() return "dock_lily", "notes", _("Notebooks"), function() App.push("inkshelf") end end,
     search = function() return "dock_search", "search", _("Search"), function() App.push("search") end end,
     inkaway = function() return "dock_inkaway", InkAway.icon, "Ink Away", function() Addons.launch(InkAway) end end, -- i18n: keep
     garden = function() return "dock_garden", "tools", _("Garden"), function() App.push("garden") end end,
