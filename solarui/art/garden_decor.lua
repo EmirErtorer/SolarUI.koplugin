@@ -1,7 +1,7 @@
 -- The garden's ornaments and the small life of its lawn, each piece drawn
 -- with its top-left corner at the origin of its own box: a two-tier stone
--- fountain, a sundial, a bug hotel, a painted birdhouse on a post, a mossy
--- log with mushrooms and a bird feeder. Every piece takes `winter` and then
+-- fountain, a sundial, a bug hotel, a painted birdhouse on a post, a cosy
+-- seat of a log and a stump with a blanket, and a bird feeder. Every piece takes `winter` and then
 -- wears its snow: caps on rims, roofs and tops, the fountain's water frozen
 -- with icicles under the upper bowl, and no mushrooms. Decor.path lays a
 -- gravel path of flagstones from the gate to the table and on past the pond,
@@ -143,17 +143,51 @@ local function mushroom(c, x, y, s, lean)
         .. circle(-w * .45, -s * .82, s * .07, c.cream) .. circle(w * .2, -s * .93, s * .08, c.cream) .. circle(w * .58, -s * .74, s * .06, c.cream))
 end
 
--- A mossy log lying in the grass, 124 x 46, its cut end showing rings,
--- with red mushrooms at its foot and on its top. In winter snow lies along
--- its top and the mushrooms are gone.
+-- A cosy seat in the grass, 190 x 136: a fallen log for a bench with a
+-- striped wool blanket thrown over one end and a cushion on the other, a
+-- tree stump beside it for a table with a mug and a candle in a jar, red
+-- mushrooms at the log's foot and a fern by the stump. In winter snow lies
+-- along the log and on the stump, the blanket is folded on the log and the
+-- mushrooms are gone.
 local function log(c, winter)
     local t = tones(c)
-    local out = path("M14 15 L104 10.5 C111 10.5 116 23 112 36.5 L16 40.5 C8 40.5 5.5 17 14 15Z", t.wood, c.ink, 1.8)
-        .. line("M20 22 L60 19.6 M30 30 L88 27 M66 17 L100 15.4 M24 35 L52 34", t.dark, 1.1)
-        .. ellipse(107.5, 23.5, 8.6, 13, 0, mix(t.wood, c.cream, .5), c.ink, 1.5) .. ellipse(107.5, 23.5, 5, 8, 0, nil, t.dark, .8) .. ellipse(107.5, 23.5, 2, 3.4, 0, nil, t.dark, .8)
-        .. path("M30 16.6 C34 10 46 9.6 52 15.4Z", c.sage, c.ink, 1) .. path("M70 13.6 C73 9 82 9 86 12.6Z", c.leaf, c.ink, 1)
-    if winter then return out .. path("M12 16 C30 9 80 6 104 9 C108 9.4 110 12 111 15 C90 12 40 14 14 19Z", t.snow, t.edge, .8) end
-    return out .. mushroom(c, 22, 45, 15, -6) .. mushroom(c, 33, 46, 10, 8) .. mushroom(c, 78, 12, 9, 4) .. Flora.leaf(c, 46, 44, -160, 12, 4, c.leaf, true)
+    local cut = mix(t.wood, c.cream, .5)
+    -- the stump, behind the log's far end
+    local out = path("M140 108 L142 66 C150 60 176 60 184 66 L186 110 C178 114 148 114 140 108Z", t.wood, c.ink, 1.7)
+        .. line("M150 72 L149 106 M162 70 L163 108 M174 72 L176 106", t.dark, 1.1)
+        .. ellipse(163, 66, 21, 6.4, 0, cut, c.ink, 1.5) .. ellipse(163, 66, 12, 3.6, 0, nil, t.dark, .8) .. ellipse(163, 66, 5, 1.6, 0, nil, t.dark, .8)
+        .. path("M136 110 C138 104 142 104 144 110Z", t.wood, c.ink, 1.2) .. path("M182 110 C184 103 189 104 190 111Z", t.wood, c.ink, 1.2)
+    if winter then
+        out = out .. path("M141 66 C146 57 180 57 185 66 C176 63 150 63 141 66Z", t.snow, t.edge, .8)
+    else
+        -- the mug and the candle in its jar
+        out = out .. path("M147 63 L148 50 L159 50 L160 63Z", c.bloom, c.ink, 1.3) .. line("M160 53 C165 53 165 60 159.6 60", c.ink, 1.3)
+            .. line("M151 46 C149 42 153 40 151 36 M156 46 C154 43 158 41 156 37", mix(c.ink, c.sky, .4), .9)
+            .. path("M168 64 L167 46 L180 46 L179 64Z", mix(c.glass, c.cream, .72), c.ink, 1.3) .. path("M169 46 L178 46 L178 43 L169 43Z", t.dark, c.ink, 1)
+            .. path("M173.5 50 C176 53 176 57 173.5 58.4 C171 57 171 53 173.5 50Z", c.gold, c.ink, .7) .. line("M173.5 58.4 L173.5 61", c.ink, 1)
+    end
+    out = out .. Flora.leaf(c, 186, 110, -70, 26, 6, c.leaf, true) .. Flora.leaf(c, 188, 110, -40, 22, 5.4, c.sage, true) .. Flora.leaf(c, 184, 111, -100, 20, 5, c.leaf, true)
+    -- the log, lying along the front: a thick trunk, about a chair's seat high
+    out = out .. ellipse(96, 130, 92, 5, 0, mix(c.sage, c.muted, .3))
+    local trunk = path("M14 94 L150 88 C160 88 166 104 162 124 L18 130 C6 130 4 98 14 94Z", t.wood, c.ink, 1.9)
+        .. line("M22 104 L80 101 M30 116 L120 112 M90 96 L148 93.6 M28 124 L70 123 M120 120 L156 118", t.dark, 1.2)
+        .. ellipse(156, 107, 9.6, 17.4, 0, cut, c.ink, 1.6) .. ellipse(156, 107, 5.6, 10.6, 0, nil, t.dark, .8) .. ellipse(156, 107, 2.2, 4.4, 0, nil, t.dark, .8)
+        .. path("M36 95.4 C42 89 56 88.4 62 93.4Z", c.sage, c.ink, 1)
+    -- (drawn thin, raised to its full girth about the ground line)
+    local function thick(body) return group(0, 132, 0, group(0, -132, 0, body), 1, 1.45) end
+    if winter then
+        return out .. thick(trunk .. path("M50 92.4 L98 90.4 L99 99 L51 101Z", mix(c.bloom, c.cream, .2), c.ink, 1.2) .. line("M50 95.4 L98 93.4", c.cream, 1.6)
+            .. path("M12 95 C40 86 110 83 150 86 C156 86.4 159 89 160 92 C130 89 60 91 14 99Z", t.snow, t.edge, .8))
+    end
+    -- the blanket thrown over the far end, falling in folds down the front, and the cushion
+    local stripes = "M104 97 L146 95 M103 106 L148 103 M104 116 L152 112"
+    trunk = trunk .. path("M98 92 C110 88 136 87 150 89 C154 98 156 108 154 120 L150 128 C140 126 130 128 120 126 C112 128 104 126 100 122 C100 112 98 102 98 92Z", mix(c.bloom, c.cream, .25), c.ink, 1.4)
+        .. line(stripes, c.cream, 2.6) .. line(stripes, mix(c.bloom, c.ink, .25), .8)
+        .. line("M104 126 l-1 4 M112 127 l0 4 M120 126.4 l1 4 M130 127.4 l0 4 M140 126.4 l1 4 M148 128 l1 3.4", c.ink, 1)
+        .. path("M28 88 C30 78 58 76 66 84 C68 90 64 95 58 95 C46 96 32 96 28 88Z", mix(c.sage, c.cream, .35), c.ink, 1.4)
+        .. line("M34 87 C42 84 52 84 60 87", mix(c.sage, c.ink, .4), .9) .. circle(47, 86.4, 1.6, c.gold, c.ink, .6)
+    return out .. thick(trunk) .. mushroom(c, 16, 132, 20, -6) .. mushroom(c, 30, 134, 13, 8) .. mushroom(c, 6, 134, 11, -14)
+        .. Flora.leaf(c, 40, 133, -160, 16, 5, c.leaf, true) .. Flora.leaf(c, 168, 132, -20, 14, 5, c.sage, true)
 end
 
 -- A bird feeder on a post, 44 x 120: a green roof on two uprights over a
@@ -174,7 +208,7 @@ end
 -- The pieces by id, each with its drawing and the size it is drawn at.
 Decor.PIECES = {
     fountain = { draw = fountain, w = 110, h = 136 }, sundial = { draw = sundial, w = 76, h = 88 }, bughotel = { draw = bughotel, w = 78, h = 88 },
-    birdhouse = { draw = birdhouse, w = 56, h = 94 }, log = { draw = log, w = 124, h = 46 }, feeder = { draw = feeder, w = 44, h = 120 },
+    birdhouse = { draw = birdhouse, w = 56, h = 94 }, log = { draw = log, w = 190, h = 136 }, feeder = { draw = feeder, w = 44, h = 120 },
 }
 
 -- The path's way, in the poster's units: in through the gate and down to the
@@ -220,46 +254,74 @@ local function flag(cx, cy, rx, ry, seed)
     return table.concat(d) .. "Z"
 end
 
--- The path along Decor.WAY: a band of pale gravel widening as it comes
--- nearer, edged with a fine line, and laid with big flat flagstones, each
--- with its thickness showing beneath and a worn crack or two, in pairs where
--- the path is wide. `place(x, y)` turns a poster point into the canvas's.
--- In winter the gravel lies under the snow and only the stones show,
--- dusted white.
+-- The edge of the gravel along `pts` (canvas points) as a closed outline:
+-- `half(k, t)` is how far out it lies at the k-th point (t from 0 to 1 along).
+local function band(pts, half)
+    local left, right = {}, {}
+    for k = 1, #pts do
+        local a, b = pts[math.max(1, k - 1)], pts[math.min(#pts, k + 1)]
+        local dx, dy = b[1] - a[1], b[2] - a[2]
+        local len = math.sqrt(dx * dx + dy * dy)
+        if len == 0 then len = 1 end
+        local h = half(k, (k - 1) / (#pts - 1))
+        local nx, ny = -dy / len, dx / len
+        left[#left + 1] = { pts[k][1] + nx * h, pts[k][2] + ny * h }
+        right[#right + 1] = { pts[k][1] - nx * h * (.92 + .16 * vary(k, 35)), pts[k][2] - ny * h }
+    end
+    for k = #right, 1, -1 do left[#left + 1] = right[k] end
+    return Svg.poly(Svg.spline(left, 2), true)
+end
+
+-- The path along Decor.WAY: a soft band of pale gravel that widens as it
+-- comes nearer, its edges wandering in and out with no line along them and
+-- its ends tapering away into the lawn, grass growing over its edges, laid
+-- with big irregular flagstones (in pairs where it is wide, smaller ones
+-- where it peters out), each with its thickness showing beneath and a worn
+-- crack. `place(x, y)` turns a poster point into the canvas's. In winter the
+-- gravel lies under the snow and only the stones show, dusted white.
 function Decor.path(c, place, winter)
     local t = tones(c)
-    local gravel, stone = mix(c.line, c.cream, .2), mix(c.cream, c.sky, .28)
+    local gravel, stone = mix(c.line, c.cream, .28), mix(c.cream, c.sky, .28)
     local out, i = {}, 0
-    for _s, way in ipairs(Decor.WAY) do
+    for seg, way in ipairs(Decor.WAY) do
         local pts = Svg.spline(way, 30)
         local moved = {}
         for k, p in ipairs(pts) do local x, y = place(p[1], p[2]); moved[k] = { x, y } end
+        -- how far the path has faded at t: it tapers off at both ends
+        local function fade(tt) local e = math.min(1, tt / .16, (1 - tt) / .16); return .45 + .55 * (e * e * (3 - 2 * e)) end
         if not winter then
-            local w0, w1 = breadth(way[1][2]), breadth(way[#way][2])
-            out[#out + 1] = path(Svg.ribbon(moved, Svg.taper(w0, w1)), gravel, mix(gravel, c.ink, .45), 1.1)
-            local dots = {}
+            out[#out + 1] = path(band(moved, function(k, tt)
+                return breadth(pts[k][2]) / 2 * fade(tt) * (1 + .1 * math.sin(k * .7 + seg) + .05 * math.sin(k * 2.1))
+            end), gravel)
+            local dots, blades = {}, {}
             for k = 1, #moved, 2 do
-                local p = moved[k]
-                local w = breadth(pts[k][2])
-                for j = 1, 3 do
-                    local dx = (vary(k * 3 + j, 31) - .5) * w * .8
-                    dots[#dots + 1] = string.format("M%s %s h1.6", n(p[1] + dx), n(p[2] + (vary(k + j, 32) - .5) * 6))
+                local p, w = moved[k], breadth(pts[k][2]) * fade((k - 1) / (#pts - 1))
+                for j = 1, 3 do dots[#dots + 1] = string.format("M%s %s h1.6", n(p[1] + (vary(k * 3 + j, 31) - .5) * w * .8), n(p[2] + (vary(k + j, 32) - .5) * 6)) end
+                -- tufts of grass leaning in over both edges
+                for side = -1, 1, 2 do
+                    if vary(k, 33 + side) > .35 then
+                        local x, y = p[1] + side * w * (.44 + .06 * vary(k, 36)), p[2] + 4
+                        local h = 9 + 7 * vary(k, 37)
+                        blades[#blades + 1] = string.format("M%s %s Q%s %s %s %s Q%s %s %s %sZ", n(x - 1.6), n(y), n(x - side * 2), n(y - h * .6), n(x - side * 5), n(y - h), n(x + 1), n(y - h * .5), n(x + 1.6), n(y))
+                    end
                 end
             end
-            out[#out + 1] = line(table.concat(dots, " "), mix(gravel, c.ink, .4), 1.6)
+            out[#out + 1] = line(table.concat(dots, " "), mix(gravel, c.ink, .35), 1.5) .. path(table.concat(blades, " "), c.leaf)
         end
         local len, at = Svg.length(pts), 6
         while at < len - 4 do
             local x, y = Svg.along(pts, at)
-            local w = breadth(y)
+            local tt = at / len
+            local f = fade(tt)
+            local w = breadth(y) * f
             local ry = w * .2
             local twin = w > 64
             for side = twin and -1 or 0, twin and 1 or 0, 2 do
                 i = i + 1
-                local rx = twin and w * .25 or w * .42
-                local px, py = place(x + side * w * .23 + (vary(i, 41) - .5) * w * .08, y + (vary(i, 43) - .5) * ry * .4)
+                local rx = twin and w * .25 or w * .4
+                local px, py = place(x + side * w * .23 + (vary(i, 41) - .5) * w * .1, y + (vary(i, 43) - .5) * ry * .4)
                 local d = flag(px, py, rx, ry, i)
-                out[#out + 1] = group(0, ry * .32, 0, path(d, t.shade)) .. path(d, stone, c.ink, 1.3)
+                out[#out + 1] = group(0, ry * .32, 0, path(d, t.shade)) .. path(d, stone, c.ink, 1.2)
                     .. line(string.format("M%s %s q%s %s %s %s", n(px - rx * .45), n(py - ry * .1), n(rx * .25), n(-ry * .3), n(rx * .6), n(-ry * .12)), mix(stone, c.ink, .45), .9)
                 if winter then out[#out + 1] = path(flag(px - rx * .05, py - ry * .14, rx * .78, ry * .62, i + 7), t.snow) end
             end

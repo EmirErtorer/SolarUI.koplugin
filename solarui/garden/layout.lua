@@ -73,11 +73,14 @@ Layout.BOOKDIVIDE = 202
 -- fountain, the lantern and the can, and the ornaments of garden_decor.lua
 -- in the free patches along the hedge, between the beds, beside the pond
 -- and at the foot (the gap by the hedge between the bug hotel and the lily
--- is left for the face that peeks out of the grass).
+-- is left for the face that peeks out of the grass). They keep to one scale
+-- with the furniture and the plants (the chairs' seat is about 45 cm, some
+-- 80 units): the pots about knee high, the skep and the lantern taller, the
+-- log seat as long as a person is tall sitting down.
 Layout.EXTRAS = {
-    skep = box(50, 1006, 64, 67), fountain = box(912, 556, 112, 138), lantern = box(752, 1097, 35, 61), can = box(936, 1264, 83, 51),
-    bughotel = box(52, 464, 78, 88), sundial = box(175, 862, 74, 86), birdhouse = box(952, 458, 56, 94),
-    feeder = box(369, 1004, 44, 120), log = box(170, 1352, 124, 46), pots = box(640, 1356, 68, 44),
+    skep = box(36, 986, 96, 96), fountain = box(904, 557, 132, 143), lantern = box(748, 1090, 52, 92), can = box(928, 1250, 104, 64),
+    bughotel = box(46, 460, 90, 96), sundial = box(175, 862, 74, 86), birdhouse = box(950, 456, 62, 100),
+    feeder = box(368, 990, 48, 136), log = box(100, 1262, 194, 136), pots = box(636, 1344, 96, 56),
 }
 
 -- The size each animal is drawn at (its art's own units); it is shown
@@ -86,7 +89,10 @@ Layout.EXTRAS = {
 -- be dealt any free place in the garden or the sky; the two that live in the
 -- pond keep to their paths there (PATHS, top-left corners to hop or swim to).
 Layout.ANIMAL_SCALE = 1.3
-Layout.SCALES = { bee = 1.0, dragonfly = 1.0, butterfly = 1.1, moth = 1.1, frog = 1.0, koi = .85, fox = 1.1, peacock = 1.0, yuzsuz = 1.2 }
+-- (the small ones are larger than life so they can be seen, but never larger
+-- than the pots, the skep or the log: the scale of the garden holds)
+Layout.SCALES = { bee = .6, ladybug = .8, butterfly = .8, moth = .8, dragonfly = .8, snail = .9, robin = .8, hedgehog = .85, frog = .9, koi = .85,
+    fox = 1.1, peacock = 1.0, yuzsuz = 1.1 }
 Layout.ANIMALS = {
     bee = box(0, 0, 110, 70), butterfly = box(0, 0, 80, 70), moth = box(0, 0, 80, 70), robin = box(0, 0, 110, 80),
     dragonfly = box(0, 0, 100, 64), ladybug = box(0, 0, 60, 50), snail = box(0, 0, 80, 56), hedgehog = box(0, 0, 110, 64),
@@ -100,13 +106,17 @@ Layout.PATHS = {
 }
 Layout.HIT = 90   -- the least a box to tap may be on a side
 
+-- The nook by the hedge between the bug hotel and the lily, kept free of the
+-- animals that fly so the face that peeks out of the grass always has a place.
+Layout.NOOK = box(138, 462, 108, 94)
+
 -- The free spots the animals that walk are dealt: large, medium and small,
 -- so any of them fits at least one kind. Tapping a spot taps the animal in it.
 Layout.SPOTS = {
     { x = 827, y = 1087, w = 200, h = 120 },
     { x = 537, y = 484, w = 150, h = 105 }, { x = 444, y = 879, w = 150, h = 105 },
     { x = 767, y = 1243, w = 150, h = 105 }, { x = 297, y = 1246, w = 150, h = 105 },
-    { x = 412, y = 527, w = 110, h = 92 }, { x = 151, y = 1243, w = 110, h = 92 }, { x = 511, y = 1245, w = 110, h = 92 },
+    { x = 412, y = 527, w = 110, h = 92 }, { x = 511, y = 1245, w = 110, h = 92 },
 }
 
 -- Parts of the page that belong to the frame and the heading: the title row
@@ -264,6 +274,7 @@ function Layout.spread(seed)
     for i, s in ipairs(Layout.SPOTS) do free[i] = s end
     local taken = { box(Layout.PROPS.pond.x, Layout.PROPS.pond.y, Layout.PROPS.pond.w, Layout.PROPS.pond.h) }
     for _id, b in pairs(Layout.static(Layout.HEIGHT)) do taken[#taken + 1] = b end
+    taken[#taken + 1] = Layout.NOOK
     for _i, r in ipairs(walkers) do
         local options = {}
         for j, s in ipairs(free) do
