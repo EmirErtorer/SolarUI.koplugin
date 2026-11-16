@@ -318,6 +318,7 @@ end
 function SettingsScreen:about()
     return {
         row(_("Version"), nil, Label:new({ text = Version, kind = "body" })),
+        supportPanel(),   -- (on the first page, where it is seen)
         row(_("Language"), _("SolarUI follows KOReader's language (set in KOReader's own settings). The texts are in the l10n folder and can be edited there."),
             Label:new({ text = require("solarui/gettext").language():upper(), kind = "body" })),
         row(_("Updates"), (function()
@@ -327,7 +328,6 @@ function SettingsScreen:about()
             Button:new({ label = _("Open"), on_tap = function() App.push("updates") end })),
         row(_("Fonts"), _("Griffy, Milonga, Gabriela, Federo and Glass Antiqua, SIL Open Font License"), Layout.Spacer:new({ width = 1 })),
         Label:new({ text = _("An Art Nouveau garden of a home screen for KOReader."), kind = "body", color = "muted", lines = 2 }),
-        supportPanel(),
     }
 end
 
