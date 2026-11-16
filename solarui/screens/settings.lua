@@ -98,6 +98,14 @@ function SettingsScreen:look()
         a.grow, b.grow = true, true
         kids[#kids + 1] = Layout.Row:new({ gap = th.space.xl, children = { a, b } })
     end
+    local Natural = require("solarui/art/natural")
+    kids[#kids + 1] = row(_("Plants and animals"), _("Keep their own colours, or wear the colour scheme everywhere or on home only (Yüzsüz always keeps hers)"),
+        Controls.Segmented({ options = { { _("Own colours"), "off" }, { _("Everywhere"), "all" }, { _("Home only"), "home" } },
+            value = Natural.mode(), kind = "small", on_change = function(v) Theme.set("scheme_living", v) end }))
+    if Natural.mode() ~= "off" then
+        kids[#kids + 1] = row(_("Companion keeps their colours"), _("The companion on home stays in their own colours while the scheme paints the rest"),
+            Controls.Toggle:new({ on = Natural.companionKept(), on_change = function(on) Theme.set("scheme_companion_kept", on) end }))
+    end
     kids[#kids + 1] = row(_("Book progress"), _("How reading progress is drawn on inner pages and in a book's details"),
         Button:new({ label = Progress.bookStyle().name, on_tap = function() Progress.pickStyle() end }))
     return kids

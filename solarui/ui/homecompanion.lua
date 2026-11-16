@@ -77,7 +77,7 @@ local function picture(scene, item, x, y, aw, ah)
     local param = item.kind == "plant" and GardenView.plantParam(item.entry)
         or GardenView.animalParam(GardenView.posed(item.id, GardenView.stillPose(item.entry)), false)
     local bx, by, bw, bh = require("solarui/ui/archfit").box(name, size, { param }, aw, ah)
-    scene:backdrop(name, x + bx, y + by, bw, bh, param)
+    scene:backdrop("home:" .. name, x + bx, y + by, bw, bh, param)   -- (home: the scheme may paint them, see art/natural.lua)
 end
 
 -- How the companion is doing in a few words: a plant that needs a drink says

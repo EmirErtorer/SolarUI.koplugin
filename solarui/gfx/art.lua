@@ -79,7 +79,7 @@ end
 -- `exact` (a backdrop that stays inside its box, the ground) is drawn at
 -- exactly its size: no margin to rasterise and nothing to trim.
 local function render(name, w, h, vw, vh, param, exact)
-    local draw = require("solarui/art/sprites")[name]
+    local draw = require("solarui/art/sprites")[Natural.drawing(name)]
     if not draw or w < 1 or h < 1 then return nil end
     local zoom = math.min(w / vw, h / vh)
     local pad = exact and 0 or bleed(vw, vh, zoom)
