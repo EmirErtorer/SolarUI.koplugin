@@ -21,7 +21,7 @@ InkRender.W = 360
 InkRender.H = 540
 
 -- Goes up whenever covers are drawn differently, so every cover is drawn anew.
-InkRender.VERSION = 5
+InkRender.VERSION = 6
 
 -- An "#rrggbb" colour as a blitbuffer colour.
 local function rgb(hex)

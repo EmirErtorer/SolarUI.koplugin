@@ -45,9 +45,10 @@ function Addons.loadedIn(ui, addon)
     return ui ~= nil and ui[pluginId(addon)] ~= nil
 end
 
--- "ready" (running), "disabled" (switched off), "restart" (installed, not
--- running yet) or "missing".
+-- "ready" (running), "disabled" (switched off), "restart" (installed or
+-- updated, not running yet) or "missing".
 function Addons.status(addon)
+    if Addons.updated[pluginId(addon)] then return "restart" end
     if Addons.loadedIn(require("solarui/park").ui(), addon) then return "ready" end   -- the file browser, or the book parked under home
     if not Addons.installedPath(addon) then return "missing" end
     local off = G_reader_settings and G_reader_settings:readSetting("plugins_disabled")
@@ -64,31 +65,60 @@ function Addons.statusLine(addon)
     return _("Free to get")
 end
 
+-- The version of the plugin installed on this device (from its _meta.lua), or nil.
+function Addons.version(addon)
+    local path = Addons.installedPath(addon)
+    local f = path and io.open(path .. "/_meta.lua", "r")
+    if not f then return nil end
+    local meta = f:read("*a")
+    f:close()
+    return meta:match('version%s*=%s*"([^"]+)"')
+end
+
+-- The versions installed this session by an update, waiting for a restart, by plugin id.
+Addons.updated = {}
+
 -- Install from GitHub: newest stable release, checked and unpacked, then
--- the restart prompt. Shows each step while it runs.
-function Addons.install(addon)
+-- the restart prompt. With `update`, the copy installed now is replaced by
+-- it (where it is installed), unless it is that release already. Shows each
+-- step while it runs.
+function Addons.install(addon, update)
+    local title = update and _("Updating %s") or _("Installing %s")
     local function step(text)
         App.dialog(function(_close, w)
-            return Dialog.progress({ title = string.format(_("Installing %s"), addon.name), text = text }, w)
+            return Dialog.progress({ title = string.format(title, addon.name), text = text }, w)
         end)
     end
     local function fail(why)
         App.closeDialog()
-        App.confirm({ title = string.format(_("%s was not installed"), addon.name), text = why, ok = _("Try again"),
-            on_ok = function() Addons.install(addon) end })
+        App.confirm({ title = string.format(update and _("%s was not updated") or _("%s was not installed"), addon.name), text = why, ok = _("Try again"),
+            on_ok = function() Addons.install(addon, update) end })
+    end
+    local function unpack(zip, release)
+        if not update then return Unpack.install(zip, release, addon.folder, Addons.pluginsDir()) end
+        local path = Addons.installedPath(addon)
+        if not path then return Unpack.install(zip, release, addon.folder, Addons.pluginsDir()) end
+        return Unpack.replace(zip, release, addon.folder, path:match("^(.*)/[^/]+$"), path:match("([^/]+)$"))
     end
     local function run()
         step(_("1/3 Asking GitHub"))
         GitHub.latest(addon, function(release, why)
             if not release then return fail(why) end
+            local have = update and Addons.version(addon)
+            if have and require("solarui/update/policy").compare(release.version, have) ~= 1 then
+                App.closeDialog()
+                return App.confirm({ icon = addon.icon, title = string.format(_("%s is up to date"), addon.name), ok = _("OK"), cancel = false,
+                    text = string.format(_("%s %s is the newest release, and you have it already. Check again once a newer one is out."), addon.name, have) })
+            end
             step(string.format(_("2/3 Downloading %s %s (%.1f MB)"), addon.name, release.version, release.size / 1048576))
             Net.get(release.url, release.size, 300, function(zip, err)
                 if not zip then return fail(err) end
                 step(_("3/3 Checking and unpacking"))
                 UIManager:nextTick(function()
-                    local ok, res, uerr = pcall(Unpack.install, zip, release, addon.folder, Addons.pluginsDir())
+                    local ok, res, uerr = pcall(unpack, zip, release)
                     os.remove(zip)
                     if not (ok and res) then return fail(tostring(ok and uerr or res)) end
+                    if update then Addons.updated[pluginId(addon)] = release.version end
                     App.closeDialog()
                     App.update()
                     UIManager:askForRestart(string.format(_("%s %s is installed. Restart KOReader to use it."), addon.name, release.version))
@@ -98,6 +128,12 @@ function Addons.install(addon)
     end
     local ok, NetworkMgr = pcall(require, "ui/network/manager")
     if ok and NetworkMgr.runWhenOnline then NetworkMgr:runWhenOnline(run) else run() end
+end
+
+-- At start: the copies updates replaced are no longer needed.
+function Addons.cleanup(addon)
+    local path = Addons.installedPath(addon)
+    if path then pcall(Unpack.removeTree, Unpack.previous(path:match("^(.*)/[^/]+$"), path:match("([^/]+)$"))) end
 end
 
 -- What a tap on the plugin's home button does.

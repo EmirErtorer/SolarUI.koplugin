@@ -39,6 +39,16 @@ function InkShelf.available()
     return ink() ~= nil
 end
 
+-- Why the shelf can or cannot show them: "ready"; "old" (Ink Away runs but
+-- is older than the shelf needs); or Ink Away's state as home knows it,
+-- "missing", "disabled" or "restart" (see apps/addons.lua).
+function InkShelf.state()
+    local Addons = require("solarui/apps/addons")
+    local s = Addons.status(require("solarui/apps/inkaway"))
+    if s == "restart" or s == "disabled" or s == "missing" then return s end
+    return ink() and "ready" or "old"
+end
+
 -- Ink Away's library folder.
 local function root(m)
     local G = rawget(_G, "G_reader_settings")

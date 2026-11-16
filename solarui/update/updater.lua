@@ -108,10 +108,11 @@ function Updater.folder()
     return require("solarui/paths").root:match("([^/]+)/?$")
 end
 
--- At start: the copy an update replaced is no longer needed.
+-- At start: the copies updates replaced (SolarUI's, Ink Away's) are no longer needed.
 function Updater.cleanup()
     local Addons = require("solarui/apps/addons")
     pcall(Unpack.removeTree, Unpack.previous(Addons.pluginsDir(), Updater.folder()))
+    Addons.cleanup(require("solarui/apps/inkaway"))
 end
 
 return Updater

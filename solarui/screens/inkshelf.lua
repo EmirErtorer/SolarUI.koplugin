@@ -3,7 +3,8 @@
 -- each drawing hangs in one of eight frames (data/inkshelf.lua deals them and
 -- draws each once, in the background); a tap opens it in Ink Away on the page
 -- it was left, a long press chooses its cover or frame. Without Ink Away the
--- shelf says how to get it.
+-- shelf says what it is and installs it; with one too old, switched off or
+-- waiting for a restart, it says so and offers the one step that fixes it.
 
 local Addons = require("solarui/apps/addons")
 local App = require("solarui/app")
@@ -44,13 +45,39 @@ function InkShelfScreen:tile(doc)
     })
 end
 
+-- What the shelf says when Ink Away cannot fill it yet, by InkShelf.state(),
+-- with the button that puts it right.
+local function notReady(state)
+    local UIManager = require("ui/uimanager")
+    local function say(title, text, label, on_tap, note)
+        return EmptyState.build({ plant = "library", title = title, text = text, note = note,
+            action = Button:new({ label = label, variant = "primary", on_tap = on_tap }) })
+    end
+    if state == "old" then
+        local have = Addons.version(InkAway)
+        return say(_("Update Ink Away"),
+            (have and string.format(_("These shelves need a newer Ink Away than the one you have (%s)."), have) or _("These shelves need a newer Ink Away than the one you have."))
+                .. " " .. _("Your notebooks and drawings stay just as they are."),
+            _("Update Ink Away"), function() Addons.install(InkAway, true) end,
+            string.format(_("Free, from github.com/%s. Needs Wi-Fi."), InkAway.repo))
+    elseif state == "disabled" then
+        return say(_("Ink Away is switched off"), _("Switch it on in KOReader's plugins and your notebooks and drawings stand on these shelves."),
+            _("Switch on"), function() Addons.launch(InkAway) end)
+    elseif state == "restart" then
+        return say(_("Restart to finish"), _("Ink Away is ready. Restart KOReader and your notebooks and drawings stand on these shelves."),
+            _("Restart now"), function() UIManager:askForRestart(_("Restart KOReader to use Ink Away.")) end)
+    end
+    return say(_("Get Ink Away"),
+        _("Ink Away is a free plugin for drawing and writing by hand, with a finger or a stylus: notebooks with lined, grid and planner pages, drawings with layers, and ink on your books. Its notebooks and drawings stand on these shelves."),
+        _("Install Ink Away"), function() Addons.install(InkAway) end,
+        string.format(_("Free, from github.com/%s. Needs Wi-Fi."), InkAway.repo))
+end
+
 -- The body for the tab shown: the shelves, or why there is nothing on them.
 function InkShelfScreen:shelves()
-    if not InkShelf.available() then
-        return EmptyState.build({ plant = "library", title = _("Ink Away is not installed"),
-            text = _("Ink Away keeps your notebooks and drawings. Once it is here, they stand on these shelves."),
-            action = Button:new({ label = _("Get Ink Away"), variant = "primary", on_tap = function() Addons.launch(InkAway) end }) })
-    end
+    self.listing = false
+    local state = InkShelf.state()
+    if state ~= "ready" then return notReady(state) end
     local docs = InkShelf.list(self.kind, function() self:coversLanded() end) or {}
     if #docs == 0 then
         local drawings = self.kind == InkShelf.DRAWINGS
@@ -59,6 +86,7 @@ function InkShelfScreen:shelves()
                 or _("Notebooks you make in Ink Away stand here, each in a cover of its own."),
             action = Button:new({ label = _("Open Ink Away"), variant = "primary", on_tap = function() Addons.launch(InkAway) end }) })
     end
+    self.listing = true
     return Grid:new({
         grow = true, items = docs, page = self.page, fit = true, rails = true,
         min_cell_w = Theme.px(self.kind == InkShelf.DRAWINGS and 150 or 130), ratio = self.kind == InkShelf.DRAWINGS and 1.15 or 1.5,
@@ -75,7 +103,9 @@ function InkShelfScreen:build()
         on_change = function(kind) self.kind, self.page = kind, 1; App.update() end })
     return Frame.page({
         screen = self, title = self.kind == InkShelf.DRAWINGS and _("Drawings") or _("Notebooks"), tab = "home", plant = "library",
-        body = Layout.Column:new({ gap = th.space.l, children = { switch, self:shelves(), Frame.pager(self, _("Page"), function(p) self:setPage(p) end) } }),
+        body = Layout.Column:new({ gap = th.space.l, children = { switch, self:shelves(),
+            -- (paging only for shelves with documents on them)
+            self.listing and Frame.pager(self, _("Page"), function(p) self:setPage(p) end) or nil } }),
     })
 end
 

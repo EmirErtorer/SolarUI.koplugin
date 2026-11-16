@@ -15,13 +15,15 @@ local EmptyState = {}
 local SCENES = { history = "fox", collections = "branch", library = "shelf", highlights = "book", notes = "book", bookmarks = "book",
     search = "leaves", settings = "leaves" }
 
--- Build it from { plant (see Header.PLANTS), title, text, action = a button }.
+-- Build it from { plant (see Header.PLANTS), title, text, action = a button,
+-- note = a small line under the button }.
 function EmptyState.build(o)
     local th = Theme.get()
     local kids = { Layout.Spacer:new({ grow = true }), SCENES[o.plant] and ArtView:new({ name = "scene_" .. SCENES[o.plant], width = Theme.px(220), height = Theme.px(140) }) or Header.plant(o.plant, 110) }
     if o.title then kids[#kids + 1] = Label:new({ text = o.title, kind = "title", align = "center", lines = 2 }) end
     if o.text then kids[#kids + 1] = Label:new({ text = o.text, kind = "body", color = "muted", align = "center", lines = 4 }) end
     if o.action then kids[#kids + 1] = o.action end
+    if o.note then kids[#kids + 1] = Label:new({ text = o.note, kind = "small", color = "muted", align = "center", lines = 2 }) end
     kids[#kids + 1] = Layout.Spacer:new({ grow = 2 })
     return Layout.Column:new({ grow = true, gap = th.space.m, align = "center", pad = { 0, th.space.xl }, children = kids })
 end

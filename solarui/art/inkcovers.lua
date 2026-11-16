@@ -257,7 +257,9 @@ local function ginkgoCover()
     local rays = {}
     for k = -8, 8 do
         local a = math.rad(k * 10)
-        rays[#rays + 1] = string.format("M%s %s L%s %s", n(163 + math.sin(a) * 66), n(250 - math.cos(a) * 66), n(163 + math.sin(a) * 150), n(250 - math.cos(a) * 150))
+        -- (each ray stops short of the ruled frame, 40 to 286 across and 16 down)
+        local r = math.min(150, 111 / math.max(math.abs(math.sin(a)), .01), 222 / math.max(math.cos(a), .01))
+        rays[#rays + 1] = string.format("M%s %s L%s %s", n(163 + math.sin(a) * 66), n(250 - math.cos(a) * 66), n(163 + math.sin(a) * r), n(250 - math.cos(a) * r))
     end
     out = out .. line(table.concat(rays, " "), "#F2D48A", 3) .. path("M93 250 A70 70 0 0 1 233 250Z", "#F4DA92", "#5A3A10", 1.6)
         .. line("M60 250 L266 250", "#5A3A10", 2) .. line("M60 258 L266 258", "#5A3A10", .9)
