@@ -31,6 +31,8 @@ local State = require("solarui/garden/state")
 local row = require("solarui/ui/settingrow")
 local Swatch = require("solarui/ui/swatch")
 local Theme = require("solarui/theme")
+local Twin = require("solarui/twin")
+local TwinSwitch = require("solarui/ui/twinswitch")
 local Version = require("solarui/version")
 local _ = require("solarui/gettext")
 
@@ -169,6 +171,12 @@ function SettingsScreen:home()
         row(_("Start with SolarUI"), _("Open SolarUI when KOReader starts and after closing a book"),
             Controls.Toggle:new({ on = is_home, on_change = function(on)
                 G_reader_settings:saveSetting("start_with", on and "solarui" or "filemanager")
+                if on then Twin.claim() end
+                App.update()
+            end })),
+        row(_("Corner to home"), _("In a book, hold the bottom-right corner to come back to SolarUI's home (in place of what the corner did)"),
+            Controls.Toggle:new({ on = Twin.cornerHome(), on_change = function(on)
+                if not Twin.setCornerHome(on) then App.toast(_("KOReader's gestures are not set up yet")) end
                 App.update()
             end })),
         row(_("Garden buttons"), _("The plants along the bottom of home: hide, reorder, replace or add your own that open anything in KOReader"),
@@ -314,7 +322,8 @@ function SettingsScreen:build()
     local tabs = Controls.Segmented({ options = SECTIONS, value = self.section, kind = "small", on_change = function(v) self.section, self.page = v, 1; App.update() end })
     return Frame.page({
         screen = self, title = _("Settings"), tab = "settings",
-        body = Layout.Column:new({ gap = th.space.m, children = { tabs, Frame.paged(self, self[self.section](self), _("Page")) } }),
+        -- (the twin switch first, above the sections, where it is seen)
+        body = Layout.Column:new({ gap = th.space.m, children = { TwinSwitch.build(), tabs, Frame.paged(self, self[self.section](self), _("Page")) } }),
     })
 end
 

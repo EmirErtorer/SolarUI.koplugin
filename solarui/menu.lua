@@ -573,6 +573,11 @@ function Menu:deckButtons()
             fmEvent("IterateRotation")
         end },
     }
+    -- hand over to the twin UI (or get it)
+    out[#out + 1] = { label = require("solarui/twin").OTHER.name, icon = "home", callback = function()
+        self:close()
+        require("solarui/twin").switch()
+    end }
     -- Ink Away's annotation mode on the book being read, when Ink Away is installed
     local InkAway = require("solarui/apps/inkaway")
     if require("solarui/apps/addons").status(InkAway) ~= "missing" then
