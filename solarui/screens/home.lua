@@ -156,7 +156,7 @@ function Home:hero(scene, y, cur)
     end
     scene:group("home.progress", "Reading progress vine", function()
         scene:place(Layout.Column:new({ gap = scene:px(8), children = {
-            ArtView:new({ name = "progress", param = pct, unit = scene.k, height = scene:px(40) }),
+            ArtView:new({ name = require("solarui/ui/progress").bookArt(), param = pct, unit = scene.k, height = scene:px(40) }),
             Layout.Row:new({ gap = scene:px(14), valign = "center", children = {
                 Label:new({ text = pct .. "%", kind = "title" }),
                 Label:new({ text = pages, kind = "body", color = "muted", grow = true }),

@@ -83,6 +83,12 @@ function Progress:draw(bb, x, y)
     DRAW[self:style().id](self, bb, x, y, Theme.color(self.color))
 end
 
+-- The drawing a book's progress is in (for an ArtView that shows it directly, like home's).
+local ART = { vine = "progress", blossoms = "progress_blossoms", moons = "progress_moons" }
+function Progress.bookArt()
+    return ART[Progress.bookStyle().id] or "progress"
+end
+
 -- Let the reader pick the style of a book's progress.
 function Progress.pickStyle()
     local App = require("solarui/app")
