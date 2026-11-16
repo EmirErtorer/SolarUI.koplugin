@@ -75,10 +75,6 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
   in the poster's units, so one tweak fits every screen size. Parts are named
   in code with `scene:group(id, label, add)`.
 
-## Fonts
-
-The fonts are under the SIL Open Font License; the licence texts are in `fonts/`.
-See NOTICE.md.
 - `tools/readme/shots.sh` takes the screenshots above and the colour scheme collage, `tools/readme/gif.sh <companions|garden|twin> <out.gif>` makes the moving pictures, and `tools/readme/banners.py` draws the title, the divider and the button.
 
 </details>
