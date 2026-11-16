@@ -2885,6 +2885,26 @@ msgstr "Здесь пока нечего показывать."
 msgid "Page"
 msgstr "Страница"
 
+#: solarui/opening.lua
+msgid "The garden will be here when you come back."
+msgstr "Сад будет ждать вашего возвращения."
+
+#: solarui/opening.lua
+msgid "%s keeps the garden while you read."
+msgstr "%s присматривает за садом, пока вы читаете."
+
+#: solarui/opening.lua
+msgid "Opening"
+msgstr "Открывается"
+
+#: solarui/opening.lua
+msgid "Back at %d%%."
+msgstr "Снова на %d%%."
+
+#: solarui/opening.lua
+msgid "A first opening."
+msgstr "Первое открытие."
+
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
 msgstr "Выделения"
@@ -4387,6 +4407,14 @@ msgstr "В книге удерживайте правый нижний угол,
 #: solarui/screens/settings.lua
 msgid "KOReader's gestures are not set up yet"
 msgstr "Жесты KOReader ещё не настроены"
+
+#: solarui/screens/settings.lua
+msgid "Opening card"
+msgstr "Карточка открытия"
+
+#: solarui/screens/settings.lua
+msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
+msgstr "Пока книга открывается, она стоит в золотом ореоле, и видно, где продолжится чтение"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"

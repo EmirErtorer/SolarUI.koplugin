@@ -2874,6 +2874,26 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
+#: solarui/opening.lua
+msgid "The garden will be here when you come back."
+msgstr ""
+
+#: solarui/opening.lua
+msgid "%s keeps the garden while you read."
+msgstr ""
+
+#: solarui/opening.lua
+msgid "Opening"
+msgstr ""
+
+#: solarui/opening.lua
+msgid "Back at %d%%."
+msgstr ""
+
+#: solarui/opening.lua
+msgid "A first opening."
+msgstr ""
+
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
 msgstr ""
@@ -4358,6 +4378,14 @@ msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "KOReader's gestures are not set up yet"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Opening card"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
 msgstr ""
 
 #: solarui/screens/settings.lua

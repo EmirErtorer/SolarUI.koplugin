@@ -2885,6 +2885,26 @@ msgstr "Na razie nie ma tu nic do pokazania."
 msgid "Page"
 msgstr "Strona"
 
+#: solarui/opening.lua
+msgid "The garden will be here when you come back."
+msgstr "Ogród będzie tu, gdy wrócisz."
+
+#: solarui/opening.lua
+msgid "%s keeps the garden while you read."
+msgstr "%s pilnuje ogrodu, gdy czytasz."
+
+#: solarui/opening.lua
+msgid "Opening"
+msgstr "Otwieranie"
+
+#: solarui/opening.lua
+msgid "Back at %d%%."
+msgstr "Powrót do %d%%."
+
+#: solarui/opening.lua
+msgid "A first opening."
+msgstr "Pierwsze otwarcie."
+
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
 msgstr "Zaznaczenia"
@@ -4387,6 +4407,14 @@ msgstr "W książce przytrzymaj prawy dolny róg, by wrócić do ekranu główne
 #: solarui/screens/settings.lua
 msgid "KOReader's gestures are not set up yet"
 msgstr "Gesty KOReadera nie są jeszcze ustawione"
+
+#: solarui/screens/settings.lua
+msgid "Opening card"
+msgstr "Karta otwarcia"
+
+#: solarui/screens/settings.lua
+msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
+msgstr "Gdy książka się otwiera, stoi w złotej aureoli, z miejscem, w którym wracasz do lektury"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"

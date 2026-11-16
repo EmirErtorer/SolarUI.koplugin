@@ -599,7 +599,26 @@ function App.openBook(path, after_open)
         return
     end
     Park.noteOpen()
-    ReaderUI:showReader(path, nil, nil, nil, after_open)
+    local Opening = require("solarui/opening")
+    if host and Opening.wanted(path) then
+        App.flash(Opening.card(path, Screen:getWidth()))
+        Opening.silenced(path, function() ReaderUI:showReader(path, nil, nil, nil, after_open) end)
+        -- the book did not open: the screen under the card is drawn again
+        if not ReaderUI.instance then UIManager:setDirty(host, "ui") end
+    else
+        ReaderUI:showReader(path, nil, nil, nil, after_open)
+    end
+end
+
+-- Paint a card over the current screen at once, then forget it without
+-- painting: the card stays up until whatever opens next paints over it.
+function App.flash(card)
+    host.overlay = card
+    host:relayout()
+    host:markRepainted()
+    UIManager:setDirty(host, "ui", host:overlayBox())
+    UIManager:forceRePaint()
+    host.overlay = nil
 end
 
 -- A book was closed: what SolarUI knows about it is stale.

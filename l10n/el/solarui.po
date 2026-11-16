@@ -2875,6 +2875,26 @@ msgstr "Δεν υπάρχει ακόμη τίποτα να εμφανιστεί 
 msgid "Page"
 msgstr "Σελίδα"
 
+#: solarui/opening.lua
+msgid "The garden will be here when you come back."
+msgstr "Ο κήπος θα είναι εδώ όταν γυρίσετε."
+
+#: solarui/opening.lua
+msgid "%s keeps the garden while you read."
+msgstr "Ο/Η %s φροντίζει τον κήπο όσο διαβάζετε."
+
+#: solarui/opening.lua
+msgid "Opening"
+msgstr "Άνοιγμα"
+
+#: solarui/opening.lua
+msgid "Back at %d%%."
+msgstr "Πίσω στο %d%%."
+
+#: solarui/opening.lua
+msgid "A first opening."
+msgstr "Πρώτο άνοιγμα."
+
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
 msgstr "Επισημάνσεις"
@@ -4360,6 +4380,14 @@ msgstr "Σε ένα βιβλίο, κράτα πατημένη την κάτω δ
 #: solarui/screens/settings.lua
 msgid "KOReader's gestures are not set up yet"
 msgstr "Οι χειρονομίες του KOReader δεν έχουν ρυθμιστεί ακόμη"
+
+#: solarui/screens/settings.lua
+msgid "Opening card"
+msgstr "Κάρτα ανοίγματος"
+
+#: solarui/screens/settings.lua
+msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
+msgstr "Όσο ανοίγει ένα βιβλίο, στέκεται στο χρυσό φωτοστέφανο, μαζί με το σημείο όπου συνεχίζετε"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"

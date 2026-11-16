@@ -2875,6 +2875,26 @@ msgstr "Burada henüz gösterilecek bir şey yok."
 msgid "Page"
 msgstr "Sayfa"
 
+#: solarui/opening.lua
+msgid "The garden will be here when you come back."
+msgstr "Döndüğünde bahçe burada olacak."
+
+#: solarui/opening.lua
+msgid "%s keeps the garden while you read."
+msgstr "Sen okurken bahçeye %s bakıyor."
+
+#: solarui/opening.lua
+msgid "Opening"
+msgstr "Açılıyor"
+
+#: solarui/opening.lua
+msgid "Back at %d%%."
+msgstr "%%%d'den devam."
+
+#: solarui/opening.lua
+msgid "A first opening."
+msgstr "İlk açılış."
+
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
 msgstr "Vurgular"
@@ -4360,6 +4380,14 @@ msgstr "Bir kitapta, SolarUI'nin ana ekranına dönmek için sağ alt köşeye b
 #: solarui/screens/settings.lua
 msgid "KOReader's gestures are not set up yet"
 msgstr "KOReader'ın hareketleri henüz ayarlanmadı"
+
+#: solarui/screens/settings.lua
+msgid "Opening card"
+msgstr "Açılış kartı"
+
+#: solarui/screens/settings.lua
+msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
+msgstr "Kitap açılırken, kitap altın halenin içinde, okumanın kaldığı yerle birlikte durur"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"
