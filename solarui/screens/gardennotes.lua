@@ -129,7 +129,9 @@ local function outside()
             Label:new({ text = _("The dates you saw or heard something for the first time that year. Next year the garden will remind you."), kind = "small", color = "muted", lines = 3 }),
         } })
         for _i, f in ipairs(firsts) do
-            local words = { Label:new({ text = f.label:sub(1, 1):upper() .. f.label:sub(2), kind = "body", lines = 2 }) }
+            -- (the first letter in capitals, whole even when it takes several bytes)
+            local first, rest = f.label:match("^([%z\1-\127\194-\244][\128-\191]*)(.*)$")
+            local words = { Label:new({ text = require("solarui/i18n/case").upper(first or "", require("solarui/gettext").language()) .. (rest or ""), kind = "body", lines = 2 }) } -- i18n: keep
             if f.note then words[#words + 1] = Label:new({ text = "\u{201C}" .. f.note .. "\u{201D}", kind = "small", lines = 2 }) end
             items[#items + 1] = Layout.Row:new({ gap = th.space.m, pad = { th.space.xs, 0, th.space.xs, 0 }, children = {
                 Label:new({ text = os.date("%d %b %Y", f.t), kind = "small", color = "muted", width = Theme.px(96) }),

@@ -444,7 +444,7 @@ msgstr "Плющ обыкновенный"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Прочитано часов"
+msgstr "Часов"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -452,7 +452,7 @@ msgstr "%d ч"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Дней подряд"
+msgstr "Подряд"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -460,7 +460,7 @@ msgstr "%d дн."
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Прочитано книг"
+msgstr "Книг"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1243,10 +1243,6 @@ msgid "seeds and berries"
 msgstr "семена и ягоды"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "Великолепная"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "известная под многими, многими именами по всей мультивселенной"
 
@@ -1676,7 +1672,7 @@ msgstr "Рыжая лиса слушает мышей под травой, за�
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz Великолепная — верховная правительница известной и неизвестной вселенной и этого сада. Её левый бок допускает сто сорок поглаживаний, правый — три. Почёсывание живота приветствуется до тех пор, пока вдруг не перестанет."
+msgstr "Yüzsüz The Magnificent — верховная правительница известной и неизвестной вселенной и этого сада. Её левый бок допускает сто сорок поглаживаний, правый — три. Почёсывание живота приветствуется до тех пор, пока вдруг не перестанет."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -3529,7 +3525,7 @@ msgstr "Открыть библиотеку"
 
 #: solarui/screens/home.lua
 msgid "Continue reading"
-msgstr "Продолжить чтение"
+msgstr "Читать дальше"
 
 #: solarui/screens/home.lua
 msgid "Start reading"
@@ -5812,7 +5808,7 @@ msgstr "Добавить заметку"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "На воздухе за неделю"
+msgstr "На воздухе"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5832,11 +5828,11 @@ msgstr "Дальше: найти %s"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to look at"
-msgstr "Дальше: на что посмотреть"
+msgstr "Дальше: посмотреть"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to listen to"
-msgstr "Дальше: что послушать"
+msgstr "Дальше: послушать"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to do"
@@ -5892,13 +5888,13 @@ msgstr "читали в %d из последних 7 дней"
 #: solarui/ui/readingstrip.lua
 msgid "%d book this year"
 msgid_plural "%d books this year"
-msgstr[0] "%d книга в этом году"
-msgstr[1] "%d книги в этом году"
-msgstr[2] "%d книг в этом году"
+msgstr[0] "%d книга за год"
+msgstr[1] "%d книги за год"
+msgstr[2] "%d книг за год"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "лепесток за каждую книгу"
+msgstr "лепесток за книгу"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

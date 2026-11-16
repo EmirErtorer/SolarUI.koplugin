@@ -435,7 +435,7 @@ msgstr "Gemeiner Efeu"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Gelesene Stunden"
+msgstr "Stunden"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -451,7 +451,7 @@ msgstr "%d Tage"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Beendete Bücher"
+msgstr "Fertig"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "Samen und Beeren"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "die Prächtige"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "unter sehr, sehr vielen Namen im Multiversum bekannt"
 
@@ -1667,7 +1663,7 @@ msgstr "Der Rotfuchs lauscht auf Mäuse unter dem Gras, springt dann und stürzt
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz die Großartige ist die oberste Herrscherin des bekannten und unbekannten Universums und dieses Gartens. Ihre linke Seite erlaubt hundertvierzig Streicheleinheiten, ihre rechte drei. Bauchkraulen ist willkommen, bis es plötzlich nicht mehr willkommen ist."
+msgstr "Yüzsüz The Magnificent ist die oberste Herrscherin des bekannten und unbekannten Universums und dieses Gartens. Ihre linke Seite erlaubt hundertvierzig Streicheleinheiten, ihre rechte drei. Bauchkraulen ist willkommen, bis es plötzlich nicht mehr willkommen ist."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -3175,7 +3171,7 @@ msgstr "Jahr"
 
 #: solarui/screens/gardennotes.lua
 msgid "Links"
-msgstr "Verbindungen"
+msgstr "Bezüge"
 
 #: solarui/screens/gardennotes.lua
 msgid "Outside"
@@ -3685,7 +3681,7 @@ msgstr "Ink Away öffnen"
 
 #: solarui/screens/inkshelf.lua solarui/ui/launcher.lua
 msgid "Notebooks"
-msgstr "Notizbücher"
+msgstr "Hefte"
 
 #: solarui/screens/inkshelf.lua
 msgid "Drawings"
@@ -5775,7 +5771,7 @@ msgstr "Notiz hinzufügen"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "Draußen diese Woche"
+msgstr "Draußen"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5795,11 +5791,11 @@ msgstr "Als Nächstes: such %s"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to look at"
-msgstr "Als Nächstes: etwas zum Anschauen"
+msgstr "Nächstes: etwas ansehen"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to listen to"
-msgstr "Als Nächstes: etwas zum Lauschen"
+msgstr "Nächstes: etwas hören"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to do"
@@ -5854,12 +5850,12 @@ msgstr "an %d der letzten 7 Tage gelesen"
 #: solarui/ui/readingstrip.lua
 msgid "%d book this year"
 msgid_plural "%d books this year"
-msgstr[0] "%d Buch dieses Jahr"
-msgstr[1] "%d Bücher dieses Jahr"
+msgstr[0] "%d Buch im Jahr"
+msgstr[1] "%d Bücher im Jahr"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "ein Blütenblatt für jedes Buch"
+msgstr "je Buch ein Blatt"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

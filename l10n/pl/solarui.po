@@ -444,7 +444,7 @@ msgstr "Bluszcz pospolity"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Przeczytane godziny"
+msgstr "Godziny"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -460,7 +460,7 @@ msgstr "%d dni"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Ukończone książki"
+msgstr "Ukończone"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1243,10 +1243,6 @@ msgid "seeds and berries"
 msgstr "nasiona i jagody"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "Wspaniała"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "znana pod wieloma, wieloma imionami w całym multiwersum"
 
@@ -1676,7 +1672,7 @@ msgstr "Lis rudy nasłuchuje myszy pod trawą, a potem skacze i spada na nie z g
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz Wspaniała jest najwyższą władczynią znanego i nieznanego wszechświata oraz tego ogrodu. Jej lewy bok znosi sto czterdzieści głaskań, prawy trzy. Pieszczoty brzuszka są mile widziane, aż nagle przestają być."
+msgstr "Yüzsüz The Magnificent jest najwyższą władczynią znanego i nieznanego wszechświata oraz tego ogrodu. Jej lewy bok znosi sto czterdzieści głaskań, prawy trzy. Pieszczoty brzuszka są mile widziane, aż nagle przestają być."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -5812,7 +5808,7 @@ msgstr "Dodaj notatkę"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "Na dworze w tym tygodniu"
+msgstr "Na dworze"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5892,13 +5888,13 @@ msgstr "czytane w %d z ostatnich 7 dni"
 #: solarui/ui/readingstrip.lua
 msgid "%d book this year"
 msgid_plural "%d books this year"
-msgstr[0] "%d książka w tym roku"
-msgstr[1] "%d książki w tym roku"
-msgstr[2] "%d książek w tym roku"
+msgstr[0] "%d książka w roku"
+msgstr[1] "%d książki w roku"
+msgstr[2] "%d książek w roku"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "płatek za każdą książkę"
+msgstr "płatek za książkę"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

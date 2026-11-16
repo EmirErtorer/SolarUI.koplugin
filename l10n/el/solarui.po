@@ -203,7 +203,7 @@ msgstr "Άνοιγμα"
 
 #: solarui/actions.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Details"
-msgstr "Λεπτομέρειες"
+msgstr "Στοιχεία"
 
 #: solarui/actions.lua
 msgid "Edit info"
@@ -435,7 +435,7 @@ msgstr "Κοινός κισσός"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Ώρες ανάγνωσης"
+msgstr "Ώρες"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -443,7 +443,7 @@ msgstr "%d ώρες"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Σερί ημερών"
+msgstr "Σερί"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -451,7 +451,7 @@ msgstr "%d ημέρες"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Βιβλία που τελείωσαν"
+msgstr "Βιβλία"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "σπόροι και μούρα"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "η Μεγαλοπρεπής"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "γνωστή με πολλά, πάρα πολλά ονόματα σε όλο το πολυσύμπαν"
 
@@ -1667,7 +1663,7 @@ msgstr "Η κόκκινη αλεπού ακούει τα ποντίκια κάτ
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Η Yüzsüz Η Μεγαλειώδης είναι η υπέρτατη άρχουσα του γνωστού και άγνωστου σύμπαντος, και αυτού του κήπου. Η αριστερή της πλευρά επιτρέπει εκατόν σαράντα χάδια, η δεξιά τρία. Το τρίψιμο της κοιλιάς είναι ευπρόσδεκτο μέχρι που, ξαφνικά, δεν είναι."
+msgstr "Η Yüzsüz The Magnificent είναι η υπέρτατη άρχουσα του γνωστού και άγνωστου σύμπαντος, και αυτού του κήπου. Η αριστερή της πλευρά επιτρέπει εκατόν σαράντα χάδια, η δεξιά τρία. Το τρίψιμο της κοιλιάς είναι ευπρόσδεκτο μέχρι που, ξαφνικά, δεν είναι."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -3493,7 +3489,7 @@ msgstr[1] "%d φάκελοι"
 
 #: solarui/screens/history.lua
 msgid "Reading log"
-msgstr "Ημερολόγιο ανάγνωσης"
+msgstr "Ημερολόγιο"
 
 #: solarui/screens/home.lua
 msgid "Nothing open yet"
@@ -3509,7 +3505,7 @@ msgstr "Άνοιγμα της βιβλιοθήκης"
 
 #: solarui/screens/home.lua
 msgid "Continue reading"
-msgstr "Συνέχεια ανάγνωσης"
+msgstr "Συνέχεια"
 
 #: solarui/screens/home.lua
 msgid "Start reading"
@@ -5775,7 +5771,7 @@ msgstr "Προσθήκη σημείωσης"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "Έξω αυτή την εβδομάδα"
+msgstr "Έξω"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5795,11 +5791,11 @@ msgstr "Επόμενο: ψάξε %s"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to look at"
-msgstr "Επόμενο: κάτι για να κοιτάξεις"
+msgstr "Επόμενο: να κοιτάξεις"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to listen to"
-msgstr "Επόμενο: κάτι για να ακούσεις"
+msgstr "Επόμενο: να ακούσεις"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to do"
@@ -5859,7 +5855,7 @@ msgstr[1] "%d βιβλία φέτος"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "ένα πέταλο για κάθε βιβλίο"
+msgstr "ένα πέταλο ανά βιβλίο"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

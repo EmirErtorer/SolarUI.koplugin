@@ -1233,10 +1233,6 @@ msgid "seeds and berries"
 msgstr ""
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr ""
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr ""
 

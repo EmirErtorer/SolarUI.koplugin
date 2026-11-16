@@ -51,7 +51,7 @@ local function row(path, f)
     local changed = Metadata.changed(path, f.key)
     return Panel:new({ shape = "frame", pad = th.space.m, on_tap = function() edit(path, f) end,
         on_hold = function() restore(path, f) end, child = Layout.Row:new({ gap = th.space.m, children = {
-            Label:new({ text = f.name:upper(), kind = "small", color = "muted", width = Theme.px(112) }),
+            Label:new({ text = require("solarui/i18n/case").upper(f.name, require("solarui/gettext").language()), kind = "small", color = "muted", width = Theme.px(112) }),
             Label:new({ text = value ~= "" and value or "—", kind = "body", grow = true, lines = 2,
                 color = value ~= "" and "ink" or "muted" }),
             Label:new({ text = changed and _("Edited") or "", kind = "small", color = "muted" }),

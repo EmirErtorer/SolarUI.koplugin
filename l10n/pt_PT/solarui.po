@@ -435,7 +435,7 @@ msgstr "Hera-comum"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Horas lidas"
+msgstr "Horas"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -443,7 +443,7 @@ msgstr "%d horas"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Dias seguidos"
+msgstr "Seguidos"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -451,7 +451,7 @@ msgstr "%d dias"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Livros terminados"
+msgstr "Terminados"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "sementes e bagas"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "a Magnífica"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "conhecida por muitos, muitos nomes pelo multiverso"
 
@@ -1667,7 +1663,7 @@ msgstr "A raposa-vermelha escuta os ratos debaixo da erva, depois salta e cai-lh
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "A Yüzsüz, a Magnífica, é a soberana suprema do universo conhecido e desconhecido, e deste jardim. O seu lado esquerdo permite cento e quarenta festas, o direito três. As festas na barriga são bem-vindas até que, de repente, deixam de ser."
+msgstr "Yüzsüz The Magnificent é a soberana suprema do universo conhecido e desconhecido, e deste jardim. O seu lado esquerdo permite cento e quarenta festas, o direito três. As festas na barriga são bem-vindas até que, de repente, deixam de ser."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -5775,7 +5771,7 @@ msgstr "Acrescentar uma nota"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "Ao ar livre esta semana"
+msgstr "Ao ar livre"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5859,7 +5855,7 @@ msgstr[1] "%d livros este ano"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "uma pétala por cada livro"
+msgstr "uma pétala por livro"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

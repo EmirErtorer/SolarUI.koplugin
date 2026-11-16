@@ -435,7 +435,7 @@ msgstr "Sarmaşık"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Okunan saat"
+msgstr "Saat"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -443,7 +443,7 @@ msgstr "%d saat"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Günlük seri"
+msgstr "Seri"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -451,7 +451,7 @@ msgstr "%d gün"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Bitirilen kitap"
+msgstr "Biten kitap"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "tohumlar ve meyveler"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "Muhteşem"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "çoklu evrende pek çok adla bilinir"
 
@@ -1667,7 +1663,7 @@ msgstr "Kızıl tilki çimenlerin altındaki fareleri dinler, sonra zıplayıp �
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Muhteşem Yüzsüz, bilinen ve bilinmeyen evrenin ve bu bahçenin yüce hükümdarıdır. Sol yanı yüz kırk okşamaya izin verir, sağ yanı üç. Göbek ovma, birdenbire istenmeyene kadar makbuldür."
+msgstr "Yüzsüz The Magnificent, bilinen ve bilinmeyen evrenin ve bu bahçenin yüce hükümdarıdır. Sol yanı yüz kırk okşamaya izin verir, sağ yanı üç. Göbek ovma, birdenbire istenmeyene kadar makbuldür."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -5859,7 +5855,7 @@ msgstr[1] "bu yıl %d kitap"
 
 #: solarui/ui/readingstrip.lua
 msgid "a petal for each book"
-msgstr "her kitap için bir taç yaprağı"
+msgstr "kitap başı bir yaprak"
 
 #: solarui/ui/statusbar.lua
 msgid "Clock"

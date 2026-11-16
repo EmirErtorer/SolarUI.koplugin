@@ -435,7 +435,7 @@ msgstr "Lierre commun"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Heures de lecture"
+msgstr "Heures lues"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -443,7 +443,7 @@ msgstr "%d heures"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Série en jours"
+msgstr "Série"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -451,7 +451,7 @@ msgstr "%d jours"
 
 #: solarui/data/achievements.lua
 msgid "Books finished"
-msgstr "Livres terminés"
+msgstr "Livres finis"
 
 #: solarui/data/achievements.lua
 msgid "%d books"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "graines et baies"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "la Magnifique"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "connue sous de très, très nombreux noms à travers le multivers"
 
@@ -1667,7 +1663,7 @@ msgstr "Le renard roux guette les souris sous l'herbe, puis bondit et fond sur e
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz la Magnifique est la souveraine suprême de l'univers connu et inconnu, et de ce jardin. Son côté gauche permet cent quarante caresses, son côté droit trois. Les frottements de ventre sont bienvenus jusqu'à ce que, soudain, ils ne le soient plus."
+msgstr "Yüzsüz The Magnificent est la souveraine suprême de l'univers connu et inconnu, et de ce jardin. Son côté gauche permet cent quarante caresses, son côté droit trois. Les frottements de ventre sont bienvenus jusqu'à ce que, soudain, ils ne le soient plus."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -2881,7 +2877,7 @@ msgstr "Page"
 
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
-msgstr "Surlignages"
+msgstr "Surlignés"
 
 #: solarui/screens/annotations.lua
 msgid "No highlights in this book yet. Select text while reading and choose Highlight."
@@ -5775,7 +5771,7 @@ msgstr "Ajouter une note"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "Dehors cette semaine"
+msgstr "Dehors"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
@@ -5795,11 +5791,11 @@ msgstr "Ensuite : chercher %s"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to look at"
-msgstr "Ensuite : quelque chose à regarder"
+msgstr "Ensuite : à regarder"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to listen to"
-msgstr "Ensuite : quelque chose à écouter"
+msgstr "Ensuite : à écouter"
 
 #: solarui/ui/outsidechip.lua
 msgid "Next: something to do"

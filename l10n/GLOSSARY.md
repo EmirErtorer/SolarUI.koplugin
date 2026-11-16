@@ -19,7 +19,6 @@ Settings, Search...) the translation uses KOReader's.
 | who visits | Kimler uğrar | Quem visita | Quem visita | Quién visita | Chi viene a trovarci |
 | outdoors this week | Bu hafta dışarıda | Ao ar livre esta semana | Ao ar livre esta semana | Al aire libre esta semana | All'aperto questa settimana |
 | vine | Asma | Videira | Trepadeira | Enredadera | Rampicante |
-| The Magnificent (Yüzsüz’s title) | Muhteşem | a Magnífica | a Magnífica | la Magnífica | la Magnifica |
 
 | English | fr | de | ru | pl | el |
 |---|---|---|---|---|---|
@@ -36,18 +35,17 @@ Settings, Search...) the translation uses KOReader's.
 | who visits | Qui rend visite | Wer zu Besuch kommt | Кто приходит | Kto odwiedza | Ποιος επισκέπτεται |
 | outdoors this week | Dehors cette semaine | Draußen diese Woche | На воздухе за неделю | Na dworze w tym tygodniu | Έξω αυτή την εβδομάδα |
 | vine | Vigne | Ranke | Лоза | Pnącze | Κλήμα |
-| The Magnificent (Yüzsüz’s title) | la Magnifique | die Prächtige | Великолепная | Wspaniała | η Μεγαλοπρεπής |
 
 Rules every language follows:
 
 - **Plants and animals are never "it".** They are living neighbours: "they" and
   "who" in English, and the warm, personal forms each language has for living
   beings, never words for things.
-- **Yüzsüz** is never translated or changed, in any language. Only her title,
-  "The Magnificent", is translated. Her meow is "me-eh".
+- **Yüzsüz The Magnificent** is never translated or changed, in any language:
+  her name and her title stay exactly as written. Her meow is "me-eh".
+- **Latin names** of plants and animals are never translated.
 - Kept as they are: **SolarUI**, **CyberUI**, **KOReader**, **Ink Away**,
-  **GitHub**, **Wi-Fi** (German may say WLAN), font names, Latin plant names, and
-  book titles.
+  **GitHub**, **Wi-Fi** (German may say WLAN), font names and book titles.
 - The garden's other words (dew, seeds, the wild edge, the bond with a companion)
   each have one word per language, used everywhere. Look one up in that
   language's `solarui.po` before adding a text that uses it.

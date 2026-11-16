@@ -435,7 +435,7 @@ msgstr "Edera comune"
 
 #: solarui/data/achievements.lua
 msgid "Hours read"
-msgstr "Ore di lettura"
+msgstr "Ore lette"
 
 #: solarui/data/achievements.lua
 msgid "%d hours"
@@ -443,7 +443,7 @@ msgstr "%d ore"
 
 #: solarui/data/achievements.lua solarui/screens/log/streaks.lua
 msgid "Day streak"
-msgstr "Serie di giorni"
+msgstr "Serie"
 
 #: solarui/data/achievements.lua
 msgid "%d days"
@@ -1234,10 +1234,6 @@ msgid "seeds and berries"
 msgstr "semi e bacche"
 
 #: solarui/garden/cast.lua
-msgid "The Magnificent"
-msgstr "la Magnifica"
-
-#: solarui/garden/cast.lua
 msgid "known by many, many names across the multiverse"
 msgstr "conosciuta con moltissimi nomi in tutto il multiverso"
 
@@ -1667,7 +1663,7 @@ msgstr "La volpe rossa ascolta i topi sotto l'erba, poi balza e piomba dall'alto
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz la Magnifica è la sovrana suprema dell'universo conosciuto e sconosciuto, e di questo giardino. Il suo fianco sinistro concede centoquaranta carezze, il destro tre. Le coccole sulla pancia sono gradite finché, all'improvviso, non lo sono più."
+msgstr "Yüzsüz The Magnificent è la sovrana suprema dell'universo conosciuto e sconosciuto, e di questo giardino. Il suo fianco sinistro concede centoquaranta carezze, il destro tre. Le coccole sulla pancia sono gradite finché, all'improvviso, non lo sono più."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
@@ -5775,7 +5771,7 @@ msgstr "Aggiungi una nota"
 
 #: solarui/ui/outsidecard.lua solarui/ui/outsidechip.lua
 msgid "Outdoors this week"
-msgstr "All'aperto questa settimana"
+msgstr "All'aperto"
 
 #: solarui/ui/outsidecard.lua
 msgid "All three done"
