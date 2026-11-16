@@ -33,6 +33,8 @@ function Opening.card(path, w)
     local Label = require("solarui/ui/label")
     local Scene = require("solarui/ui/scene")
     local info, st = Books.info(path), Books.state(path)
+    -- (a small card in the middle of the screen, not a whole page)
+    w = math.floor(w * 0.62)
     local inner = Dialog.inner(w)
     local VH = 640
     local scene = Scene.make("opening", inner, math.floor(inner * VH / Scene.design_w), VH)
@@ -43,7 +45,7 @@ function Opening.card(path, w)
     scene:place(Cover:new({ path = path }), 388, 142, 296, 444)
     scene:sprite("rose_cluster", 244, 342, 200, 300)
     scene:sprite("plaque", 361, 548, 350, 84)
-    scene:place(Label:new({ text = _("Opening"), kind = "heading", color = "on_accent", align = "center" }), 391, 548, 290, 84)
+    scene:place(Label:new({ text = _("Opening"), kind = "label", color = "on_accent", align = "center" }), 391, 548, 290, 84)
     local resume = st.percent > 0 and string.format(_("Back at %d%%."), math.floor(st.percent * 100 + 0.5)) or _("A first opening.")
     local card = Dialog.card({ top = scene, title = info.title, detail = info.author ~= "" and info.author or nil,
         text = resume .. "\n" .. gardenLine(), lines = 3 }, w) -- i18n: keep
