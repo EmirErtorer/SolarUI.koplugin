@@ -331,7 +331,7 @@ function SettingsScreen:build()
     return Frame.page({
         screen = self, title = _("Settings"), tab = "settings",
         -- (the twin switch first, above the sections, where it is seen)
-        body = Layout.Column:new({ gap = th.space.m, children = { TwinSwitch.build(), tabs, Frame.paged(self, self[self.section](self), _("Page")) } }),
+        body = Layout.Column:new({ gap = th.space.m, children = { TwinSwitch.build(), tabs, Frame.paged(self, self[self.section](self), _("Page"), true) } }),
     })
 end
 

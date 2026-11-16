@@ -9,20 +9,35 @@ local Theme = require("solarui/theme")
 
 local PagedColumn = Element:extend({ page = 1 })
 
--- Cut the items into pages of at most `room` pixels, each laid out at width w.
-local function split(items, w, room, gap)
-    local pages, cur, used = {}, {}, 0
-    for _i, item in ipairs(items) do
+-- How many items further on a page may look for one that still fits (with `fill`).
+local LOOK_AHEAD = 3
+
+-- Cut the items into pages of at most `room` pixels, each laid out at width
+-- w. With `fill`, room left at a page's foot goes to one of the next few
+-- items that fits there (settings, whose order is loose), else items keep
+-- their order exactly.
+local function split(items, w, room, gap, fill)
+    local left = {}
+    for i, item in ipairs(items) do
         item:layout(w, nil)
-        local need = item.h + (#cur > 0 and gap or 0)
-        if #cur > 0 and used + need > room then
-            pages[#pages + 1] = cur
-            cur, used, need = {}, 0, item.h
-        end
-        cur[#cur + 1] = item
-        used = used + need
+        left[i] = item
     end
-    pages[#pages + 1] = cur
+    local pages = {}
+    while #left > 0 do
+        local cur, used, i = {}, 0, 1
+        while i <= #left do
+            local need = left[i].h + (#cur > 0 and gap or 0)
+            if #cur == 0 or used + need <= room then
+                cur[#cur + 1] = table.remove(left, i)
+                used = used + need
+            elseif fill and i < LOOK_AHEAD + 1 then
+                i = i + 1
+            else
+                break
+            end
+        end
+        pages[#pages + 1] = cur
+    end
     return pages
 end
 
@@ -31,12 +46,12 @@ function PagedColumn:layout(w, h)
     self.w = self.width or w
     self.h = self.height or h or 0
     self.gap = self.gap or Theme.get().space.m
-    local pages = split(self.items, self.w, self.h, self.gap)
+    local pages = split(self.items, self.w, self.h, self.gap, self.fill)
     if #pages > 1 then
         -- a page is shorter by the paging row
         if not self.pager then self.pager = self.make_pager(self) end
         self.pager:layout(self.w, nil)
-        pages = split(self.items, self.w, self.h - self.pager.h - self.gap, self.gap)
+        pages = split(self.items, self.w, self.h - self.pager.h - self.gap, self.gap, self.fill)
     end
     self.pages = #pages
     self.page = math.max(1, math.min(self.page, self.pages))

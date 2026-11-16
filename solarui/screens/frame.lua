@@ -40,10 +40,10 @@ end
 
 -- A column of `items` that pages when it is too long, paged by the screen's
 -- own `page` and `pages` (so swipes work too) with a paging row labelled
--- `label`.
-function Frame.paged(screen, items, label)
+-- `label`; with `fill` a page's spare room goes to a later item that fits.
+function Frame.paged(screen, items, label, fill)
     return PagedColumn:new({
-        items = items, grow = true, page = screen.page or 1, gap = Theme.get().space.m,
+        items = items, grow = true, page = screen.page or 1, gap = Theme.get().space.m, fill = fill,
         make_pager = function(pc) return Frame.pager(pc, label, function(p) screen:setPage(p) end) end,
         on_layout = function(pages, page) screen.pages, screen.page = pages, page end,
     })
