@@ -8,7 +8,7 @@ versions marked *Prerelease* are test builds.
 
 ## [Unreleased]
 
-## [0.1.0]
+## [0.1.0] - 2026-11-17
 
 The first release: an Art Nouveau garden of a home screen for KOReader.
 
@@ -21,4 +21,6 @@ The first release: an Art Nouveau garden of a home screen for KOReader.
 - **The library, collections, reading log, goal tree and book details** in the garden's style, and Ink Away's notebooks on a shelf of their own.
 - **KOReader's menu and windows** in SolarUI's style, five colour schemes with light and dark modes, font sets and a layout editor.
 - **A twin:** one tap switches home to CyberUI and back.
+- **The opening card:** while a book opens, where you resume, the time left and a line you once marked in it.
+- **Book progress** as a vine, blossoms or moons.
 - Ten languages besides English.
