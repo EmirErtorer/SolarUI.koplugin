@@ -41,12 +41,20 @@ body:
         - Search
         - Collections or reading log
         - Notebook shelf
+        - Twin switch (CyberUI)
+        - A translation
         - Settings
         - Drop-down menu
         - Sleep screen
         - Leaving or opening a book
         - Updates
         - Somewhere else
+  - type: input
+    id: language
+    attributes:
+      label: KOReader language
+      description: Some problems only show in one language (a text cut short, a wrong word).
+      placeholder: "English"
   - type: input
     id: look
     attributes:
