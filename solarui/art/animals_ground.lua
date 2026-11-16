@@ -2,6 +2,7 @@
 -- and facing right: garden snail, robin, hedgehog, red fox and peafowl. Each
 -- takes the colours and whether it is in its second pose, and returns SVG.
 
+local Asleep = require("solarui/art/asleep")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
 
@@ -78,9 +79,28 @@ end
 -- angled down, a fine dark bill, a big dark eye and thin legs. In pose two it
 -- is in flight: the same bird tipped level, legs tucked, both wings raised and
 -- the tail spread.
-function Ground.robin(c, second)
+-- The robin asleep: fluffed round against the cold on one leg, the head
+-- turned back with the bill tucked into the feathers of its back, the eye
+-- shut and the short tail angled down.
+local function robinAsleep(c, brown, dark, orange)
+    local legc = mix(c.bloom2, c.muted, .5)
+    local fluff = {}
+    for k = 0, 6 do fluff[#fluff + 1] = string.format("M%s %s q3 2 6 0", n(48 + k * 4), n(58 + (k % 2) * 3)) end
+    return line("M64 68 L64 77", c.ink, 2.4) .. line("M64 68 L64 77", legc, 1) .. line("M64 77 L58 77.6 M64 77 L70 77.6", c.ink, 1.3)
+        .. path("M44 54 L22 62 L24 67.6 L46 60Z", dark, c.ink, 1.5)
+        .. ellipse(64, 47, 26, 23, 0, brown, c.ink, 1.8)
+        .. path("M71 26 C85 28 92 39 91 50 C90 61 82 68 70 70 C80 60 82 38 71 26Z", orange, c.ink, 1.1)
+        .. path("M52 66 C60 71.6 74 71.6 82 66 C74 69 60 69 52 66Z", c.cream, c.ink, .9) .. line(table.concat(fluff, " "), mix(brown, c.ink, .35), .8)
+        .. path("M42 44 C49 35 62 37 67 47 C63 58 52 62 43 58 C40 54 40 48 42 44Z", dark, c.ink, 1.4) .. line("M50 42 C55 46 56 52 53 58 M45 47 C48 50 48 54 46 57", c.ink, .8)
+        .. circle(71, 28, 11.5, brown, c.ink, 1.6) .. path("M75 19 C81 21.6 83 29 79.6 35 C76 37.6 72 37 69.6 34.4 C73.6 31 75 25 75 19Z", orange, c.ink, 1)
+        .. Asleep.eye(c, 68, 27, 4.4) .. path("M61.4 29.6 L55 32 L61 33.6Z", c.ink, c.ink, .8)
+        .. Asleep.zs(c, 84, 14, 7)
+end
+
+function Ground.robin(c, second, name)
     local brown, dark = c.muted, mix(c.muted, c.ink, .25)
     local orange, grey = mix(c.bloom, c.gold, .2), mix(c.sky, c.muted, .45)
+    if name == "sleep" then return robinAsleep(c, brown, dark, orange) end
     local tail = path("M49 50 L21 61 L23 67 L51 57Z", dark, c.ink, 1.5) .. line("M46 53 L24 63", c.ink, .8)
     local body = path("M46 53 C44 40 52 28 64 20 C68 12 79 9 86 14 C90 17 92 22 91 28 C96 37 95 51 86 59 C78 66 62 67 54 61 C50 58 47 56 46 53Z", brown, c.ink, 1.8)
     local breast = path("M87 14.5 C90 17 92 22 91 28 C94.4 34 95.2 41.4 93.6 48 C88 52.6 79 54 71 52.6 C70.6 46 71 40 71.5 35 C72 29 73 25 76 21 C78 17 82 14.5 87 14.5Z", orange, c.ink, 1.1)
@@ -108,8 +128,33 @@ end
 -- fur beneath, a brown face with a tapering snout, a black nose, a bead of an
 -- eye and a small round ear tucked at the edge of the spines, and short legs
 -- with clawed feet. In pose two it lifts its snout to sniff and takes a step.
-function Ground.hedgehog(c, second)
+-- The hedgehog asleep, rolled into a ball of spines with only the tip of
+-- the snout and the shut eye showing, on a bed of fallen leaves; in winter
+-- the leaves are heaped over it into its nest for the long sleep.
+local function hedgehogAsleep(c, winter, spine, tip, fur)
+    local cx, cy, rx, ry = 54, 38, 30, 23
+    local dark, pale = {}, {}
+    for r, ring in ipairs({ { .2, 8 }, { .36, 14 }, { .54, 22 }, { .72, 30 }, { .9, 34 }, { 1.06, 40 } }) do
+        for k = 0, ring[2] - 1 do
+            local a = math.rad(k * 360 / ring[2] + r * 5)
+            local x0, y0 = cx + rx * (ring[1] - .16) * math.cos(a), cy + ry * (ring[1] - .16) * math.sin(a)
+            local x1, y1 = cx + rx * (ring[1] + .1) * math.cos(a + .18), cy + ry * (ring[1] + .1) * math.sin(a + .18)
+            local xm, ym = x0 + (x1 - x0) * .72, y0 + (y1 - y0) * .72
+            dark[#dark + 1] = string.format("M%s %sL%s %s", n(x0), n(y0), n(xm), n(ym))
+            pale[#pale + 1] = string.format("M%s %sL%s %s", n(xm), n(ym), n(x1), n(y1))
+        end
+    end
+    local out = Asleep.leaves(c, 12, 98, 62, 7, 18)
+        .. ellipse(cx, cy, rx * 1.12, ry * 1.12, 0, spine, c.ink, 1.6) .. line(table.concat(dark, " "), c.ink, 1.3) .. line(table.concat(pale, " "), tip, 1.4)
+        .. path("M68 50 C74 45.6 83 46.4 88 51.6 C86 56 77 58.6 69 56.6 C67 54.4 67 52 68 50Z", fur, c.ink, 1.3) .. ellipse(88.4, 51.8, 2.2, 1.9, 20, c.ink)
+        .. Asleep.eye(c, 78.6, 50.6, 4) .. path("M70 57 L72 61 L76 61 L75 57Z", fur, c.ink, 1)
+    if winter then out = out .. Asleep.leaves(c, 22, 88, 30, 7, 16, true) .. Asleep.leaves(c, 30, 80, 20, 4, 14, true) end
+    return out .. Asleep.zs(c, 88, 18, 7)
+end
+
+function Ground.hedgehog(c, second, name)
     local spine, tip, fur = mix(c.muted, c.ink, .35), mix(c.cream, c.pale, .3), mix(c.muted, c.cream, .48)
+    if name == "sleep" or name == "winter" then return hedgehogAsleep(c, name == "winter", spine, tip, fur) end
     local cx, cy, rx, ry = 46, 52, 41, 34
     local function at(deg, k) local a = math.rad(deg); return cx + rx * k * math.cos(a), cy - ry * k * math.sin(a) end
     local edge = { { 6, 52 } }
@@ -162,7 +207,25 @@ end
 -- stockings, a narrow pointed muzzle, tall black-backed ears, an amber eye,
 -- white cheeks, throat and bib, and a long full brush held low with a white
 -- tip. In pose two it lowers its head and the legs swap their stride.
-function Ground.fox(c, second)
+-- The fox asleep by day, curled round in a ring: the head laid on the
+-- body with the ears still up, the eye shut, and the long brush wrapped
+-- round the front with its white tip over the nose.
+local function foxAsleep(c)
+    local brush = Svg.spline({ { 30, 46 }, { 26, 60 }, { 42, 70 }, { 66, 70 }, { 84, 63 } }, 10)
+    local tip = Svg.spline({ { 82, 64 }, { 90, 59 }, { 95, 53 } }, 6)
+    return ellipse(66, 70, 44, 4, 0, mix(c.sage, c.muted, .3))
+        .. path("M26 56 C22 38 40 24 64 24 C88 24 106 34 106 50 C106 62 92 68 70 68 C46 68 28 66 26 56Z", c.bloom, c.ink, 1.7)
+        .. line("M40 34 C50 30 62 30 72 33 M34 46 C44 40 56 40 64 44", c.ink, .8)
+        .. path("M90 30 C96 24 108 22 115 28 C119 32 118 38 114 41 C108 46 98 48 88 50 C84 46 84 36 90 30Z", c.bloom, c.ink, 1.6)
+        .. path("M95 28 L97 12 L105 25Z", c.ink, c.ink, 1.3) .. path("M103 26 L110 10 L115.6 26.6Z", c.bloom, c.ink, 1.4) .. path("M106 25 L110 15 L113.4 25.4Z", c.cream)
+        .. path("M88 50 C98 48 108 46 114 41 C112 48 104 53 94 54 C90 54 88 52 88 50Z", c.cream, c.ink, 1)
+        .. Asleep.eye(c, 106, 33, 5)
+        .. Svg.stem(brush, Svg.taper(15, 12), c.bloom, c.ink, 1.6) .. Svg.stem(tip, Svg.taper(12, 4), c.cream, c.ink, 1.3)
+        .. line("M34 56 C42 64 56 66 70 65", c.ink, .8) .. Asleep.zs(c, 112, 14, 8)
+end
+
+function Ground.fox(c, second, name)
+    if name == "sleep" then return foxAsleep(c) end
     local tail = about(40, 40, second and -10 or 0, path("M41 37 C30 35 16 43 8 55 C3.6 62 6 68.6 12 68.4 C20 67 31 57 43 47Z", c.bloom, c.ink, 1.6)
         .. path("M8 55 C3.6 62 6 68.6 12 68.4 C14.6 64 13.4 58.6 10.6 54.4 C9.6 54 8.6 54.4 8 55Z", c.cream, c.ink, 1.1)
         .. line("M38 40 C28 41 18 48 12 56", c.ink, .8))

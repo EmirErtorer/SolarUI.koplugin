@@ -19,6 +19,14 @@ end
 K.shot("d01-summer", function() fresh({ season = "summer", hour = 11 }) end)
 K.shot("d02-winter", function() fresh({ season = "winter", hour = 11 }) end)
 K.shot("d03-winter-snowing", function() fresh({ season = "winter", hour = 15, weather = "snow" }) end)
+-- who is asleep sleeps in their own pose, and none of those that fly sleep in the air
+K.shot("d03b-summer-night", function() fresh({ season = "summer", hour = 2 }) end, function()
+    local Layout = require("solarui/garden/layout")
+    for id in pairs(Layout.ROOSTS) do
+        local r = Layout.roost(id)
+        H.check(r.y + r.h > Layout.LAWN_TOP, id .. " roosts on the ground, not in the air")
+    end
+end)
 
 -- the book, with passages of our own so every detail shows
 local opened

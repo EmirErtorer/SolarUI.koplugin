@@ -95,6 +95,8 @@ end
 -- just its own patch, or (in the pond) swim or hop it on. The queen chooses
 -- her own next pose.
 function Garden:move(id)
+    local e = State.entry(id)
+    if e and e.here == false and (e.resting or e.mood ~= "hiding") then return end   -- asleep: left in peace
     if Layout.PATHS[id] then return self:hop(id) end
     local el = self.sprites[id]
     if not el then return end
@@ -279,7 +281,10 @@ function Garden:focused(scene)
         local flip = Layout.spread(self.seed)[self.focus].flip
         local k = math.min(fit.w / b.w, fit.h / b.h)
         local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
-            function() return GardenView.animalParam(GardenView.posed(self.focus, self.pose[self.focus] or "1"), flip, false, Sky.now()) end)
+            function()
+                local pose = self.pose[self.focus] or GardenView.stillPose(State.entry(self.focus))
+                return GardenView.animalParam(GardenView.posed(self.focus, pose), flip, false, Sky.now())
+            end)
         self.sprites[self.focus] = pic
         scene:touch(fit.x, fit.y, fit.w, fit.h, function()
             -- a tap on the queen's picture shows her in another pose, chosen at random

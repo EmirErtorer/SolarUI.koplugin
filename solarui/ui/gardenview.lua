@@ -1,7 +1,9 @@
 -- The garden as a poster: the frame and the heading's room, the ground, every
 -- plant at its stage and every animal that is about, each animal at the spot
 -- it was dealt on this visit (see Layout.spread) and facing the way it was
--- dealt, plus tufts where hungry animals hide. Used by the garden screen and
+-- dealt, plus tufts where hungry animals hide, and every animal that is
+-- asleep (for the winter, or outside its hours) in its own sleeping pose,
+-- the ones that fly at their roosts (Layout.ROOSTS), never in the air. Used by the garden screen and
 -- the sleep picture. With `o.faded` it is the pale copy that stays behind a
 -- picture shown larger. Taps are added only when `o.on_tap` is given.
 
@@ -47,12 +49,14 @@ function GardenView.posed(id, pose)
     return pose
 end
 
--- The pose for a still picture of the animal of `entry` (home, popups):
--- hers by her mood and the hour, "1" for everyone else.
+-- The pose for a still picture of the animal of `entry` (home, popups, its
+-- card): hers by her mood and the hour; for anyone asleep their winter form
+-- or their sleeping pose; "1" for everyone else.
 function GardenView.stillPose(entry)
     if entry and entry.def and entry.def.queen then
         return require("solarui/garden/yuzsuz").still({ mood = entry.mood, phase = Sky.phase(Sky.hour()) })
     end
+    if entry and entry.def and entry.here == false and (entry.resting or entry.mood ~= "hiding") then return entry.resting and "winter" or "sleep" end
     return "1"
 end
 
@@ -135,7 +139,11 @@ function GardenView.compose(scene, o)
                     base = Layout.waypoint(id, o.at[id])
                     base.flip = spread[id].flip
                 end
+                -- one that flies never sleeps or hides in the air: off to its roost
+                if not a.here and Layout.FLIES[id] then base = Layout.roost(id) or base end
                 local b = Layout.at(base, vh)
+                -- asleep: through the season (its winter form), or outside its hours
+                local asleep = not a.here and (a.resting or a.mood ~= "hiding")
                 if a.here then
                     local function param() return GardenView.animalParam(GardenView.posed(id, o.pose and o.pose[id] or GardenView.stillPose(a)), b.flip, false, phase) end
                     if o.faded then scene:backdrop("animal_" .. id, b.x, b.y, b.w, b.h, param())
@@ -147,11 +155,13 @@ function GardenView.compose(scene, o)
                         end
                         if o.sprites then o.sprites[id] = el end
                     end
-                elseif a.mood == "hiding" or a.resting then
-                    small("garden_tuft", b, light .. (a.resting and ":sleep" or ""))
+                elseif asleep then
+                    small("animal_" .. id, b, GardenView.animalParam(a.resting and "winter" or "sleep", b.flip, false, phase))
+                else
+                    small("garden_tuft", b, light)
                 end
                 local hit = b.hit or b
-                if o.on_tap and (a.here or a.mood == "hiding" or a.resting) then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
+                if o.on_tap then scene:touch(hit.x, hit.y, hit.w, hit.h, function() o.on_tap(id, "animal") end) end
             end
         end)
     end, { uniform = true, clip = true, span = { x0 = Layout.SKY.x, x1 = Layout.SKY.x + Layout.SKY.w, inset = edge } })

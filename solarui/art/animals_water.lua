@@ -2,6 +2,7 @@
 -- facing right: the marsh frog on a lily pad and the koi seen from above.
 -- Each takes the colours and whether it is in its second pose.
 
+local Asleep = require("solarui/art/asleep")
 local Svg = require("solarui/art/svg")
 local Wash = require("solarui/art/wash")
 
@@ -17,7 +18,7 @@ local Water = {}
 -- the round eardrum behind it, a pale throat, straight front legs and the
 -- hind leg folded in three with a long webbed foot. In pose two it calls,
 -- the grey sac at the corner of its mouth blown up.
-function Water.frog(c, second)
+function Water.frog(c, second, name)
     local olive, blotch = mix(c.leaf, c.muted, .25), mix(c.leaf, c.ink, .55)
     local stripe, pale = mix(c.leaf, c.pale, .55), mix(c.cream, c.pale, .3)
     local sac = second and (ellipse(60.6, 37.4, 6.6, 5.4, 10, mix(c.muted, c.cream, .45), c.ink, 1.3) .. line("M57 34.4 Q60.6 33 64 35.4", c.ink, .7)) or ""
@@ -34,6 +35,14 @@ function Water.frog(c, second)
         .. path("M27 36 C31 40.4 30 46 24 48 C19 49.6 14 50 12.6 48.4 C14 46 18 45 22 43.6 C25 42.4 26 39.6 27 36Z", olive, c.ink, 1.3)
         .. path("M13.6 49 C22 48 32 48.4 41 49.4 L47 47.6 L45.6 50.4 L49.4 51 L45 52.4 L47.4 54.6 L42 53.6 C32 53.4 22 52.6 13.6 51.6Z", olive, c.ink, 1.2)
         .. path("M18 39 C21 38 22.6 40 21 42 C19 43 17 41.4 18 39Z", blotch) .. path("M28 44 C30.6 43.4 31.6 45.4 30 47 C28 47.6 26.6 46 28 44Z", blotch)
+    if name == "winter" then
+        -- asleep for the winter in the mud at the bottom of the pond: crouched low, the eye shut, bubbles rising
+        local mud = mix(c.muted, c.sky, .35)
+        local lid = circle(53, 18.4, 4.8, olive, c.ink, 1.5) .. Asleep.eye(c, 53, 18.6, 5.4)
+        return group(0, 8, 0, body .. hind .. lid)
+            .. path("M0 60 L0 50 C10 44 24 46 36 48 C48 50 60 46 70 50 L70 60Z", mud, c.ink, 1.4) .. line("M8 54 q6 -2 12 0 M40 55 q6 -2 12 0", mix(mud, c.ink, .4), .9)
+            .. circle(60, 12, 1.8, nil, c.ink, .8) .. circle(63, 6, 1.3, nil, c.ink, .8) .. circle(58.6, 1.8, 1, nil, c.ink, .8)
+    end
     local frog = sac .. body .. front .. hind
     return ellipse(35, 54, 33, 5, 0, c.sage, c.ink, 1.5) .. line("M35 54 L14 52 M35 54 L56 52 M35 54 L30 58", c.ink, .8) .. group(second and -2 or 0, second and -2 or 0, second and -4 or 0, frog)
 end

@@ -161,6 +161,31 @@ local function hitOf(b)
     return box(b.x + (b.w - hw) / 2, b.y + (b.h - hh) / 2, hw, hh)
 end
 
+-- Where the animals that fly sleep or hide, never in the air: the bee at the
+-- door of its skep, the swallowtail under the birdhouse (its chrysalis there
+-- in winter), the hawk-moth on the lantern it loves (its pupa at the
+-- lantern's foot in winter), and the dragonfly on the pond's reeds (its
+-- nymph under them in winter). Each is the foot of the animal's box, as a
+-- share across and down the thing it sleeps on (EXTRAS or PROPS), so it
+-- moves with it; the box is the animal's own size, as when awake.
+Layout.ROOSTS = {
+    bee = { on = "skep", fx = .62, fy = 1.02 },
+    butterfly = { on = "birdhouse", fx = .5, fy = .86 },
+    moth = { on = "lantern", fx = .5, fy = 1.0 },
+    dragonfly = { on = "pond", fx = .82, fy = .34 },
+}
+
+-- The box where the animal `id` sleeps or hides, with `hit`, or nil when it
+-- has no roost (it sleeps where it was dealt).
+function Layout.roost(id)
+    local r = Layout.ROOSTS[id]
+    if not r then return nil end
+    local on, size = Layout.EXTRAS[r.on] or Layout.PROPS[r.on], Layout.shown(id)
+    local b = box(math.floor(on.x + on.w * r.fx - size.w / 2), math.floor(on.y + on.h * r.fy - size.h), size.w, size.h)
+    b.hit = hitOf(b)
+    return b
+end
+
 -- The animal of a pond path at its `i`th place: a box with `hit`.
 function Layout.waypoint(id, i)
     local path, size = Layout.PATHS[id], Layout.shown(id)
