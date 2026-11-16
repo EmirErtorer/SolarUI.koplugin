@@ -6,6 +6,8 @@
 
 local Species = require("solarui/art/species")
 local _ = require("solarui/gettext")
+-- Is KOReader set to Turkish? (Yüzsüz's title is Turkish there.)
+local TURKISH = require("solarui/gettext").language() == "tr"
 
 local Cast = {}
 
@@ -53,8 +55,8 @@ local ANIMALS = {
     { id = "fox", en = _("Red fox"), latin = "Vulpes vulpes", about = "night", hours = 72, eats = _("field mice"), find = { kind = "books", n = 5 } },
     { id = "peacock", en = _("Indian peafowl"), latin = "Pavo cristatus", about = "any", hours = 96, eats = _("seeds and berries"), find = { kind = "streak", n = 14 } },
     -- the queen: here from the start and never hiding (see garden/yuzsuz.lua); her name is never translated or changed
-    -- (her whole name, title too, is never translated in any language)
-    { id = "yuzsuz", en = "Yüzsüz The Magnificent", short = "Yüzsüz", title = "The Magnificent", latin = "Felis catus", -- i18n: keep
+    -- (her whole name, title too, is never translated, except in Turkish, where she is Yüzsüz Efendi)
+    { id = "yuzsuz", en = TURKISH and "Yüzsüz Efendi" or "Yüzsüz The Magnificent", short = "Yüzsüz", title = TURKISH and "Efendi" or "The Magnificent", latin = "Felis catus", -- i18n: keep
         aka = _("known by many, many names across the multiverse"), about = "any", hours = 24,
         eats = _("salami above all, then kebab, chicken, minced meat, cheese and yogurt"), find = { kind = "start" }, queen = true },
 }

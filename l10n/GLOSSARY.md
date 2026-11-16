@@ -42,7 +42,8 @@ Rules every language follows:
   "who" in English, and the warm, personal forms each language has for living
   beings, never words for things.
 - **Yüzsüz The Magnificent** is never translated or changed, in any language:
-  her name and her title stay exactly as written. Her meow is "me-eh".
+  her name and her title stay exactly as written. The one exception is
+  Turkish, where she is **Yüzsüz Efendi**. Her meow is "me-eh".
 - **Latin names** of plants and animals are never translated.
 - Kept as they are: **SolarUI**, **CyberUI**, **KOReader**, **Ink Away**,
   **GitHub**, **Wi-Fi** (German may say WLAN), font names and book titles.

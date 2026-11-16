@@ -1663,7 +1663,7 @@ msgstr "Kızıl tilki çimenlerin altındaki fareleri dinler, sonra zıplayıp �
 
 #: solarui/garden/lore.lua
 msgid "Yüzsüz The Magnificent is the supreme ruler of the known and unknown universe, and of this garden. Her left side allows a hundred and forty pats, her right side three. Belly rubs are welcome until, suddenly, they are not."
-msgstr "Yüzsüz The Magnificent, bilinen ve bilinmeyen evrenin ve bu bahçenin yüce hükümdarıdır. Sol yanı yüz kırk okşamaya izin verir, sağ yanı üç. Göbek ovma, birdenbire istenmeyene kadar makbuldür."
+msgstr "Yüzsüz Efendi, bilinen ve bilinmeyen evrenin ve bu bahçenin yüce hükümdarıdır. Sol yanı yüz kırk okşamaya izin verir, sağ yanı üç. Göbek ovma, birdenbire istenmeyene kadar makbuldür."
 
 #: solarui/garden/lore.lua
 msgid "What looks like the peacock's tail is a train of long feathers growing from the back, over the real tail. Every feather carries an eye. The train is shed each year after summer and grown again by spring."
