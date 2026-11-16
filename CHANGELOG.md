@@ -8,6 +8,14 @@ versions marked *Prerelease* are test builds.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-17
+
+A quick fix for 1.0.0.
+
+### Fixed
+
+- Home now shows the book progress style chosen in Settings (vine, blossoms or moons); it always showed the vine.
+
 ## [1.0.0] - 2026-11-17
 
 The first release: an Art Nouveau garden of a home screen for KOReader.
