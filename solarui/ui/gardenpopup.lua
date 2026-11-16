@@ -25,12 +25,15 @@ local function picture(id, e, kind, on_tap)
     local ph = Theme.px(220)
     local aw = math.floor(ph * 1.2)
     local size = kind == "plant" and Layout.PLANTS[id] or Layout.ANIMALS[id]
-    local k = math.min(aw * .76 / size.w, ph * .66 / size.h)
-    local bw, bh = math.floor(size.w * k), math.floor(size.h * k)
+    local name = (kind == "plant" and "plant_" or "animal_") .. id
     local param = kind == "plant" and GardenView.plantParam(e, false, Sky.now()) or GardenView.animalParam(GardenView.posed(id, GardenView.stillPose(e)), false, false, Sky.now())
+    -- as large as the arch allows (its canvas is 600 units wide here)
+    local bx, by, bw, bh = require("solarui/ui/archfit").box(name, size, { param }, aw, ph, 600)
+    bw, bh = math.floor(bw), math.floor(bh)
     return LayoutUI.Overlay:new({ height = ph, on_tap = on_tap, children = {
         ArtView:new({ name = "garden_arch", width = aw, height = ph, unit = aw / 600, place = "c" }),
-        ArtView:new({ name = (kind == "plant" and "plant_" or "animal_") .. id, param = param, width = bw, height = bh, unit = k, place = "c", dy = math.floor(ph * .13) }),
+        ArtView:new({ name = name, param = param, width = bw, height = bh, unit = bw / size.w, place = "c",
+            dx = math.floor(bx + bw / 2 - aw / 2), dy = math.floor(by + bh / 2 - ph / 2) }),
     } })
 end
 

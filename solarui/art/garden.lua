@@ -115,7 +115,7 @@ function Garden.garden_arch(c, vw, vh)
     end
     local corner = line(Svg.poly(Svg.join({ { 12, 96 }, { 18, 70 } }, Svg.spiral(40, 44, 26, 1.5, 250))), c.ink, 2.4) .. Flora.leaf(c, 16, 80, -62, 44, 12, c.leaf)
         .. Flora.leaf(c, 60, 28, -8, 40, 11, c.sage)
-    return corner .. group(vw, 0, 0, corner, -1, 1) .. path(arch(12) .. "Z", c.bg, c.ink, 3.2) .. line(arch(26), c.line, 1.4)
+    return corner .. group(vw, 0, 0, corner, -1, 1) .. path(arch(12) .. "Z", c.bg, c.ink, 3.2) .. line(arch(20), c.line, 1.4)
         .. Flora.leaf(c, r, 14, -164, 34, 9, c.leaf, true) .. Flora.leaf(c, r, 14, -16, 34, 9, c.leaf, true) .. Flora.rosebud(c, r, 20, 0, 13)
 end
 

@@ -291,18 +291,24 @@ function Garden:focused(scene)
     local oy = math.max(0, (scene.vh - Layout.HEIGHT) / 2)
     scene:backdrop("garden_arch", ARCH.x, ARCH.y + oy, ARCH.w, ARCH.h)
     local e, kind = State.entry(self.focus)
-    local fit = { x = ARCH.x + 60, y = ARCH.y + oy + 100, w = ARCH.w - 120, h = ARCH.h - 110 }
+    local ArchFit = require("solarui/ui/archfit")
+    local ax, ay = ARCH.x, ARCH.y + oy
     if kind == "plant" then
-        scene:backdrop("plant_" .. self.focus, fit.x, fit.y, fit.w, fit.h, GardenView.plantParam(e, false, Sky.now()))
+        local param = GardenView.plantParam(e, false, Sky.now())
+        local bx, by, bw, bh = ArchFit.box("plant_" .. self.focus, Layout.PLANTS[self.focus], { param }, ARCH.w, ARCH.h)
+        scene:sprite("plant_" .. self.focus, ax + bx, ay + by, bw, bh, param)   -- (over the fade, so the plant is clear)
     else
         local b = Layout.ANIMALS[self.focus]
         local flip = Layout.spread(self.seed)[self.focus].flip
-        local k = math.min(fit.w / b.w, fit.h / b.h)
-        local pic = scene:sprite("animal_" .. self.focus, fit.x + (fit.w - b.w * k) / 2, fit.y + (fit.h - b.h * k) / 2, b.w * k, b.h * k, nil,
-            function()
-                local pose = self.pose[self.focus] or GardenView.stillPose(State.entry(self.focus))
-                return GardenView.animalParam(GardenView.posed(self.focus, pose), flip, false, Sky.now())
-            end)
+        local function param()
+            local pose = self.pose[self.focus] or GardenView.stillPose(State.entry(self.focus))
+            return GardenView.animalParam(GardenView.posed(self.focus, pose), flip, false, Sky.now())
+        end
+        -- (sized for the pose shown and the two the animal moves between, so a step never reaches the arch)
+        local poses = { param(), GardenView.animalParam("1", flip, false, Sky.now()), GardenView.animalParam("2", flip, false, Sky.now()) }
+        local bx, by, bw, bh = ArchFit.box("animal_" .. self.focus, b, poses, ARCH.w, ARCH.h)
+        local fit = { x = ax + bx, y = ay + by, w = bw, h = bh }
+        local pic = scene:sprite("animal_" .. self.focus, fit.x, fit.y, fit.w, fit.h, nil, param)
         self.sprites[self.focus] = pic
         scene:touch(fit.x, fit.y, fit.w, fit.h, function()
             -- a tap on the queen's picture shows her in another pose, chosen at random

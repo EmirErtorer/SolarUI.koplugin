@@ -69,14 +69,15 @@ function HomeCompanion.pick()
     return pet() or Companion.pick(HomeCompanion.pinned(), tonumber(os.date("%j")) or 1, tonumber(os.date("%H")))
 end
 
--- Draw the companion's picture inside the arch at (x, y).
+-- Draw the companion's picture inside the arch at (x, y), as large as the
+-- arch allows (see ui/archfit.lua).
 local function picture(scene, item, x, y, aw, ah)
     local size = item.kind == "plant" and Layout.PLANTS[item.id] or Layout.ANIMALS[item.id]
-    local k = math.min((aw - 30) / size.w, (ah - 44) / size.h)
-    local w, h = size.w * k, size.h * k
-    local px, py = x + (aw - w) / 2, y + ah - 12 - h
-    if item.kind == "plant" then scene:backdrop("plant_" .. item.id, px, py, w, h, GardenView.plantParam(item.entry))
-    else scene:backdrop("animal_" .. item.id, px, py, w, h, GardenView.animalParam(GardenView.posed(item.id, GardenView.stillPose(item.entry)), false)) end
+    local name = (item.kind == "plant" and "plant_" or "animal_") .. item.id
+    local param = item.kind == "plant" and GardenView.plantParam(item.entry)
+        or GardenView.animalParam(GardenView.posed(item.id, GardenView.stillPose(item.entry)), false)
+    local bx, by, bw, bh = require("solarui/ui/archfit").box(name, size, { param }, aw, ah)
+    scene:backdrop(name, x + bx, y + by, bw, bh, param)
 end
 
 -- How the companion is doing in a few words: a plant that needs a drink says
