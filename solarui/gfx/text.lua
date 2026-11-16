@@ -92,7 +92,7 @@ local function measure(spec, s)
     local prev = 0
     local cps = codepoints(s)
     for i, cp in ipairs(cps) do
-        local glyph = RenderText:getGlyph(face, cp, false)
+        local glyph = RenderText:getGlyph(face, cp, spec.bold)
         if prev ~= 0 then w = w + face.ftsize:getKerning(prev, cp) end
         w = w + glyph.ax + (i < #cps and track or 0)
         prev = cp
@@ -185,7 +185,7 @@ function Text.draw(bb, x, y, kind, s, color)
     local pen = 0
     local prev = 0
     for _i, cp in ipairs(codepoints(s)) do
-        local glyph = RenderText:getGlyph(face, cp, false)
+        local glyph = RenderText:getGlyph(face, cp, spec.bold)
         if prev ~= 0 then pen = pen + face.ftsize:getKerning(prev, cp) end
         local gbb = glyph.bb
         if rgb then

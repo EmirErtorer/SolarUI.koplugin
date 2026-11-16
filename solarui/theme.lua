@@ -174,6 +174,7 @@ function Theme.text(kind, set_id)
         face = face,
         tracking = Screen:scaleBySize(t.style.tracking[kind] or 0),
         caps = t.style.caps[kind] or false,
+        bold = spec.bold or false,   -- (drawn emboldened: the faces have no bold weight of their own)
         height = math.ceil(height),
         ascent = math.ceil(ascent),
     }

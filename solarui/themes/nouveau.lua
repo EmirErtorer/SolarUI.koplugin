@@ -11,6 +11,7 @@ return {
         display = { "display", 28 },
         title = { "display", 22 },
         heading = { "title", 17 },
+        heading_bold = { "title", 17, bold = true },   -- (headings that must stand out from the text under them)
         body = { "body", 15 },
         label = { "title", 15 },
         small = { "body", 13 },

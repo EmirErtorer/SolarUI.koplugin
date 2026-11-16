@@ -159,12 +159,12 @@ local function outside()
     return items
 end
 
--- The About tab: seeds given back, why "they", and a book to read.
+-- The About tab: seeds given back, why "they", and two books to read.
 local function about()
     local th = Theme.get()
     local function block(title, text)
         return Layout.Column:new({ gap = 0, pad = { th.space.xs, 0, th.space.s, 0 }, children = {
-            Label:new({ text = title, kind = "heading" }),
+            Label:new({ text = title, kind = "heading_bold" }),
             Label:new({ text = text, kind = "body", lines = 10 }),
         } })
     end
@@ -172,6 +172,7 @@ local function about()
         block(_("Given back"), string.format(_.n("%d seed left in the wild edge.", "%d seeds left in the wild edge.", State.given()), State.given())),
         block(_("Why \"they\""), _("Plants and animals here are \"they\" and \"who\", never \"it\". Words steer attention. Call a robin a thing and the robin turns into scenery; call the robin someone and you start to notice where they are going and what they want. The garden speaks about the neighbours the way you would speak about people you are fond of.")),
         block(_("A book to read"), _("Braiding Sweetgrass, by Robin Wall Kimmerer. She is a botanist and a member of the Citizen Potawatomi Nation, and she writes about strawberries, maples, sweetgrass, black ash, beans and squash with a scientist's eye and the warmth of someone who has loved these plants all her life. The book is about gratitude, about taking only what you need and giving something back, and about the living world as a gift and not a stockpile. Read a chapter by a window with something green in sight, and the lawn outside will never look quite the same.")),
+        block(_("Another book to read"), _("The Overstory, by Richard Powers. A novel in which trees are the main characters and people only slowly learn to notice them: nine lives that a chestnut, a mulberry, a banyan and a redwood quietly bend toward one another, until they meet in the fight for the last old forests. The novel won the Pulitzer Prize, and the story does what this garden tries to do in a small way: the living world becomes someone rather than scenery. Trees here talk to each other through their roots, remember, and take their time; you may never walk under one again without wondering what they are saying.")),
     }
 end
 
