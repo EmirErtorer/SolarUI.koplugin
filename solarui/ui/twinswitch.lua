@@ -14,18 +14,22 @@ local _ = require("solarui/gettext")
 
 local TwinSwitch = {}
 
+-- How much of the page's width the plaque takes, centred on it.
+local SHARE = 0.8
+
 -- The plaque, always five times as wide as it is high.
 local Plaque = ArtView:extend({})
 
--- A fifth of the width it is given.
+-- A fifth of the width it takes.
 function Plaque:naturalHeight(w)
-    return math.floor((w or self.w or Theme.px(500)) / 5)
+    return math.floor((w or self.w or Theme.px(500)) * SHARE / 5)
 end
 
--- Draw the plaque across the box.
+-- Draw the plaque in the middle of the box.
 function Plaque:draw(bb, x, y)
     if self.w < 2 or self.h < 2 then return end
-    Art.draw(bb, "twin_switch", x, y, self.w, self.h, self.w, self.h, self.param)
+    local w = math.floor(self.w * SHARE)
+    Art.draw(bb, "twin_switch", x + math.floor((self.w - w) / 2), y, w, self.h, w, self.h, self.param)
 end
 
 -- What a tap does, in a line.

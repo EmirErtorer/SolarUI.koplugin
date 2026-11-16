@@ -9,6 +9,9 @@ local Registry = require("solarui/theme/registry")
 -- Custom with accents of its own (its defaults are Garden's), so it shows as a scheme apart
 Settings.set("custom_accent", "#6B3A6B")
 Settings.set("custom_accent2", "#D08A2E")
+-- the scheme paints home's plants and animals too, the companion keeping their own colours
+Settings.set("scheme_living", "home")
+Settings.set("scheme_companion_kept", true)
 for _i, scheme in ipairs(Registry.SCHEMES) do
     for _j, mode in ipairs({ "light", "dark" }) do
         H.step(1.5, function()
