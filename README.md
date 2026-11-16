@@ -8,9 +8,14 @@
 
 SolarUI is an **Art Nouveau garden of a home screen** for KOReader. Read, and the garden grows.
 
-* **Home** with your book in a halo of roses and your reading as flowers.
-* **A living garden** of plants and animals you look after with the pages you read.
-* **Library, notebooks and a reading log**, all in the same garden style.
+## Only in SolarUI
+
+* **32 companions, nearly 10,000 lines.** Any of the 19 plants and 13 animals can keep you company on home. Each has a voice of their own: they greet you, answer a tap, notice today's reading and share memories as you read. New lines open as your bond grows over five levels.
+* **A garden your reading grows.** Every page you read is dew to water plants and feed animals, and every finished book is a seed. Morning reading, night reading, streaks and finished books bring new visitors, from the fox to the peacock.
+* **Alive on its own clock.** Four seasons from your calendar, weather, and night animals that come out only in the dark.
+* **Outdoors, every week.** Three small things to do outside: one to look at, one to listen to, one to do, kept in a log.
+* **Your highlights on the garden table**, field notes on everyone you meet, and an apple tree for the year's reading goal.
+* **A twin.** One tap turns home into [CyberUI](https://github.com/EmirErtorer/CyberUI.koplugin), and back.
 
 ## Install
 
@@ -26,19 +31,19 @@ Then open the top menu, the first tab (the file browser's), **Start with**, **So
 
 <table>
   <tr>
-    <td width="33%" valign="top"><a href="assets/screenshots/companions.gif"><img src="assets/screenshots/companions.gif" alt="Companions on home"></a><br><sub>A companion on home: a plant or an animal of your garden, with something to say.</sub></td>
-    <td width="33%" valign="top"><a href="assets/screenshots/garden.gif"><img src="assets/screenshots/garden.gif" alt="A day in the garden"></a><br><sub>Water a wilted plant back to life; change the hour, the season and the weather.</sub></td>
-    <td width="33%" valign="top"><a href="assets/screenshots/twin.gif"><img src="assets/screenshots/twin.gif" alt="The twin switch"></a><br><sub>One tap hands home over to CyberUI, and back.</sub></td>
-  </tr>
-  <tr>
     <td width="33%" valign="top"><a href="assets/screenshots/01-home.png"><img src="assets/screenshots/01-home.png" alt="Home"></a><br><sub>Home: your book in a halo of roses, your reading as flowers, a dock of plants.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/companions.gif"><img src="assets/screenshots/companions.gif" alt="Companions on home"></a><br><sub>Companions: plants and animals of your garden, each with something to say.</sub></td>
     <td width="33%" valign="top"><a href="assets/screenshots/02-garden.png"><img src="assets/screenshots/02-garden.png" alt="The garden"></a><br><sub>The garden: every page you read waters it.</sub></td>
-    <td width="33%" valign="top"><a href="assets/screenshots/03-yuzsuz.png"><img src="assets/screenshots/03-yuzsuz.png" alt="Yüzsüz"></a><br><sub>Yüzsüz The Magnificent, queen of the garden.</sub></td>
   </tr>
   <tr>
+    <td width="33%" valign="top"><a href="assets/screenshots/garden.gif"><img src="assets/screenshots/garden.gif" alt="A day in the garden"></a><br><sub>Water a wilted plant back to life; change the hour, the season and the weather.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/03-yuzsuz.png"><img src="assets/screenshots/03-yuzsuz.png" alt="Yüzsüz"></a><br><sub>Yüzsüz The Magnificent, queen of the garden.</sub></td>
     <td width="33%" valign="top"><a href="assets/screenshots/04-library.png"><img src="assets/screenshots/04-library.png" alt="Library"></a><br><sub>The library, in arched windows.</sub></td>
+  </tr>
+  <tr>
     <td width="33%" valign="top"><a href="assets/screenshots/05-notebooks.png"><img src="assets/screenshots/05-notebooks.png" alt="Notebooks"></a><br><sub>Your Ink Away notebooks, each in a cover of its own.</sub></td>
     <td width="33%" valign="top"><a href="assets/screenshots/06-garden-book.png"><img src="assets/screenshots/06-garden-book.png" alt="The garden's book"></a><br><sub>The book on the garden table: your highlights, or the garden's own lines.</sub></td>
+    <td width="33%" valign="top"><a href="assets/screenshots/twin.gif"><img src="assets/screenshots/twin.gif" alt="The twin switch"></a><br><sub>One tap hands home over to CyberUI, and back.</sub></td>
   </tr>
   <tr>
     <td width="33%" valign="top"><a href="assets/screenshots/07-log.png"><img src="assets/screenshots/07-log.png" alt="Reading log"></a><br><sub>The reading log, a flower for each day.</sub></td>
