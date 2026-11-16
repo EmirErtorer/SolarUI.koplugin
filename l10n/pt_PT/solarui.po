@@ -2884,16 +2884,16 @@ msgid "%s keeps the garden while you read."
 msgstr "%s cuida do jardim enquanto lê."
 
 #: solarui/opening.lua
-msgid "Opening"
-msgstr "A abrir"
+msgid "A first opening."
+msgstr "Uma primeira abertura."
 
 #: solarui/opening.lua
 msgid "Back at %d%%."
 msgstr "De volta aos %d%%."
 
 #: solarui/opening.lua
-msgid "A first opening."
-msgstr "Uma primeira abertura."
+msgid "%s %s left."
+msgstr "%s Faltam %s."
 
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
@@ -3579,7 +3579,7 @@ msgstr "Íris"
 msgid "Poppy"
 msgstr "Papoila"
 
-#: solarui/screens/inkpick.lua solarui/ui/progress.lua
+#: solarui/screens/inkpick.lua
 msgid "Dragonfly"
 msgstr "Libélula"
 
@@ -4386,8 +4386,8 @@ msgid "Opening card"
 msgstr "Cartão de abertura"
 
 #: solarui/screens/settings.lua
-msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
-msgstr "Enquanto um livro abre, surge no halo dourado, com o ponto onde a leitura continua"
+msgid "While a book opens: where your reading resumes, how long is left, and a line you once marked in the book"
+msgstr "Enquanto um livro abre: onde a leitura continua, quanto falta e uma linha que marcou no livro"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"
@@ -5854,8 +5854,12 @@ msgid "Vine"
 msgstr "Trepadeira"
 
 #: solarui/ui/progress.lua
-msgid "Pearls"
-msgstr "Pérolas"
+msgid "Blossoms"
+msgstr "Flores"
+
+#: solarui/ui/progress.lua
+msgid "Moons"
+msgstr "Luas"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"

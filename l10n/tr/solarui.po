@@ -2884,16 +2884,16 @@ msgid "%s keeps the garden while you read."
 msgstr "Sen okurken bahçeye %s bakıyor."
 
 #: solarui/opening.lua
-msgid "Opening"
-msgstr "Açılıyor"
+msgid "A first opening."
+msgstr "İlk açılış."
 
 #: solarui/opening.lua
 msgid "Back at %d%%."
 msgstr "%%%d'den devam."
 
 #: solarui/opening.lua
-msgid "A first opening."
-msgstr "İlk açılış."
+msgid "%s %s left."
+msgstr "%s %s kaldı."
 
 #: solarui/screens/annotations.lua solarui/screens/dossier.lua solarui/screens/home.lua
 msgid "Highlights"
@@ -3579,7 +3579,7 @@ msgstr "Süsen"
 msgid "Poppy"
 msgstr "Gelincik"
 
-#: solarui/screens/inkpick.lua solarui/ui/progress.lua
+#: solarui/screens/inkpick.lua
 msgid "Dragonfly"
 msgstr "Yusufçuk"
 
@@ -4386,8 +4386,8 @@ msgid "Opening card"
 msgstr "Açılış kartı"
 
 #: solarui/screens/settings.lua
-msgid "While a book opens, the book stands in the golden halo with where your reading resumes"
-msgstr "Kitap açılırken, kitap altın halenin içinde, okumanın kaldığı yerle birlikte durur"
+msgid "While a book opens: where your reading resumes, how long is left, and a line you once marked in the book"
+msgstr "Kitap açılırken: okumanın kaldığı yer, ne kadar kaldığı ve kitapta bir zamanlar işaretlediğin bir satır"
 
 #: solarui/screens/settings.lua
 msgid "Garden buttons"
@@ -5854,8 +5854,12 @@ msgid "Vine"
 msgstr "Asma"
 
 #: solarui/ui/progress.lua
-msgid "Pearls"
-msgstr "İnciler"
+msgid "Blossoms"
+msgstr "Çiçekler"
+
+#: solarui/ui/progress.lua
+msgid "Moons"
+msgstr "Aylar"
 
 #: solarui/ui/readingstrip.lua
 msgid "Your reading"

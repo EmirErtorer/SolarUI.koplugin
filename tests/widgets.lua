@@ -203,7 +203,7 @@ do
     Kit.ok(Registry.fontSets()[1].id == "nouveau", "the default font set is nouveau")
     local styles = {}
     for _, st in ipairs(Progress.STYLES) do styles[#styles + 1] = st.id end
-    Kit.ok(table.concat(styles, ",") == "vine,pearls,ribbon", "the progress styles are vine, pearls, ribbon")
+    Kit.ok(table.concat(styles, ",") == "vine,blossoms,moons", "the progress styles are vine, blossoms, moons")
     for _, id in ipairs(styles) do
         require("solarui/settings").set("progress_style", id)
         local ok, err = pcall(function()

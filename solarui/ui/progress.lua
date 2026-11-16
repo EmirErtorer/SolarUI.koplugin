@@ -1,8 +1,8 @@
 -- Progress bars. The plain one is a round-ended bar filled up to `value` (0
 -- to 1), used for gauges. A book's progress (book = true) is drawn in the
 -- reader's chosen style: a vine that has grown that far with a rose at its
--- tip, a string of pearls turning gold, or a gold ribbon with a dragonfly at
--- its tip (art/progressstyles.lua).
+-- tip, a row of blossoms opening, or a row of moons waxing to full
+-- (art/progressstyles.lua).
 
 local Art = require("solarui/gfx/art")
 local Element = require("solarui/ui/element")
@@ -16,8 +16,8 @@ local Progress = Element:extend({ value = 0, segments = 20, cell_h = 12, color =
 -- The styles a book's progress can be drawn in, and their heights (base px).
 Progress.STYLES = {
     { id = "vine", name = _("Vine"), h = 36 },
-    { id = "pearls", name = _("Pearls"), h = 30 },
-    { id = "ribbon", name = _("Dragonfly"), h = 36 },
+    { id = "blossoms", name = _("Blossoms"), h = 40 },
+    { id = "moons", name = _("Moons"), h = 30 },
 }
 local GAUGE = { id = "bar" }   -- (plain bars that are not a book's: gauges)
 local by_id = {}
@@ -67,7 +67,7 @@ local function bar(self, bb, x, y, c)
     if w >= self.h then Paint.round(bb, x, y, w, self.h, r, "trbl", c) end
 end
 
--- A drawing of the progress (the vine, the pearls, the ribbon) for the bar's size.
+-- A drawing of the progress (the vine, the blossoms, the moons) for the bar's size.
 local function drawn(name)
     return function(self, bb, x, y)
         local k = self.h / 70
@@ -75,7 +75,7 @@ local function drawn(name)
     end
 end
 
-local DRAW = { segments = segments, bar = bar, vine = drawn("progress"), pearls = drawn("progress_pearls"), ribbon = drawn("progress_ribbon") }
+local DRAW = { segments = segments, bar = bar, vine = drawn("progress"), blossoms = drawn("progress_blossoms"), moons = drawn("progress_moons") }
 
 -- Draw in the bar's style.
 function Progress:draw(bb, x, y)

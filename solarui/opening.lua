@@ -1,9 +1,8 @@
 -- The opening card: what the screen shows while a book opens, in place of the
--- small "Opening file" message KOReader would draw. The book stands in home's
--- golden halo, the peacock fan behind it, roses at its foot, on an Opening
--- plaque; under it the title, where reading resumes and a line from the
--- garden companion. The load blocks, so the card is painted once, just before it
--- starts, and costs one small paint; nothing on it moves.
+-- small "Opening file" message KOReader would draw. A slim card with a pressed
+-- sprig: where reading resumes and how long is left, and a line the reader once
+-- marked in the book, brought back as the book opens. The load blocks, so the
+-- card is painted once, just before it starts; nothing on it moves.
 
 local Settings = require("solarui/settings")
 local UIManager = require("ui/uimanager")
@@ -18,38 +17,59 @@ function Opening.wanted(path)
     return Settings.get("opening_card", true) and lfs.attributes(path, "mode") == "file"
 end
 
--- The last line: who keeps the garden while the book is read.
+-- A line the reader marked in this book, at random, or nil.
+local function marked(path)
+    local ok, kinds = pcall(function() return require("solarui/data/annotations").kinds(path) end)
+    local list = {}
+    for _i, a in ipairs(ok and kinds.highlights or {}) do
+        local letters = select(2, a.text:gsub("[^\128-\191]", ""))
+        if letters >= 20 and letters <= 160 and require("solarui/garden/plaque").readable(a.text) then list[#list + 1] = a.text end
+    end
+    return #list > 0 and list[math.random(#list)] or nil
+end
+
+-- Who keeps the garden while the book is read, as a line.
 local function gardenLine()
     local ok, item = pcall(function() return require("solarui/ui/homecompanion").pick() end)
     if not (ok and item) then return _("The garden will be here when you come back.") end
     return string.format(_("%s keeps the garden while you read."), require("solarui/garden/state").name(item.id))
 end
 
--- The card for the book at `path`, on a screen `w` wide.
+-- Where reading resumes and how long is left at the reader's pace, as a line.
+local function resumeLine(path)
+    local Books, Format = require("solarui/data/books"), require("solarui/format")
+    local st = Books.state(path)
+    if st.percent <= 0 then return _("A first opening.") end
+    local back = string.format(_("Back at %d%%."), math.floor(st.percent * 100 + 0.5))
+    local ok, t = pcall(function() return require("solarui/data/insights").book(path) end)
+    if ok and t and t.per_page and t.total_pages and t.pages and t.per_page > 0 then
+        local left = math.max(0, t.total_pages - t.pages) * t.per_page
+        if left > 60 then return string.format(_("%s %s left."), back, Format.duration(left)) end
+    end
+    return back
+end
+
+-- The card for the book at `path`, on a screen `w` wide: a slim card with a
+-- pressed sprig, where reading resumes, and a line the reader once marked in
+-- this book (or, with none, who keeps the garden meanwhile).
 function Opening.card(path, w)
-    local Books = require("solarui/data/books")
-    local Cover = require("solarui/ui/cover")
+    local ArtView = require("solarui/ui/artview")
     local Dialog = require("solarui/ui/dialog")
     local Label = require("solarui/ui/label")
-    local Scene = require("solarui/ui/scene")
-    local info, st = Books.info(path), Books.state(path)
-    -- (a small card in the middle of the screen, not a whole page)
-    w = math.floor(w * 0.62)
-    local inner = Dialog.inner(w)
-    local VH = 640
-    local scene = Scene.make("opening", inner, math.floor(inner * VH / Scene.design_w), VH)
-    -- home's hero, centred: the fan, the sprig, the halo, the cover and the roses
-    scene:backdrop("peacock_fan", 236, -40, 600, 600)
-    scene:backdrop("sprig", 702, 34, 120, 138)
-    scene:backdrop("halo", 301, 24, 470, 470)
-    scene:place(Cover:new({ path = path }), 388, 142, 296, 444)
-    scene:sprite("rose_cluster", 244, 342, 200, 300)
-    scene:sprite("plaque", 361, 548, 350, 84)
-    scene:place(Label:new({ text = _("Opening"), kind = "label", color = "on_accent", align = "center" }), 391, 548, 290, 84)
-    local resume = st.percent > 0 and string.format(_("Back at %d%%."), math.floor(st.percent * 100 + 0.5)) or _("A first opening.")
-    local card = Dialog.card({ top = scene, title = info.title, detail = info.author ~= "" and info.author or nil,
-        text = resume .. "\n" .. gardenLine(), lines = 3 }, w) -- i18n: keep
-    return card
+    local Layout = require("solarui/ui/layout")
+    local Theme = require("solarui/theme")
+    local th = Theme.get()
+    w = math.floor(w * 0.72)
+    local line = marked(path)
+    local text = line and string.format("\u{201C}%s\u{201D}", line) or gardenLine() -- i18n: keep
+    local row = Layout.Row:new({ gap = th.space.m, valign = "center", children = {
+        ArtView:new({ name = "sprig", width = Theme.px(46), height = Theme.px(54) }),
+        Layout.Column:new({ grow = true, gap = th.space.xs, children = {
+            Label:new({ text = resumeLine(path), kind = "heading", lines = 2 }),
+            Label:new({ text = text, kind = "small", color = "muted", lines = 3 }),
+        } }),
+    } })
+    return Dialog.card({ rows = { row } }, w)
 end
 
 -- Run show() (the call that opens the book) with KOReader's own "Opening file"

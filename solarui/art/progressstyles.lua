@@ -1,73 +1,77 @@
 -- More ways to draw a book's progress (ui/progress.lua), each
 -- progress_<style>(c, vw, vh, pct) for a vw x vh canvas, read as far as
--- `pct` percent: a string of pearls that fill with gold as the book is read,
--- and a whiplash ribbon of gold with a dragonfly at its tip.
+-- `pct` percent: a row of blossoms on a fine runner, open where the book is
+-- read, opening at the place reached and still buds ahead; and a row of
+-- moons on a gilt line, full where read, waxing at the place reached and new
+-- ahead.
 
 local Flora = require("solarui/art/flora")
 local Svg = require("solarui/art/svg")
 
+local n = Svg.n
+
 local Styles = {}
 
--- The points of `pts` up to `frac` of their length.
-local function upTo(pts, frac)
-    local want, run, out = Svg.length(pts) * frac, 0, { pts[1] }
-    for i = 2, #pts do
-        local a, b = pts[i - 1], pts[i]
-        local seg = math.sqrt((b[1] - a[1]) ^ 2 + (b[2] - a[2]) ^ 2)
-        if run + seg >= want then
-            local t = seg > 0 and (want - run) / seg or 0
-            out[#out + 1] = { a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t }
-            return out
-        end
-        run = run + seg
-        out[#out + 1] = b
-    end
-    return out
+-- The share read, from 0 to 1.
+local function share(pct) return math.max(0, math.min(1, (tonumber(pct) or 0) / 100)) end
+
+-- How many marks fit across vw, and their spacing.
+local function marks(vw, size)
+    local count = math.max(5, math.floor((vw - 20) / size))
+    return count, (vw - 20) / count
 end
 
--- A gentle wave across the canvas, `amp` of its height up and down.
-local function wave(vw, vh, amp, bumps)
-    local way = {}
-    for i = 0, bumps * 2 do way[#way + 1] = { 14 + (vw - 28) * i / (bumps * 2), vh * (.5 + (i % 2 == 0 and amp or -amp)) } end
-    return Svg.spline(way, 8)
-end
-
--- Pearls on a fine gilt chain, gold where read and pale ahead, a leaf at each end.
-function Styles.progress_pearls(c, vw, vh, pct)
-    local frac = math.max(0, math.min(1, (tonumber(pct) or 0) / 100))
-    local pts = wave(vw, vh, .1, 3)
-    local count = math.max(6, math.floor((vw - 60) / 30))
-    local total = Svg.length(pts)
-    local out = { Flora.leaf(c, 16, vh * .55, 160, vh * .42, vh * .14, c.leaf), Flora.leaf(c, vw - 16, vh * .55, 20, vh * .42, vh * .14, c.leaf),
-        Svg.line(Svg.poly(pts), c.gold, 1.4) }
-    local r = math.min(vh * .2, total / count * .32)
+-- Blossoms: daisies open where read, a half-open rosebud at the place reached,
+-- small closed buds ahead, each on a short stem from a fine runner.
+function Styles.progress_blossoms(c, vw, vh, pct)
+    local f = share(pct)
+    local count, step = marks(vw, vh * .62)
+    local ground = vh * .86
+    local out = { Svg.line(string.format("M%s %s L%s %s", n(6), n(ground), n(vw - 6), n(ground)), c.stem, 2.2) }
+    local reached = f * count
     for i = 1, count do
-        local x, y = Svg.along(pts, total * (i - .5) / count)
-        local read = (i - .5) / count <= frac
-        if read then
-            out[#out + 1] = Svg.circle(x, y, r, c.gold, c.ink, 1.4) .. Svg.circle(x - r * .3, y - r * .32, r * .3, c.cream)
+        local x = 10 + step * (i - .5)
+        local top = vh * (.42 + ((i % 2 == 0) and .06 or 0))
+        out[#out + 1] = Svg.line(string.format("M%s %s Q%s %s %s %s", n(x), n(ground), n(x + step * .08), n((ground + top) / 2), n(x), n(top)), c.stem, 1.6)
+        if i <= math.floor(reached) then
+            out[#out + 1] = Flora.daisy(c, x, top, vh * .26, 8, (i % 3 == 0) and c.bloom2 or c.cream)
+        elseif i == math.floor(reached) + 1 and f > 0 then
+            out[#out + 1] = Flora.rosebud(c, x, top + vh * .06, 0, vh * .3, c.bloom)
         else
-            out[#out + 1] = Svg.circle(x, y, r * .78, c.cream, c.line, 1.2)
+            out[#out + 1] = Svg.ellipse(x, top, vh * .07, vh * .12, 0, c.leaf, c.ink, 1.2)
         end
     end
     return table.concat(out)
 end
 
--- A whiplash ribbon: gold and broad as far as the book is read, a fine line
--- after, and a dragonfly resting at the tip of the gold.
-function Styles.progress_ribbon(c, vw, vh, pct)
-    local frac = math.max(0, math.min(1, (tonumber(pct) or 0) / 100))
-    local pts = wave(vw, vh, .16, 2)
-    local out = { Svg.line(Svg.poly(pts), c.line, 1.6) }
-    if frac > 0.01 then
-        local read = upTo(pts, frac)
-        if #read >= 2 then
-            out[#out + 1] = Svg.stem(read, Svg.taper(vh * .07, vh * .2), c.gold, c.ink, 1.4)
-        end
-        -- (the dragonfly flies along the ribbon, just above the tip, and stays inside the bar)
-        local tip = read[#read]
-        local s = vh * .34
-        out[#out + 1] = Flora.dragonfly(c, math.min(tip[1], vw - s * .9), tip[2] - vh * .2, 90, s, 4)
+-- The lit part of a moon of radius r at (cx, cy), `lit` from 0 (new) to 1 (full), waxing from the right.
+local function moon(c, cx, cy, r, lit)
+    local out = Svg.circle(cx, cy, r, c.cream, c.ink, 1.3)
+    if lit >= .99 then
+        -- a full moon, with a few soft shadows on the face
+        return Svg.circle(cx, cy, r, c.gold, c.ink, 1.3) .. Svg.circle(cx - r * .3, cy - r * .2, r * .2, c.pale) .. Svg.circle(cx + r * .28, cy + r * .3, r * .14, c.pale)
+    end
+    if lit <= .01 then return out end
+    local rx = r * math.abs(1 - 2 * lit)
+    local sweep = lit < .5 and 0 or 1
+    local d = string.format("M%s %s A%s %s 0 0 1 %s %s A%s %s 0 0 %d %s %s Z",
+        n(cx), n(cy - r), n(r), n(r), n(cx), n(cy + r), n(rx), n(r), sweep, n(cx), n(cy - r))
+    return out .. Svg.path(d, c.gold, c.ink, 1.3)
+end
+
+-- Moons: full gold where read, waxing at the place reached, new ahead, on a gilt line with a star at each end.
+function Styles.progress_moons(c, vw, vh, pct)
+    local f = share(pct)
+    local count, step = marks(vw, vh * .5)
+    local cy, r = vh * .5, math.min(vh * .22, step * .36)
+    local out = { Svg.line(string.format("M%s %s L%s %s", n(8), n(cy), n(vw - 8), n(cy)), c.gold, 1.4) }
+    for _i, x in ipairs({ 8, vw - 8 }) do
+        out[#out + 1] = Svg.path(string.format("M%s %s L%s %s L%s %s L%s %s Z", n(x), n(cy - r * .7), n(x + r * .22), n(cy), n(x), n(cy + r * .7), n(x - r * .22), n(cy)), c.gold, c.ink, 1)
+    end
+    local reached = f * count
+    for i = 1, count do
+        local lit = math.max(0, math.min(1, reached - (i - 1)))
+        out[#out + 1] = moon(c, 10 + step * (i - .5), cy, r, lit)
     end
     return table.concat(out)
 end

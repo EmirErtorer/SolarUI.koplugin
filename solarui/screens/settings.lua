@@ -187,7 +187,7 @@ function SettingsScreen:home()
                 if not Twin.setCornerHome(on) then App.toast(_("KOReader's gestures are not set up yet")) end
                 App.update()
             end })),
-        row(_("Opening card"), _("While a book opens, the book stands in the golden halo with where your reading resumes"),
+        row(_("Opening card"), _("While a book opens: where your reading resumes, how long is left, and a line you once marked in the book"),
             Controls.Toggle:new({ on = Settings.get("opening_card", true), on_change = function(on) save("opening_card", on) end })),
         row(_("Garden buttons"), _("The plants along the bottom of home: hide, reorder, replace or add your own that open anything in KOReader"),
             Button:new({ label = _("Edit"), on_tap = function() App.push("launcher") end })),
