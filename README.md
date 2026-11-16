@@ -8,7 +8,7 @@
 
 SolarUI is an **Art Nouveau garden of a home screen** for KOReader. Read, and the garden grows.
 
-## Only in SolarUI
+## What grows here
 
 * **32 companions, nearly 10,000 lines.** Any of the 19 plants and 13 animals can keep you company on home. Each has a voice of their own: they greet you, answer a tap, notice today's reading and share memories as you read. New lines open as your bond grows over five levels.
 * **A garden your reading grows.** Every page you read is dew to water plants and feed animals, and every finished book is a seed. Morning reading, night reading, streaks and finished books bring new visitors, from the fox to the peacock.
