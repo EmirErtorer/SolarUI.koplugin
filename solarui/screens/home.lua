@@ -205,12 +205,36 @@ function Home:shelf(scene, y, cur)
     end
 end
 
--- The dock: a plant for each place to go, growing from one root.
-function Home:dock(scene, y)
-    scene:group("home.dock_root", "Root under the dock", function() scene:backdrop("root", 20, y + 104, 1032, 40) end)
-    local entries = LauncherData.visible()
+-- How many buttons a row of the dock holds before a second row is used, and
+-- how far apart two rows stand (a row's names sit under its root).
+local PER_ROW = 7
+local ROW_STEP = DOCK_H + 56
+
+-- How many rows the dock's buttons take: two when there are more than a
+-- row holds and the screen has the room (`room` units spare), else one.
+local function dockRows(room)
+    local n = #LauncherData.visible()
+    return (n > PER_ROW and room >= ROW_STEP) and 2 or 1
+end
+
+-- The dock: a plant for each place to go, growing from one root, in one row
+-- or two (`rows`), the second under the first.
+function Home:dock(scene, y, rows)
+    rows = rows or 1
+    local all = LauncherData.visible()
+    local per = math.ceil(#all / rows)
+    for r = 1, rows do
+        local part = {}
+        for i = (r - 1) * per + 1, math.min(r * per, #all) do part[#part + 1] = all[i] end
+        self:dockRow(scene, y + (r - 1) * ROW_STEP, part, r, rows > 1 and 112 or 150)
+    end
+end
+
+-- One row of the dock at `y`: its root and its plants.
+function Home:dockRow(scene, y, entries, r, biggest)
+    scene:group(r == 1 and "home.dock_root" or "home.dock_root" .. r, "Root under the dock", function() scene:backdrop("root", 20, y + 104, 1032, 40) end)
     local slot = (RIGHT - LEFT + 40) / math.max(1, #entries)
-    local size = math.min(150, slot - 10)
+    local size = math.min(biggest or 150, slot - 10)
     local tall = size * 130 / 150
     for i, entry in ipairs(entries) do
         local art, icon, label, action = Launcher.describe(entry)
@@ -262,6 +286,9 @@ function Home:build(ctx)
     if scene.k < ctx.w / Scene.design_w then extra = extraAt(scene.k); scene = make() end
     scene.extra = extra
     local blocks = STATUS_H + HERO_H + extra + (stats and STATS_H or 0) + (shelf and shelf_h or 0) + DOCK_H
+    -- (a second row of the dock, when it is crowded and the screen is tall enough, before the room is shared as gaps)
+    local rows = dockRows(scene.vh - blocks - FOOT)
+    blocks = blocks + ROW_STEP * (rows - 1)
     local gaps = 2 + (stats and 1 or 0) + (shelf and 1 or 0)
     local gap = math.min(110, math.max(0, (scene.vh - blocks - FOOT) / gaps))
 
@@ -274,15 +301,15 @@ function Home:build(ctx)
     if stats then y = y + STATS_H + gap end
     local shelf_y = y
     if shelf then y = y + shelf_h + gap end
-    local dock_y = math.max(y, scene.vh - FOOT - DOCK_H)
+    local dock_y = math.max(y, scene.vh - FOOT - DOCK_H - ROW_STEP * (rows - 1))
 
     local season = Settings.get("home_season", true) and Season.current() or 2
     -- the vine runs through the foot of the rose cluster, so the cluster grows out of it
     local foot_y = hero_y + (cur and CLUSTER_Y or CLUSTER_Y + 12) + 300
     scene:group("home.vine_left", "Climbing vine, left", function()
-        scene:backdrop("vine_left", 4, 34, 150, dock_y + 132 - 34, string.format("%d:%.1f:%.1f", season, CLUSTER_X + 12 - 4, foot_y - 34))
+        scene:backdrop("vine_left", 4, 34, 150, dock_y + (rows - 1) * ROW_STEP + 132 - 34, string.format("%d:%.1f:%.1f", season, CLUSTER_X + 12 - 4, foot_y - 34))
     end)
-    scene:group("home.vine_right", "Climbing vine, right", function() scene:backdrop("vine_right", 990, dock_y - 270, 78, 400, season) end)
+    scene:group("home.vine_right", "Climbing vine, right", function() scene:backdrop("vine_right", 990, dock_y - 270, 78, 400 + (rows - 1) * ROW_STEP, season) end)
     self:ornaments(scene)
     self:status(scene)
     self:hero(scene, hero_y, cur)
@@ -291,7 +318,7 @@ function Home:build(ctx)
     end)
     if stats then Strip.place(scene, stats_y, Strip.data(), function() App.go("history") end) end
     if shelf then self:shelf(scene, shelf_y, cur) end
-    self:dock(scene, dock_y)
+    self:dock(scene, dock_y, rows)
     return scene
 end
 

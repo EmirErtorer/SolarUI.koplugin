@@ -157,7 +157,11 @@ function Theme.text(kind, set_id)
     local spec = t.style.text[kind] or t.style.text.body
     local role = spec[1]
     local own = set[role .. "_scale"] or set.scale or 1
-    local scale = own * Settings.get("text_scale", 1)
+    -- (a narrow screen with many pixels to the inch, a phone, would show text too large for the room the
+    -- layout gives it: text then shrinks with the screen's width in base pixels)
+    local short = math.min(Screen:getWidth(), Screen:getHeight())
+    local fit = math.max(0.6, math.min(1, short / Screen:scaleBySize(560)))
+    local scale = own * Settings.get("text_scale", 1) * fit
     local size = math.floor(spec[2] * scale + 0.5)
     -- KOReader's own face if the file cannot be read, rather than no text
     local ok, face = pcall(function()

@@ -47,9 +47,13 @@ end
 Kit.ok(shown >= 8, "many are shown large (" .. shown .. ")")
 s.focus = nil
 
--- the card's own buttons
+-- the card's own buttons (in summer: a plant resting for the winter takes no water)
+require("solarui/settings").set("garden_season", "summer")
 s.focus = "tulip"
 local a = s:actions("tulip")
+-- (thirsty, and dew to spend, whatever state the earlier checks left)
+State.get().plants.tulip.watered = State.clock() - 30 * 86400
+State.get().bonus = (State.get().bonus or 0) + 100
 local dew = State.dew()
 a.on_water()
 Kit.ok(State.dew() == dew - State.WATER, "the water button spends dew")
