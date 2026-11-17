@@ -151,6 +151,10 @@ msgid "Open library here"
 msgstr ""
 
 #: solarui/actions.lua
+msgid "The library now starts in %s"
+msgstr ""
+
+#: solarui/actions.lua
 msgid "%d book marked %s"
 msgid_plural "%d books marked %s"
 msgstr[0] ""
@@ -3937,6 +3941,14 @@ msgid "+ Folder"
 msgstr ""
 
 #: solarui/screens/library.lua
+msgid "Top folder"
+msgstr ""
+
+#: solarui/screens/library.lua
+msgid "No folders inside this one. To start the library in another folder of your device, tap Top folder."
+msgstr ""
+
+#: solarui/screens/library.lua
 msgid "No folders here. Make one with + Folder, or move it here."
 msgstr ""
 
@@ -4494,6 +4506,10 @@ msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "Pick a folder"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Change the library's top folder"
 msgstr ""
 
 #: solarui/screens/settings.lua

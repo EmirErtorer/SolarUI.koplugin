@@ -213,7 +213,7 @@ end
 -- button), icon, on_pick(dir) }.
 function Actions.pickFolder(o)
     App.push("library", { dir = Library.home(), pick = {
-        title = o.title, label = o.label, icon = o.icon,
+        title = o.title, label = o.label, icon = o.icon, top = o.top,
         on_pick = function(dir)
             App.pop()
             o.on_pick(dir)
@@ -221,9 +221,27 @@ function Actions.pickFolder(o)
     } })
 end
 
--- Choose the folder the library opens in.
+-- Choose the folder the library opens in (a folder inside its top folder).
 function Actions.pickLibraryStart()
-    Actions.pickFolder({ title = _("Library opens in"), label = _("Open library here"), icon = "library", on_pick = Actions.setLibraryStart })
+    Actions.pickFolder({ title = _("Library opens in"), label = _("Open library here"), icon = "library", on_pick = Actions.setLibraryStart, top = true })
+end
+
+-- Choose the library's top folder anywhere on the device: KOReader's own home
+-- folder, so KOReader's file browser starts there too. The folder the library
+-- opens in goes back to the new top.
+function Actions.pickLibraryTop()
+    local PathChooser = require("ui/widget/pathchooser")
+    require("ui/uimanager"):show(PathChooser:new({
+        select_directory = true, select_file = false, show_files = false, path = Library.home(),
+        onConfirm = function(dir)
+            G_reader_settings:saveSetting("home_dir", dir)
+            Settings.save("library_start_dir", nil)
+            Library.reset()
+            if App.current() and App.current().params and App.current().params.pick then App.pop() end
+            App.toast(string.format(_("The library now starts in %s"), Files.name(dir)))
+            App.update()
+        end,
+    }))
 end
 
 ---------------------------------------------------------------- many books at once

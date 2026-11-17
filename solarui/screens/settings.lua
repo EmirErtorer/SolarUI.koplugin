@@ -231,6 +231,7 @@ function SettingsScreen:home()
                 App.choose({ title = _("Library opens in"), options = {
                     { label = _("Home folder"), checked = not Settings.get("library_start_dir"), on_tap = function() Actions.setLibraryStart(nil) end },
                     { label = _("Pick a folder"), icon = "folder", on_tap = Actions.pickLibraryStart },
+                    { label = _("Change the library's top folder"), icon = "library", on_tap = Actions.pickLibraryTop },
                 } })
             end })),
         row(_("Double tap to open"), _("In the library a book opens on its second tap, so a stray touch does not start it"),

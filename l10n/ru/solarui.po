@@ -154,6 +154,10 @@ msgid "Open library here"
 msgstr "Открыть библиотеку здесь"
 
 #: solarui/actions.lua
+msgid "The library now starts in %s"
+msgstr "Библиотека теперь начинается в %s"
+
+#: solarui/actions.lua
 msgid "%d book marked %s"
 msgid_plural "%d books marked %s"
 msgstr[0] "%d книга отмечена как %s"
@@ -3961,6 +3965,14 @@ msgid "+ Folder"
 msgstr "+ Папка"
 
 #: solarui/screens/library.lua
+msgid "Top folder"
+msgstr "Корневая папка"
+
+#: solarui/screens/library.lua
+msgid "No folders inside this one. To start the library in another folder of your device, tap Top folder."
+msgstr "Здесь нет папок. Чтобы начать библиотеку в другой папке устройства, нажмите «Корневая папка»."
+
+#: solarui/screens/library.lua
 msgid "No folders here. Make one with + Folder, or move it here."
 msgstr "Здесь нет папок. Создайте её кнопкой + Папка или переместите сюда."
 
@@ -4523,6 +4535,10 @@ msgstr "Домашняя папка"
 #: solarui/screens/settings.lua
 msgid "Pick a folder"
 msgstr "Выбрать папку"
+
+#: solarui/screens/settings.lua
+msgid "Change the library's top folder"
+msgstr "Сменить корневую папку библиотеки"
 
 #: solarui/screens/settings.lua
 msgid "Double tap to open"

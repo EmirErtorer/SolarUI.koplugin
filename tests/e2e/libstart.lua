@@ -1,0 +1,33 @@
+-- Settings > Home > Library opens in > Pick a folder: what the picker shows,
+-- with a home folder that has subfolders and with one that has none.
+local H = ...
+local Actions = require("solarui/actions")
+H.step(2, function()
+    local home = require("solarui/data/library").home()
+    for _i, d in ipairs({ "Fantasy", "Non-fiction", "Fantasy/Tolkien" }) do os.execute("mkdir -p '" .. home .. "/" .. d .. "'") end
+    os.execute("cp \"$(ls -d '" .. home .. "'/*.epub | head -1)\" '" .. home .. "/Fantasy/Tolkien/' 2>/dev/null")
+    require("solarui/data/library").reset()
+    H.app().open("settings"); Actions.pickLibraryStart()
+end)
+H.step(2, function()
+    require("ui/uimanager"):forceRePaint(); H.shot("pick-normal")
+    H.check(H.find("Fantasy") ~= nil, "the picker lists the home folder's folders")
+    H.tap("Fantasy")
+end)
+H.step(1.5, function() require("ui/uimanager"):forceRePaint(); H.shot("pick-inside"); H.tap("Open library here") end)
+H.step(1.5, function()
+    local dir = require("solarui/settings").get("library_start_dir")
+    H.check(dir and dir:find("Fantasy$") ~= nil, "Open library here keeps the folder: " .. tostring(dir))
+    H.app().go("library")
+end)
+H.step(1.5, function() require("ui/uimanager"):forceRePaint(); H.shot("library-opens-there") end)
+H.step(1, function()
+    -- a home folder with books in it but no folders below (as many readers keep it)
+    local dir = os.getenv("SOLARUI_DRIVE_OUT") .. "/flatbooks"
+    os.execute("mkdir -p '" .. dir .. "'")
+    os.execute("cp \"$(ls -d " .. require("solarui/data/library").home() .. "/*.epub | head -1)\" '" .. dir .. "/' 2>/dev/null")
+    G_reader_settings:saveSetting("home_dir", dir)
+    require("solarui/data/library").reset()
+    Actions.pickLibraryStart()
+end)
+H.step(2, function() require("ui/uimanager"):forceRePaint(); H.shot("pick-flat") end)

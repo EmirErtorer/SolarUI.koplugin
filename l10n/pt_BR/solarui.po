@@ -152,6 +152,10 @@ msgid "Open library here"
 msgstr "Abrir a biblioteca aqui"
 
 #: solarui/actions.lua
+msgid "The library now starts in %s"
+msgstr "A biblioteca agora começa em %s"
+
+#: solarui/actions.lua
 msgid "%d book marked %s"
 msgid_plural "%d books marked %s"
 msgstr[0] "%d livro marcado como %s"
@@ -3938,6 +3942,14 @@ msgid "+ Folder"
 msgstr "+ Pasta"
 
 #: solarui/screens/library.lua
+msgid "Top folder"
+msgstr "Pasta raiz"
+
+#: solarui/screens/library.lua
+msgid "No folders inside this one. To start the library in another folder of your device, tap Top folder."
+msgstr "Não há pastas aqui. Para começar a biblioteca em outra pasta do aparelho, toque em Pasta raiz."
+
+#: solarui/screens/library.lua
 msgid "No folders here. Make one with + Folder, or move it here."
 msgstr "Não há pastas aqui. Crie uma com + Pasta ou mova para cá."
 
@@ -4496,6 +4508,10 @@ msgstr "Pasta inicial"
 #: solarui/screens/settings.lua
 msgid "Pick a folder"
 msgstr "Escolher uma pasta"
+
+#: solarui/screens/settings.lua
+msgid "Change the library's top folder"
+msgstr "Mudar a pasta raiz da biblioteca"
 
 #: solarui/screens/settings.lua
 msgid "Double tap to open"

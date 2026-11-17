@@ -152,6 +152,10 @@ msgid "Open library here"
 msgstr "Kütüphaneyi burada aç"
 
 #: solarui/actions.lua
+msgid "The library now starts in %s"
+msgstr "Kütüphane artık %s klasöründe başlıyor"
+
+#: solarui/actions.lua
 msgid "%d book marked %s"
 msgid_plural "%d books marked %s"
 msgstr[0] "%d kitap %s olarak işaretlendi"
@@ -3938,6 +3942,14 @@ msgid "+ Folder"
 msgstr "+ Klasör"
 
 #: solarui/screens/library.lua
+msgid "Top folder"
+msgstr "Üst klasör"
+
+#: solarui/screens/library.lua
+msgid "No folders inside this one. To start the library in another folder of your device, tap Top folder."
+msgstr "Bunun içinde klasör yok. Kütüphaneyi cihazının başka bir klasöründe başlatmak için Üst klasör'e dokun."
+
+#: solarui/screens/library.lua
 msgid "No folders here. Make one with + Folder, or move it here."
 msgstr "Burada klasör yok. + Klasör ile bir tane oluştur ya da buraya taşı."
 
@@ -4496,6 +4508,10 @@ msgstr "Ana klasör"
 #: solarui/screens/settings.lua
 msgid "Pick a folder"
 msgstr "Klasör seç"
+
+#: solarui/screens/settings.lua
+msgid "Change the library's top folder"
+msgstr "Kütüphanenin üst klasörünü değiştir"
 
 #: solarui/screens/settings.lua
 msgid "Double tap to open"

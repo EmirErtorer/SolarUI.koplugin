@@ -152,6 +152,10 @@ msgid "Open library here"
 msgstr "Άνοιγμα της βιβλιοθήκης εδώ"
 
 #: solarui/actions.lua
+msgid "The library now starts in %s"
+msgstr "Η βιβλιοθήκη ξεκινά τώρα από %s"
+
+#: solarui/actions.lua
 msgid "%d book marked %s"
 msgid_plural "%d books marked %s"
 msgstr[0] "%d βιβλίο επισημάνθηκε ως %s"
@@ -3938,6 +3942,14 @@ msgid "+ Folder"
 msgstr "+ Φάκελος"
 
 #: solarui/screens/library.lua
+msgid "Top folder"
+msgstr "Κύριος φάκελος"
+
+#: solarui/screens/library.lua
+msgid "No folders inside this one. To start the library in another folder of your device, tap Top folder."
+msgstr "Δεν υπάρχουν φάκελοι εδώ. Για να ξεκινά η βιβλιοθήκη από άλλον φάκελο της συσκευής, πατήστε Κύριος φάκελος."
+
+#: solarui/screens/library.lua
 msgid "No folders here. Make one with + Folder, or move it here."
 msgstr "Δεν υπάρχουν φάκελοι εδώ. Δημιουργήστε έναν με το + Φάκελος ή μετακινήστε έναν εδώ."
 
@@ -4496,6 +4508,10 @@ msgstr "Αρχικός φάκελος"
 #: solarui/screens/settings.lua
 msgid "Pick a folder"
 msgstr "Επιλογή φακέλου"
+
+#: solarui/screens/settings.lua
+msgid "Change the library's top folder"
+msgstr "Αλλαγή κύριου φακέλου βιβλιοθήκης"
 
 #: solarui/screens/settings.lua
 msgid "Double tap to open"

@@ -334,8 +334,13 @@ end
 function Library:actions()
     local th = Theme.get()
     if self.params.pick then
-        return { Button:new({ label = _("+ Folder"), variant = "chip", on_tap = function()
+        local list = { Button:new({ label = _("+ Folder"), variant = "chip", on_tap = function()
             Actions.newFolder(self:dir(), function() App.update() end) end }) }
+        -- choosing where the library opens: its top folder can be changed from here too
+        if self.params.pick.top then
+            table.insert(list, 1, Button:new({ label = _("Top folder"), variant = "chip", on_tap = Actions.pickLibraryTop }))
+        end
+        return list
     end
     local list = {}
     if not self.params.query then
@@ -375,7 +380,8 @@ function Library:build()
     if self.trail then body_kids[#body_kids + 1] = self:breadcrumbs() end
     if not pick then body_kids[#body_kids + 1] = self:filterRow(counts) end
     if #items == 0 then
-        local empty = pick and _("No folders here. Make one with + Folder, or move it here.")
+        local empty = pick and pick.top and _("No folders inside this one. To start the library in another folder of your device, tap Top folder.")
+            or pick and _("No folders here. Make one with + Folder, or move it here.")
             or self.params.query and _("No matches") or _("Nothing here yet. Copy books in, or make a folder with + New.")
         body_kids[#body_kids + 1] = EmptyState.build({ plant = self.plant or "library", text = empty })
     else
