@@ -5119,6 +5119,18 @@ msgstr "O seu início, como um cyberdeck"
 msgid "CyberUI is the twin of SolarUI: the same home, library and reading tools, dressed as a neon cyberdeck instead of a garden. Switch between the two at any time; each keeps its own settings."
 msgstr "O CyberUI é o gémeo do SolarUI: o mesmo início, biblioteca e ferramentas de leitura, vestidos de cyberdeck de néon em vez de jardim. Alterne entre os dois quando quiser; cada um guarda as suas próprias definições."
 
+#: solarui/twin.lua
+msgid "Switch to %s?"
+msgstr "Mudar para %s?"
+
+#: solarui/twin.lua
+msgid "Home, the menus and KOReader's windows will look like %s. You can switch back at any time."
+msgstr "O início, os menus e as janelas do KOReader vão ficar como o %s. Pode voltar quando quiser."
+
+#: solarui/twin.lua
+msgid "Switch"
+msgstr "Mudar"
+
 #: solarui/ui/gardenactions.lua solarui/ui/homecompanion.lua
 msgid "Not enough dew. Dew comes from the pages you read."
 msgstr "Orvalho insuficiente. O orvalho vem das páginas que lê."

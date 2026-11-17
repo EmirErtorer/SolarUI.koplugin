@@ -5118,6 +5118,18 @@ msgstr ""
 msgid "CyberUI is the twin of SolarUI: the same home, library and reading tools, dressed as a neon cyberdeck instead of a garden. Switch between the two at any time; each keeps its own settings."
 msgstr ""
 
+#: solarui/twin.lua
+msgid "Switch to %s?"
+msgstr ""
+
+#: solarui/twin.lua
+msgid "Home, the menus and KOReader's windows will look like %s. You can switch back at any time."
+msgstr ""
+
+#: solarui/twin.lua
+msgid "Switch"
+msgstr ""
+
 #: solarui/ui/gardenactions.lua solarui/ui/homecompanion.lua
 msgid "Not enough dew. Dew comes from the pages you read."
 msgstr ""
