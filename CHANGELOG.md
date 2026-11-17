@@ -8,6 +8,20 @@ versions marked *Prerelease* are test builds.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-11-17
+
+Phones and small screens, and an easier way to choose the library's folder.
+
+### Added
+
+- **The library's top folder** can be changed from inside SolarUI: a Top folder button in the "Library opens in" picker, and Settings, Home, Library opens in, Change the library's top folder.
+
+### Fixed
+
+- **Phones and other narrow, sharp screens:** text no longer runs over or gets cut off; it now fits the layout, on home and everywhere else.
+- **A crowded dock** takes two rows when there is room above it, instead of squeezing every button into one.
+- The folder picker no longer looks empty without explaining why when the library's top folder has no folders in it.
+
 ## [1.0.1] - 2026-11-17
 
 A quick fix for 1.0.0.
