@@ -2623,7 +2623,7 @@ msgstr "Chuva"
 msgid "Snow"
 msgstr "Neve"
 
-#: solarui/garden/weather.lua
+#: solarui/garden/weather.lua solarui/screens/settings.lua
 msgid "Mist"
 msgstr "Névoa"
 
@@ -4246,6 +4246,42 @@ msgstr "Segundo destaque"
 #: solarui/screens/settings.lua
 msgid "Flowers and highlights"
 msgstr "Flores e destaques"
+
+#: solarui/screens/settings.lua
+msgid "Paper"
+msgstr "Papel"
+
+#: solarui/screens/settings.lua
+msgid "The page in light mode"
+msgstr "A página no modo claro"
+
+#: solarui/screens/settings.lua
+msgid "Cream"
+msgstr "Creme"
+
+#: solarui/screens/settings.lua
+msgid "White"
+msgstr "Branco"
+
+#: solarui/screens/settings.lua
+msgid "Night page"
+msgstr "Página noturna"
+
+#: solarui/screens/settings.lua
+msgid "The page in dark mode"
+msgstr "A página no modo escuro"
+
+#: solarui/screens/settings.lua
+msgid "Forest"
+msgstr "Floresta"
+
+#: solarui/screens/settings.lua
+msgid "Black"
+msgstr "Preto"
+
+#: solarui/screens/settings.lua
+msgid "Slate"
+msgstr "Ardósia"
 
 #: solarui/screens/settings.lua
 msgid "Plants and animals"

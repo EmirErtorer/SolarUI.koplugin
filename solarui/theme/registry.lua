@@ -61,7 +61,7 @@ end
 function Registry.scheme(id)
     if id == "custom" then
         local Custom = load("custom")
-        return Custom.build(Settings.get("custom_accent"), Settings.get("custom_accent2"))
+        return Custom.build(Settings.get("custom_accent"), Settings.get("custom_accent2"), Settings.get("custom_paper"), Settings.get("custom_night"))
     end
     return load(id) or load(Registry.SCHEMES[1])
 end

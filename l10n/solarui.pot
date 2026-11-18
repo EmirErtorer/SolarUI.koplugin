@@ -2622,7 +2622,7 @@ msgstr ""
 msgid "Snow"
 msgstr ""
 
-#: solarui/garden/weather.lua
+#: solarui/garden/weather.lua solarui/screens/settings.lua
 msgid "Mist"
 msgstr ""
 
@@ -4244,6 +4244,42 @@ msgstr ""
 
 #: solarui/screens/settings.lua
 msgid "Flowers and highlights"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Paper"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The page in light mode"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Cream"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "White"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Night page"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "The page in dark mode"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Forest"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Black"
+msgstr ""
+
+#: solarui/screens/settings.lua
+msgid "Slate"
 msgstr ""
 
 #: solarui/screens/settings.lua

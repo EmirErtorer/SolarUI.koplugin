@@ -95,7 +95,7 @@ function Garden:hop(id)
     local tweak = SceneEdit.lookup("garden", "garden.field")
     local k = tweak and tweak.sx or 1
     local fx = (scene.spread_by or 1) * k
-    App.repaintMoved(el, scene:px((now.x - was.x) * fx), scene:px((now.y - was.y) * k), "fast")
+    App.repaintMoved(el, scene:px((now.x - was.x) * fx), scene:px((now.y - was.y) * k))
 end
 
 -- What the queen's next pose depends on: the hour, her hunger and whether
@@ -120,7 +120,7 @@ function Garden:move(id)
     if not el then return end
     if Yuzsuz.is(id) then self.pose[id] = Yuzsuz.next(self.pose[id], self:queenMood())
     else self.pose[id] = self.pose[id] == "2" and "1" or "2" end
-    App.repaint(el, "fast")
+    App.repaint(el)
 end
 
 -- A slow tick: one or two of the animals about make a small movement. Every
@@ -314,7 +314,7 @@ function Garden:focused(scene)
             -- a tap on the queen's picture shows her in another pose, chosen at random
             if Yuzsuz.is(self.focus) then
                 self.pose.yuzsuz = Yuzsuz.shuffle(self.pose.yuzsuz)
-                return App.repaint(pic, "fast")
+                return App.repaint(pic)
             end
             self:move(self.focus)
         end)

@@ -2623,7 +2623,7 @@ msgstr "Yağmur"
 msgid "Snow"
 msgstr "Kar"
 
-#: solarui/garden/weather.lua
+#: solarui/garden/weather.lua solarui/screens/settings.lua
 msgid "Mist"
 msgstr "Sis"
 
@@ -4246,6 +4246,42 @@ msgstr "İkinci vurgu rengi"
 #: solarui/screens/settings.lua
 msgid "Flowers and highlights"
 msgstr "Çiçekler ve vurgular"
+
+#: solarui/screens/settings.lua
+msgid "Paper"
+msgstr "Kâğıt"
+
+#: solarui/screens/settings.lua
+msgid "The page in light mode"
+msgstr "Açık modda sayfa"
+
+#: solarui/screens/settings.lua
+msgid "Cream"
+msgstr "Krem"
+
+#: solarui/screens/settings.lua
+msgid "White"
+msgstr "Beyaz"
+
+#: solarui/screens/settings.lua
+msgid "Night page"
+msgstr "Gece sayfası"
+
+#: solarui/screens/settings.lua
+msgid "The page in dark mode"
+msgstr "Koyu modda sayfa"
+
+#: solarui/screens/settings.lua
+msgid "Forest"
+msgstr "Orman"
+
+#: solarui/screens/settings.lua
+msgid "Black"
+msgstr "Siyah"
+
+#: solarui/screens/settings.lua
+msgid "Slate"
+msgstr "Arduvaz"
 
 #: solarui/screens/settings.lua
 msgid "Plants and animals"

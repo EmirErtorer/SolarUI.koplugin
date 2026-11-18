@@ -1,4 +1,5 @@
--- Custom: the reader's own accent colours on Garden's paper. The first accent
+-- Custom: the reader's own accent colours on the paper they choose (Garden's
+-- cream, white or mist; a forest, black or slate page in dark mode). The first accent
 -- colours buttons and stems, the second the flowers; softer shades are
 -- derived so every role stays readable.
 
@@ -15,15 +16,21 @@ Custom.PRESETS = {
     "#C8694A", "#B4405A", "#E0A83A", "#2F7FA0", "#D9A39A", "#5F8A4E",
 }
 
--- Build the scheme from two hex colours.
-function Custom.build(accent_hex, accent2_hex)
+-- The page colours the reader can choose: paper for light mode, and the page
+-- for dark mode, by id.
+Custom.PAPERS = { cream = "#F3EAD3", white = "#FFFFFF", mist = "#ECEBE6" }
+Custom.NIGHTS = { forest = "#13211B", black = "#000000", slate = "#1D2125" }
+
+-- Build the scheme from two hex colours and the page colours' ids.
+function Custom.build(accent_hex, accent2_hex, paper_id, night_id)
     local accent = Color.parse(accent_hex) or Color.parse(Custom.DEFAULT_ACCENT)
     local accent2 = Color.parse(accent2_hex) or accent
     local white = { 255, 255, 255 }
     -- on a dark page the accents are lifted so they glow rather than sink
     local function lift(c) return Color.luminance(c) < 0.2 and Color.mix(c, white, 0.35) or c end
     local d1, d2 = lift(accent), lift(accent2)
-    local paper, night = Color.parse("#F3EAD3"), Color.parse("#13211B")
+    local paper = Color.parse(Custom.PAPERS[paper_id] or Custom.PAPERS.cream)
+    local night = Color.parse(Custom.NIGHTS[night_id] or Custom.NIGHTS.forest)
     return {
         id = "custom",
         name = "Custom",

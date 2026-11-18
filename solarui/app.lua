@@ -155,8 +155,9 @@ end
 -- Repaint one element in place after changing it (no rebuild).
 function App.repaint(el, mode)
     if not (host and el.x) then return end
-    -- the quickest refresh leaves traces on a dark screen
-    UIManager:setDirty(host, mode or (Theme.isDark() and "ui" or "fast"), Host.box(el))
+    -- ("ui", never "fast": the fast refresh shows only black and white, so the
+    -- page's cream and greys came out as a white box round what changed)
+    UIManager:setDirty(host, mode or "ui", Host.box(el))
 end
 
 -- Move an element `dx`, `dy` pixels (it must have been painted) and repaint the
@@ -166,7 +167,7 @@ function App.repaintMoved(el, dx, dy, mode)
     local old = Host.box(el)
     el.sx, el.sy = el.sx + dx, el.sy + dy
     local new = Geom:new({ x = old.x + dx, y = old.y + dy, w = old.w, h = old.h })
-    UIManager:setDirty(host, mode or "fast", old:combine(new))
+    UIManager:setDirty(host, mode or "ui", old:combine(new))
 end
 
 -- Show the clock change once a minute while SolarUI is on top.

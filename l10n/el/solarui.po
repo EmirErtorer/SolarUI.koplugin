@@ -2623,7 +2623,7 @@ msgstr "Βροχή"
 msgid "Snow"
 msgstr "Χιόνι"
 
-#: solarui/garden/weather.lua
+#: solarui/garden/weather.lua solarui/screens/settings.lua
 msgid "Mist"
 msgstr "Ομίχλη"
 
@@ -4246,6 +4246,42 @@ msgstr "Δεύτερος τόνος έμφασης"
 #: solarui/screens/settings.lua
 msgid "Flowers and highlights"
 msgstr "Λουλούδια και επισημάνσεις"
+
+#: solarui/screens/settings.lua
+msgid "Paper"
+msgstr "Χαρτί"
+
+#: solarui/screens/settings.lua
+msgid "The page in light mode"
+msgstr "Η σελίδα στη φωτεινή λειτουργία"
+
+#: solarui/screens/settings.lua
+msgid "Cream"
+msgstr "Κρεμ"
+
+#: solarui/screens/settings.lua
+msgid "White"
+msgstr "Λευκό"
+
+#: solarui/screens/settings.lua
+msgid "Night page"
+msgstr "Νυχτερινή σελίδα"
+
+#: solarui/screens/settings.lua
+msgid "The page in dark mode"
+msgstr "Η σελίδα στη σκοτεινή λειτουργία"
+
+#: solarui/screens/settings.lua
+msgid "Forest"
+msgstr "Δάσος"
+
+#: solarui/screens/settings.lua
+msgid "Black"
+msgstr "Μαύρο"
+
+#: solarui/screens/settings.lua
+msgid "Slate"
+msgstr "Σχιστόλιθος"
 
 #: solarui/screens/settings.lua
 msgid "Plants and animals"

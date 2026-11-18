@@ -97,6 +97,12 @@ function SettingsScreen:look()
             pickColour("custom_accent2", _("Second accent")) end }))
         a.grow, b.grow = true, true
         kids[#kids + 1] = Layout.Row:new({ gap = th.space.xl, children = { a, b } })
+        kids[#kids + 1] = row(_("Paper"), _("The page in light mode"),
+            Controls.Segmented({ options = { { _("Cream"), "cream" }, { _("White"), "white" }, { _("Mist"), "mist" } },
+                value = Settings.get("custom_paper", "cream"), kind = "small", on_change = function(v) Theme.set("custom_paper", v) end }))
+        kids[#kids + 1] = row(_("Night page"), _("The page in dark mode"),
+            Controls.Segmented({ options = { { _("Forest"), "forest" }, { _("Black"), "black" }, { _("Slate"), "slate" } },
+                value = Settings.get("custom_night", "forest"), kind = "small", on_change = function(v) Theme.set("custom_night", v) end }))
     end
     local Natural = require("solarui/art/natural")
     kids[#kids + 1] = row(_("Plants and animals"), _("Keep their own colours, or wear the colour scheme everywhere or on home only (Yüzsüz always keeps hers)"),

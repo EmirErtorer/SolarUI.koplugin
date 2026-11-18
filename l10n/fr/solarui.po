@@ -2623,7 +2623,7 @@ msgstr "Pluie"
 msgid "Snow"
 msgstr "Neige"
 
-#: solarui/garden/weather.lua
+#: solarui/garden/weather.lua solarui/screens/settings.lua
 msgid "Mist"
 msgstr "Brume"
 
@@ -4246,6 +4246,42 @@ msgstr "Second accent"
 #: solarui/screens/settings.lua
 msgid "Flowers and highlights"
 msgstr "Fleurs et rehauts"
+
+#: solarui/screens/settings.lua
+msgid "Paper"
+msgstr "Papier"
+
+#: solarui/screens/settings.lua
+msgid "The page in light mode"
+msgstr "La page en mode clair"
+
+#: solarui/screens/settings.lua
+msgid "Cream"
+msgstr "Crème"
+
+#: solarui/screens/settings.lua
+msgid "White"
+msgstr "Blanc"
+
+#: solarui/screens/settings.lua
+msgid "Night page"
+msgstr "Page de nuit"
+
+#: solarui/screens/settings.lua
+msgid "The page in dark mode"
+msgstr "La page en mode sombre"
+
+#: solarui/screens/settings.lua
+msgid "Forest"
+msgstr "Forêt"
+
+#: solarui/screens/settings.lua
+msgid "Black"
+msgstr "Noir"
+
+#: solarui/screens/settings.lua
+msgid "Slate"
+msgstr "Ardoise"
 
 #: solarui/screens/settings.lua
 msgid "Plants and animals"
