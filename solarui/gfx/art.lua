@@ -51,7 +51,8 @@ end
 -- garden (named "garden:<name>") while the garden keeps its colours.
 local function palette(name)
     local natural = Natural.is(name)
-    local colour = name:sub(1, 7) == "garden:" and Theme.mono() and Theme.gardenColour()
+    -- (Yüzsüz starts from her real colours even in black and white: see monochrome)
+    local colour = (name:sub(1, 7) == "garden:" and Theme.gardenColour() or Natural.drawing(name) == "animal_yuzsuz") and Theme.mono()
     local key = (natural and "n" or "s") .. (colour and "c" or "")
     local p = palettes[key]
     if not p then
@@ -65,8 +66,20 @@ end
 -- A drawing's SVG in black and white: every outline in ink, an ink-coloured
 -- fill kept, every other fill (tints, fixed colours of sky and weather too)
 -- the page; so a drawing is ink lines on the page, with no grey to ghost.
-local function monochrome(svg)
+local function monochrome(svg, own)
     local ink, page = Theme.hex("ink"), Theme.hex("bg")
+    if own then
+        -- Yüzsüz is always herself: her dark fur black and her white fur white in either mode,
+        -- by how light each of her colours is (as painted, so night mode turns it the right way)
+        local night = Theme.get().night
+        local black, white = night and "#FFFFFF" or "#000000", night and "#000000" or "#FFFFFF"
+        svg = svg:gsub('stroke="#%x%x%x%x%x%x"', 'stroke="' .. ink .. '"')   -- (her outline shows on either page)
+        return (svg:gsub('fill="#(%x%x)(%x%x)(%x%x)"', function(r, g, b)
+            local lum = (0.299 * tonumber(r, 16) + 0.587 * tonumber(g, 16) + 0.114 * tonumber(b, 16)) / 255
+            if night then lum = 1 - lum end
+            return 'fill="' .. (lum < 0.5 and black or white) .. '"'
+        end))
+    end
     svg = svg:gsub('stroke="#%x%x%x%x%x%x"', 'stroke="' .. ink .. '"')
     return (svg:gsub('fill="(#%x%x%x%x%x%x)"', function(hex)
         return 'fill="' .. (hex:upper() == ink:upper() and ink or page) .. '"'
@@ -108,7 +121,7 @@ local function render(name, w, h, vw, vh, param, exact)
     local f = io.open(scratch(), "w")
     if not f then return nil end
     local body = draw(palette(name), vw, vh, param)
-    if inMono(name) then body = monochrome(body) end
+    if inMono(name) then body = monochrome(body, Natural.drawing(name) == "animal_yuzsuz") end
     f:write(Svg.document(W, H, string.format('<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g>', ox, oy, zoom, body)))
     f:close()
     local bb = RenderImage:renderSVGImageFile(scratch(), W, H, 1)
