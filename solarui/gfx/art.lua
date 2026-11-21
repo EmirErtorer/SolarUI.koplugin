@@ -34,8 +34,7 @@ local order = {}     -- keys, oldest first
 local layers = {}    -- slot -> { sig, w, h, type, bb }
 local base_order = {}   -- the keys of the base layers kept, oldest first
 local version        -- the theme version everything kept was drawn for
-local colours        -- the roles as "#rrggbb" for that version, and the same with living things' real colours
-local natural_colours
+local palettes = {}  -- the roles as "#rrggbb" for that version, by kind: the scheme's, living things' real colours, and the garden's in black and white
 local svg_file
 
 -- Forget everything when the look changed since it was drawn.
@@ -47,16 +46,37 @@ local function sync()
     end
 end
 
--- The theme's colours as the drawings want them.
-local function palette(natural)
-    if not colours then
-        colours, natural_colours = {}, {}
-        for _i, role in ipairs(ROLES) do
-            colours[role] = Theme.hex(role)
-            natural_colours[role] = Theme.hex(role, true)
-        end
+-- The colours drawing `name` is drawn in: a living thing's own or the
+-- scheme's, and in black and white the garden's colours for a drawing on the
+-- garden (named "garden:<name>") while the garden keeps its colours.
+local function palette(name)
+    local natural = Natural.is(name)
+    local colour = name:sub(1, 7) == "garden:" and Theme.mono() and Theme.gardenColour()
+    local key = (natural and "n" or "s") .. (colour and "c" or "")
+    local p = palettes[key]
+    if not p then
+        p = {}
+        for _i, role in ipairs(ROLES) do p[role] = Theme.hex(role, natural, colour) end
+        palettes[key] = p
     end
-    return natural and natural_colours or colours
+    return p
+end
+
+-- A drawing's SVG in black and white: every outline in ink, an ink-coloured
+-- fill kept, every other fill (tints, fixed colours of sky and weather too)
+-- the page; so a drawing is ink lines on the page, with no grey to ghost.
+local function monochrome(svg)
+    local ink, page = Theme.hex("ink"), Theme.hex("bg")
+    svg = svg:gsub('stroke="#%x%x%x%x%x%x"', 'stroke="' .. ink .. '"')
+    return (svg:gsub('fill="(#%x%x%x%x%x%x)"', function(hex)
+        return 'fill="' .. (hex:upper() == ink:upper() and ink or page) .. '"'
+    end))
+end
+
+-- Is drawing `name` drawn in black and white now?
+local function inMono(name)
+    if not Theme.mono() then return false end
+    return not (name:sub(1, 7) == "garden:" and Theme.gardenColour())
 end
 
 -- The file a drawing is written to on its way to the renderer.
@@ -87,8 +107,9 @@ local function render(name, w, h, vw, vh, param, exact)
     local W, H = w + 2 * pad, h + 2 * pad
     local f = io.open(scratch(), "w")
     if not f then return nil end
-    f:write(Svg.document(W, H, string.format('<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g>', ox, oy, zoom,
-        draw(palette(Natural.is(name)), vw, vh, param))))
+    local body = draw(palette(name), vw, vh, param)
+    if inMono(name) then body = monochrome(body) end
+    f:write(Svg.document(W, H, string.format('<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g>', ox, oy, zoom, body)))
     f:close()
     local bb = RenderImage:renderSVGImageFile(scratch(), W, H, 1)
     if not bb then return nil end
@@ -276,7 +297,7 @@ function Art.free()
     for _k, p in pairs(pieces) do
         if p then p.bb:free() end
     end
-    sprites, order, layers, colours, natural_colours = {}, {}, {}, nil, nil
+    sprites, order, layers, palettes = {}, {}, {}, {}
     pieces, piece_order, piece_bytes, base_order = {}, {}, 0, {}
 end
 

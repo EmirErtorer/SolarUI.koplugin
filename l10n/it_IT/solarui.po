@@ -4284,6 +4284,22 @@ msgid "Slate"
 msgstr "Ardesia"
 
 #: solarui/screens/settings.lua
+msgid "Black and white"
+msgstr "Bianco e nero"
+
+#: solarui/screens/settings.lua
+msgid "Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"
+msgstr "Tutto in bianco e nero, i disegni come contorni a inchiostro: più nitido sugli schermi senza colore, con meno immagini fantasma"
+
+#: solarui/screens/settings.lua
+msgid "Garden in colour"
+msgstr "Giardino a colori"
+
+#: solarui/screens/settings.lua
+msgid "The garden keeps its colours while the rest is black and white"
+msgstr "Il giardino mantiene i suoi colori, il resto è in bianco e nero"
+
+#: solarui/screens/settings.lua
 msgid "Plants and animals"
 msgstr "Piante e animali"
 

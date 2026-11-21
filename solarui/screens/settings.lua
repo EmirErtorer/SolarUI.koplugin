@@ -104,6 +104,12 @@ function SettingsScreen:look()
             Controls.Segmented({ options = { { _("Forest"), "forest" }, { _("Black"), "black" }, { _("Slate"), "slate" } },
                 value = Settings.get("custom_night", "forest"), kind = "small", on_change = function(v) Theme.set("custom_night", v) end }))
     end
+    kids[#kids + 1] = row(_("Black and white"), _("Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"),
+        Controls.Toggle:new({ on = Theme.mono(), on_change = function(on) Theme.set("mono", on) end }))
+    if Theme.mono() then
+        kids[#kids + 1] = row(_("Garden in colour"), _("The garden keeps its colours while the rest is black and white"),
+            Controls.Toggle:new({ on = Theme.gardenColour(), on_change = function(on) Theme.set("mono_garden_colour", on) end }))
+    end
     local Natural = require("solarui/art/natural")
     kids[#kids + 1] = row(_("Plants and animals"), _("Keep their own colours, or wear the colour scheme everywhere or on home only (Yüzsüz always keeps hers)"),
         Controls.Segmented({ options = { { _("Own colours"), "off" }, { _("Everywhere"), "all" }, { _("Home only"), "home" } },

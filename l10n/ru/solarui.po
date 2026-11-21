@@ -4310,6 +4310,22 @@ msgid "Slate"
 msgstr "Сланец"
 
 #: solarui/screens/settings.lua
+msgid "Black and white"
+msgstr "Чёрно-белый"
+
+#: solarui/screens/settings.lua
+msgid "Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"
+msgstr "Всё в чёрно-белом, рисунки контуром: чётче на экранах без цвета, меньше остаточных изображений"
+
+#: solarui/screens/settings.lua
+msgid "Garden in colour"
+msgstr "Сад в цвете"
+
+#: solarui/screens/settings.lua
+msgid "The garden keeps its colours while the rest is black and white"
+msgstr "Сад сохраняет цвета, остальное чёрно-белое"
+
+#: solarui/screens/settings.lua
 msgid "Plants and animals"
 msgstr "Растения и животные"
 

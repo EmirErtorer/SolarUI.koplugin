@@ -53,6 +53,28 @@ end
 -- The colour roles of living things, which keep their real colours.
 Theme.NATURAL_ROLES = { "ink", "muted", "line", "leaf", "stem", "gold", "pale", "bloom", "bloom2", "sky", "sage", "glass", "cream", "violet", "lilac" }
 
+-- Is everything drawn in black and white (for greyscale screens, less ghosting)?
+function Theme.mono()
+    return Settings.get("mono", false)
+end
+
+-- With black and white on, does the garden keep its colours?
+function Theme.gardenColour()
+    return Settings.get("mono_garden_colour", true)
+end
+
+-- The roles drawn in the ink in black and white; every other role takes the page's colour,
+-- so the page is plain and drawings become ink outlines on the page.
+local INK_ROLES = { ink = true, muted = true, line = true, accent = true, accent2 = true }
+
+-- `seen` (role -> rgb) turned to black and white for a light or dark page.
+local function monochrome(seen, dark)
+    local ink, page = dark and { 255, 255, 255 } or { 0, 0, 0 }, dark and { 0, 0, 0 } or { 255, 255, 255 }
+    local out = {}
+    for role in pairs(seen) do out[role] = INK_ROLES[role] and ink or page end
+    return out
+end
+
 -- Work out every role, size and face for the current settings.
 local function resolve()
     local style = Registry.style(Settings.get("style", Registry.STYLES[1]))
@@ -72,6 +94,13 @@ local function resolve()
             seen[role] = { g, g, g }
         end
     end
+    -- black and white: the colours kept for the garden, then every role made ink or page
+    local mono = Theme.mono()
+    local colour_seen
+    if mono then
+        colour_seen = seen
+        seen = monochrome(seen, mode == "dark")
+    end
     seen.on_accent = Color.readableOn(seen.accent, seen.bg, seen.ink, { 0, 0, 0 }, { 255, 255, 255 })
     seen.on_accent2 = Color.readableOn(seen.accent2, seen.bg, seen.ink, { 0, 0, 0 }, { 255, 255, 255 })
     seen.on_ink = seen.bg
@@ -86,12 +115,21 @@ local function resolve()
     end
 
     -- the plants' and animals' own colours: the same whatever the scheme, painted the way the screen needs
+    local function inverted(rgb) return night and { 255 - rgb[1], 255 - rgb[2], 255 - rgb[3] } or rgb end
     local natural = {}
     local garden_light = Registry.scheme(Registry.SCHEMES[1]).light
     for _i, role in ipairs(Theme.NATURAL_ROLES) do
         local rgb = Color.parse(garden_light[role])
         if not colour then local g = Color.grey(rgb); rgb = { g, g, g } end
-        natural[role] = night and { 255 - rgb[1], 255 - rgb[2], 255 - rgb[3] } or rgb
+        natural[role] = inverted(rgb)
+    end
+    -- in black and white, the colours the garden keeps (when it does), and the living things in ink too
+    local colour_painted, colour_natural
+    if mono then
+        colour_painted, colour_natural = {}, natural
+        for role, rgb in pairs(colour_seen) do colour_painted[role] = inverted(rgb) end
+        natural = {}
+        for role, rgb in pairs(monochrome(colour_natural, mode == "dark")) do natural[role] = inverted(rgb) end
     end
 
     local size = {}
@@ -108,6 +146,9 @@ local function resolve()
         rgb = seen,
         painted = painted,
         natural = natural,
+        mono = mono,
+        colour_painted = colour_painted,
+        colour_natural = colour_natural,
         size = size,
         space = space,
         decor = style.decor,
@@ -131,8 +172,12 @@ end
 
 -- A role's colour as "#rrggbb", as it must be painted (for drawing artwork);
 -- with `natural`, a living thing's real colour in place of the scheme's.
-function Theme.hex(role, natural)
+function Theme.hex(role, natural, colour)
     local t = Theme.get()
+    -- (`colour`: in black and white, the colour the garden keeps)
+    if colour and t.mono then
+        return Color.hex((natural and t.colour_natural[role]) or t.colour_painted[role] or t.colour_painted.ink)
+    end
     return Color.hex((natural and t.natural[role]) or t.painted[role] or t.painted.ink)
 end
 

@@ -44,13 +44,14 @@ local function onHome(name)
     return ON_HOME[name] or name:sub(1, 5) == "dock_" or name:sub(1, 5) == "vine_"
 end
 
--- The drawing a name stands for (without its "home:").
+-- The drawing a name stands for (without its "garden:" or "home:").
 function Natural.drawing(name)
-    return (name:gsub("^home:", ""))
+    return (name:gsub("^garden:", ""):gsub("^home:", ""))
 end
 
 -- Does drawing `name` keep its real colours (true), or take the scheme's?
 function Natural.is(name)
+    name = name:gsub("^garden:", "")
     local companion = name:sub(1, 5) == "home:"
     if companion then name = name:sub(6) end
     if not living(name) then return false end

@@ -4284,6 +4284,22 @@ msgid "Slate"
 msgstr "Σχιστόλιθος"
 
 #: solarui/screens/settings.lua
+msgid "Black and white"
+msgstr "Ασπρόμαυρο"
+
+#: solarui/screens/settings.lua
+msgid "Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"
+msgstr "Όλα ασπρόμαυρα, τα σχέδια ως περιγράμματα μελανιού: πιο καθαρά σε οθόνες χωρίς χρώμα, με λιγότερα είδωλα"
+
+#: solarui/screens/settings.lua
+msgid "Garden in colour"
+msgstr "Κήπος σε χρώμα"
+
+#: solarui/screens/settings.lua
+msgid "The garden keeps its colours while the rest is black and white"
+msgstr "Ο κήπος κρατά τα χρώματά του, τα υπόλοιπα είναι ασπρόμαυρα"
+
+#: solarui/screens/settings.lua
 msgid "Plants and animals"
 msgstr "Φυτά και ζώα"
 

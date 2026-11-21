@@ -4284,6 +4284,22 @@ msgid "Slate"
 msgstr "Schiefer"
 
 #: solarui/screens/settings.lua
+msgid "Black and white"
+msgstr "Schwarzweiß"
+
+#: solarui/screens/settings.lua
+msgid "Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"
+msgstr "Alles in Schwarzweiß, Zeichnungen als Tuschelinien: klarer auf Bildschirmen ohne Farbe, mit weniger Geisterbildern"
+
+#: solarui/screens/settings.lua
+msgid "Garden in colour"
+msgstr "Garten in Farbe"
+
+#: solarui/screens/settings.lua
+msgid "The garden keeps its colours while the rest is black and white"
+msgstr "Der Garten behält seine Farben, der Rest ist schwarzweiß"
+
+#: solarui/screens/settings.lua
 msgid "Plants and animals"
 msgstr "Pflanzen und Tiere"
 

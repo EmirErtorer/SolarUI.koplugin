@@ -37,6 +37,7 @@ end
 
 -- Add artwork to the backdrop at a box in units.
 function Scene:backdrop(name, vx, vy, vw, vh, param)
+    name = self:artName(name)
     local it = { name, 0, 0, 0, 0, vw, vh, param, base = self.in_base }
     self.items[#self.items + 1] = it
     local m = { item = it, unit = { vx, vy, vw, vh }, art = { vw, vh }, fixed = self.fixed }
@@ -183,6 +184,13 @@ function Scene:frameOrnaments(no_bud)
     self:backdrop("frame_bud", (self.width / 2 - self.ox) / self.k - 30, self.vh - 52, 60, 30)
 end
 
+-- The name a drawing is drawn under here: on the garden, in black and white
+-- with the garden keeping its colours, "garden:<name>" (see gfx/art.lua).
+function Scene:artName(name)
+    if self.screen == "garden" and Theme.mono() and Theme.gardenColour() then return "garden:" .. name end
+    return name
+end
+
 -- Place an element at a box in units (a nil height lets it take its own).
 function Scene:place(el, vx, vy, vw, vh)
     local m = { el = el, unit = { vx, vy, vw, vh }, fixed = self.fixed }
@@ -195,6 +203,7 @@ end
 -- Place artwork that is blended in on every paint (it changes, or lies over
 -- other elements).
 function Scene:sprite(name, vx, vy, vw, vh, param, param_fn)
+    name = self:artName(name)
     return self:place(ArtView:new({ name = name, param = param, param_fn = param_fn, unit = self.k }), vx, vy, vw, vh)
 end
 

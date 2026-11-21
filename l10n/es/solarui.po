@@ -4284,6 +4284,22 @@ msgid "Slate"
 msgstr "Pizarra"
 
 #: solarui/screens/settings.lua
+msgid "Black and white"
+msgstr "Blanco y negro"
+
+#: solarui/screens/settings.lua
+msgid "Everything in black and white, drawings as ink outlines: clearer on screens without colour, with less ghosting"
+msgstr "Todo en blanco y negro, los dibujos como trazos de tinta: más nítido en pantallas sin color y con menos fantasmas"
+
+#: solarui/screens/settings.lua
+msgid "Garden in colour"
+msgstr "Jardín en color"
+
+#: solarui/screens/settings.lua
+msgid "The garden keeps its colours while the rest is black and white"
+msgstr "El jardín conserva sus colores mientras el resto es en blanco y negro"
+
+#: solarui/screens/settings.lua
 msgid "Plants and animals"
 msgstr "Plantas y animales"
 
