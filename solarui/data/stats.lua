@@ -53,17 +53,11 @@ function Stats.totals(n)
     return t
 end
 
--- Books with any reading this calendar year.
+-- Books finished this calendar year: the same count as the reading log's Goal
+-- tab (a book counts when it is marked finished, see data/goal.lua), so home
+-- and the log agree.
 function Stats.booksThisYear()
-    return cached("year", function()
-        local t = os.date("*t")
-        local start = os.time({ year = t.year, month = 1, day = 1, hour = 0 })
-        return query(function(conn)
-            local r = rows(conn, string.format(
-                "SELECT count(DISTINCT id_book) FROM page_stat_data WHERE start_time >= %d%s", start, Statsdb.scoped(conn)))[1]
-            return tonumber(r and r[1]) or 0
-        end)
-    end) or 0
+    return #require("solarui/data/goal").finishedIn(tonumber(os.date("%Y")))
 end
 
 -- The `n` latest reading sessions (one per book per day): { title, time, seconds, pages }.
